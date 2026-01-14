@@ -1,0 +1,16 @@
+<%= turbo_stream.replace "score" do %>
+  <p id="score"
+     data-score-version="<%= SecureRandom.uuid %>"
+     class="text-6xl font-extrabold text-green-400 tabular-nums score-pulse">
+    <%= @turn.remaining_score %>
+  </p>
+<% end %>
+
+<%= turbo_stream.replace "throws" do %>
+  <div id="throws" class="mt-2 text-sm text-slate-400">
+    Last throw:
+    <strong><%= @throw.multiplier.capitalize %> <%= @throw.segment %></strong>
+    (<%= @throw.points %> pts)
+  </div>
+<% end %>
+

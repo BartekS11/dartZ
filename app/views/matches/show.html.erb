@@ -1,0 +1,50 @@
+<div class="flex items-center justify-between mb-6">
+<h2 class="text-2xl font-semibold">Match <%= @match.id %></h2>
+<%= link_to "← Back", matches_path, class: "text-slate-400 hover:underline" %>
+</div>
+
+
+
+<div class="bg-gradient-to-br from-slate-800 to-slate-900
+            border border-slate-700 rounded-2xl p-6 mb-6
+            shadow-lg">
+  <p class="text-xs uppercase tracking-widest text-slate-400">
+    Remaining
+  </p>
+
+<p id="score"
+   class="text-6xl font-extrabold text-green-400 tabular-nums">
+  <%= @turn.remaining_score %>
+</p>
+
+<% if @match.finished? %>
+
+<div class="bg-green-700/20 border border-green-600
+            text-green-300 p-6 rounded-2xl
+            text-center text-xl font-semibold">
+  🎯 Leg Finished!
+</div>
+
+<% else %>
+<h3 class="text-lg font-semibold mb-3">Throw darts</h3>
+
+
+<div class="grid grid-cols-5 gap-2">
+<% (1..20).each do |n| %>
+<% [:single, :double, :triple].each do |m| %>
+<% color = m == :double ? 'bg-red-600' : m == :triple ? 'bg-blue-600' : 'bg-slate-600' %>
+<%= button_to "#{m.to_s[0].upcase}#{n}",
+turn_throws_path(@turn),
+params: { throw: { segment: n, multiplier: m } },
+method: :post,
+form: { data: { turbo_stream: true } },
+class: "#{color} hover:opacity-90 text-white text-sm py-2 rounded" %>
+<% end %>
+<% end %>
+</div>
+
+
+<p class="mt-4 text-sm text-slate-400">
+Bust resets score • Finish on a <strong>double</strong>
+</p>
+<% end %>

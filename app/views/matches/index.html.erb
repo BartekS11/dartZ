@@ -1,0 +1,22 @@
+<h2 class="text-2xl font-semibold mb-4">Your Matches</h2>
+
+
+<%= button_to "+ New Match", matches_path, method: :post,
+class: "mb-6 bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded" %>
+
+
+<ul class="space-y-3">
+<% @matches.each do |match| %>
+<li class="bg-slate-800 border border-slate-700 rounded p-4 flex justify-between items-center">
+<span>Match #<%= match.id %></span>
+<%= link_to "Open →", match_path(match), class: "text-blue-400 hover:underline" %>
+</li>
+<% end %>
+</ul>
+<h1>Your Matches</h1>
+<%= button_to "New Match", matches_path, method: :post %>
+<ul>
+<% @matches.each do |match| %>
+<li><%= link_to "Match ##{match.id}", match %></li>
+<% end %>
+</ul>

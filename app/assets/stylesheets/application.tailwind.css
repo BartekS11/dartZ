@@ -1,0 +1,12 @@
+@import "tailwindcss";
+@layer utilities {
+  .score-pulse {
+    animation: score-pulse 300ms ease-out;
+  }
+
+  @keyframes score-pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+    100% { transform: scale(1); }
+  }
+}
