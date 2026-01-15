@@ -1,11 +1,10 @@
 <h2 class="text-2xl font-semibold mb-4">Your Matches</h2>
 
 
-<%= button_to "+ New Match", matches_path, method: :post,
-class: "mb-6 bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded" %>
-
-
-<ul class="space-y-3">
+<%= button_to "New match",
+      matches_path,
+      method: :post,
+      class: "px-4 py-2 bg-blue-600 text-white rounded" %><ul class="space-y-3">
 <% @matches.each do |match| %>
 <li class="bg-slate-800 border border-slate-700 rounded p-4 flex justify-between items-center">
 <span>Match #<%= match.id %></span>
@@ -16,7 +15,9 @@ class: "mb-6 bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded" %>
 <h1>Your Matches</h1>
 <%= button_to "New Match", matches_path, method: :post %>
 <ul>
-<% @matches.each do |match| %>
+<% if @matches.present? %>
+  <% @matches.each do |match| %>
 <li><%= link_to "Match ##{match.id}", match %></li>
+  <% end %>
 <% end %>
 </ul>

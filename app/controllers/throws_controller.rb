@@ -1,13 +1,15 @@
 class ThrowsController < ApplicationController
-  def create
-  turn = Turn.find(params[:turn_id])
-  turn.throws.create!(throw_params)
-  if turn.throws.count == 3 || turn.finished? || turn.busted?
-    turn.complete!
-  end
+def create
+  @turn = Turn.find(params[:turn_id])
+  @throw = @turn.throws.create!(throw_params)
 
-  redirect_to turn.leg.match
+  @turn.complete! if @turn.complete?
+
+  respond_to do |format|
+    format.turbo_stream
+    format.html { redirect_to match_path(@turn.leg.match) }
   end
+end
 
   private
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_13_230920) do
+ActiveRecord::Schema[8.1].define(version: 2026_01_15_221724) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -25,16 +25,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_13_230920) do
 
   create_table "matches", force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.bigint "player_id", null: false
     t.datetime "updated_at", null: false
-    t.index ["player_id"], name: "index_matches_on_player_id"
   end
 
   create_table "players", force: :cascade do |t|
     t.datetime "created_at", null: false
+    t.bigint "match_id"
     t.string "name"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
+    t.index ["match_id"], name: "index_players_on_match_id"
     t.index ["user_id"], name: "index_players_on_user_id"
   end
 
@@ -59,9 +59,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_13_230920) do
   create_table "turns", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.bigint "leg_id", null: false
+    t.bigint "player_id", null: false
     t.integer "starting_score"
     t.datetime "updated_at", null: false
     t.index ["leg_id"], name: "index_turns_on_leg_id"
+    t.index ["player_id"], name: "index_turns_on_player_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -73,9 +75,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_13_230920) do
   end
 
   add_foreign_key "legs", "matches"
-  add_foreign_key "matches", "players"
+  add_foreign_key "players", "matches"
   add_foreign_key "players", "users"
   add_foreign_key "sessions", "users"
   add_foreign_key "throws", "turns"
   add_foreign_key "turns", "legs"
+  add_foreign_key "turns", "players"
 end

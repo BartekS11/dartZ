@@ -14,3 +14,9 @@
   </div>
 <% end %>
 
+<%= turbo_stream.replace "current-player" do %>
+  <span id="current-player"
+        class="px-3 py-1 rounded-full bg-blue-600 text-white font-semibold">
+    <%= @turn.leg.active_player.name %>
+  </span>
+<% end %>

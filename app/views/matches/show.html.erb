@@ -11,7 +11,12 @@
   <p class="text-xs uppercase tracking-widest text-slate-400">
     Remaining
   </p>
-
+<div class="mb-4 flex items-center gap-2">
+  <span class="text-sm text-slate-400">Current player</span>
+  <span class="px-3 py-1 rounded-full bg-blue-600 text-white font-semibold">
+    <%= @turn.player.name %>
+  </span>
+</div>
 <p id="score"
    class="text-6xl font-extrabold text-green-400 tabular-nums">
   <%= @turn.remaining_score %>

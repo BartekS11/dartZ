@@ -1,4 +1,6 @@
 class Player < ApplicationRecord
   belongs_to :user
-has_many :matches, dependent: :destroy
+  belongs_to :match
+
+  validates :user, :match, presence: true
 end
