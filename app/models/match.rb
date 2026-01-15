@@ -18,4 +18,8 @@ class Match < ApplicationRecord
   def finished?
     legs.exists? && legs.all?(&:finished_at)
   end
+
+  def current_player
+    current_leg&.current_turn&.player
+  end
 end

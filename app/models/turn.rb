@@ -23,28 +23,23 @@ class Turn < ApplicationRecord
     throws.size >= MAX_THROWS || busted? || finished?
   end
 
-  def complete!
-    return unless complete?
+def complete!
+  return unless complete?
 
-    transaction do
-      if finished?
-        leg.update!(finished_at: Time.current)
-      elsif busted?
-        # bust = score does NOT change
-      else
-        leg.update!(starting_score: remaining_score)
-      end
-
-      mark_completed!
-      start_next_turn! unless leg.finished?
+  transaction do
+    if finished?
+      leg.update!(finished_at: Time.current)
+    elsif busted?
+      throws.destroy_all
+    else
+      leg.update!(starting_score: remaining_score)
     end
+
+    start_next_turn! unless finished?
   end
+end
 
   private
-
-  def mark_completed!
-    update!(completed_at: Time.current)
-  end
 
   def start_next_turn!
     players = leg.match.players.order(:id).to_a

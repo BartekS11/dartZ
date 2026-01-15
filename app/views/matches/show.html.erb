@@ -11,11 +11,19 @@
   <p class="text-xs uppercase tracking-widest text-slate-400">
     Remaining
   </p>
-<div class="mb-4 flex items-center gap-2">
-  <span class="text-sm text-slate-400">Current player</span>
-  <span class="px-3 py-1 rounded-full bg-blue-600 text-white font-semibold">
-    <%= @turn.player.name %>
-  </span>
+<div class="flex gap-4 mb-6">
+  <% @match.players.each do |player| %>
+<div class="px-4 py-2 rounded-xl border
+  <%= player == @match.current_player ?
+      'bg-blue-600 text-white border-blue-400 scale-105' :
+      'bg-slate-800 text-slate-300 border-slate-700' %>
+">
+      <%= player.display_name %>
+      <% if player.guest? %>
+        <span class="text-xs opacity-70">(guest)</span>
+      <% end %>
+    </div>
+  <% end %>
 </div>
 <p id="score"
    class="text-6xl font-extrabold text-green-400 tabular-nums">

@@ -12,17 +12,19 @@ class MatchesController < ApplicationController
     @turn = @leg.current_turn || @leg.turns.create!(starting_score: @leg.starting_score)
   end
 
-  def create
-    match = Match.create!
+def create
+  match = Match.create!
 
-    opponent = User.find_or_create_by!(
-      email_address: "opponent@test.com"
-    ) { |u| u.password = "password123" }
+  match.players.create!(
+    user: Current.user,
+    name: "You"
+  )
 
-    match.players.create!(user: Current.user)
-    match.players.create!(user: opponent)
+  match.players.create!(
+    name: "Guest"
+  )
 
-    redirect_to match
-  end
+  redirect_to match
+end
 end
 
