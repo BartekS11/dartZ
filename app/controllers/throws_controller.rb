@@ -2,13 +2,13 @@ class ThrowsController < ApplicationController
 def create
   @turn = Turn.find(params[:turn_id])
 
-  @throw = @turn.throws.create!(throw_params)
+  Throw.transaction do
+    @throw = @turn.throws.create!(throw_params)
 
-  @turn.complete! if @turn.complete?
+    leg_player = @turn.leg.leg_players.find_by!(player: @turn.player)
+    leg_player.apply_throw!(@throw.points)
 
-  respond_to do |format|
-    format.turbo_stream
-    format.html { redirect_to @turn.leg.match }
+    @turn.complete! if @turn.complete?
   end
 end
 

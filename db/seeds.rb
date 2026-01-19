@@ -1,14 +1,30 @@
-user = User.find_or_create_by!(email_address: "test@example.com") do |u|
-  u.password = "password"
-end
+User.destroy_all
+Match.destroy_all
+Player.destroy_all
+Leg.destroy_all
+Turn.destroy_all
 
-opponent = User.find_or_create_by!(email_address: "opponent@test.com") do |u|
-  u.password = "password"
-end
+user = User.create!(
+  email_address: "test@example.com",
+  password: "password"
+)
 
 match = Match.create!
 
-match.players.create!(user: user, name: "Alice")
-match.players.create!(user: opponent, name: "Bob")
+player = Player.create!(
+  user: user,
+  match: match,
+  name: "Alice"
+)
 
-match.start_first_leg!
+guest = Player.create!(
+  user: user,
+  match: match,
+  name: "Guest"
+)
+
+leg = match.legs.create!
+
+leg.turns.create!(
+  player: player
+)

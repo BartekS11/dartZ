@@ -3,7 +3,14 @@
 <%= link_to "← Back", matches_path, class: "text-slate-400 hover:underline" %>
 </div>
 
-
+<% @match.players.each do |player| %>
+  <div class="flex justify-between items-center">
+    <span><%= player.display_name %></span>
+    <span class="text-2xl font-mono">
+      <%= @match.score_for(player) %>
+    </span>
+  </div>
+<% end %>
 
 <div class="bg-gradient-to-br from-slate-800 to-slate-900
             border border-slate-700 rounded-2xl p-6 mb-6
@@ -27,7 +34,7 @@
 </div>
 <p id="score"
    class="text-6xl font-extrabold text-green-400 tabular-nums">
-  <%= @turn.remaining_score %>
+  <%= @match.score_for(@match.current_player) %>
 </p>
 
 <% if @match.finished? %>

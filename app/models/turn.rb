@@ -1,60 +1,49 @@
 class Turn < ApplicationRecord
+  MAX_THROWS = 3
+
   belongs_to :leg
   belongs_to :player
   has_many :throws, dependent: :destroy
 
-  MAX_THROWS = 3
+  def leg_player
+    leg.leg_players.find_by!(player: player)
+  end
 
-  validate :max_three_throws, on: :update
-
-  def remaining_score
-    starting_score - throws.sum(&:points)
+  def turn_points
+    throws.sum(&:points)
   end
 
   def busted?
-    remaining_score < 0 || remaining_score == 1
+    new_score < 0 || new_score == 1
   end
 
   def finished?
-    remaining_score == 0 && throws.last&.double?
+    new_score == 0 && throws.last&.double?
   end
 
   def complete?
     throws.size >= MAX_THROWS || busted? || finished?
   end
 
-def complete!
-  return unless complete?
+  def complete!
+    lp = leg_player
 
-  transaction do
     if finished?
+      lp.update!(score: 0)
       leg.update!(finished_at: Time.current)
     elsif busted?
-      throws.destroy_all
+      # DO NOTHING → score stays the same
     else
-      leg.update!(starting_score: remaining_score)
+      lp.update!(score: new_score)
     end
 
-    start_next_turn! unless finished?
+    leg.start_next_turn! unless finished?
   end
-end
 
   private
 
-  def start_next_turn!
-    players = leg.match.players.order(:id).to_a
-    current_index = players.index(player)
-    next_player = players[(current_index + 1) % players.size]
-
-    leg.turns.create!(
-      player: next_player,
-      starting_score: leg.starting_score
-    )
-  end
-
-  def max_three_throws
-    if throws.size > MAX_THROWS
-      errors.add(:throws, "maximum of #{MAX_THROWS} per turn")
-    end
+  def new_score
+    leg_player.score - turn_points
   end
 end
+

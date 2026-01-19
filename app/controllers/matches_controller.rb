@@ -8,23 +8,24 @@ class MatchesController < ApplicationController
 
   def show
     @match = Match.find(params[:id])
-    @leg = @match.current_leg || @match.legs.create!(starting_score: 501)
-    @turn = @leg.current_turn || @leg.turns.create!(starting_score: @leg.starting_score)
+    @leg = @match.current_leg || @match.legs.create!
+    @turn = @leg.current_turn || @leg.turns.create!(
+      player: @match.players.first
+  )
   end
 
-def create
-  match = Match.create!
+  def create
+    match = Match.create!
 
-  match.players.create!(
+    match.players.create!(
     user: Current.user,
     name: "You"
+    )
+
+    match.players.create!(
+      name: "Guest"
   )
 
-  match.players.create!(
-    name: "Guest"
-  )
-
-  redirect_to match
+    redirect_to match
+  end
 end
-end
-

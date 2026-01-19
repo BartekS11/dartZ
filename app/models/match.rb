@@ -1,14 +1,11 @@
+
 class Match < ApplicationRecord
   has_many :players, dependent: :destroy
   has_many :legs, dependent: :destroy
 
   def start_first_leg!
-    leg = legs.create!(starting_score: 501)
-
-    leg.turns.create!(
-      player: players.first,
-      starting_score: 501
-    )
+    leg = legs.create!
+    leg.turns.create!(player: players.first)
   end
 
   def current_leg
@@ -22,4 +19,16 @@ class Match < ApplicationRecord
   def current_player
     current_leg&.current_turn&.player
   end
+
+  def next_player_after(player)
+    ordered = players.order(:created_at).to_a
+    idx = ordered.index(player)
+    ordered[(idx + 1) % ordered.size]
+  end
+
+  def score_for(player)
+    return 501 unless current_leg
+    current_leg.leg_players.find_by(player: player)&.score || 501
+  end
 end
+
