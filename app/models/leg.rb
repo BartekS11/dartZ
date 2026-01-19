@@ -30,4 +30,3 @@ class Leg < ApplicationRecord
     end
   end
 end
-

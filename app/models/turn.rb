@@ -46,4 +46,3 @@ class Turn < ApplicationRecord
     leg_player.score - turn_points
   end
 end
-

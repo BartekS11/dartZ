@@ -31,4 +31,3 @@ class Match < ApplicationRecord
     current_leg.leg_players.find_by(player: player)&.score || 501
   end
 end
-
