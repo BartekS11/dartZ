@@ -19,11 +19,16 @@ class Throw < ApplicationRecord
 
   private
 
-  def max_three_throws
-    if turn.throws.count >= 3
-      errors.add(:base, "Maximum of 3 throws per turn")
-    end
+
+def max_three_throws
+  return unless turn
+  return if persisted?
+
+  if turn.throws.count >= Turn::MAX_THROWS
+    errors.add(:base, "Maximum of 3 throws per turn")
   end
+end
+
 
   def does_not_bust_leg
     leg_player = turn.leg.leg_players.find_by!(player: turn.player)
