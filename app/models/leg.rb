@@ -6,12 +6,35 @@ class Leg < ApplicationRecord
 
   after_create :init_players
 
+  def ensure_current_turn!
+    turn = turns.order(:created_at).last
+    return turn if turn.present? && !turn.completed?
+
+    start_next_turn!
+  end
+
   def current_turn
     turns.order(:created_at).last
   end
 
+  def start_first_turn!
+    turns.create!(player: first_player)
+  end
+
   def active_player
     current_turn&.player
+  end
+
+  def finished?
+    finished_at.present?
+  end
+
+  def finish!
+    match.finish!
+  end
+
+  def first_player
+    leg_players.order(:created_at).first.player
   end
 
   def start_next_turn!

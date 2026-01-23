@@ -1,0 +1,24 @@
+<div class="flex items-center justify-center min-h-screen bg-slate-900 text-white">
+  <div class="text-center space-y-6">
+    <h1 class="text-4xl font-bold text-green-400">
+      🎯 Game Over
+    </h1>
+
+    <p class="text-2xl">
+      <strong><%= match.winner.name %></strong> wins!
+    </p>
+
+    <p class="text-slate-400">
+      Finished at <%= match.finished_at.strftime("%H:%M") %>
+    </p>
+
+    <div class="flex justify-center gap-4 mt-6">
+      <%= link_to "New Match",
+      matches_path,
+      data: { turbo_method: :post },
+      class: "px-6 py-3 bg-green-500 rounded-lg text-black font-semibold" %>
+      <%= link_to "Back to Matches", matches_path,
+            class: "px-6 py-3 bg-slate-700 rounded-lg" %>
+    </div>
+  </div>
+</div>

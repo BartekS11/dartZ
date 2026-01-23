@@ -1,3 +1,8 @@
+<% if @match.finished? %>
+  <%= render "matches/game_over", match: @match %>
+  <% return %>
+<% end %>
+
 <div class="flex items-center justify-between mb-6">
 <h2 class="text-2xl font-semibold">Match <%= @match.id %></h2>
 <%= link_to "← Back", matches_path, class: "text-slate-400 hover:underline" %>

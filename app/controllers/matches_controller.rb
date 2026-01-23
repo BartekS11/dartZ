@@ -8,10 +8,11 @@ class MatchesController < ApplicationController
 
   def show
     @match = Match.find(params[:id])
-    @leg = @match.current_leg || @match.legs.create!
-    @turn = @leg.current_turn || @leg.turns.create!(
-      player: @match.players.first
-  )
+    return if @match.finished?
+
+    @leg  = @match.ensure_current_leg!
+    @turn = @leg.ensure_current_turn!
+    @leg_player = @leg.leg_players.find_by!(player: @turn.player)
   end
 
   def create

@@ -9,31 +9,37 @@ class Turn < ApplicationRecord
     leg.leg_players.find_by!(player: player)
   end
 
-  def apply_throw!(throw)
-    lp = leg_player
-    starting_score = lp.score
-    new_score = starting_score - throw.points
+def apply_throw!(throw)
+  lp = leg_player
+  starting_score = lp.score
+  new_score = starting_score - throw.points
 
-    if new_score < 0 || new_score == 1
-      complete_turn!
-      return
-    end
-
-    if new_score == 0
-      if throw.double?
-        lp.update!(score: 0)
-        complete_turn!
-        leg.finish!(player)
-      else
-        complete_turn!
-      end
-      return
-    end
-
-    lp.update!(score: new_score)
-
-    complete_turn! if throws.count >= MAX_THROWS
+  # BUST
+  if new_score < 0 || new_score == 1
+    lp.update!(score: starting_score) # restore
+    complete_turn!
+    return
   end
+
+  # FINISH
+  if new_score == 0
+    if throw.double?
+      lp.update!(score: 0)
+      leg.finish!
+    else
+      lp.update!(score: starting_score) # invalid finish = bust
+    end
+
+    complete_turn!
+    return
+  end
+
+  # NORMAL THROW
+  lp.update!(score: new_score)
+
+  # End turn after 3 throws
+  complete_turn! if throws.count >= MAX_THROWS
+end
 
   def completed?
     completed_at.present?
