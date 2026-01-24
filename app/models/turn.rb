@@ -27,17 +27,15 @@ def apply_throw!(throw)
       lp.update!(score: 0)
       leg.finish!
     else
-      lp.update!(score: starting_score) # invalid finish = bust
+      lp.update!(score: starting_score)
     end
 
     complete_turn!
     return
   end
 
-  # NORMAL THROW
   lp.update!(score: new_score)
 
-  # End turn after 3 throws
   complete_turn! if throws.count >= MAX_THROWS
 end
 

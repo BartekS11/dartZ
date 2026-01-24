@@ -12,12 +12,3 @@
 </li>
 <% end %>
 </ul>
-<h1>Your Matches</h1>
-<%= button_to "New Match", matches_path, method: :post %>
-<ul>
-<% if @matches.present? %>
-  <% @matches.each do |match| %>
-<li><%= link_to "Match ##{match.id}", match %></li>
-  <% end %>
-<% end %>
-</ul>
