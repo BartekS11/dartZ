@@ -1,4 +1,6 @@
 class Match < ApplicationRecord
+  include MatchLifecycle
+
   has_many :players, dependent: :destroy
   has_many :legs, dependent: :destroy
 
@@ -37,10 +39,6 @@ class Match < ApplicationRecord
     legs.where(finished_at: nil).order(:created_at).last
   end
 
-  def finished?
-    legs.exists? && legs.all?(&:finished_at)
-  end
-
   def current_player
     current_leg&.current_turn&.player
   end
@@ -54,13 +52,5 @@ class Match < ApplicationRecord
   def score_for(player)
     return 501 unless current_leg
     current_leg.leg_players.find_by(player: player)&.score || 501
-  end
-
-  def finished?
-    finished_at.present?
-  end
-
-  def finish!
-    update!(finished_at: Time.current)
   end
 end

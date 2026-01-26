@@ -1,4 +1,6 @@
 class Leg < ApplicationRecord
+  include LegFlow
+
   belongs_to :match
   has_many :leg_players, dependent: :destroy
   has_many :players, through: :leg_players
