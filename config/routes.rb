@@ -9,6 +9,6 @@ Rails.application.routes.draw do
   resources :turns, only: [] do
     resources :throws, only: :create
   end
-
+  get "matches/:id/throws", to: "matches#throws", as: :matches_throws
   get "up" => "rails/health#show", as: :rails_health_check
 end

@@ -1,0 +1,35 @@
+<div
+  class="mt-4"
+  data-controller="throws">
+
+  <h3 class="font-semibold">
+    <%= player.display_name %>
+  </h3>
+
+  <div data-throws-target="recent">
+    <% match.last_throws_for(player, limit: 3).each do |throw| %>
+      <div class="text-sm text-slate-300">
+        <%= throw.multiplier.capitalize %> <%= throw.segment %>
+        (<%= throw.points %>)
+      </div>
+    <% end %>
+  </div>
+
+  <div
+    data-throws-target="all"
+    class="hidden mt-2">
+    <% match.last_throws_for(player).each do |throw| %>
+      <div class="text-sm text-slate-400">
+        <%= throw.multiplier.capitalize %> <%= throw.segment %>
+        (<%= throw.points %>)
+      </div>
+    <% end %>
+  </div>
+
+  <button
+    data-action="click->throws#toggle"
+    class="text-xs underline mt-1 text-slate-400">
+    Show all
+  </button>
+</div>
+

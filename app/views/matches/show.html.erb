@@ -19,6 +19,12 @@
   </div>
 <% end %>
 
+<% @players.each do |player| %>
+  <%= render "matches/player_panel",
+        player: player,
+        match: @match %>
+<% end %>
+
 <div class="bg-gradient-to-br from-slate-800 to-slate-900
             border border-slate-700 rounded-2xl p-6 mb-6
             shadow-lg">

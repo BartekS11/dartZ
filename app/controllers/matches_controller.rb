@@ -8,6 +8,7 @@ class MatchesController < ApplicationController
 
   def show
     @match = Match.find(params[:id])
+    @players = @match.players
     return if @match.finished?
 
     @leg  = @match.ensure_current_leg!
@@ -28,5 +29,11 @@ class MatchesController < ApplicationController
   )
 
     redirect_to match
+  end
+
+  def throws
+    @match  = Match.find(params[:id])
+    @player = @match.players.find(params[:player_id])
+    @throws = @match.all_throws_for(@player)
   end
 end

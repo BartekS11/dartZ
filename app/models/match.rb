@@ -1,8 +1,11 @@
 class Match < ApplicationRecord
   include MatchLifecycle
+  include HasThrowHistory
 
   has_many :players, dependent: :destroy
   has_many :legs, dependent: :destroy
+  has_many :turns, through: :legs
+  has_many :throws, through: :turns
 
   def winner
     return nil unless finished?
