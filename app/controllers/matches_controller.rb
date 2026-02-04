@@ -21,11 +21,11 @@ class MatchesController < ApplicationController
 
     match.players.create!(
     user: Current.user,
-    name: "You"
+    name: Current.user.email_address
     )
 
     match.players.create!(
-      name: "Guest"
+     name: "Guest"
   )
 
     redirect_to match
