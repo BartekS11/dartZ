@@ -7,6 +7,7 @@ class ThrowsController < ApplicationController
 
     respond_to do |format|
       format.turbo_stream
+      format.html { redirect_to @turn.leg.match }
     end
   end
 

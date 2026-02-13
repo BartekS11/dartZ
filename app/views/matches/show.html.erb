@@ -51,7 +51,20 @@
   <%= @match.score_for(@match.current_player) %>
 </p>
 
-<% if @match.finished? %>
+<%= form_with url: turn_throws_path(@turn),
+              method: :post,
+              data: { turbo_stream: true },
+              html: { id: "keyboard-form" } do |f| %>
+  <%= f.hidden_field :segment, name: "throw[segment]", id: "keyboard-segment" %>
+  <%= f.hidden_field :multiplier, name: "throw[multiplier]", id: "keyboard-multiplier" %>
+<% end %>
+
+<input type="text" 
+       data-controller="keyboard"
+       data-keyboard-url-value="<%= turn_throws_path(@turn) %>"
+       data-keyboard-target="input"
+       data-action="keydown->keyboard#handle" 
+       placeholder="Enter throw (e.g. 20, d20, t20, b, db)"><% if @match.finished? %>
 
 <div class="bg-green-700/20 border border-green-600
             text-green-300 p-6 rounded-2xl
