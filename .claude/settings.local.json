@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(rails test:*)",
+      "Bash(bin/rails:*)"
+    ]
+  }
+}
