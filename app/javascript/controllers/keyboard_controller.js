@@ -10,7 +10,6 @@ export default class extends Controller {
   handle(event) {
     if (event.key !== "Enter") return
     event.preventDefault()
-    console.log("enter")
 
     const value = this.inputTarget.value.trim().toLowerCase()
     if (!value) return
