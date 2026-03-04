@@ -1,4 +1,6 @@
 class MatchesController < ApplicationController
+  rescue_from ActiveRecord::RecordNotFound, with: :match_not_found
+
   def index
     @matches = Match
       .joins(:players)
@@ -35,5 +37,11 @@ class MatchesController < ApplicationController
     @match  = Match.find(params[:id])
     @player = @match.players.find(params[:player_id])
     @throws = @match.all_throws_for(@player)
+  end
+
+  private
+
+  def match_not_found
+    redirect_to matches_path, alert: "Match not found"
   end
 end
