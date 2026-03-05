@@ -14,7 +14,7 @@ class Throw < ApplicationRecord
   }
 
   def points
-    segment* self.class.multipliers.fetch(multiplier)
+    segment * self.class.multipliers.fetch(multiplier)
   end
 
   private

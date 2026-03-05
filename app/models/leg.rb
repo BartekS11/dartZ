@@ -15,10 +15,6 @@ class Leg < ApplicationRecord
     start_next_turn!
   end
 
-  def current_turn
-    turns.order(:created_at).last
-  end
-
   def start_first_turn!
     turns.create!(player: first_player)
   end
