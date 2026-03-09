@@ -23,7 +23,6 @@ class Match < ApplicationRecord
     start_first_leg!
   end
 
-
   def start_first_leg!
     leg = legs.create!
 
@@ -38,6 +37,7 @@ class Match < ApplicationRecord
     leg.start_first_turn!
     leg
   end
+
   def current_leg
     legs.where(finished_at: nil).order(:created_at).last
   end
@@ -55,5 +55,15 @@ class Match < ApplicationRecord
   def score_for(player)
     return 501 unless current_leg
     current_leg.leg_players.find_by(player: player)&.score || 501
+  end
+
+  def subtract_score!(player, points)
+    current = score_for(player)
+    new_score = current - points
+
+    # Escape on bulk
+    return if new_score < 0
+
+    update_score_for(player, new_score)
   end
 end

@@ -1,11 +1,49 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
+  static targets = ["input", "score"]
+  static values = { url: String, score: Number, playerId: Number }
+
   connect() {
-    this.currentThrows = [] 
+    this.currentScore = this.scoreValue
+    this.throwStack = []
+    this.boundSync = this.syncScoreFromDOM.bind(this)
+    document.addEventListener("turbo:morph", this.boundSync)
+    document.addEventListener("turbo:frame-render", this.boundSync)
   }
-  static targets = ["input"]
-  static values = { url: String }
+
+  disconnect() {
+    document.removeEventListener("turbo:morph", this.boundSync)
+    document.removeEventListener("turbo:frame-render", this.boundSync)
+  }
+
+  syncScoreFromDOM() {
+    // Read from the server-rendered player score span, not the preview target
+    const serverScoreEl = document.getElementById(`player-${this.playerIdValue}-score`)
+    if (serverScoreEl) {
+      const parsed = parseInt(serverScoreEl.textContent.trim(), 10)
+      if (!isNaN(parsed)) {
+        this.currentScore = parsed
+        this.scoreTarget.textContent = parsed  // keep the big display in sync too
+      }
+    }
+  }
+
+  preview() {
+    const value = this.inputTarget.value.trim().toLowerCase()
+    if (!value) {
+      this.scoreTarget.textContent = this.currentScore
+      return
+    }
+    const parsed = this.parseInput(value)
+    if (!parsed) {
+      this.scoreTarget.textContent = this.currentScore
+      return
+    }
+    const points = this.calculatePoints(parsed)
+    const previewScore = this.currentScore - points
+    this.scoreTarget.textContent = previewScore >= 0 ? previewScore : this.currentScore
+  }
 
   handle(event) {
     if (event.key !== "Enter") return
@@ -15,19 +53,43 @@ export default class extends Controller {
     if (!value) return
 
     const parsed = this.parseInput(value)
-    if (!parsed) {
-      alert("Invalid throw. Use 20, d20, t20, b, db")
-      return
-    }
+    if (!parsed) return
 
-    this.currentThrows.push(parsed)
-    this.submitThrow(parsed)
+    const points = this.calculatePoints(parsed)
+    const newScore = this.currentScore - points
+    if (newScore < 0) return  // bust — don't submit
+
+    // Optimistic UI update — also update currentScore immediately
+    // so the next throw calculates from the correct base
+    this.currentScore = newScore
+    this.scoreTarget.textContent = newScore
+    this.throwStack.push({ parsed, points })
     this.inputTarget.value = ""
 
-    if (this.currentThrows.length >= 3) {
-      alert("Turn complete! Entered 3 throws.")
-      this.currentThrows = []
-    }
+    this.submitThrow(parsed)
+  }
+
+  undoLastThrow() {
+    if (!this.throwStack.length) return
+    const { parsed, points } = this.throwStack.pop()
+    this.currentScore += points
+    this.scoreTarget.textContent = this.currentScore
+
+    fetch(`${this.urlValue}/undo`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]').content
+      },
+      body: JSON.stringify({ throw: parsed })
+    })
+  }
+
+  calculatePoints(data) {
+    if (data.segment === 25) return data.multiplier === "double" ? 50 : 25
+    if (data.multiplier === "double") return data.segment * 2
+    if (data.multiplier === "triple") return data.segment * 3
+    return data.segment
   }
 
   parseInput(value) {
@@ -40,23 +102,19 @@ export default class extends Controller {
     if (value.startsWith("d")) {
       multiplier = "double"
       segment = value.slice(1)
-    }
-
-    if (value.startsWith("t")) {
+    } else if (value.startsWith("t")) {
       multiplier = "triple"
       segment = value.slice(1)
     }
 
     const number = parseInt(segment, 10)
     if (isNaN(number) || number < 1 || number > 20) return null
-
     return { segment: number, multiplier }
   }
 
   submitThrow(data) {
     document.getElementById("keyboard-segment").value = data.segment
     document.getElementById("keyboard-multiplier").value = data.multiplier
-
     document.getElementById("keyboard-form").requestSubmit()
   }
 }

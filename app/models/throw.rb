@@ -19,7 +19,6 @@ class Throw < ApplicationRecord
 
   private
 
-
   def max_three_throws
     return unless turn
     return if persisted?

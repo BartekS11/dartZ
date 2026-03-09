@@ -1,19 +1,18 @@
 <turbo-frame id="match">
   <% if @match.finished? %>
     <%= render "game_over", match: @match %>
-  <% else %>
   <% end %>
 </turbo-frame>
 
 <div class="flex items-center justify-between mb-6">
-<h2 class="text-2xl font-semibold">Match <%= @match.id %></h2>
-<%= link_to "← Back", matches_path, class: "text-slate-400 hover:underline" %>
+  <h2 class="text-2xl font-semibold">Match <%= @match.id %></h2>
+  <%= link_to "← Back", matches_path, class: "text-slate-400 hover:underline" %>
 </div>
 
 <% @match.players.each do |player| %>
   <div class="flex justify-between items-center">
     <span><%= player.display_name %></span>
-    <span class="text-2xl font-mono">
+    <span id="player-<%= player.id %>-score" class="text-2xl font-mono">
       <%= @match.score_for(player) %>
     </span>
   </div>
@@ -28,28 +27,51 @@
 <div class="bg-gradient-to-br from-slate-800 to-slate-900
             border border-slate-700 rounded-2xl p-6 mb-6
             shadow-lg">
+
   <p class="text-xs uppercase tracking-widest text-slate-400">
     Remaining
   </p>
-<div class="flex gap-4 mb-6">
-  <% @match.players.each do |player| %>
-<div class="px-4 py-2 rounded-xl border
-  <%= player == @match.current_player ?
-      'bg-blue-600 text-white border-blue-400 scale-105' :
-      'bg-slate-800 text-slate-300 border-slate-700' %>
-">
-      <%= player.display_name %>
-      <% if player.guest? %>
-        <span class="text-xs opacity-70">(guest)</span>
-      <% end %>
-    </div>
-  <% end %>
+
+  <div class="flex gap-4 mb-6">
+    <% @match.players.each do |player| %>
+      <div class="px-4 py-2 rounded-xl border
+        <%= player == @match.current_player ?
+            'bg-blue-600 text-white border-blue-400 scale-105' :
+            'bg-slate-800 text-slate-300 border-slate-700' %>">
+        <%= player.display_name %>
+        <% if player.guest? %>
+          <span class="text-xs opacity-70">(guest)</span>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+
+  <div
+    data-controller="keyboard"
+    data-keyboard-url-value="<%= turn_throws_path(@turn) %>"
+    data-keyboard-score-value="<%= @match.score_for(@match.current_player) %>"
+    data-keyboard-player-id-value="<%= @match.current_player.id %>">
+
+    <p
+      data-keyboard-target="score"
+      class="text-6xl font-extrabold text-green-400 tabular-nums">
+      <%= @match.score_for(@match.current_player) %>
+    </p>
+
+    <input type="text"
+           data-keyboard-target="input"
+           data-action="input->keyboard#preview keydown->keyboard#handle"
+           placeholder="Enter throw (e.g. 20, d20, t20, b, db)"
+           class="mt-4 bg-slate-800 px-3 py-2 rounded w-full"
+           autocomplete="off">
+  </div>
+
+  <button type="button"
+          data-action="click->keyboard#undoLastThrow"
+          class="mt-2 px-3 py-1 bg-yellow-500 text-black rounded">
+    Undo Last Throw
+  </button>
 </div>
-</div>
-<p id="score"
-   class="text-6xl font-extrabold text-green-400 tabular-nums">
-  <%= @match.score_for(@match.current_player) %>
-</p>
 
 <%= form_with url: turn_throws_path(@turn),
               method: :post,
@@ -59,39 +81,38 @@
   <%= f.hidden_field :multiplier, name: "throw[multiplier]", id: "keyboard-multiplier" %>
 <% end %>
 
-<input type="text" 
-       data-controller="keyboard"
-       data-keyboard-url-value="<%= turn_throws_path(@turn) %>"
-       data-keyboard-target="input"
-       data-action="keydown->keyboard#handle" 
-       placeholder="Enter throw (e.g. 20, d20, t20, b, db)"><% if @match.finished? %>
+<% unless @match.finished? %>
 
-<div class="bg-green-700/20 border border-green-600
-            text-green-300 p-6 rounded-2xl
-            text-center text-xl font-semibold">
-  🎯 Leg Finished!
-</div>
+  <h3 class="text-lg font-semibold mb-3">Throw darts</h3>
+
+  <div class="grid grid-cols-5 gap-2">
+    <% (1..20).each do |n| %>
+      <div class="flex flex-col gap-1">
+        <% [:single, :double, :triple].each do |m| %>
+          <% color = m == :double ? 'bg-red-600' :
+             m == :triple ? 'bg-blue-600' :
+             'bg-slate-600' %>
+          <%= button_to "#{m.to_s[0].upcase}#{n}",
+            turn_throws_path(@turn),
+            params: { throw: { segment: n, multiplier: m } },
+            method: :post,
+            form: { data: { turbo_stream: true } },
+            class: "#{color} hover:opacity-90 text-white text-sm py-2 rounded w-full" %>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+
+  <p class="mt-4 text-sm text-slate-400">
+    Bust resets score • Finish on a <strong>double</strong>
+  </p>
 
 <% else %>
-<h3 class="text-lg font-semibold mb-3">Throw darts</h3>
 
+  <div class="bg-green-700/20 border border-green-600
+              text-green-300 p-6 rounded-2xl
+              text-center text-xl font-semibold">
+    Leg Finished!
+  </div>
 
-<div class="grid grid-cols-5 gap-2">
-<% (1..20).each do |n| %>
-<% [:single, :double, :triple].each do |m| %>
-<% color = m == :double ? 'bg-red-600' : m == :triple ? 'bg-blue-600' : 'bg-slate-600' %>
-<%= button_to "#{m.to_s[0].upcase}#{n}",
-turn_throws_path(@turn),
-params: { throw: { segment: n, multiplier: m } },
-method: :post,
-form: { data: { turbo_stream: true } },
-class: "#{color} hover:opacity-90 text-white text-sm py-2 rounded" %>
-<% end %>
-<% end %>
-</div>
-
-
-<p class="mt-4 text-sm text-slate-400">
-Bust resets score • Finish on a <strong>double</strong>
-</p>
 <% end %>
