@@ -1,31 +1,188 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>DartMatch</title>
-<%= csrf_meta_tags %>
-<%= csp_meta_tag %>
+  <title>DartZ</title>
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
   <%= javascript_importmap_tags %>
-    <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
-<%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+  <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
+  <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      background-color: #0a0a0a;
+      background-image:
+        radial-gradient(circle at 10% 20%, rgba(185,28,28,0.08) 0%, transparent 45%),
+        radial-gradient(circle at 90% 80%, rgba(185,28,28,0.05) 0%, transparent 40%),
+        repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,255,255,0.015) 39px, rgba(255,255,255,0.015) 40px),
+        repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255,255,255,0.015) 39px, rgba(255,255,255,0.015) 40px);
+      background-attachment: fixed;
+      min-height: 100vh;
+      font-family: 'DM Sans', sans-serif;
+      color: #f5f5f5;
+    }
+
+    .bebas { font-family: 'Bebas Neue', sans-serif; }
+    .mono  { font-family: 'DM Mono', monospace; }
+
+    /* Header */
+    .site-header {
+      background: rgba(10,10,10,0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid #1f1f1f;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .site-header::after {
+      content: '';
+      display: block;
+      height: 1px;
+      background: linear-gradient(90deg, transparent 0%, #dc2626 30%, #dc2626 70%, transparent 100%);
+      opacity: 0.4;
+    }
+
+    /* Logo */
+    .logo-mark {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .logo-icon {
+      width: 28px;
+      height: 28px;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    /* Dartboard SVG rings */
+    .logo-text {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.5rem;
+      letter-spacing: 0.08em;
+      color: #f5f5f5;
+      line-height: 1;
+    }
+
+    .logo-text span { color: #dc2626; }
+
+    /* Nav */
+    .nav-email {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      color: #555;
+      letter-spacing: 0.05em;
+    }
+
+    .btn-logout {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      background: transparent;
+      border: 1px solid #dc2626;
+      color: #dc2626;
+      padding: 4px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .btn-logout:hover {
+      background: #dc2626;
+      color: #fff;
+      box-shadow: 0 0 12px rgba(220,38,38,0.3);
+    }
+
+    .btn-login {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      color: #dc2626;
+      letter-spacing: 0.08em;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(220,38,38,0.3);
+      transition: border-color 0.15s ease;
+    }
+
+    .btn-login:hover { border-color: #dc2626; }
+
+    /* Flash messages */
+    .flash {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.8rem;
+      letter-spacing: 0.05em;
+      padding: 10px 16px;
+      border-radius: 6px;
+      margin-bottom: 1.5rem;
+    }
+
+    .flash-notice {
+      background: rgba(34,197,94,0.08);
+      border: 1px solid rgba(34,197,94,0.25);
+      color: #86efac;
+    }
+
+    .flash-alert {
+      background: rgba(220,38,38,0.08);
+      border: 1px solid rgba(220,38,38,0.25);
+      color: #fca5a5;
+    }
+  </style>
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen">
-<header class="bg-slate-800 border-b border-slate-700">
-<div class="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center">
-<h1 class="font-bold tracking-wide">DartMatch</h1>
-<nav class="text-sm">
-<% if Current.user %>
-<span class="text-slate-300 mr-3"><%= Current.user.email_address %></span>
-<%= button_to "Logout", session_path, method: :delete, class: "bg-red-600 hover:bg-red-500 px-3 py-1 rounded" %>
-<% else %>
-<%= link_to "Login", new_session_path, class: "underline" %>
-<% end %>
-</nav>
-</div>
-</header>
 
+<body>
 
-<main class="max-w-5xl mx-auto px-4 py-6">
-<%= yield %>
-</main>
+  <header class="site-header">
+    <div class="max-w-4xl mx-auto px-4 py-3 flex justify-between items-center">
+
+      <%# Logo %>
+      <%= link_to root_path, class: "logo-mark" do %>
+        <svg class="logo-icon" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="14" cy="14" r="13" stroke="#333" stroke-width="1"/>
+          <circle cx="14" cy="14" r="9"  stroke="#444" stroke-width="1"/>
+          <circle cx="14" cy="14" r="5"  stroke="#dc2626" stroke-width="1"/>
+          <circle cx="14" cy="14" r="2"  fill="#dc2626"/>
+          <line x1="14" y1="1"  x2="14" y2="5"  stroke="#555" stroke-width="1"/>
+          <line x1="14" y1="23" x2="14" y2="27" stroke="#555" stroke-width="1"/>
+          <line x1="1"  y1="14" x2="5"  y2="14" stroke="#555" stroke-width="1"/>
+          <line x1="23" y1="14" x2="27" y2="14" stroke="#555" stroke-width="1"/>
+        </svg>
+        <span class="logo-text">Dart<span>Z</span></span>
+      <% end %>
+
+      <%# Nav %>
+      <nav class="flex items-center gap-4">
+        <% if Current.user %>
+          <span class="nav-email hidden sm:block"><%= Current.user.email_address %></span>
+          <%= button_to "LOGOUT", session_path, method: :delete, class: "btn-logout" %>
+        <% else %>
+          <%= link_to "LOGIN â†’", new_session_path, class: "btn-login" %>
+        <% end %>
+      </nav>
+
+    </div>
+  </header>
+
+  <main class="max-w-4xl mx-auto px-4 py-8">
+
+    <%# Flash messages %>
+    <% if notice %>
+      <div class="flash flash-notice">âš¡ <%= notice %></div>
+    <% end %>
+    <% if alert %>
+      <div class="flash flash-alert">âš  <%= alert %></div>
+    <% end %>
+
+    <%= yield %>
+
+  </main>
+
 </body>
 </html>

@@ -1,0 +1,20 @@
+<% is_active = player == match.current_player %>
+<div id="score-card-<%= player.id %>"
+     class="score-card rounded-xl p-5 <%= is_active ? 'active-player' : '' %>">
+  <p class="text-zinc-500 text-xs mono tracking-widest mb-1 uppercase">
+    <%= player.display_name %>
+    <% if player.guest? %>
+      <span class="text-zinc-700">(guest)</span>
+    <% end %>
+  </p>
+  <p id="player-<%= player.id %>-score"
+     class="score-display <%= is_active ? 'active-player' : '' %>">
+    <%= match.score_for(player) %>
+  </p>
+  <div class="mt-2 h-0.5 rounded-full overflow-hidden bg-zinc-800">
+    <div id="player-<%= player.id %>-progress"
+         class="h-full bg-red-700 rounded-full transition-all duration-500"
+         style="width: <%= [(501 - match.score_for(player)) * 100 / 501, 0].max %>%">
+    </div>
+  </div>
+</div>

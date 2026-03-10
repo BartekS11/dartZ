@@ -4,31 +4,28 @@ export default class extends Controller {
   static targets = ["input", "score"]
   static values = { url: String, score: Number, playerId: Number }
 
-  connect() {
-    this.currentScore = this.scoreValue
-    this.throwStack = []
-    this.boundSync = this.syncScoreFromDOM.bind(this)
-    document.addEventListener("turbo:morph", this.boundSync)
-    document.addEventListener("turbo:frame-render", this.boundSync)
-  }
+connect() {
+  this.currentScore = this.scoreValue
+  this.throwStack = []
+  this.boundSync = this.syncScoreFromDOM.bind(this)
+  document.addEventListener("turbo:before-stream-render", this.boundSync)
+}
 
-  disconnect() {
-    document.removeEventListener("turbo:morph", this.boundSync)
-    document.removeEventListener("turbo:frame-render", this.boundSync)
-  }
-
-  syncScoreFromDOM() {
-    // Read from the server-rendered player score span, not the preview target
+disconnect() {
+  document.removeEventListener("turbo:before-stream-render", this.boundSync)
+}
+syncScoreFromDOM() {
+  // Small delay to let turbo finish updating the DOM
+  setTimeout(() => {
     const serverScoreEl = document.getElementById(`player-${this.playerIdValue}-score`)
-    if (serverScoreEl) {
-      const parsed = parseInt(serverScoreEl.textContent.trim(), 10)
-      if (!isNaN(parsed)) {
-        this.currentScore = parsed
-        this.scoreTarget.textContent = parsed  // keep the big display in sync too
-      }
+    if (!serverScoreEl) return
+    const parsed = parseInt(serverScoreEl.textContent.trim(), 10)
+    if (!isNaN(parsed)) {
+      this.currentScore = parsed
+      this.scoreTarget.textContent = parsed
     }
-  }
-
+  }, 50)
+}
   preview() {
     const value = this.inputTarget.value.trim().toLowerCase()
     if (!value) {

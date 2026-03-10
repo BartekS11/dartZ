@@ -1,24 +1,167 @@
-<div class="flex items-center justify-center min-h-screen bg-slate-900 text-white">
-  <div class="text-center space-y-6">
-    <h1 class="text-4xl font-bold text-green-400">
-      🎯 Game Over
-    </h1>
+<style>
+  @keyframes flicker {
+    0%, 100% { opacity: 1; }
+    92% { opacity: 1; }
+    93% { opacity: 0.4; }
+    94% { opacity: 1; }
+    96% { opacity: 0.6; }
+    97% { opacity: 1; }
+  }
 
-    <p class="text-2xl">
-      <strong><%= match.winner.display_name %></strong> wins!
-    </p>
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
 
-    <p class="text-slate-400">
-      Finished at <%= match.finished_at.strftime("%H:%M") %>
-    </p>
+  @keyframes glow-pulse {
+    0%, 100% { box-shadow: 0 0 30px rgba(220,38,38,0.3), 0 0 60px rgba(220,38,38,0.1); }
+    50%       { box-shadow: 0 0 50px rgba(220,38,38,0.5), 0 0 100px rgba(220,38,38,0.2); }
+  }
 
-    <div class="flex justify-center gap-4 mt-6">
-      <%= link_to "New Match",
-      matches_path,
-      data: { turbo_method: :post },
-      class: "px-6 py-3 bg-green-500 rounded-lg text-black font-semibold" %>
-      <%= link_to "Back to Matches", matches_path,
-            class: "px-6 py-3 bg-slate-700 rounded-lg" %>
+  .game-over-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(4rem, 12vw, 8rem);
+    line-height: 0.9;
+    letter-spacing: 0.04em;
+    color: #dc2626;
+    animation: flicker 4s infinite, rise 0.6s ease both;
+  }
+
+  .winner-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2rem, 6vw, 3.5rem);
+    letter-spacing: 0.06em;
+    color: #f5f5f5;
+    animation: rise 0.6s 0.15s ease both;
+    opacity: 0;
+  }
+
+  .winner-card {
+    display: inline-block;
+    border: 1px solid #dc2626;
+    border-radius: 12px;
+    padding: 1.5rem 3rem;
+    position: relative;
+    animation: rise 0.6s 0.3s ease both, glow-pulse 3s 1s ease-in-out infinite;
+    opacity: 0;
+    background: linear-gradient(135deg, #140a0a, #1c1010);
+  }
+
+  .winner-card::before {
+    content: 'WINNER';
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    color: #dc2626;
+    background: #0a0a0a;
+    padding: 0 10px;
+  }
+
+  .finish-time {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    color: #444;
+    letter-spacing: 0.1em;
+    animation: rise 0.6s 0.45s ease both;
+    opacity: 0;
+  }
+
+  .btn-new-match {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.1rem;
+    letter-spacing: 0.1em;
+    background: #dc2626;
+    color: #fff;
+    border: 1px solid #ef4444;
+    padding: 12px 32px;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: all 0.15s ease;
+    animation: rise 0.6s 0.6s ease both;
+    opacity: 0;
+    display: inline-block;
+  }
+
+  .btn-new-match:hover {
+    background: #ef4444;
+    box-shadow: 0 0 24px rgba(220,38,38,0.4);
+    transform: translateY(-2px);
+  }
+
+  .btn-back {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    color: #555;
+    text-decoration: none;
+    border-bottom: 1px solid #333;
+    transition: color 0.15s ease, border-color 0.15s ease;
+    animation: rise 0.6s 0.7s ease both;
+    opacity: 0;
+    display: inline-block;
+  }
+
+  .btn-back:hover { color: #888; border-color: #555; }
+
+  .dartboard-bg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: min(500px, 90vw);
+    height: min(500px, 90vw);
+    opacity: 0.04;
+    pointer-events: none;
+  }
+</style>
+
+<div class="relative flex items-center justify-center min-h-screen overflow-hidden">
+
+  <%# Giant faded dartboard watermark %>
+  <svg class="dartboard-bg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="50" cy="50" r="49" stroke="#dc2626" stroke-width="0.5"/>
+    <circle cx="50" cy="50" r="40" stroke="#dc2626" stroke-width="0.5"/>
+    <circle cx="50" cy="50" r="30" stroke="#dc2626" stroke-width="0.5"/>
+    <circle cx="50" cy="50" r="20" stroke="#dc2626" stroke-width="0.5"/>
+    <circle cx="50" cy="50" r="10" stroke="#dc2626" stroke-width="1"/>
+    <circle cx="50" cy="50" r="4"  fill="#dc2626"/>
+    <% (0..19).each do |i| %>
+      <line
+        x1="50" y1="50"
+        x2="<%= 50 + 49 * Math.sin(i * Math::PI / 10) %>"
+        y2="<%= 50 - 49 * Math.cos(i * Math::PI / 10) %>"
+        stroke="#dc2626" stroke-width="0.3"/>
+    <% end %>
+  </svg>
+
+  <%# Content %>
+  <div class="relative text-center space-y-8 px-6">
+
+    <div>
+      <p class="mono text-red-800 text-xs tracking-widest mb-2">G A M E &nbsp; O V E R</p>
+      <h1 class="game-over-title">DART<span style="color:#f5f5f5">Z</span></h1>
     </div>
+
+    <div class="winner-card">
+      <p class="winner-name"><%= match.winner.display_name %></p>
+      <p class="mono text-zinc-600 text-xs tracking-widest mt-1">TAKES THE LEG</p>
+    </div>
+
+    <p class="finish-time">
+      FINISHED AT &nbsp;<%= match.finished_at.strftime("%H:%M") %>
+    </p>
+
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mt-4">
+      <%= link_to "NEW MATCH", matches_path,
+            data: { turbo_method: :post },
+            class: "btn-new-match" %>
+      <%= link_to "BACK TO MATCHES", matches_path,
+            class: "btn-back" %>
+    </div>
+
   </div>
 </div>

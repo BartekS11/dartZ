@@ -1,37 +1,184 @@
-<div
-  class="mt-4"
-  data-controller="throws">
+<style>
+  .throw-row {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 0;
+    border-bottom: 1px solid #1a1a1a;
+  }
+  .throw-row:last-child { border-bottom: none; }
 
-  <h3 class="font-semibold">
-    <%= player.display_name %>
-  </h3>
+  .throw-multiplier {
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
+    padding: 2px 6px;
+    border-radius: 3px;
+    min-width: 42px;
+    text-align: center;
+  }
 
-  <div data-throws-target="recent">
-    <% match.last_throws_for(player, limit: 3).each do |throw| %>
-      <div class="text-sm text-slate-300">
-        <%= throw.multiplier.capitalize %> <%= throw.segment %>
-        (<%= throw.points %>)
-      </div>
-    <% end %>
+  .mult-single { background: #1e1e1e; color: #666; border: 1px solid #2a2a2a; }
+  .mult-double { background: #7f1d1d; color: #fca5a5; border: 1px solid #991b1b; }
+  .mult-triple { background: #1e3a5f; color: #93c5fd; border: 1px solid #1d4ed8; }
+
+  .throw-segment { color: #d4d4d4; }
+
+  .throw-points {
+    margin-left: auto;
+    color: #555;
+    font-size: 0.7rem;
+  }
+  .throw-points.high { color: #dc2626; }
+
+  .player-panel {
+    background: linear-gradient(135deg, #111, #161616);
+    border: 1px solid #222;
+    border-radius: 10px;
+    margin-bottom: 0.75rem;
+    overflow: hidden;
+  }
+
+  .player-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    border-bottom: 1px solid #1a1a1a;
+    transition: background 0.15s ease;
+  }
+
+  .player-panel-header:hover { background: rgba(220,38,38,0.04); }
+
+  .player-panel-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1rem;
+    letter-spacing: 0.08em;
+    color: #888;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .player-panel-name::before {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #dc2626;
+    opacity: 0.4;
+  }
+
+  .panel-toggle-icon {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    color: #444;
+    letter-spacing: 0.1em;
+    transition: color 0.15s ease;
+  }
+
+  .player-panel-header:hover .panel-toggle-icon { color: #dc2626; }
+
+  .player-panel-body {
+    padding: 0.5rem 1rem 0.75rem;
+  }
+
+  .throws-section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    color: #333;
+    text-transform: uppercase;
+    padding: 6px 0 4px;
+  }
+
+  .throw-row-older { opacity: 0.5; }
+
+  .btn-show-all {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+    color: #3a3a3a;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 6px 0 2px;
+    transition: color 0.15s ease;
+    width: 100%;
+    text-align: left;
+  }
+
+  .btn-show-all:hover { color: #dc2626; }
+</style>
+
+<% recent_throws = match.last_throws_for(player, limit: 3) %>
+<% all_throws    = match.all_throws_for(player) %>
+<% older_throws  = all_throws.offset(3) %>
+<% recent_sum    = recent_throws.sum(&:points) %>
+
+<div id="player-panel-<%= player.id %>" class="player-panel" data-controller="throws">
+
+  <div class="player-panel-header" data-action="click->throws#togglePanel">
+    <p class="player-panel-name"><%= player.display_name %></p>
+    <div class="flex items-center gap-3">
+      <% if recent_throws.any? %>
+        <span class="mono text-xs text-zinc-600">
+          <%= recent_throws.map { |t| "#{t.multiplier.upcase[0]}#{t.segment}" }.join(" · ") %>
+          <span class="text-zinc-500 ml-1">(+<%= recent_sum %>)</span>
+        </span>
+      <% end %>
+      <span class="panel-toggle-icon" data-throws-target="panelIcon">▼</span>
+    </div>
   </div>
+  <%# Panel body — hidden by default, shown on click %>
+  <div data-throws-target="panel" class="hidden">
+    <div class="player-panel-body">
 
-  <div
-    data-throws-target="all"
-    class="hidden mt-2">
-    <% match.last_throws_for(player).each do |throw| %>
-      <div class="text-sm text-slate-400">
-        <%= throw.multiplier.capitalize %> <%= throw.segment %>
-        (<%= throw.points %>)
-      </div>
-    <% end %>
+      <% if recent_throws.any? %>
+        <p class="throws-section-label">Recent</p>
+        <% recent_throws.each do |throw| %>
+          <div class="throw-row">
+            <span class="throw-multiplier mult-<%= throw.multiplier %>">
+              <%= throw.multiplier.upcase %>
+            </span>
+            <span class="throw-segment"><%= throw.segment %></span>
+            <span class="throw-points <%= throw.points >= 40 ? 'high' : '' %>">
+              +<%= throw.points %>
+            </span>
+          </div>
+        <% end %>
+      <% else %>
+        <p class="throws-section-label" style="color: #2a2a2a;">No throws yet</p>
+      <% end %>
+
+      <%# Older throws — hidden until "show older" clicked %>
+      <% if older_throws.any? %>
+        <div data-throws-target="all" class="hidden">
+          <p class="throws-section-label">Older</p>
+          <% older_throws.each do |throw| %>
+            <div class="throw-row throw-row-older">
+              <span class="throw-multiplier mult-<%= throw.multiplier %>">
+                <%= throw.multiplier.upcase %>
+              </span>
+              <span class="throw-segment"><%= throw.segment %></span>
+              <span class="throw-points <%= throw.points >= 40 ? 'high' : '' %>">
+                +<%= throw.points %>
+              </span>
+            </div>
+          <% end %>
+        </div>
+
+        <button type="button"
+                data-action="click->throws#toggle"
+                class="btn-show-all">
+          <span data-throws-target="label">▼ SHOW OLDER</span>
+        </button>
+      <% end %>
+
+    </div>
   </div>
-
-
-<button
-  type="button"
-  data-action="click->throws#toggle"
-  class="text-xs underline mt-1 text-slate-400">
-  Show all
-</button>
 
 </div>
