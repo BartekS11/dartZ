@@ -115,6 +115,14 @@
     color: #f59e0b;
     background: rgba(245,158,11,0.05);
   }
+
+  #mode-track {
+  transition: background 0.2s ease;
+}
+
+#mode-thumb {
+  transition: transform 0.2s ease;
+}
 </style>
 
 <%= turbo_stream_from "match_#{@match.id}" %>
