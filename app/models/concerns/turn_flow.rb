@@ -17,6 +17,27 @@ module TurnFlow
   def broadcast_turn_change!
     match = leg.match
     match.reload
+
+    if match.finished?
+      Turbo::StreamsChannel.broadcast_replace_to(
+        "match_#{match.id}",
+        target: "match",
+        partial: "matches/game_over",
+        locals: { match: match }
+      )
+
+      # Clear the keyboard and dart board
+      Turbo::StreamsChannel.broadcast_remove_to(
+        "match_#{match.id}",
+        target: "current-player"
+      )
+      Turbo::StreamsChannel.broadcast_remove_to(
+        "match_#{match.id}",
+        target: "dart-board"
+      )
+      return
+    end
+
     new_turn = match.current_leg.current_turn
 
     Turbo::StreamsChannel.broadcast_update_to(
@@ -33,7 +54,6 @@ module TurnFlow
       locals: { match: match, turn: new_turn }
     )
 
-    # Re-render each score card so active-player class swaps correctly
     match.players.each do |player|
       Turbo::StreamsChannel.broadcast_replace_to(
         "match_#{match.id}",

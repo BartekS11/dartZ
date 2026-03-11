@@ -133,6 +133,20 @@
 
       <% end %>
     </div>
+    <div class="mt-6 text-center">
+      <div class="flex items-center gap-3 mb-4">
+        <div class="flex-1 h-px bg-zinc-800"></div>
+        <span class="mono text-xs text-zinc-700 tracking-widest">OR</span>
+        <div class="flex-1 h-px bg-zinc-800"></div>
+      </div>
 
+      <%= link_to matches_path,
+            class: "block w-full py-3 px-6 rounded-lg border border-zinc-800 bg-zinc-900
+                    hover:border-zinc-700 hover:bg-zinc-800 transition-all duration-150 text-center" do %>
+        <span class="mono text-xs text-zinc-500 tracking-widest block mb-0.5">NO ACCOUNT NEEDED</span>
+        <span style="font-family: 'Bebas Neue', sans-serif; letter-spacing: 0.1em;"
+              class="text-white text-lg">PLAY AS GUEST →</span>
+      <% end %>
+    </div>
   </div>
 </div>

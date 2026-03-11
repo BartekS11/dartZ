@@ -10,11 +10,11 @@
     <% is_active = player == match.current_player %>
     <div class="flex-1 px-4 py-3 rounded-xl border transition-all duration-200
       <%= is_active ?
-          'bg-red-950/50 border-red-700 shadow-[0_0_20px_rgba(220,38,38,0.15)]' :
-          'bg-zinc-900/50 border-zinc-800' %>">
+          "bg-red-950/50 border-red-700 shadow-[0_0_20px_rgba(220,38,38,0.15)]" :
+          "bg-zinc-900/50 border-zinc-800" %>">
       <div class="flex items-center justify-between">
         <span class="mono text-xs tracking-widest uppercase
-          <%= is_active ? 'text-red-400' : 'text-zinc-600' %>">
+          <%= is_active ? "text-red-400" : "text-zinc-600" %>">
           <%= player.display_name %>
           <% if player.guest? %>
             <span class="opacity-50">(guest)</span>
@@ -27,7 +27,7 @@
           <span class="mono text-xs text-zinc-700">WAITING</span>
         <% end %>
       </div>
-      <p class="bebas text-2xl mt-1 <%= is_active ? 'text-red-400' : 'text-zinc-600' %>">
+      <p class="bebas text-2xl mt-1 <%= is_active ? "text-red-400" : "text-zinc-600" %>">
         <%= match.score_for(player) %>
       </p>
     </div>

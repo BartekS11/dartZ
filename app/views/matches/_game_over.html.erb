@@ -123,18 +123,18 @@
 
   <%# Giant faded dartboard watermark %>
   <svg class="dartboard-bg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="50" cy="50" r="49" stroke="#dc2626" stroke-width="0.5"/>
-    <circle cx="50" cy="50" r="40" stroke="#dc2626" stroke-width="0.5"/>
-    <circle cx="50" cy="50" r="30" stroke="#dc2626" stroke-width="0.5"/>
-    <circle cx="50" cy="50" r="20" stroke="#dc2626" stroke-width="0.5"/>
-    <circle cx="50" cy="50" r="10" stroke="#dc2626" stroke-width="1"/>
-    <circle cx="50" cy="50" r="4"  fill="#dc2626"/>
+    <circle cx="50" cy="50" r="49" stroke="#dc2626" stroke-width="0.5" />
+    <circle cx="50" cy="50" r="40" stroke="#dc2626" stroke-width="0.5" />
+    <circle cx="50" cy="50" r="30" stroke="#dc2626" stroke-width="0.5" />
+    <circle cx="50" cy="50" r="20" stroke="#dc2626" stroke-width="0.5" />
+    <circle cx="50" cy="50" r="10" stroke="#dc2626" stroke-width="1" />
+    <circle cx="50" cy="50" r="4" fill="#dc2626" />
     <% (0..19).each do |i| %>
       <line
         x1="50" y1="50"
         x2="<%= 50 + 49 * Math.sin(i * Math::PI / 10) %>"
         y2="<%= 50 - 49 * Math.cos(i * Math::PI / 10) %>"
-        stroke="#dc2626" stroke-width="0.3"/>
+        stroke="#dc2626" stroke-width="0.3" />
     <% end %>
   </svg>
 

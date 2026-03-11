@@ -16,7 +16,6 @@
   .bebas { font-family: 'Bebas Neue', sans-serif; }
   .mono  { font-family: 'DM Mono', monospace; }
 
-  /* Score cards */
   .score-card {
     background: linear-gradient(135deg, #141414, #1c1c1c);
     border: 1px solid #2a2a2a;
@@ -47,7 +46,6 @@
     50% { opacity: 0.3; }
   }
 
-  /* Big score display */
   .score-display {
     font-family: 'Bebas Neue', sans-serif;
     font-size: 6rem;
@@ -59,7 +57,6 @@
 
   .score-display.active-player { color: #ef4444; }
 
-  /* Input */
   .throw-input {
     background: #111;
     border: 1px solid #333;
@@ -74,7 +71,6 @@
     box-shadow: 0 0 0 2px rgba(220,38,38,0.15);
   }
 
-  /* Dart buttons */
   .dart-btn {
     font-family: 'DM Mono', monospace;
     font-size: 0.7rem;
@@ -91,7 +87,6 @@
   .dart-btn.double { background: #7f1d1d; border-color: #991b1b; color: #fca5a5; }
   .dart-btn.triple { background: #1e3a5f; border-color: #1d4ed8; color: #93c5fd; }
 
-  /* Section panel */
   .panel {
     background: linear-gradient(135deg, #111 0%, #161616 100%);
     border: 1px solid #222;
@@ -105,7 +100,6 @@
     margin: 1.5rem 0;
   }
 
-  /* Undo btn */
   .btn-undo {
     background: transparent;
     border: 1px solid #444;
@@ -122,7 +116,26 @@
     background: rgba(245,158,11,0.05);
   }
 </style>
+
 <%= turbo_stream_from "match_#{@match.id}" %>
+
+<script>
+  (function() {
+    const matches = JSON.parse(localStorage.getItem("dartz_matches") || "[]")
+    const id = <%= @match.id %>
+    const exists = matches.find(m => m.id === id)
+    if (!exists) {
+      matches.unshift({
+        id: id,
+        player1: "<%= j @match.players.first&.display_name %>",
+        player2: "<%= j @match.players.second&.display_name %>",
+        createdAt: "<%= @match.created_at.iso8601 %>"
+      })
+      localStorage.setItem("dartz_matches", JSON.stringify(matches.slice(0, 10)))
+    }
+  })()
+</script>
+
 <div class="dart-bg px-4 py-8">
   <div class="max-w-3xl mx-auto">
 
@@ -145,46 +158,44 @@
         </div>
         <h1 class="bebas text-3xl text-white tracking-wider">#<%= @match.id %></h1>
       </div>
-      <div class="w-16"></div><%# spacer %>
+      <div class="w-16"></div>
     </div>
+
     <%# Score Cards %>
-<div class="grid grid-cols-2 gap-4 mb-6">
-  <% @match.players.each do |player| %>
-    <%= render "matches/score_card", match: @match, player: player %>
-  <% end %>
-</div>
-    <%# Player panels if any %>
+    <div class="grid grid-cols-2 gap-4 mb-6">
+      <% @match.players.each do |player| %>
+        <%= render "matches/score_card", match: @match, player: player %>
+      <% end %>
+    </div>
+
+    <%# Player throw history panels %>
     <% @players.each do |player| %>
       <%= render "matches/player_panel", player: player, match: @match %>
     <% end %>
 
-    <%# Keyboard input panel %>
-    <div class="panel p-6 mb-6">
-      <p class="mono text-xs text-zinc-600 tracking-widest uppercase mb-4">Keyboard Input</p>
+    <%# Everything below only renders when match is active %>
+    <% unless @match.finished? %>
 
-<div id="current-player">
-  <%= render "matches/current_player", match: @match, turn: @turn %>
-</div>
-    </div>
+      <%# Keyboard input panel %>
+      <div class="panel p-6 mb-6">
+        <p class="mono text-xs text-zinc-600 tracking-widest uppercase mb-4">Keyboard Input</p>
+        <div id="current-player">
+          <%= render "matches/current_player", match: @match, turn: @turn %>
+        </div>
+      </div>
 
-    <%# Hidden keyboard form %>
-    <%= form_with url: turn_throws_path(@turn),
-                  method: :post,
-                  data: { turbo_stream: true },
-                  html: { id: "keyboard-form" } do |f| %>
-      <%= f.hidden_field :segment,    name: "throw[segment]",    id: "keyboard-segment" %>
-      <%= f.hidden_field :multiplier, name: "throw[multiplier]", id: "keyboard-multiplier" %>
+      <%# Dart button grid %>
+      <%= render "matches/dart_board", match: @match, turn: @turn %>
+
+    <% else %>
+
+      <%# Finished state placeholder (game_over turbo frame handles the real UI) %>
+      <div class="panel p-8 text-center">
+        <p class="bebas text-4xl text-red-500 tracking-wider mb-1">Match Finished!</p>
+        <p class="text-zinc-600 text-sm mono">Well played</p>
+      </div>
+
     <% end %>
-
-    <%# Dart button grid %>
-<% unless @match.finished? %>
-  <%= render "matches/dart_board", match: @match, turn: @turn %>
-<% else %>
-  <div class="panel p-8 text-center">
-    <p class="bebas text-4xl text-red-500 tracking-wider mb-1">Leg Finished!</p>
-    <p class="text-zinc-600 text-sm mono">Well played</p>
-  </div>
-<% end %>
 
   </div>
 </div>

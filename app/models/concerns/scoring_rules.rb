@@ -30,6 +30,11 @@ module ScoringRules
 
     lp.update!(score: new_score)
 
-    complete_turn! if throws.count >= MAX_THROWS
+    complete_turn! if throws.count >= max_throws
+  end
+
+  private
+    def max_throws
+    self.class.const_defined?(:MAX_THROWS, false) ? self.class::MAX_THROWS : 3
   end
 end

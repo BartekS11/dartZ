@@ -4,7 +4,8 @@ CI.run do
   step "Setup", "bin/setup --skip-server"
 
   step "Style: Ruby", "bin/rubocop"
-  step "Rubocop linting: Ruby", "bin/rubocop -x -A --only Layout"
+  step "Linting: Ruby", "bin/rubocop -x -A --only Layout"
+  step "Linting: ERB HTML", "bundle exec erb_lint --autocorrect app/views"
 
   step "Security: Gem audit", "bin/bundler-audit"
   step "Security: Importmap vulnerability audit", "bin/importmap audit"

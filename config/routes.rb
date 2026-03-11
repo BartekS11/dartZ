@@ -5,10 +5,11 @@ Rails.application.routes.draw do
   resources :passwords, param: :token
 
   resources :matches, only: %i[index show create]
-
   resources :turns, only: [] do
     resources :throws, only: :create
   end
   get "matches/:id/throws", to: "matches#throws", as: :matches_throws
+  get "matches/:id/summary", to: "matches#summary", as: :match_summary
+
   get "up" => "rails/health#show", as: :rails_health_check
 end
