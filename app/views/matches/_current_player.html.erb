@@ -4,38 +4,8 @@
   data-keyboard-score-value="<%= match.score_for(match.current_player) %>"
   data-keyboard-player-id-value="<%= match.current_player.id %>">
 
-  <%# Player indicators %>
-  <div class="flex gap-3 mb-6">
-    <% match.players.each do |player| %>
-      <% is_active = player == match.current_player %>
-      <div class="flex-1 px-4 py-3 rounded-xl border transition-all duration-200
-        <%= is_active ?
-            "bg-red-950/50 border-red-700 shadow-[0_0_20px_rgba(220,38,38,0.15)]" :
-            "bg-zinc-900/50 border-zinc-800" %>">
-        <div class="flex items-center justify-between">
-          <span class="mono text-xs tracking-widest uppercase
-            <%= is_active ? "text-red-400" : "text-zinc-600" %>">
-            <%= player.display_name %>
-            <% if player.guest? %>
-              <span class="opacity-50">(guest)</span>
-            <% end %>
-          </span>
-          <% if is_active %>
-            <span class="mono text-xs text-red-600 tracking-widest"
-                  style="animation: pulse-text 1.5s ease-in-out infinite">▶ UP</span>
-          <% else %>
-            <span class="mono text-xs text-zinc-700">WAITING</span>
-          <% end %>
-        </div>
-        <p class="bebas text-2xl mt-1 <%= is_active ? "text-red-400" : "text-zinc-600" %>">
-          <%= match.score_for(player) %>
-        </p>
-      </div>
-    <% end %>
-  </div>
-
-  <%# Mode toggle — inside controller div so modeLabel target is in scope %>
-  <div class="flex items-center gap-3 mb-4">
+  <%# Mode toggle + Undo on same row %>
+  <div class="flex items-center justify-between gap-3 mb-4">
     <button type="button"
             data-action="click->keyboard#toggleMode"
             class="flex items-center gap-2 bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2
@@ -48,33 +18,55 @@
       <span data-keyboard-target="modeLabel"
             class="mono text-xs text-zinc-500 tracking-widest">SINGLE THROW</span>
     </button>
+
+    <button type="button"
+            data-action="click->keyboard#undoLastThrow"
+            class="btn-undo px-4 py-2 rounded-lg">
+      ↩ UNDO
+    </button>
   </div>
 
-  <%# Score preview %>
-  <p class="mono text-xs text-zinc-600 tracking-widest uppercase mb-2">PREVIEW</p>
-  <p data-keyboard-target="score"
-     class="bebas text-5xl text-red-500 tabular-nums leading-none mb-4">
-    <%= match.score_for(match.current_player) %>
-  </p>
+  <%# Checkout suggestion %>
+  <div id="checkout-hint" class="mb-3">
+    <% suggestion = CheckoutCalculator.suggest(match.score_for(match.current_player)) %>
+    <% if suggestion %>
+      <div style="background:#0a1a0a;border:1px solid #14532d;border-radius:8px;padding:10px 14px;">
+        <p class="mono text-xs text-green-700 tracking-widest mb-2">CHECKOUT</p>
+        <div class="flex items-center gap-2 flex-wrap">
+          <% suggestion.each_with_index do |throw, i| %>
+            <span style="font-family:'DM Mono',monospace;font-size:0.8rem;
+                         padding:4px 10px;border-radius:4px;
+                         background:<%= throw.start_with?('T') ? '#1e3a5f' :
+                                         throw.start_with?('D') || throw == 'Bull' ? '#7f1d1d' :
+                                         '#1e1e1e' %>;
+                         color:<%= throw.start_with?('T') ? '#93c5fd' :
+                                     throw.start_with?('D') || throw == 'Bull' ? '#fca5a5' :
+                                     '#aaa' %>;
+                         border:1px solid <%= throw.start_with?('T') ? '#1d4ed8' :
+                                               throw.start_with?('D') || throw == 'Bull' ? '#991b1b' :
+                                               '#333' %>">
+              <%= throw %>
+            </span>
+            <% if i < suggestion.size - 1 %>
+              <span class="text-zinc-700 text-xs">→</span>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
 
   <%# Input %>
   <input type="text"
          data-keyboard-target="input"
          data-action="input->keyboard#preview keydown->keyboard#handle"
          placeholder="20  d20  t20  b  db"
-         class="throw-input w-full px-4 py-3 rounded-lg text-lg mb-3"
+         class="throw-input w-full px-4 py-3 rounded-lg text-lg"
          autocomplete="off">
-
-  <%# Undo — only useful in single mode %>
-  <button type="button"
-          data-action="click->keyboard#undoLastThrow"
-          class="btn-undo px-4 py-2 rounded-lg mt-2">
-    ↩ UNDO
-  </button>
 
 </div>
 
-<%# Hidden form — found by id so can live outside controller div %>
+<%# Hidden form %>
 <%= form_with url: turn_throws_path(turn),
               method: :post,
               data: { turbo_stream: true },

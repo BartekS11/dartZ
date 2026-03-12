@@ -7,10 +7,12 @@ export default class extends Controller {
   connect() {
     this.currentScore = this.scoreValue
     this.throwStack   = []
-    this.mode         = "single" // "single" = one throw at a time, "total" = sum of turn
+    this.mode         = localStorage.getItem("dartz_input_mode") || "single"
 
     this.boundSync = this.syncScoreFromDOM.bind(this)
     document.addEventListener("turbo:before-stream-render", this.boundSync)
+
+    this.applyMode()
   }
 
   disconnect() {
@@ -24,39 +26,49 @@ export default class extends Controller {
       const parsed = parseInt(el.textContent.trim(), 10)
       if (!isNaN(parsed)) {
         this.currentScore = parsed
-        this.scoreTarget.textContent = parsed
+        this.resetScoreCardPreview()
       }
     }, 50)
   }
 
-toggleMode() {
-  this.mode = this.mode === "single" ? "total" : "single"
-  this.throwStack   = []
-  this.currentScore = this.scoreValue
-  this.inputTarget.value = ""
-  this.scoreTarget.textContent = this.currentScore
+  // ── Mode ───────────────────────────────────────────────────────────────────
 
-  // Animate the toggle switch
-  const track = document.getElementById("mode-track")
-  const thumb = document.getElementById("mode-thumb")
+  applyMode() {
+    const track = document.getElementById("mode-track")
+    const thumb = document.getElementById("mode-thumb")
 
-  if (this.mode === "total") {
-    track.style.background = "#dc2626"
-    thumb.style.transform  = "translateX(16px)"
-    this.modeLabelTarget.textContent     = "TURN TOTAL"
-    this.inputTarget.placeholder         = "e.g. 85 (sum of turn)"
-  } else {
-    track.style.background = "#3f3f46"
-    thumb.style.transform  = "translateX(0px)"
-    this.modeLabelTarget.textContent     = "SINGLE THROW"
-    this.inputTarget.placeholder         = "20  d20  t20  b  db"
+    if (this.mode === "total") {
+      if (track) track.style.background = "#dc2626"
+      if (thumb) thumb.style.transform  = "translateX(16px)"
+      if (this.hasModeLabelTarget) this.modeLabelTarget.textContent = "TURN TOTAL"
+      if (this.hasInputTarget)     this.inputTarget.placeholder     = "e.g. 85 (sum of turn)"
+    } else {
+      if (track) track.style.background = "#3f3f46"
+      if (thumb) thumb.style.transform  = "translateX(0px)"
+      if (this.hasModeLabelTarget) this.modeLabelTarget.textContent = "SINGLE THROW"
+      if (this.hasInputTarget)     this.inputTarget.placeholder     = "20  d20  t20  b  db"
+    }
   }
-}
+
+  toggleMode() {
+    this.mode = this.mode === "single" ? "total" : "single"
+    localStorage.setItem("dartz_input_mode", this.mode)
+
+    this.throwStack   = []
+    this.currentScore = this.scoreValue
+    this.inputTarget.value = ""
+    this.resetScoreCardPreview()
+
+    this.applyMode()
+  }
+
+  // ── Preview ────────────────────────────────────────────────────────────────
 
   preview() {
     const raw = this.inputTarget.value.trim()
+
     if (!raw) {
-      this.scoreTarget.textContent = this.currentScore
+      this.resetScoreCardPreview()
       return
     }
 
@@ -64,14 +76,40 @@ toggleMode() {
       const total = parseInt(raw, 10)
       if (isNaN(total)) return
       const remaining = this.currentScore - total
-      this.scoreTarget.textContent = remaining < 0 ? "BUST" : remaining
+      this.updateScoreCardPreview(remaining < 0 ? null : remaining)
     } else {
       const parsed = this.parseThrow(raw)
       if (!parsed) return
       const remaining = this.currentScore - parsed.points
-      this.scoreTarget.textContent = remaining < 0 ? "BUST" : remaining
+      this.updateScoreCardPreview(remaining < 0 ? null : remaining)
     }
   }
+
+  updateScoreCardPreview(value) {
+    const el = document.getElementById(`player-${this.playerIdValue}-score`)
+    if (!el) return
+
+    if (value === null) {
+      // bust
+      el.textContent   = "BUST"
+      el.style.color   = "#ef4444"
+      el.style.opacity = "0.6"
+    } else {
+      el.textContent   = value
+      el.style.color   = "#f87171"
+      el.style.opacity = "0.75"
+    }
+  }
+
+  resetScoreCardPreview() {
+    const el = document.getElementById(`player-${this.playerIdValue}-score`)
+    if (!el) return
+    el.textContent = this.currentScore
+    el.style.color   = ""
+    el.style.opacity = ""
+  }
+
+  // ── Input handling ─────────────────────────────────────────────────────────
 
   handle(e) {
     if (e.key !== "Enter") return
@@ -96,14 +134,14 @@ toggleMode() {
     const newScore = this.currentScore - parsed.points
     if (newScore < 0) {
       this.inputTarget.value = ""
-      this.scoreTarget.textContent = this.currentScore
+      this.resetScoreCardPreview()
       return
     }
 
     this.throwStack.push({ parsed, points: parsed.points })
     this.currentScore = newScore
     this.inputTarget.value = ""
-    this.scoreTarget.textContent = this.currentScore
+    this.resetScoreCardPreview()
 
     this.submitThrow(parsed.segment, parsed.multiplier)
   }
@@ -117,11 +155,10 @@ toggleMode() {
     const newScore = this.currentScore - total
     if (newScore < 0) {
       this.inputTarget.value = ""
-      this.scoreTarget.textContent = this.currentScore
+      this.resetScoreCardPreview()
       return
     }
 
-    // Submit as a single "summary" throw — segment=0, multiplier=single, points override
     this.submitThrow(null, null, total)
   }
 
@@ -141,19 +178,23 @@ toggleMode() {
       if (totInput) totInput.value = ""
     }
 
+    this.resetScoreCardPreview()
     form.requestSubmit()
     this.inputTarget.value = ""
   }
 
+  // ── Undo ───────────────────────────────────────────────────────────────────
+
   undoLastThrow() {
     if (this.throwStack.length === 0) return
-    // undo not supported in total mode
     if (this.mode === "total") return
 
     const last = this.throwStack.pop()
     this.currentScore += last.points
-    this.scoreTarget.textContent = this.currentScore
+    this.resetScoreCardPreview()
   }
+
+  // ── Parse ──────────────────────────────────────────────────────────────────
 
   parseThrow(raw) {
     raw = raw.toLowerCase().trim()

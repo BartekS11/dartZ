@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   end
   get "matches/:id/throws", to: "matches#throws", as: :matches_throws
   get "matches/:id/summary", to: "matches#summary", as: :match_summary
+  get "matches/:id/checkout/:player_id", to: "matches#checkout", as: :match_checkout
 
   get "up" => "rails/health#show", as: :rails_health_check
 end

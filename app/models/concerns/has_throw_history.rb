@@ -17,14 +17,14 @@ module HasThrowHistory
   end
 
   def average_per_turn(player)
-  all = all_throws_for(player)
-  return 0.0 if all.empty?
+    all = all_throws_for(player)
+    return 0.0 if all.empty?
 
-  total_points = all.sum(&:points)
-  total_turns  = (all.size.to_f / 3).ceil
+    total_points = all.sum(&:points)
+    total_turns  = (all.size.to_f / 3).ceil
 
-  (total_points.to_f / total_turns).round(1)
-end
+    (total_points.to_f / total_turns).round(1)
+  end
 
   def three_dart_average(player)
     all = all_throws_for(player)
