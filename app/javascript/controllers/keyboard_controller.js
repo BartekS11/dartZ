@@ -174,21 +174,20 @@ export default class extends Controller {
   // ── Undo — server is source of truth ──────────────────────────────────────
 
   async undoLastThrow() {
-    if (this.mode === "total") return
-
     this.throwStack.pop() // remove from local stack only
 
     const form   = document.getElementById("keyboard-form")
     const turnId = form?.action.match(/turns\/(\d+)/)?.[1]
     if (!turnId) return
 
-    const response = await fetch(`/turns/${turnId}/throws/last`, {
-      method:  "DELETE",
-      headers: {
-        "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]')?.content,
-        "Accept":       "text/vnd.turbo-stream.html"
-      }
-    })
+  const response = await fetch(`/turns/${turnId}/throws/last`, {
+    method:  "DELETE",
+    headers: {
+      "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]')?.content,
+      "Accept":       "text/vnd.turbo-stream.html",
+      "X-Undo-Mode":  this.mode   
+    }
+  })
 
     if (response.ok) {
       const html = await response.text()
