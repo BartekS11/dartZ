@@ -23,26 +23,31 @@ class ThrowsController < ApplicationController
   def undo
     @turn  = Turn.find(params[:turn_id])
     @match = @turn.leg.match
+    undo_mode = request.headers["X-Undo-Mode"]
 
-    # Find the last turn with throws — may be @turn or the previous completed turn
     target_turn = @turn.leg.turns
-                      .joins(:throws)
-                      .order("turns.created_at DESC")
-                      .first
+                       .joins(:throws)
+                       .order("turns.created_at DESC")
+                       .first
 
     return head :no_content unless target_turn
 
-    last_throw = target_turn.throws.order(created_at: :desc).first
-    return head :no_content unless last_throw
+    if undo_mode == "total"
+      # Revert all throws on the turn
+      total_points = target_turn.throws.to_a.sum(&:points)
+      lp = target_turn.leg.leg_players.find_by(player: target_turn.player)
+      lp.update!(score: lp.score + total_points)
+      target_turn.throws.destroy_all
+    else
+      # Revert just the last throw
+      last_throw = target_turn.throws.order(created_at: :desc).first
+      return head :no_content unless last_throw
+      lp = target_turn.leg.leg_players.find_by(player: target_turn.player)
+      lp.update!(score: lp.score + last_throw.points)
+      last_throw.destroy!
+    end
 
-    # Revert score
-    lp = target_turn.leg.leg_players.find_by(player: target_turn.player)
-    lp.update!(score: lp.score + last_throw.points)
-    last_throw.destroy!
-
-    # If target_turn was completed, destroy the current empty turn and reopen it
     if target_turn.completed?
-      # @turn is the empty current turn — destroy it
       @turn.destroy! if @turn != target_turn && @turn.throws.empty?
       target_turn.update!(completed_at: nil)
     end
