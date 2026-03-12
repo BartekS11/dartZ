@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["input", "score", "modeBtn", "modeLabel"]
+  static targets = ["input", "modeBtn", "modeLabel"]
   static values  = { url: String, score: Number, playerId: Number }
 
   connect() {
@@ -19,6 +19,7 @@ export default class extends Controller {
     document.removeEventListener("turbo:before-stream-render", this.boundSync)
   }
 
+  // Server is source of truth — sync currentScore from DOM after every stream
   syncScoreFromDOM() {
     setTimeout(() => {
       const el = document.getElementById(`player-${this.playerIdValue}-score`)
@@ -54,15 +55,14 @@ export default class extends Controller {
     this.mode = this.mode === "single" ? "total" : "single"
     localStorage.setItem("dartz_input_mode", this.mode)
 
-    this.throwStack   = []
-    this.currentScore = this.scoreValue
+    this.throwStack        = []
     this.inputTarget.value = ""
     this.resetScoreCardPreview()
 
     this.applyMode()
   }
 
-  // ── Preview ────────────────────────────────────────────────────────────────
+  // ── Preview (client-side only, not saved) ──────────────────────────────────
 
   preview() {
     const raw = this.inputTarget.value.trim()
@@ -90,7 +90,6 @@ export default class extends Controller {
     if (!el) return
 
     if (value === null) {
-      // bust
       el.textContent   = "BUST"
       el.style.color   = "#ef4444"
       el.style.opacity = "0.6"
@@ -104,7 +103,7 @@ export default class extends Controller {
   resetScoreCardPreview() {
     const el = document.getElementById(`player-${this.playerIdValue}-score`)
     if (!el) return
-    el.textContent = this.currentScore
+    el.textContent   = this.currentScore
     el.style.color   = ""
     el.style.opacity = ""
   }
@@ -125,39 +124,28 @@ export default class extends Controller {
     }
   }
 
-  // ── Single throw mode ──────────────────────────────────────────────────────
+  // ── Single throw — no client score math, server decides ───────────────────
 
   submitSingle(raw) {
     const parsed = this.parseThrow(raw)
     if (!parsed) return
 
-    const newScore = this.currentScore - parsed.points
-    if (newScore < 0) {
-      this.inputTarget.value = ""
-      this.resetScoreCardPreview()
-      return
-    }
-
-    this.throwStack.push({ parsed, points: parsed.points })
-    this.currentScore = newScore
+    // Track for undo stack only — no score update
+    this.throwStack.push({ points: parsed.points })
     this.inputTarget.value = ""
     this.resetScoreCardPreview()
 
     this.submitThrow(parsed.segment, parsed.multiplier)
   }
 
-  // ── Turn total mode ────────────────────────────────────────────────────────
+  // ── Turn total — server decides ────────────────────────────────────────────
 
   submitTotal(raw) {
     const total = parseInt(raw, 10)
     if (isNaN(total) || total < 0) return
 
-    const newScore = this.currentScore - total
-    if (newScore < 0) {
-      this.inputTarget.value = ""
-      this.resetScoreCardPreview()
-      return
-    }
+    this.inputTarget.value = ""
+    this.resetScoreCardPreview()
 
     this.submitThrow(null, null, total)
   }
@@ -183,15 +171,31 @@ export default class extends Controller {
     this.inputTarget.value = ""
   }
 
-  // ── Undo ───────────────────────────────────────────────────────────────────
+  // ── Undo — server is source of truth ──────────────────────────────────────
 
-  undoLastThrow() {
-    if (this.throwStack.length === 0) return
+  async undoLastThrow() {
     if (this.mode === "total") return
 
-    const last = this.throwStack.pop()
-    this.currentScore += last.points
-    this.resetScoreCardPreview()
+    this.throwStack.pop() // remove from local stack only
+
+    const form   = document.getElementById("keyboard-form")
+    const turnId = form?.action.match(/turns\/(\d+)/)?.[1]
+    if (!turnId) return
+
+    const response = await fetch(`/turns/${turnId}/throws/last`, {
+      method:  "DELETE",
+      headers: {
+        "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]')?.content,
+        "Accept":       "text/vnd.turbo-stream.html"
+      }
+    })
+
+    if (response.ok) {
+      const html = await response.text()
+      Turbo.renderStreamMessage(html)
+      // syncScoreFromDOM fires via turbo:before-stream-render
+      // and updates this.currentScore automatically
+    }
   }
 
   // ── Parse ──────────────────────────────────────────────────────────────────
