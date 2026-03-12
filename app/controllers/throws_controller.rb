@@ -24,12 +24,28 @@ class ThrowsController < ApplicationController
     @turn  = Turn.find(params[:turn_id])
     @match = @turn.leg.match
 
-    last_throw = @turn.throws.order(created_at: :desc).first
+    # Find the last turn with throws — may be @turn or the previous completed turn
+    target_turn = @turn.leg.turns
+                      .joins(:throws)
+                      .order("turns.created_at DESC")
+                      .first
+
+    return head :no_content unless target_turn
+
+    last_throw = target_turn.throws.order(created_at: :desc).first
     return head :no_content unless last_throw
 
-    lp = @turn.leg.leg_players.find_by(player: @turn.player)
+    # Revert score
+    lp = target_turn.leg.leg_players.find_by(player: target_turn.player)
     lp.update!(score: lp.score + last_throw.points)
     last_throw.destroy!
+
+    # If target_turn was completed, destroy the current empty turn and reopen it
+    if target_turn.completed?
+      # @turn is the empty current turn — destroy it
+      @turn.destroy! if @turn != target_turn && @turn.throws.empty?
+      target_turn.update!(completed_at: nil)
+    end
 
     @match.reload
 
@@ -77,27 +93,31 @@ class ThrowsController < ApplicationController
 
   def render_streams
     @match.reload
-    current_turn = @match.finished? ? nil : @match.current_leg&.current_turn
+    current_turn = if @match.finished?
+      nil
+    else
+      @match.current_leg&.current_turn
+    end
 
     streams = @match.players.flat_map { |p|
       [
         turbo_stream.replace("score-card-#{p.id}",
           partial: "matches/score_card",
-          locals: { match: @match, player: p })
+          locals:  { match: @match, player: p })
       ]
     }
 
     if current_turn
       streams << turbo_stream.update("current-player",
         partial: "matches/current_player",
-        locals: { match: @match, turn: current_turn })
+        locals:  { match: @match, turn: current_turn })
       streams << turbo_stream.replace("dart-board",
         partial: "matches/dart_board",
-        locals: { match: @match, turn: current_turn })
+        locals:  { match: @match, turn: current_turn })
     elsif @match.finished?
       streams << turbo_stream.replace("match",
         partial: "matches/game_over",
-        locals: { match: @match })
+        locals:  { match: @match })
       streams << turbo_stream.remove("current-player")
       streams << turbo_stream.remove("dart-board")
     end
