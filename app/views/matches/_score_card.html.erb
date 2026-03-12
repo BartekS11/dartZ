@@ -1,20 +1,72 @@
-<% is_active = player == match.current_player %>
+<% is_active  = player == match.current_player %>
+<% all_throws = match.all_throws_for(player) %>
+<% recent     = match.last_throws_for(player, limit: 3) %>
+<% older      = all_throws.offset(3) %>
+<% avg        = match.three_dart_average(player) %>
+<% score      = match.score_for(player) %>
+<% pct        = [(501 - score) * 100 / 501, 0].max %>
+
 <div id="score-card-<%= player.id %>"
-     class="score-card rounded-xl p-5 <%= is_active ? "active-player" : "" %>">
-  <p class="text-zinc-500 text-xs mono tracking-widest mb-1 uppercase">
-    <%= player.display_name %>
-    <% if player.guest? %>
-      <span class="text-zinc-700">(guest)</span>
+     class="score-card rounded-xl overflow-hidden <%= is_active ? "active-player" : "" %>">
+
+  <%# Main row: score left, stats right %>
+  <div class="flex items-center justify-between gap-4 px-5 pt-4 pb-2">
+
+    <%# Score + name %>
+    <div>
+      <p class="text-zinc-600 text-xs mono tracking-widest uppercase mb-0.5">
+        <%= player.display_name %>
+        <% if player.guest? %><span class="text-zinc-800">(guest)</span><% end %>
+      </p>
+      <p id="player-<%= player.id %>-score"
+         class="score-display <%= is_active ? "active-player" : "" %>">
+        <%= score %>
+      </p>
+    </div>
+
+    <%# Right column: avg on top, last 3 throws below %>
+    <% if recent.any? %>
+      <div class="flex flex-col items-end gap-1.5 flex-shrink-0">
+
+        <%# Average %>
+        <div class="flex items-baseline gap-1.5">
+          <span style="font-family:'DM Mono',monospace;font-size:0.5rem;
+                       letter-spacing:0.12em;color:#333;text-transform:uppercase">avg</span>
+          <span style="font-family:'Bebas Neue',sans-serif;font-size:1.4rem;line-height:1;
+                       color:<%= avg >= 60 ? '#22c55e' : avg >= 40 ? '#f59e0b' : '#555' %>">
+            <%= avg %>
+          </span>
+        </div>
+
+        <%# Last 3 throw badges %>
+        <div class="flex items-center gap-1">
+          <% recent.each do |t| %>
+            <span style="font-family:'DM Mono',monospace;font-size:0.6rem;
+                         padding:1px 5px;border-radius:3px;
+                         <%= t.multiplier == 'double' ? 'background:#7f1d1d;color:#fca5a5;border:1px solid #991b1b' :
+                             t.multiplier == 'triple' ? 'background:#1e3a5f;color:#93c5fd;border:1px solid #1d4ed8' :
+                             'background:#1a1a1a;color:#555;border:1px solid #252525' %>">
+              <%= t.multiplier == 'single' ? '' : t.multiplier[0].upcase %><%= t.segment %>
+            </span>
+          <% end %>
+          <% (3 - recent.size).times do %>
+            <span style="font-family:'DM Mono',monospace;font-size:0.6rem;
+                         padding:1px 5px;border-radius:3px;
+                         background:#111;color:#222;border:1px solid #1a1a1a">—</span>
+          <% end %>
+        </div>
+
+      </div>
     <% end %>
-  </p>
-  <p id="player-<%= player.id %>-score"
-     class="score-display <%= is_active ? "active-player" : "" %>">
-    <%= match.score_for(player) %>
-  </p>
-  <div class="mt-2 h-0.5 rounded-full overflow-hidden bg-zinc-800">
+
+  </div>
+
+  <%# Progress bar %>
+  <div class="mx-5 mb-3 h-px rounded-full overflow-hidden bg-zinc-900">
     <div id="player-<%= player.id %>-progress"
-         class="h-full bg-red-700 rounded-full transition-all duration-500"
-         style="width: <%= [ (501 - match.score_for(player)) * 100 / 501, 0 ].max %>%">
+         class="h-full rounded-full transition-all duration-500"
+         style="width:<%= pct %>%;background:<%= is_active ? '#dc2626' : '#3f3f46' %>">
     </div>
   </div>
+
 </div>

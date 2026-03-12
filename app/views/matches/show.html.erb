@@ -176,10 +176,6 @@
       <% end %>
     </div>
 
-    <%# Player throw history panels %>
-    <% @players.each do |player| %>
-      <%= render "matches/player_panel", player: player, match: @match %>
-    <% end %>
 
     <%# Everything below only renders when match is active %>
     <% unless @match.finished? %>

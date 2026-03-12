@@ -1,11 +1,11 @@
 module TurnFlow
   extend ActiveSupport::Concern
 
-  def complete_turn!
+  def complete_turn!(broadcast: true)
     return if completed?
     update!(completed_at: Time.current)
     leg.start_next_turn!
-    broadcast_turn_change!
+    broadcast_turn_change! if broadcast
   end
 
   def completed?
@@ -51,6 +51,13 @@ module TurnFlow
       "match_#{match.id}",
       target: "dart-board",
       partial: "matches/dart_board",
+      locals: { match: match, turn: new_turn }
+    )
+
+    Turbo::StreamsChannel.broadcast_update_to(
+      "match_#{match.id}",
+      target: "current-player",
+      partial: "matches/current_player",
       locals: { match: match, turn: new_turn }
     )
 

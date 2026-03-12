@@ -1,5 +1,5 @@
 class MatchesController < ApplicationController
-  skip_before_action :require_authentication, only: %i[index show create]
+  skip_before_action :require_authentication, only: %i[index show create summary checkout]
   rescue_from ActiveRecord::RecordNotFound, with: :match_not_found
 
   def index
@@ -60,6 +60,33 @@ class MatchesController < ApplicationController
       }
     end
     render json: { id: match.id, finished: match.finished?, players: players_data }
+  end
+
+  def summary
+    match = Match.find(params[:id])
+    players_data = match.players.map do |player|
+      {
+        name:   player.display_name,
+        score:  match.score_for(player),
+        avg:    match.three_dart_average(player),
+        winner: match.winner == player
+      }
+    end
+    render json: { id: match.id, finished: match.finished?, players: players_data }
+  end
+
+  def checkout
+    match  = Match.find(params[:id])
+    player = match.players.find(params[:player_id])
+    score  = match.score_for(player)
+
+    suggestion = CheckoutCalculator.suggest(score)
+
+    render json: {
+      score:      score,
+      suggestion: suggestion,
+      possible:   suggestion.present?
+    }
   end
 
   private
