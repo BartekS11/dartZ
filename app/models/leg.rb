@@ -28,6 +28,7 @@ class Leg < ApplicationRecord
   end
 
   def finish!
+    update!(finished_at: Time.current)
     match.finish!
   end
 
@@ -41,6 +42,11 @@ class Leg < ApplicationRecord
     next_player = players[(players.index(current) + 1) % players.size]
 
     turns.create!(player: next_player)
+  end
+
+  def winner
+    return nil unless finished?
+    leg_players.find_by(score: 0)&.player
   end
 
   private

@@ -93,13 +93,6 @@
     border-radius: 12px;
   }
 
-  .divider {
-    height: 1px;
-    background: linear-gradient(90deg, transparent, #dc2626, transparent);
-    opacity: 0.3;
-    margin: 1.5rem 0;
-  }
-
   .btn-undo {
     background: transparent;
     border: 1px solid #444;
@@ -116,13 +109,8 @@
     background: rgba(245,158,11,0.05);
   }
 
-  #mode-track {
-  transition: background 0.2s ease;
-}
-
-#mode-thumb {
-  transition: transform 0.2s ease;
-}
+  #mode-track { transition: background 0.2s ease; }
+  #mode-thumb { transition: transform 0.2s ease; }
 </style>
 
 <%= turbo_stream_from "match_#{@match.id}" %>
@@ -144,62 +132,72 @@
   })()
 </script>
 
+<%# Finish popup — always in DOM so turbo stream can target it %>
+<div id="finish-popup">
+  <% if @match.finished? %>
+    <% finishing_leg    = @match.legs.order(:created_at).last %>
+    <% finishing_player = finishing_leg&.winner %>
+    <% if finishing_player %>
+      <%= render "matches/finish_popup", player: finishing_player, leg: finishing_leg %>
+    <% end %>
+  <% end %>
+</div>
+
 <div class="dart-bg px-4 py-8">
   <div class="max-w-3xl mx-auto">
 
-    <%# Turbo frame for game over %>
-    <turbo-frame id="match">
+    <%# Game over — always in DOM so turbo stream can target it %>
+    <div id="game-over-section">
       <% if @match.finished? %>
-        <%= render "game_over", match: @match %>
-      <% end %>
-    </turbo-frame>
-
-    <%# Header %>
-    <div class="flex items-center justify-between mb-8">
-      <%= link_to "← BACK", matches_path,
-            class: "mono text-xs text-zinc-600 hover:text-red-500 tracking-widest transition-colors" %>
-      <div class="text-center">
-        <div class="flex items-center gap-2 justify-center">
-          <div class="w-4 h-px bg-red-600"></div>
-          <span class="mono text-red-600 text-xs tracking-widest">MATCH</span>
-          <div class="w-4 h-px bg-red-600"></div>
-        </div>
-        <h1 class="bebas text-3xl text-white tracking-wider">#<%= @match.id %></h1>
-      </div>
-      <div class="w-16"></div>
-    </div>
-
-    <%# Score Cards %>
-    <div class="grid grid-cols-2 gap-4 mb-6">
-      <% @match.players.each do |player| %>
-        <%= render "matches/score_card", match: @match, player: player %>
+        <%= render "matches/game_over", match: @match %>
       <% end %>
     </div>
 
-
-    <%# Everything below only renders when match is active %>
-    <% unless @match.finished? %>
-
-      <%# Keyboard input panel %>
-      <div class="panel p-6 mb-6">
-        <p class="mono text-xs text-zinc-600 tracking-widest uppercase mb-4">Keyboard Input</p>
-        <div id="current-player">
-          <%= render "matches/current_player", match: @match, turn: @turn %>
+    <%# Header — cleared on finish %>
+    <div id="header-section">
+      <% unless @match.finished? %>
+        <div class="flex items-center justify-between mb-8">
+          <%= link_to "← BACK", matches_path,
+                class: "mono text-xs text-zinc-600 hover:text-red-500 tracking-widest transition-colors" %>
+          <div class="text-center">
+            <div class="flex items-center gap-2 justify-center">
+              <div class="w-4 h-px bg-red-600"></div>
+              <span class="mono text-red-600 text-xs tracking-widest">MATCH</span>
+              <div class="w-4 h-px bg-red-600"></div>
+            </div>
+            <h1 class="bebas text-3xl text-white tracking-wider">#<%= @match.id %></h1>
+          </div>
+          <div class="w-16"></div>
         </div>
-      </div>
+      <% end %>
+    </div>
 
-      <%# Dart button grid %>
-      <%= render "matches/dart_board", match: @match, turn: @turn %>
+    <%# Score cards — cleared on finish %>
+    <div id="score-cards-section">
+      <% unless @match.finished? %>
+        <div class="grid grid-cols-2 gap-4 mb-6">
+          <% @match.players.each do |player| %>
+            <%= render "matches/score_card", match: @match, player: player %>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
 
-    <% else %>
+    <%# Keyboard + dart board — cleared on finish %>
+    <div id="keyboard-section">
+      <% unless @match.finished? %>
+        <div class="panel p-6 mb-6">
+          <p class="mono text-xs text-zinc-600 tracking-widest uppercase mb-4">Keyboard Input</p>
+          <div id="current-player">
+            <%= render "matches/current_player", match: @match, turn: @turn %>
+          </div>
+        </div>
 
-      <%# Finished state placeholder (game_over turbo frame handles the real UI) %>
-      <div class="panel p-8 text-center">
-        <p class="bebas text-4xl text-red-500 tracking-wider mb-1">Match Finished!</p>
-        <p class="text-zinc-600 text-sm mono">Well played</p>
-      </div>
-
-    <% end %>
+        <div id="dart-board">
+          <%= render "matches/dart_board", match: @match, turn: @turn %>
+        </div>
+      <% end %>
+    </div>
 
   </div>
 </div>
