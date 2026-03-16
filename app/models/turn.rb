@@ -1,6 +1,7 @@
 class Turn < ApplicationRecord
   include TurnFlow
   include ScoringRules
+  include TurnScoring
 
   belongs_to :leg
   belongs_to :player

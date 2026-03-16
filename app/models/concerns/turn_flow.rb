@@ -4,7 +4,8 @@ module TurnFlow
   def complete_turn!(broadcast: true)
     return if completed?
     update!(completed_at: Time.current)
-    leg.start_next_turn!
+    # Only start next turn if leg is still active — leg.finish! handles its own flow
+    leg.start_next_turn! unless leg.finished?
     broadcast_turn_change! if broadcast
   end
 

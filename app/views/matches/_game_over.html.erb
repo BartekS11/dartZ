@@ -119,9 +119,12 @@
   }
 </style>
 
+<% multi_set = match.best_of_sets > 1 %>
+<% multi_leg = match.best_of_legs > 1 %>
+
 <div class="relative flex items-center justify-center min-h-screen overflow-hidden">
 
-  <%# Giant faded dartboard watermark %>
+  <%# Dartboard watermark %>
   <svg class="dartboard-bg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
     <circle cx="50" cy="50" r="49" stroke="#dc2626" stroke-width="0.5" />
     <circle cx="50" cy="50" r="40" stroke="#dc2626" stroke-width="0.5" />
@@ -130,15 +133,13 @@
     <circle cx="50" cy="50" r="10" stroke="#dc2626" stroke-width="1" />
     <circle cx="50" cy="50" r="4" fill="#dc2626" />
     <% (0..19).each do |i| %>
-      <line
-        x1="50" y1="50"
-        x2="<%= 50 + 49 * Math.sin(i * Math::PI / 10) %>"
-        y2="<%= 50 - 49 * Math.cos(i * Math::PI / 10) %>"
-        stroke="#dc2626" stroke-width="0.3" />
+      <line x1="50" y1="50"
+            x2="<%= 50 + 49 * Math.sin(i * Math::PI / 10) %>"
+            y2="<%= 50 - 49 * Math.cos(i * Math::PI / 10) %>"
+            stroke="#dc2626" stroke-width="0.3" />
     <% end %>
   </svg>
 
-  <%# Content %>
   <div class="relative text-center space-y-8 px-6">
 
     <div>
@@ -146,35 +147,72 @@
       <h1 class="game-over-title">DART<span style="color:#f5f5f5">Z</span></h1>
     </div>
 
+    <%# Winner card %>
     <div class="winner-card">
       <p class="winner-name"><%= match.winner.display_name %></p>
-      <p class="mono text-zinc-600 text-xs tracking-widest mt-1">TAKES THE LEG</p>
+      <p class="mono text-zinc-600 text-xs tracking-widest mt-1">
+        <% if multi_set %>
+          WINS THE MATCH
+        <% elsif multi_leg %>
+          WINS THE LEG
+        <% else %>
+          TAKES THE LEG
+        <% end %>
+      </p>
     </div>
+
+    <%# Sets/legs scoreline %>
+    <% if multi_set || multi_leg %>
+      <div style="animation: rise 0.6s 0.4s ease both; opacity: 0">
+        <p class="mono text-zinc-700 text-xs tracking-widest mb-3">
+          <%= multi_set ? "SETS" : "LEGS" %>
+        </p>
+        <div class="flex items-center justify-center gap-6">
+          <% match.players.each_with_index do |player, i| %>
+            <% is_winner = match.winner == player %>
+            <div class="text-center">
+              <p style="font-family:'DM Mono',monospace;font-size:0.6rem;
+                        color:#444;letter-spacing:0.1em;margin-bottom:4px">
+                <%= player.display_name %>
+              </p>
+              <p style="font-family:'Bebas Neue',sans-serif;font-size:3rem;line-height:1;
+                        color:<%= is_winner ? '#ef4444' : '#333' %>">
+                <%= multi_set ? match.sets_won_by(player) : match.match_sets.order(:created_at).last&.legs_won_by(player).to_i %>
+              </p>
+            </div>
+            <% if i == 0 %>
+              <span style="font-family:'DM Mono',monospace;font-size:0.8rem;color:#2a2a2a">—</span>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
 
     <p class="finish-time">
       FINISHED AT &nbsp;<%= match.finished_at.strftime("%H:%M") %>
     </p>
 
     <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mt-4">
-      <%= link_to "NEW MATCH", matches_path,
-            data: { turbo_method: :post },
-            class: "btn-new-match" %>
-      <%= link_to "BACK TO MATCHES", matches_path,
-            class: "btn-back" %>
+      <%= link_to "NEW MATCH", matches_path, class: "btn-new-match" %>
+      <%= link_to "BACK TO MATCHES", matches_path, class: "btn-back" %>
     </div>
-<div class="mt-6 grid grid-cols-2 gap-4">
-  <% match.players.each do |player| %>
-    <div style="background:#111;border:1px solid #222;border-radius:10px;padding:1rem;text-align:center">
-      <p style="font-family:'DM Mono',monospace;font-size:0.6rem;
-                letter-spacing:0.15em;color:#444;margin-bottom:4px">
-        <%= player.display_name %> · 3-DART AVG
-      </p>
-      <p style="font-family:'Bebas Neue',sans-serif;font-size:2.5rem;line-height:1;
-                color:<%= match.winner == player ? '#22c55e' : '#555' %>">
-        <%= match.three_dart_average(player) %>
-      </p>
+
+    <%# 3-dart averages %>
+    <div class="mt-6 grid grid-cols-2 gap-4">
+      <% match.players.each do |player| %>
+        <div style="background:#111;border:1px solid #222;border-radius:10px;
+                    padding:1rem;text-align:center">
+          <p style="font-family:'DM Mono',monospace;font-size:0.6rem;
+                    letter-spacing:0.15em;color:#444;margin-bottom:4px">
+            <%= player.display_name %> · 3-DART AVG
+          </p>
+          <p style="font-family:'Bebas Neue',sans-serif;font-size:2.5rem;line-height:1;
+                    color:<%= match.winner == player ? '#22c55e' : '#555' %>">
+            <%= match.three_dart_average(player) %>
+          </p>
+        </div>
+      <% end %>
     </div>
-  <% end %>
-</div>
+
   </div>
 </div>

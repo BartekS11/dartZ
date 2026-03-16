@@ -36,4 +36,16 @@ module HasThrowHistory
     # Average per 3 darts
     ((total_points.to_f / total_darts) * 3).round(1)
   end
+
+  def last_turn_throws_for(player)
+    last_completed_turn = turns
+      .joins(:throws)
+      .where(turns: { player_id: player.id })
+      .where.not(turns: { completed_at: nil })
+      .order("turns.completed_at DESC")
+      .first
+
+    return [] unless last_completed_turn
+    last_completed_turn.throws.order(:created_at)
+  end
 end
