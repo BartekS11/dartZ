@@ -14,5 +14,7 @@ Rails.application.routes.draw do
   get "matches/:id/summary", to: "matches#summary", as: :match_summary
   get "matches/:id/checkout/:player_id", to: "matches#checkout", as: :match_checkout
 
+  patch "legs/:id/checkout", to: "legs#checkout", as: :leg_checkout
+
   delete "turns/:turn_id/throws/last", to: "throws#undo", as: :undo_turn_throw
 end
