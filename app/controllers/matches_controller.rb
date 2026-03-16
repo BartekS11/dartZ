@@ -17,49 +17,29 @@ class MatchesController < ApplicationController
     @match = Match.find(params[:id])
     @players = @match.players
     return if @match.finished?
-    @leg  = @match.ensure_current_leg!
-    @turn = @leg.ensure_current_turn!
-    @leg_player = @leg.leg_players.find_by!(player: @turn.player)
+
+    current_leg  = @match.current_leg
+    @turn        = current_leg&.current_turn
+    @leg_player  = current_leg&.leg_players&.find_by(player: @turn&.player)
   end
 
   def create
-    match = Match.create!
+    @match = Match.new(
+      best_of_legs: params[:best_of_legs].to_i.clamp(1, 99),
+      best_of_sets: params[:best_of_sets].to_i.clamp(1, 99)
+    )
 
-    player1_name = params[:player1_name].presence
-    player2_name = params[:player2_name].presence
+    p1_name = params[:player1_name].to_s.strip.presence || "Player 1"
+    p2_name = params[:player2_name].to_s.strip.presence || "Player 2"
 
-    if Current.user
-      # Logged in — first player is the user
-      match.players.create!(
-        user: Current.user,
-        name: player1_name || Current.user.email_address
-      )
-    else
-      # Guest — just a name
-      match.players.create!(name: player1_name || "Player 1")
-    end
+    @match.save!
 
-    match.players.create!(name: player2_name || "Player 2")
+    player1 = @match.players.create!(name: p1_name, user: Current.user)
+    player2 = @match.players.create!(name: p2_name)
 
-    redirect_to match
-  end
+    @match.start_first_set!
 
-  def throws
-    @match  = Match.find(params[:id])
-    @player = @match.players.find(params[:player_id])
-    @throws = @match.all_throws_for(@player)
-  end
-
-  def summary
-    match = Match.find(params[:id])
-    players_data = match.players.map do |player|
-      {
-        name: player.display_name,
-        score: match.score_for(player),
-        winner: match.winner == player
-      }
-    end
-    render json: { id: match.id, finished: match.finished?, players: players_data }
+    redirect_to match_path(@match)
   end
 
   def summary

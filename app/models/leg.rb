@@ -2,6 +2,7 @@ class Leg < ApplicationRecord
   include LegFlow
 
   belongs_to :match
+  belongs_to :match_set, optional: true, class_name: "MatchSet"
   has_many :leg_players, dependent: :destroy
   has_many :players, through: :leg_players
   has_many :turns, dependent: :destroy
@@ -27,9 +28,19 @@ class Leg < ApplicationRecord
     finished_at.present?
   end
 
+  def winner
+    return nil unless finished?
+    players.find_by(id: winner_id)
+  end
+
   def finish!
-    update!(finished_at: Time.current)
-    match.finish!
+    winning_player = leg_players.find_by(score: 0)&.player
+    update!(finished_at: Time.current, winner_id: winning_player&.id)
+    if match_set.present?
+      match_set.on_leg_finished!(winning_player)
+    else
+      match.finish!(winning_player)
+    end
   end
 
   def first_player
@@ -42,11 +53,6 @@ class Leg < ApplicationRecord
     next_player = players[(players.index(current) + 1) % players.size]
 
     turns.create!(player: next_player)
-  end
-
-  def winner
-    return nil unless finished?
-    leg_players.find_by(score: 0)&.player
   end
 
   private

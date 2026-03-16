@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_12_222504) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_16_215413) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -32,12 +32,26 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_12_222504) do
     t.datetime "created_at", null: false
     t.datetime "finished_at"
     t.bigint "match_id", null: false
+    t.bigint "match_set_id"
     t.integer "starting_score"
     t.datetime "updated_at", null: false
+    t.integer "winner_id"
     t.index ["match_id"], name: "index_legs_on_match_id"
+    t.index ["match_set_id"], name: "index_legs_on_match_set_id"
+  end
+
+  create_table "match_sets", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "finished_at"
+    t.bigint "match_id", null: false
+    t.datetime "updated_at", null: false
+    t.integer "winner_id"
+    t.index ["match_id"], name: "index_match_sets_on_match_id"
   end
 
   create_table "matches", force: :cascade do |t|
+    t.integer "best_of_legs", default: 1, null: false
+    t.integer "best_of_sets", default: 1, null: false
     t.datetime "created_at", null: false
     t.datetime "finished_at"
     t.datetime "updated_at", null: false
@@ -92,7 +106,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_12_222504) do
 
   add_foreign_key "leg_players", "legs"
   add_foreign_key "leg_players", "players"
+  add_foreign_key "legs", "match_sets"
   add_foreign_key "legs", "matches"
+  add_foreign_key "match_sets", "matches"
   add_foreign_key "players", "matches"
   add_foreign_key "players", "users"
   add_foreign_key "sessions", "users"

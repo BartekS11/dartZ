@@ -1,19 +1,19 @@
 class Match < ApplicationRecord
   include MatchLifecycle
   include HasThrowHistory
+  include HasUndoSupport
 
-  has_many :players, dependent: :destroy
-  has_many :legs, dependent: :destroy
-  has_many :turns, through: :legs
-  has_many :throws, through: :turns
+  has_many :players,  dependent: :destroy
+  has_many :match_sets, dependent: :destroy, class_name: "MatchSet"
+  has_many :legs,     through: :match_sets
+  has_many :turns,    through: :legs
+  has_many :throws,   through: :turns
 
   def winner
     return nil unless finished?
-
-    legs.last
-        .leg_players
-        .find { |lp| lp.score == 0 }
-        &.player
+    match_sets.order(:created_at).last
+              &.legs&.order(:created_at)&.last
+              &.winner
   end
 
   def ensure_current_leg!
@@ -48,7 +48,7 @@ class Match < ApplicationRecord
 
   def next_player_after(player)
     ordered = players.order(:created_at).to_a
-    idx = ordered.index(player)
+    idx     = ordered.index(player)
     ordered[(idx + 1) % ordered.size]
   end
 

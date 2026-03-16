@@ -1,18 +1,23 @@
-<% is_active  = player == match.current_player %>
-<% all_throws = match.all_throws_for(player) %>
-<% recent     = match.last_throws_for(player, limit: 3) %>
-<% older      = all_throws.offset(3) %>
-<% avg        = match.three_dart_average(player) %>
-<% score      = match.score_for(player) %>
-<% pct        = [(501 - score) * 100 / 501, 0].max %>
+<% is_active        = player == match.current_player %>
+<% avg              = match.three_dart_average(player) %>
+<% score            = match.score_for(player) %>
+<% pct              = [(501 - score) * 100 / 501, 0].max %>
+<% sets_won         = match.sets_won_by(player) %>
+<% legs_won         = match.current_set&.legs_won_by(player) || 0 %>
+<% multi_set        = match.best_of_sets > 1 %>
+<% multi_leg        = match.best_of_legs > 1 %>
+<% last_turn_throws = match.last_turn_throws_for(player) %>
+<% last_turn_ids    = last_turn_throws.map(&:id) %>
+<% prev_throws      = match.last_throws_for(player, limit: 6)
+                           .reject { |t| last_turn_ids.include?(t.id) }
+                           .first(3) %>
 
 <div id="score-card-<%= player.id %>"
      class="score-card rounded-xl overflow-hidden <%= is_active ? "active-player" : "" %>">
 
-  <%# Main row: score left, stats right %>
   <div class="flex items-center justify-between gap-4 px-5 pt-4 pb-2">
 
-    <%# Score + name %>
+    <%# Left: name + score %>
     <div>
       <p class="text-zinc-600 text-xs mono tracking-widest uppercase mb-0.5">
         <%= player.display_name %>
@@ -22,10 +27,33 @@
          class="score-display <%= is_active ? "active-player" : "" %>">
         <%= score %>
       </p>
+
+      <%# Sets / legs counters %>
+      <div class="flex items-center gap-2 mt-1">
+        <% if multi_set %>
+          <div style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.1em">
+            <span style="color:#444;text-transform:uppercase">Sets </span>
+            <span style="font-family:'Bebas Neue',sans-serif;font-size:1rem;
+                         color:<%= sets_won > 0 ? '#ef4444' : '#333' %>">
+              <%= sets_won %>
+            </span>
+          </div>
+          <div style="width:1px;height:12px;background:#2a2a2a"></div>
+        <% end %>
+        <% if multi_leg %>
+          <div style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.1em">
+            <span style="color:#444;text-transform:uppercase">Legs </span>
+            <span style="font-family:'Bebas Neue',sans-serif;font-size:1rem;
+                         color:<%= legs_won > 0 ? '#ef4444' : '#333' %>">
+              <%= legs_won %>
+            </span>
+          </div>
+        <% end %>
+      </div>
     </div>
 
-    <%# Right column: avg on top, last 3 throws below %>
-    <% if recent.any? %>
+    <%# Right: avg + turn throws %>
+    <% if last_turn_throws.any? || prev_throws.any? %>
       <div class="flex flex-col items-end gap-1.5 flex-shrink-0">
 
         <%# Average %>
@@ -38,23 +66,40 @@
           </span>
         </div>
 
-        <%# Last 3 throw badges %>
-        <div class="flex items-center gap-1">
-          <% recent.each do |t| %>
-            <span style="font-family:'DM Mono',monospace;font-size:0.6rem;
-                         padding:1px 5px;border-radius:3px;
-                         <%= t.multiplier == 'double' ? 'background:#7f1d1d;color:#fca5a5;border:1px solid #991b1b' :
-                             t.multiplier == 'triple' ? 'background:#1e3a5f;color:#93c5fd;border:1px solid #1d4ed8' :
-                             'background:#1a1a1a;color:#555;border:1px solid #252525' %>">
-              <%= t.multiplier == 'single' ? '' : t.multiplier[0].upcase %><%= t.segment %>
-            </span>
-          <% end %>
-          <% (3 - recent.size).times do %>
-            <span style="font-family:'DM Mono',monospace;font-size:0.6rem;
-                         padding:1px 5px;border-radius:3px;
-                         background:#111;color:#222;border:1px solid #1a1a1a">—</span>
-          <% end %>
-        </div>
+        <%# Last completed turn — full brightness %>
+        <% if last_turn_throws.any? %>
+          <div class="flex items-center gap-1">
+            <% last_turn_throws.each do |t| %>
+              <span style="font-family:'DM Mono',monospace;font-size:0.6rem;
+                           padding:1px 5px;border-radius:3px;
+                           <%= t.multiplier == 'double' ? 'background:#7f1d1d;color:#fca5a5;border:1px solid #991b1b' :
+                               t.multiplier == 'triple' ? 'background:#1e3a5f;color:#93c5fd;border:1px solid #1d4ed8' :
+                               'background:#1a1a1a;color:#ccc;border:1px solid #333' %>">
+                <%= t.multiplier == 'single' ? '' : t.multiplier[0].upcase %><%= t.segment %>
+              </span>
+            <% end %>
+            <% (3 - last_turn_throws.size).times do %>
+              <span style="font-family:'DM Mono',monospace;font-size:0.6rem;
+                           padding:1px 5px;border-radius:3px;
+                           background:#111;color:#222;border:1px solid #1a1a1a">—</span>
+            <% end %>
+          </div>
+        <% end %>
+
+        <%# Turn before — dimmed %>
+        <% if prev_throws.any? %>
+          <div class="flex items-center gap-1" style="opacity:0.25">
+            <% prev_throws.each do |t| %>
+              <span style="font-family:'DM Mono',monospace;font-size:0.55rem;
+                           padding:1px 4px;border-radius:3px;
+                           <%= t.multiplier == 'double' ? 'background:#7f1d1d;color:#fca5a5;border:1px solid #991b1b' :
+                               t.multiplier == 'triple' ? 'background:#1e3a5f;color:#93c5fd;border:1px solid #1d4ed8' :
+                               'background:#1a1a1a;color:#555;border:1px solid #222' %>">
+                <%= t.multiplier == 'single' ? '' : t.multiplier[0].upcase %><%= t.segment %>
+              </span>
+            <% end %>
+          </div>
+        <% end %>
 
       </div>
     <% end %>
@@ -68,5 +113,54 @@
          style="width:<%= pct %>%;background:<%= is_active ? '#dc2626' : '#3f3f46' %>">
     </div>
   </div>
+
+  <%# Checkout hint — active player only %>
+  <% if is_active %>
+    <% suggestion = CheckoutCalculator.suggest(score) %>
+    <% if suggestion %>
+      <div class="mx-5 mb-2" style="background:#0a1a0a;border:1px solid #14532d;
+                                     border-radius:6px;padding:8px 12px;">
+        <p style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.15em;
+                  color:#16a34a;text-transform:uppercase;margin-bottom:6px">Checkout</p>
+        <div class="flex items-center gap-1.5 flex-wrap">
+          <% suggestion.each_with_index do |throw, i| %>
+            <span style="font-family:'DM Mono',monospace;font-size:0.7rem;
+                         padding:2px 8px;border-radius:3px;
+                         background:<%= throw.start_with?('T') ? '#1e3a5f' :
+                                         throw.start_with?('D') || throw == 'Bull' ? '#7f1d1d' :
+                                         '#1e1e1e' %>;
+                         color:<%= throw.start_with?('T') ? '#93c5fd' :
+                                     throw.start_with?('D') || throw == 'Bull' ? '#fca5a5' :
+                                     '#aaa' %>;
+                         border:1px solid <%= throw.start_with?('T') ? '#1d4ed8' :
+                                               throw.start_with?('D') || throw == 'Bull' ? '#991b1b' :
+                                               '#333' %>">
+              <%= throw %>
+            </span>
+            <% if i < suggestion.size - 1 %>
+              <span style="color:#2a2a2a;font-size:0.6rem">→</span>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  <% end %>
+
+  <%# Sets/legs pip track %>
+  <% if multi_set || multi_leg %>
+    <div class="px-5 pb-3 flex items-center gap-1.5">
+      <% count = multi_set ? match.best_of_sets : match.best_of_legs %>
+      <% won   = multi_set ? sets_won : legs_won %>
+      <% count.times do |i| %>
+        <div style="width:8px;height:8px;border-radius:50%;
+                    background:<%= i < won ? '#dc2626' : '#1e1e1e' %>;
+                    border:1px solid <%= i < won ? '#ef4444' : '#2a2a2a' %>;
+                    transition:background 0.2s ease">
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="pb-1"></div>
+  <% end %>
 
 </div>
