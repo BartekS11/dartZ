@@ -19,7 +19,6 @@ export default class extends Controller {
     document.removeEventListener("turbo:before-stream-render", this.boundSync)
   }
 
-  // Server is source of truth — sync currentScore from DOM after every stream
   syncScoreFromDOM() {
     setTimeout(() => {
       const el = document.getElementById(`player-${this.playerIdValue}-score`)
@@ -62,7 +61,19 @@ export default class extends Controller {
     this.applyMode()
   }
 
-  // ── Preview (client-side only, not saved) ──────────────────────────────────
+  // ── Helpers ────────────────────────────────────────────────────────────────
+
+  getThrowsCount() {
+    const form = document.getElementById("keyboard-form")
+    return parseInt(form?.dataset?.throwsCount || 0)
+  }
+
+  getMaxPossible() {
+    const dartsRemaining = 3 - this.getThrowsCount()
+    return dartsRemaining * 60
+  }
+
+  // ── Preview ────────────────────────────────────────────────────────────────
 
   preview() {
     const raw = this.inputTarget.value.trim()
@@ -73,10 +84,16 @@ export default class extends Controller {
     }
 
     if (this.mode === "total") {
-      const total = parseInt(raw, 10)
+      const total      = parseInt(raw, 10)
       if (isNaN(total)) return
-      const remaining = this.currentScore - total
-      this.updateScoreCardPreview(remaining < 0 ? null : remaining)
+      const remaining  = this.currentScore - total
+      const maxPossible = this.getMaxPossible()
+
+      if (total > maxPossible || remaining < 0) {
+        this.updateScoreCardPreview(null) // BUST
+      } else {
+        this.updateScoreCardPreview(remaining)
+      }
     } else {
       const parsed = this.parseThrow(raw)
       if (!parsed) return
@@ -124,13 +141,12 @@ export default class extends Controller {
     }
   }
 
-  // ── Single throw — no client score math, server decides ───────────────────
+  // ── Single throw ───────────────────────────────────────────────────────────
 
   submitSingle(raw) {
     const parsed = this.parseThrow(raw)
     if (!parsed) return
 
-    // Track for undo stack only — no score update
     this.throwStack.push({ points: parsed.points })
     this.inputTarget.value = ""
     this.resetScoreCardPreview()
@@ -138,15 +154,23 @@ export default class extends Controller {
     this.submitThrow(parsed.segment, parsed.multiplier)
   }
 
-  // ── Turn total — server decides ────────────────────────────────────────────
+  // ── Turn total ─────────────────────────────────────────────────────────────
 
   submitTotal(raw) {
-    const total = parseInt(raw, 10)
+    const total       = parseInt(raw, 10)
     if (isNaN(total) || total < 0) return
+
+    const maxPossible = this.getMaxPossible()
+
+    // Reject if impossible in remaining darts or busts score
+    if (total > maxPossible || total > this.currentScore) {
+      this.inputTarget.value = ""
+      this.resetScoreCardPreview()
+      return
+    }
 
     this.inputTarget.value = ""
     this.resetScoreCardPreview()
-
     this.submitThrow(null, null, total)
   }
 
@@ -171,29 +195,27 @@ export default class extends Controller {
     this.inputTarget.value = ""
   }
 
-  // ── Undo — server is source of truth ──────────────────────────────────────
+  // ── Undo ───────────────────────────────────────────────────────────────────
 
   async undoLastThrow() {
-    this.throwStack.pop() // remove from local stack only
+    this.throwStack.pop()
 
     const form   = document.getElementById("keyboard-form")
     const turnId = form?.action.match(/turns\/(\d+)/)?.[1]
     if (!turnId) return
 
-  const response = await fetch(`/turns/${turnId}/throws/last`, {
-    method:  "DELETE",
-    headers: {
-      "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]')?.content,
-      "Accept":       "text/vnd.turbo-stream.html",
-      "X-Undo-Mode":  this.mode   
-    }
-  })
+    const response = await fetch(`/turns/${turnId}/throws/last`, {
+      method:  "DELETE",
+      headers: {
+        "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]')?.content,
+        "Accept":       "text/vnd.turbo-stream.html",
+        "X-Undo-Mode":  this.mode
+      }
+    })
 
     if (response.ok) {
       const html = await response.text()
       Turbo.renderStreamMessage(html)
-      // syncScoreFromDOM fires via turbo:before-stream-render
-      // and updates this.currentScore automatically
     }
   }
 

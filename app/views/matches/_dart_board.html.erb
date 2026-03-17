@@ -1,6 +1,5 @@
 <div id="dart-board" class="panel p-6 mb-6">
   <p class="mono text-xs text-zinc-600 tracking-widest uppercase mb-4">Dart Board</p>
-
   <div class="grid grid-cols-5 gap-2">
     <% (1..20).each do |n| %>
       <div class="flex flex-col gap-1">
@@ -15,9 +14,7 @@
       </div>
     <% end %>
   </div>
-
   <div class="divider"></div>
-
   <div class="flex justify-center gap-2 mt-2">
     <%= button_to "BULL",
           turn_throws_path(turn),
@@ -30,9 +27,15 @@
           params: { throw: { segment: 25, multiplier: :double } },
           method: :post,
           form: { data: { turbo_stream: true } },
-          class: "dart-btn double px-6 py-2 rounded" %>
+          class: "dart-btn single px-6 py-2 rounded" %>
+    <%= button_to "MISS",
+          turn_throws_path(turn),
+          params: { throw: { segment: 0, multiplier: :miss } },
+          method: :post,
+          form: { data: { turbo_stream: true } },
+          class: "dart-btn py-2 px-6 rounded",
+          style: "background:#1a1010;border:1px solid #3a1a1a;color:#555;" %>
   </div>
-
   <p class="mono text-xs text-zinc-700 text-center mt-4">
     Bust resets score · Finish on a double
   </p>

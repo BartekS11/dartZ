@@ -6,7 +6,16 @@ class ThrowsController < ApplicationController
     @match = @turn.leg.match
 
     if params[:throw][:total].present?
-      @turn.distribute_total!(params[:throw][:total].to_i)
+      total           = params[:throw][:total].to_i
+      darts_remaining = 3 - @turn.throws.count
+      max_possible    = darts_remaining * 60
+
+      if total > max_possible || total > @match.score_for(@turn.player)
+        # Bust — complete turn without scoring
+        @turn.complete_turn!(broadcast: false)
+      else
+        @turn.distribute_total!(total)
+      end
     else
       @throw = @turn.throws.create!(throw_params)
       @turn.apply_throw!(@throw)
@@ -67,6 +76,7 @@ class ThrowsController < ApplicationController
         locals:  { player: finishing_player, leg: finishing_leg })
       streams << turbo_stream.update("score-cards-section", html: "")
       streams << turbo_stream.update("keyboard-section",    html: "")
+      streams << turbo_stream.update("header-section",      html: "")
     end
 
     render turbo_stream: streams

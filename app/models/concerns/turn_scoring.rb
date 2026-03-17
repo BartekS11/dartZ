@@ -1,44 +1,57 @@
 module TurnScoring
   extend ActiveSupport::Concern
 
-  def distribute_total!(total, skip_checkout_rule: true)
-    remaining   = total
-    throws_made = 0
+  included do
+    # nothing needed here
+  end
 
-    while remaining > 0 && throws_made < 3
+  def distribute_total!(total, skip_checkout_rule: true)
+    chunks = split_into_valid_chunks(total)
+    Rails.logger.info "distribute_total! #{total} → chunks: #{chunks.inspect}"
+    chunks.each do |points|
       active_turn = leg.match.current_leg.current_turn
       break unless active_turn
       break if active_turn.completed?
 
-      points              = [ remaining, 60 ].min
       segment, multiplier = self.class.points_to_segment(points)
-      throw_record        = active_turn.throws.create!(
-                              segment:    segment,
-                              multiplier: multiplier
-                            )
-      active_turn.apply_throw!(throw_record,
-                                broadcast:           false,
-                                skip_checkout_rule:  skip_checkout_rule)
-
-      remaining   -= points
-      throws_made += 1
+      throw_record        = active_turn.throws.create!(segment: segment, multiplier: multiplier)
+      active_turn.apply_throw!(throw_record, broadcast: false, skip_checkout_rule: skip_checkout_rule)
     end
 
-    # Force complete if still open after all throws
     reload
-    if !completed?
-      complete_turn!(broadcast: false)
-    end
+    complete_turn!(broadcast: false) unless completed?
   end
 
   module ClassMethods
     def points_to_segment(points)
       (1..20).each { |s| return [ s, "triple" ] if s * 3 == points }
       (1..20).each { |s| return [ s, "double" ] if s * 2 == points }
-      (1..20).each { |s| return [ s, "single" ] if s       == points }
+      return [ points, "single" ] if points >= 1 && points <= 20
       return [ 25, "double" ] if points == 50
       return [ 25, "single" ] if points == 25
       [ 1, "single" ]
     end
+  end
+
+  private
+
+  def split_into_valid_chunks(total)
+    valid = ((1..20).to_a +
+             (1..20).map { |s| s * 2 } +
+             (1..20).map { |s| s * 3 } +
+             [ 25, 50 ]).uniq.sort.reverse
+
+    remaining = total
+    chunks    = []
+
+    3.times do
+      break if remaining == 0
+      chunk = valid.find { |v| v <= remaining }
+      break unless chunk
+      chunks << chunk
+      remaining -= chunk
+    end
+
+    chunks.empty? ? [ total ] : chunks
   end
 end
