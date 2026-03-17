@@ -6,8 +6,17 @@ module TurnScoring
   end
 
   def distribute_total!(total, skip_checkout_rule: true)
+    active_turn = leg.match.current_leg.current_turn
+    return unless active_turn && !active_turn.completed?
+
+    if total == 0
+      throw_record = active_turn.throws.create!(segment: 0, multiplier: :miss)
+      active_turn.apply_throw!(throw_record, broadcast: false, skip_checkout_rule: skip_checkout_rule)
+      return
+    end
+
     chunks = split_into_valid_chunks(total)
-    Rails.logger.info "distribute_total! #{total} → chunks: #{chunks.inspect}"
+
     chunks.each do |points|
       active_turn = leg.match.current_leg.current_turn
       break unless active_turn
@@ -17,9 +26,7 @@ module TurnScoring
       throw_record        = active_turn.throws.create!(segment: segment, multiplier: multiplier)
       active_turn.apply_throw!(throw_record, broadcast: false, skip_checkout_rule: skip_checkout_rule)
     end
-
-    reload
-    complete_turn!(broadcast: false) unless completed?
+    # No force complete — apply_throw! handles it when throws.count >= 3
   end
 
   module ClassMethods

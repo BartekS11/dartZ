@@ -4,19 +4,18 @@ export default class extends Controller {
   static targets = ["input", "modeBtn", "modeLabel"]
   static values  = { url: String, score: Number, playerId: Number }
 
-connect() {
-  this.currentScore = this.scoreValue
-  this.throwStack   = []
-  this.mode         = localStorage.getItem("dartz_input_mode") || "single"
+  connect() {
+    this.currentScore = this.scoreValue
+    this.throwStack   = []
+    this.mode         = localStorage.getItem("dartz_input_mode") || "single"
 
-  this.boundSync = this.syncScoreFromDOM.bind(this)
-  document.addEventListener("turbo:before-stream-render", this.boundSync)
+    this.boundSync = this.syncScoreFromDOM.bind(this)
+    document.addEventListener("turbo:before-stream-render", this.boundSync)
 
-  this.applyMode()
+    this.applyMode()
 
-  // Autofocus input on connect (fires on initial load and after turbo re-render)
-  if (this.hasInputTarget) this.inputTarget.focus()
-}
+    if (this.hasInputTarget) this.inputTarget.focus()
+  }
 
   disconnect() {
     document.removeEventListener("turbo:before-stream-render", this.boundSync)
@@ -87,13 +86,13 @@ connect() {
     }
 
     if (this.mode === "total") {
-      const total      = parseInt(raw, 10)
+      const total       = parseInt(raw, 10)
       if (isNaN(total)) return
-      const remaining  = this.currentScore - total
+      const remaining   = this.currentScore - total
       const maxPossible = this.getMaxPossible()
 
       if (total > maxPossible || remaining < 0) {
-        this.updateScoreCardPreview(null) // BUST
+        this.updateScoreCardPreview(null)
       } else {
         this.updateScoreCardPreview(remaining)
       }
@@ -160,12 +159,11 @@ connect() {
   // ── Turn total ─────────────────────────────────────────────────────────────
 
   submitTotal(raw) {
-    const total       = parseInt(raw, 10)
+    const total = parseInt(raw, 10)
     if (isNaN(total) || total < 0) return
 
     const maxPossible = this.getMaxPossible()
 
-    // Reject if impossible in remaining darts or busts score
     if (total > maxPossible || total > this.currentScore) {
       this.inputTarget.value = ""
       this.resetScoreCardPreview()
@@ -177,16 +175,38 @@ connect() {
     this.submitThrow(null, null, total)
   }
 
+  // ── Submit ─────────────────────────────────────────────────────────────────
+
+submitThrow(segment, multiplier, totalPoints) {
+  const form      = document.getElementById("keyboard-form")
+  const segInput  = document.getElementById("keyboard-segment")
+  const multInput = document.getElementById("keyboard-multiplier")
+  const totInput  = document.getElementById("keyboard-total")
+
+  if (totalPoints !== undefined) {
+    segInput.value  = ""
+    multInput.value = ""
+    if (totInput) totInput.value = totalPoints
+  } else {
+    segInput.value  = segment
+    multInput.value = multiplier
+    if (totInput) totInput.value = ""
+  }
+
   this.resetScoreCardPreview()
   this.inputTarget.value = ""
-
-  // Focus after turbo stream re-renders the input
-  document.addEventListener("turbo:after-stream-render", () => {
-    const input = document.querySelector('[data-keyboard-target="input"]')
-    if (input) input.focus()
-  }, { once: true })
-
   form.requestSubmit()
+
+  // Wait for turbo stream to finish re-rendering then focus
+  const focusInput = () => {
+    const input = document.querySelector('[data-keyboard-target="input"]')
+    if (input) {
+      input.focus()
+    } else {
+      requestAnimationFrame(focusInput)
+    }
+  }
+  requestAnimationFrame(focusInput)
 }
 
   // ── Undo ───────────────────────────────────────────────────────────────────
