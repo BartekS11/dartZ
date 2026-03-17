@@ -2,9 +2,11 @@ module HasThrowHistory
   extend ActiveSupport::Concern
 
   def last_throws_for(player, limit: 3)
+    return Throw.none unless current_leg
+
     throws
       .joins(:turn)
-      .where(turns: { player_id: player.id })
+      .where(turns: { player_id: player.id, leg_id: current_leg.id })
       .order(created_at: :desc)
       .limit(limit)
   end
@@ -38,14 +40,27 @@ module HasThrowHistory
   end
 
   def last_turn_throws_for(player)
-    last_completed_turn = turns
-      .joins(:throws)
-      .where(turns: { player_id: player.id })
-      .where.not(turns: { completed_at: nil })
-      .order("turns.completed_at DESC")
-      .first
+    current = current_leg
+    return [] unless current
 
-    return [] unless last_completed_turn
-    last_completed_turn.throws.order(:created_at)
+    # Active turn with throws first
+    active_turn = current.turns
+                         .where(player_id: player.id, completed_at: nil)
+                         .joins(:throws)
+                         .order(created_at: :desc)
+                         .first
+
+    return active_turn.throws.order(:created_at).to_a if active_turn
+
+    # Last completed turn in current leg
+    last_completed = current.turns
+                            .joins(:throws)
+                            .where(turns: { player_id: player.id })
+                            .where.not(turns: { completed_at: nil })
+                            .order("turns.completed_at DESC")
+                            .first
+
+    return [] unless last_completed
+    last_completed.throws.order(:created_at).to_a
   end
 end

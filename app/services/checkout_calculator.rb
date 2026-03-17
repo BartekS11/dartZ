@@ -1,5 +1,4 @@
 class CheckoutCalculator
-  # Standard checkout paths for common scores
   CHECKOUT_TABLE = {
     170 => [ "T20", "T20", "Bull" ],
     167 => [ "T20", "T19", "Bull" ],
@@ -38,7 +37,7 @@ class CheckoutCalculator
     129 => [ "T20", "T19", "D6" ],
     128 => [ "T20", "T16", "D10" ],
     127 => [ "T20", "T17", "D8" ],
-    126 => [ "T20", "T19", "D4" ],  # also T9 T9 D18 etc
+    126 => [ "T20", "T19", "D4" ],
     125 => [ "T20", "T15", "D10" ],
     124 => [ "T20", "T16", "D8" ],
     123 => [ "T20", "T13", "D12" ],
@@ -165,18 +164,37 @@ class CheckoutCalculator
     2   => [ "D1" ]
   }.freeze
 
-  def self.suggest(score)
-    return nil if score > 170 || score == 169 || score == 168 ||
-                  score == 166 || score == 165 || score == 163 ||
-                  score == 162 || score == 159
-    return nil if score <= 1
+  IMPOSSIBLE = [ 169, 168, 166, 165, 163, 162, 159 ].freeze
 
-    CHECKOUT_TABLE[score]
+  def self.suggest(score, darts_remaining: 3)
+    return nil if score > 170
+    return nil if score <= 1
+    return nil if IMPOSSIBLE.include?(score)
+
+    full = CHECKOUT_TABLE[score]
+    return nil unless full
+
+    # If we have fewer darts remaining than the full path needs, trim from front
+    if darts_remaining < full.size
+      # Can't finish in time
+      return nil
+    end
+
+    # Prefer shortest path that fits in darts_remaining
+    # If score has a shorter checkout (1 or 2 darts), use that
+    full
   end
 
-  def self.throws_needed(score)
-    path = suggest(score)
+  # Returns the minimum darts needed to checkout this score
+  def self.darts_needed(score)
+    path = CHECKOUT_TABLE[score]
     return nil unless path
     path.size
+  end
+
+  # Suggest based on how many darts already thrown this turn
+  def self.suggest_for_turn(score, throws_in_turn: 0)
+    darts_remaining = 3 - throws_in_turn
+    suggest(score, darts_remaining: darts_remaining)
   end
 end

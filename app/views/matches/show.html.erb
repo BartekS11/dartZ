@@ -30,16 +30,6 @@
     box-shadow: 0 0 30px rgba(220,38,38,0.15), inset 0 0 30px rgba(220,38,38,0.03);
   }
 
-  .score-card.active-player::after {
-    content: 'THROWING';
-    position: absolute;
-    top: 8px; right: 10px;
-    font-family: 'DM Mono', monospace;
-    font-size: 0.6rem;
-    color: #ef4444;
-    letter-spacing: 0.15em;
-    animation: pulse-text 1.5s ease-in-out infinite;
-  }
 
   @keyframes pulse-text {
     0%, 100% { opacity: 1; }
@@ -118,14 +108,14 @@
 <script>
   (function() {
     const matches = JSON.parse(localStorage.getItem("dartz_matches") || "[]")
-    const id = <%= @match.id %>
+    const id = <%= @match.id.to_json %>
     const exists = matches.find(m => m.id === id)
     if (!exists) {
       matches.unshift({
         id: id,
-        player1: "<%= j @match.players.first&.display_name %>",
-        player2: "<%= j @match.players.second&.display_name %>",
-        createdAt: "<%= @match.created_at.iso8601 %>"
+        player1: "<%= j @match.players.first&.display_name.to_json %>",
+        player2: "<%= j @match.players.second&.display_name.to_json %>",
+        createdAt: "<%= @match.created_at.iso8601.to_json %>"
       })
       localStorage.setItem("dartz_matches", JSON.stringify(matches.slice(0, 10)))
     }
