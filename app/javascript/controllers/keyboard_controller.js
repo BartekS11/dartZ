@@ -159,37 +159,22 @@ connect() {
 
   // ── Turn total ─────────────────────────────────────────────────────────────
 
-submitTotal(raw) {
-  const total = parseInt(raw, 10)
-  if (isNaN(total) || total < 0) return  // allow 0
+  submitTotal(raw) {
+    const total       = parseInt(raw, 10)
+    if (isNaN(total) || total < 0) return
 
-  const maxPossible = this.getMaxPossible()
+    const maxPossible = this.getMaxPossible()
 
-  if (total > maxPossible || total > this.currentScore) {
+    // Reject if impossible in remaining darts or busts score
+    if (total > maxPossible || total > this.currentScore) {
+      this.inputTarget.value = ""
+      this.resetScoreCardPreview()
+      return
+    }
+
     this.inputTarget.value = ""
     this.resetScoreCardPreview()
-    return
-  }
-
-  this.inputTarget.value = ""
-  this.resetScoreCardPreview()
-  this.submitThrow(null, null, total)
-}
-
-submitThrow(segment, multiplier, totalPoints) {
-  const form      = document.getElementById("keyboard-form")
-  const segInput  = document.getElementById("keyboard-segment")
-  const multInput = document.getElementById("keyboard-multiplier")
-  const totInput  = document.getElementById("keyboard-total")
-
-  if (totalPoints !== undefined) {
-    segInput.value  = ""
-    multInput.value = ""
-    if (totInput) totInput.value = totalPoints
-  } else {
-    segInput.value  = segment
-    multInput.value = multiplier
-    if (totInput) totInput.value = ""
+    this.submitThrow(null, null, total)
   }
 
   this.resetScoreCardPreview()
@@ -222,15 +207,10 @@ submitThrow(segment, multiplier, totalPoints) {
       }
     })
 
-if (response.ok) {
-  const html = await response.text()
-  Turbo.renderStreamMessage(html)
-  // Re-focus after turbo stream re-renders the input
-  setTimeout(() => {
-    const input = document.querySelector('[data-keyboard-target="input"]')
-    if (input) input.focus()
-  }, 100)
-}
+    if (response.ok) {
+      const html = await response.text()
+      Turbo.renderStreamMessage(html)
+    }
   }
 
   // ── Parse ──────────────────────────────────────────────────────────────────
