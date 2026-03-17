@@ -35,10 +35,10 @@
 
 </div>
 
-<%# Hidden form %>
+<%# Hidden form — throws_count used by JS to calculate max possible score %>
 <%= form_with url: turn_throws_path(turn),
               method: :post,
-              data: { turbo_stream: true },
+              data: { turbo_stream: true, throws_count: turn.throws.count },
               html: { id: "keyboard-form" } do |f| %>
   <%= f.hidden_field :segment,    name: "throw[segment]",    id: "keyboard-segment" %>
   <%= f.hidden_field :multiplier, name: "throw[multiplier]", id: "keyboard-multiplier" %>

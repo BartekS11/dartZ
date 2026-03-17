@@ -6,17 +6,18 @@ class Throw < ApplicationRecord
   validates :segment,
             numericality: {
               only_integer: true,
-              greater_than: 0,
-              less_than_or_equal_to: 25  # 25 = bull
+              greater_than_or_equal_to: 0,
+              less_than_or_equal_to: 25
             }
 
   validates :segment,
             inclusion: {
-              in: (1..20).to_a + [ 25 ],
-              message: "must be 1-20 or 25 (bull)"
+              in: [ 0 ] + (1..20).to_a + [ 25 ],
+              message: "must be 0 (miss), 1-20, or 25 (bull)"
             }
 
   enum :multiplier, {
+    miss:   0,
     single: 1,
     double: 2,
     triple: 3
@@ -31,6 +32,7 @@ class Throw < ApplicationRecord
             if: -> { segment == 25 }
 
   def points
+    return 0 if multiplier == "miss" || segment == 0
     segment * self.class.multipliers.fetch(multiplier)
   end
 

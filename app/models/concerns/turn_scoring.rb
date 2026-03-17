@@ -7,7 +7,7 @@ module TurnScoring
 
   def distribute_total!(total, skip_checkout_rule: true)
     chunks = split_into_valid_chunks(total)
-
+    Rails.logger.info "distribute_total! #{total} → chunks: #{chunks.inspect}"
     chunks.each do |points|
       active_turn = leg.match.current_leg.current_turn
       break unless active_turn
