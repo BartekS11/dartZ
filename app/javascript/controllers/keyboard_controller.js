@@ -15,12 +15,20 @@ export default class extends Controller {
     this.applyMode()
 
     if (this.hasInputTarget) this.inputTarget.focus()
+      this.boundUndo = this.handleUndo.bind(this)
+document.addEventListener("keydown", this.boundUndo)
   }
 
   disconnect() {
     document.removeEventListener("turbo:before-stream-render", this.boundSync)
+    document.removeEventListener("keydown", this.boundUndo)
   }
-
+handleUndo(e) {
+  if ((e.ctrlKey || e.metaKey) && e.key === "z") {
+    e.preventDefault()
+    this.undoLastThrow()
+  }
+}
   syncScoreFromDOM() {
     setTimeout(() => {
       const el = document.getElementById(`player-${this.playerIdValue}-score`)
@@ -254,4 +262,5 @@ submitThrow(segment, multiplier, totalPoints) {
 
     return { segment: num, multiplier, points }
   }
+  
 }

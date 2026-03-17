@@ -187,7 +187,15 @@ clearMatches() {
       <p class="text-zinc-700 text-xs mt-1">Create one to get started.</p>
     </div>`
 }
+swapPlayers() {
+  const p1 = this.player1Target.value
+  const p2 = this.player2Target.value
 
+  this.player1Target.value = p2
+  this.player2Target.value = p1
+
+  this.save()
+}
 clearPlayers() {
   localStorage.removeItem("dartz_players")
   localStorage.removeItem("dartz_player1")
