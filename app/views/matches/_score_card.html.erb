@@ -6,8 +6,8 @@
 <% legs_won         = match.current_set&.legs_won_by(player) || 0 %>
 <% multi_set        = match.best_of_sets > 1 %>
 <% multi_leg        = match.best_of_legs > 1 %>
-<% darts_thrown     = is_active ? (match.current_leg&.current_turn&.throws&.count || 0) : 0 %>
-<% suggestion       = is_active ? CheckoutCalculator.suggest(score, darts_remaining: 3 - darts_thrown) : nil %>
+<% darts_thrown = is_active ? (match.current_leg&.current_turn&.throws&.count || 0) : 0 %>
+<% suggestion   = CheckoutCalculator.suggest(score, darts_remaining: 3 - darts_thrown) %>
 
 <%# Last completed turn %>
 <% last_turn = if match.current_leg
