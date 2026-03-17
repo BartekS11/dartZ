@@ -106,7 +106,7 @@
           <div class="flex gap-2 mb-3">
             <% [1, 2, 3].each do |n| %>
               <button type="button"
-                      onclick="document.getElementById('checkout-throws-input').value = <%= n %>;
+                      onclick="document.getElementById('checkout-throws-input').value = <%= n.to_json %>;
                                document.querySelectorAll('.dart-count-btn').forEach(b => b.classList.remove('active'));
                                this.classList.add('active')"
                       class="dart-count-btn flex-1 py-3 rounded-lg border"

@@ -179,7 +179,28 @@ export default class extends Controller {
       localStorage.setItem("dartz_matches", JSON.stringify(matches.slice(0, 20)))
     }
   }
+clearMatches() {
+  localStorage.removeItem("dartz_matches")
+  if (this.hasMatchListTarget) this.matchListTarget.innerHTML = `
+    <div class="text-center py-20 border border-dashed border-zinc-800 rounded-lg">
+      <p class="text-zinc-600 text-sm">No matches yet.</p>
+      <p class="text-zinc-700 text-xs mt-1">Create one to get started.</p>
+    </div>`
+}
 
+clearPlayers() {
+  localStorage.removeItem("dartz_players")
+  localStorage.removeItem("dartz_player1")
+  localStorage.removeItem("dartz_player2")
+
+  if (this.hasPlayer1Target) this.player1Target.value = ""
+  if (this.hasPlayer2Target) this.player2Target.value = ""
+
+  const wrapper = document.getElementById("greeting-wrapper")
+  if (wrapper) wrapper.classList.add("hidden")
+
+  this.renderDropdowns()
+}
   async renderMatchList() {
     if (!this.hasMatchListTarget) return
 

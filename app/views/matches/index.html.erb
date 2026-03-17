@@ -220,7 +220,23 @@
       </h1>
       <p class="text-zinc-500 text-sm mt-2">Track your 501 sessions</p>
     </div>
-
+<%# Match list header %>
+<div class="flex items-center justify-between mb-3">
+  <p class="mono text-xs text-zinc-700 tracking-widest uppercase">Recent Matches</p>
+  <div class="flex items-center gap-3">
+    <button type="button"
+            data-action="click->lobby#clearMatches"
+            class="mono text-xs text-zinc-700 hover:text-red-500 tracking-widest transition-colors">
+      CLEAR MATCHES ✕
+    </button>
+    <div style="width:1px;height:10px;background:#2a2a2a"></div>
+    <button type="button"
+            data-action="click->lobby#clearPlayers"
+            class="mono text-xs text-zinc-700 hover:text-red-500 tracking-widest transition-colors">
+      CLEAR PLAYERS ✕
+    </button>
+  </div>
+</div>
     <%# Returning players greeting %>
     <div id="greeting-wrapper" class="hidden text-center mb-6">
       <p class="mono text-xs text-zinc-600 tracking-widest mb-1">LAST PLAYERS</p>
@@ -295,24 +311,42 @@
                 <button type="button"
                         class="preset-btn <%= val == 1 ? 'active' : '' %>"
                         onclick="
-                          document.getElementById('best_of_legs').value = <%= val %>;
+                          document.getElementById('best_of_legs').value = <%= val.to_json %>;
                           this.closest('.format-presets').querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
                           this.classList.add('active')">
                   <%= label %>
                 </button>
               <% end %>
             </div>
-            <div class="flex items-center gap-2">
-              <span class="mono text-xs text-zinc-700">Custom:</span>
-              <input type="number"
-                     id="best_of_legs"
-                     name="best_of_legs"
-                     value="1"
-                     min="1"
-                     max="99"
-                     class="format-custom-input"
-                     oninput="this.closest('.format-section').querySelectorAll('.format-presets .preset-btn').forEach(b => b.classList.remove('active'))">
-            </div>
+<div class="flex items-center gap-2 mt-1">
+  <span class="mono text-xs text-zinc-700 tracking-widest">CUSTOM</span>
+  <div class="flex items-center rounded-lg overflow-hidden border border-zinc-800 bg-zinc-950">
+    <button type="button"
+            onclick="const i=document.getElementById('best_of_legs');i.value=Math.max(1,parseInt(i.value||1)-1)"
+            class="mono text-zinc-600 hover:text-red-500 border-r border-zinc-800
+                   bg-transparent px-2 py-1.5 text-sm transition-colors cursor-pointer">
+      −
+    </button>
+    <input type="number"
+           id="best_of_legs"
+           name="best_of_legs"
+           value="1"
+           min="1"
+           max="99"
+           class="w-10 bg-transparent text-zinc-400 text-center font-mono text-sm
+                  py-1.5 focus:outline-none focus:text-white transition-colors
+                  [appearance:textfield]
+                  [&::-webkit-outer-spin-button]:appearance-none
+                  [&::-webkit-inner-spin-button]:appearance-none"
+           oninput="this.closest('.format-section').querySelectorAll('.format-presets .preset-btn').forEach(b => b.classList.remove('active'))">
+    <button type="button"
+            onclick="const i=document.getElementById('best_of_legs');i.value=Math.min(99,parseInt(i.value||1)+1)"
+            class="mono text-zinc-600 hover:text-red-500 border-l border-zinc-800
+                   bg-transparent px-2 py-1.5 text-sm transition-colors cursor-pointer">
+      +
+    </button>
+  </div>
+</div>
           </div>
 
           <%# Sets %>
@@ -323,24 +357,42 @@
                 <button type="button"
                         class="preset-btn <%= val == 1 ? 'active' : '' %>"
                         onclick="
-                          document.getElementById('best_of_sets').value = <%= val %>;
+                          document.getElementById('best_of_sets').value = <%= val.to_json %>;
                           this.closest('.format-presets').querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
                           this.classList.add('active')">
                   <%= label %>
                 </button>
               <% end %>
             </div>
-            <div class="flex items-center gap-2">
-              <span class="mono text-xs text-zinc-700">Custom:</span>
-              <input type="number"
-                     id="best_of_sets"
-                     name="best_of_sets"
-                     value="1"
-                     min="1"
-                     max="99"
-                     class="format-custom-input"
-                     oninput="this.closest('.format-section').querySelectorAll('.format-presets .preset-btn').forEach(b => b.classList.remove('active'))">
-            </div>
+            <div class="flex items-center gap-2 mt-1">
+  <span class="mono text-xs text-zinc-700 tracking-widest">CUSTOM</span>
+  <div class="flex items-center rounded-lg overflow-hidden border border-zinc-800 bg-zinc-950">
+    <button type="button"
+            onclick="const i=document.getElementById('best_of_sets');i.value=Math.max(1,parseInt(i.value||1)-1)"
+            class="mono text-zinc-600 hover:text-red-500 border-r border-zinc-800
+                   bg-transparent px-2 py-1.5 text-sm transition-colors cursor-pointer">
+      −
+    </button>
+    <input type="number"
+           id="best_of_sets"
+           name="best_of_sets"
+           value="1"
+           min="1"
+           max="99"
+           class="w-10 bg-transparent text-zinc-400 text-center font-mono text-sm
+                  py-1.5 focus:outline-none focus:text-white transition-colors
+                  [appearance:textfield]
+                  [&::-webkit-outer-spin-button]:appearance-none
+                  [&::-webkit-inner-spin-button]:appearance-none"
+           oninput="this.closest('.format-section').querySelectorAll('.format-presets .preset-btn').forEach(b => b.classList.remove('active'))">
+    <button type="button"
+            onclick="const i=document.getElementById('best_of_sets');i.value=Math.min(99,parseInt(i.value||1)+1)"
+            class="mono text-zinc-600 hover:text-red-500 border-l border-zinc-800
+                   bg-transparent px-2 py-1.5 text-sm transition-colors cursor-pointer">
+      +
+    </button>
+  </div>
+</div>
           </div>
 
         </div>

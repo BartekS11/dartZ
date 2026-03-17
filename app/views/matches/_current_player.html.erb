@@ -18,45 +18,12 @@
       <span data-keyboard-target="modeLabel"
             class="mono text-xs text-zinc-500 tracking-widest">SINGLE THROW</span>
     </button>
-
     <button type="button"
             data-action="click->keyboard#undoLastThrow"
             class="btn-undo px-4 py-2 rounded-lg">
       ↩ UNDO
     </button>
   </div>
-
-  <% if false %>
-  <%# Checkout suggestion %>
-  <div id="checkout-hint" class="mb-3">
-    <% suggestion = CheckoutCalculator.suggest(match.score_for(match.current_player)) %>
-    <% if suggestion %>
-      <div style="background:#0a1a0a;border:1px solid #14532d;border-radius:8px;padding:10px 14px;">
-        <p class="mono text-xs text-green-700 tracking-widest mb-2">CHECKOUT</p>
-        <div class="flex items-center gap-2 flex-wrap">
-          <% suggestion.each_with_index do |throw, i| %>
-            <span style="font-family:'DM Mono',monospace;font-size:0.8rem;
-                         padding:4px 10px;border-radius:4px;
-                         background:<%= throw.start_with?('T') ? '#1e3a5f' :
-                                         throw.start_with?('D') || throw == 'Bull' ? '#7f1d1d' :
-                                         '#1e1e1e' %>;
-                         color:<%= throw.start_with?('T') ? '#93c5fd' :
-                                     throw.start_with?('D') || throw == 'Bull' ? '#fca5a5' :
-                                     '#aaa' %>;
-                         border:1px solid <%= throw.start_with?('T') ? '#1d4ed8' :
-                                               throw.start_with?('D') || throw == 'Bull' ? '#991b1b' :
-                                               '#333' %>">
-              <%= throw %>
-            </span>
-            <% if i < suggestion.size - 1 %>
-              <span class="text-zinc-700 text-xs">→</span>
-            <% end %>
-          <% end %>
-        </div>
-      </div>
-    <% end %>
-  </div>
-  <% end %>
 
   <%# Input %>
   <input type="text"
