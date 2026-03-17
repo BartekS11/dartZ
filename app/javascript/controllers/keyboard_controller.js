@@ -4,16 +4,19 @@ export default class extends Controller {
   static targets = ["input", "modeBtn", "modeLabel"]
   static values  = { url: String, score: Number, playerId: Number }
 
-  connect() {
-    this.currentScore = this.scoreValue
-    this.throwStack   = []
-    this.mode         = localStorage.getItem("dartz_input_mode") || "single"
+connect() {
+  this.currentScore = this.scoreValue
+  this.throwStack   = []
+  this.mode         = localStorage.getItem("dartz_input_mode") || "single"
 
-    this.boundSync = this.syncScoreFromDOM.bind(this)
-    document.addEventListener("turbo:before-stream-render", this.boundSync)
+  this.boundSync = this.syncScoreFromDOM.bind(this)
+  document.addEventListener("turbo:before-stream-render", this.boundSync)
 
-    this.applyMode()
-  }
+  this.applyMode()
+
+  // Autofocus input on connect (fires on initial load and after turbo re-render)
+  if (this.hasInputTarget) this.inputTarget.focus()
+}
 
   disconnect() {
     document.removeEventListener("turbo:before-stream-render", this.boundSync)
@@ -156,44 +159,50 @@ export default class extends Controller {
 
   // ── Turn total ─────────────────────────────────────────────────────────────
 
-  submitTotal(raw) {
-    const total       = parseInt(raw, 10)
-    if (isNaN(total) || total < 0) return
+submitTotal(raw) {
+  const total = parseInt(raw, 10)
+  if (isNaN(total) || total < 0) return  // allow 0
 
-    const maxPossible = this.getMaxPossible()
+  const maxPossible = this.getMaxPossible()
 
-    // Reject if impossible in remaining darts or busts score
-    if (total > maxPossible || total > this.currentScore) {
-      this.inputTarget.value = ""
-      this.resetScoreCardPreview()
-      return
-    }
-
+  if (total > maxPossible || total > this.currentScore) {
     this.inputTarget.value = ""
     this.resetScoreCardPreview()
-    this.submitThrow(null, null, total)
+    return
   }
 
-  submitThrow(segment, multiplier, totalPoints) {
-    const form      = document.getElementById("keyboard-form")
-    const segInput  = document.getElementById("keyboard-segment")
-    const multInput = document.getElementById("keyboard-multiplier")
-    const totInput  = document.getElementById("keyboard-total")
+  this.inputTarget.value = ""
+  this.resetScoreCardPreview()
+  this.submitThrow(null, null, total)
+}
 
-    if (totalPoints !== undefined) {
-      segInput.value  = ""
-      multInput.value = ""
-      if (totInput) totInput.value = totalPoints
-    } else {
-      segInput.value  = segment
-      multInput.value = multiplier
-      if (totInput) totInput.value = ""
-    }
+submitThrow(segment, multiplier, totalPoints) {
+  const form      = document.getElementById("keyboard-form")
+  const segInput  = document.getElementById("keyboard-segment")
+  const multInput = document.getElementById("keyboard-multiplier")
+  const totInput  = document.getElementById("keyboard-total")
 
-    this.resetScoreCardPreview()
-    form.requestSubmit()
-    this.inputTarget.value = ""
+  if (totalPoints !== undefined) {
+    segInput.value  = ""
+    multInput.value = ""
+    if (totInput) totInput.value = totalPoints
+  } else {
+    segInput.value  = segment
+    multInput.value = multiplier
+    if (totInput) totInput.value = ""
   }
+
+  this.resetScoreCardPreview()
+  this.inputTarget.value = ""
+
+  // Focus after turbo stream re-renders the input
+  document.addEventListener("turbo:after-stream-render", () => {
+    const input = document.querySelector('[data-keyboard-target="input"]')
+    if (input) input.focus()
+  }, { once: true })
+
+  form.requestSubmit()
+}
 
   // ── Undo ───────────────────────────────────────────────────────────────────
 
@@ -213,10 +222,15 @@ export default class extends Controller {
       }
     })
 
-    if (response.ok) {
-      const html = await response.text()
-      Turbo.renderStreamMessage(html)
-    }
+if (response.ok) {
+  const html = await response.text()
+  Turbo.renderStreamMessage(html)
+  // Re-focus after turbo stream re-renders the input
+  setTimeout(() => {
+    const input = document.querySelector('[data-keyboard-target="input"]')
+    if (input) input.focus()
+  }, 100)
+}
   }
 
   // ── Parse ──────────────────────────────────────────────────────────────────

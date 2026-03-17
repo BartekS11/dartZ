@@ -6,20 +6,26 @@ module TurnScoring
   end
 
   def distribute_total!(total, skip_checkout_rule: true)
-    chunks = split_into_valid_chunks(total)
-    Rails.logger.info "distribute_total! #{total} → chunks: #{chunks.inspect}"
-    chunks.each do |points|
-      active_turn = leg.match.current_leg.current_turn
-      break unless active_turn
-      break if active_turn.completed?
+     active_turn = leg.match.current_leg.current_turn
+     return unless active_turn && !active_turn.completed?
 
-      segment, multiplier = self.class.points_to_segment(points)
-      throw_record        = active_turn.throws.create!(segment: segment, multiplier: multiplier)
-      active_turn.apply_throw!(throw_record, broadcast: false, skip_checkout_rule: skip_checkout_rule)
-    end
+     if total == 0
+       throw_record = active_turn.throws.create!(segment: 0, multiplier: :miss)
+       active_turn.apply_throw!(throw_record, broadcast: false, skip_checkout_rule: skip_checkout_rule)
+       return
+     end
 
-    reload
-    complete_turn!(broadcast: false) unless completed?
+     chunks = split_into_valid_chunks(total)
+
+     chunks.each do |points|
+       active_turn = leg.match.current_leg.current_turn
+       break unless active_turn
+       break if active_turn.completed?
+
+       segment, multiplier = self.class.points_to_segment(points)
+       throw_record        = active_turn.throws.create!(segment: segment, multiplier: multiplier)
+       active_turn.apply_throw!(throw_record, broadcast: false, skip_checkout_rule: skip_checkout_rule)
+     end
   end
 
   module ClassMethods
