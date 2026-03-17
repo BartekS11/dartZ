@@ -6,19 +6,23 @@ module TurnScoring
   end
 
   def distribute_total!(total, skip_checkout_rule: true)
-    active_turn = leg.match.current_leg.current_turn
+    active_turn = leg.match.current_leg&.current_turn
     return unless active_turn && !active_turn.completed?
 
     if total == 0
       throw_record = active_turn.throws.create!(segment: 0, multiplier: :miss)
       active_turn.apply_throw!(throw_record, broadcast: false, skip_checkout_rule: skip_checkout_rule)
+      active_turn.reload
+      active_turn.complete_turn!(broadcast: false) unless active_turn.completed?
       return
     end
 
     chunks = split_into_valid_chunks(total)
 
     chunks.each do |points|
-      active_turn = leg.match.current_leg.current_turn
+      current_leg = leg.match.current_leg
+      break unless current_leg
+      active_turn = current_leg.current_turn
       break unless active_turn
       break if active_turn.completed?
 
@@ -26,7 +30,15 @@ module TurnScoring
       throw_record        = active_turn.throws.create!(segment: segment, multiplier: multiplier)
       active_turn.apply_throw!(throw_record, broadcast: false, skip_checkout_rule: skip_checkout_rule)
     end
-    # No force complete — apply_throw! handles it when throws.count >= 3
+
+    # Force complete — player declared their full turn total
+    current_leg = leg.match.current_leg
+    if current_leg
+      active_turn = current_leg.current_turn
+      if active_turn && active_turn == self && !active_turn.completed?
+        active_turn.complete_turn!(broadcast: false)
+      end
+    end
   end
 
   module ClassMethods

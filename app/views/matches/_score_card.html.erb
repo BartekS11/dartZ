@@ -6,13 +6,24 @@
 <% legs_won         = match.current_set&.legs_won_by(player) || 0 %>
 <% multi_set        = match.best_of_sets > 1 %>
 <% multi_leg        = match.best_of_legs > 1 %>
-<% last_turn_throws = match.last_turn_throws_for(player) %>
+<% darts_thrown     = is_active ? (match.current_leg&.current_turn&.throws&.count || 0) : 0 %>
+<% suggestion       = is_active ? CheckoutCalculator.suggest(score, darts_remaining: 3 - darts_thrown) : nil %>
+
+<%# Last completed turn %>
+<% last_turn = if match.current_leg
+                 match.current_leg.turns
+                      .where(player_id: player.id)
+                      .where.not(completed_at: nil)
+                      .order(completed_at: :desc)
+                      .first
+               end %>
+<% last_turn_total  = last_turn&.total_score %>
+<% last_turn_throws = last_turn_total ? [] : match.last_turn_throws_for(player) %>
 <% last_turn_ids    = last_turn_throws.map(&:id) %>
-<% prev_throws      = match.last_throws_for(player, limit: 6)
-                           .reject { |t| last_turn_ids.include?(t.id) }
-                           .first(3) %>
-<% darts_thrown  = is_active ? (match.current_leg&.current_turn&.throws&.count || 0) : 0 %>
-<% suggestion    = is_active ? CheckoutCalculator.suggest(score, darts_remaining: 3 - darts_thrown) : nil %>
+<% prev_throws      = last_turn_total ? [] : match.last_throws_for(player, limit: 6)
+                                                  .reject { |t| last_turn_ids.include?(t.id) }
+                                                  .first(3) %>
+
 <div id="score-card-<%= player.id %>"
      class="score-card rounded-xl overflow-hidden <%= is_active ? "active-player" : "" %>">
 
@@ -39,7 +50,7 @@
         <%= score %>
       </p>
 
-      <%# Checkout suggestion below score %>
+      <%# Checkout suggestion %>
       <% if suggestion %>
         <div class="flex items-center gap-1 flex-wrap mt-1">
           <% suggestion.each_with_index do |throw, i| %>
@@ -89,8 +100,9 @@
       <% end %>
     </div>
 
-    <%# Right: avg + throws %>
-    <% if last_turn_throws.any? || prev_throws.any? %>
+    <%# Right: avg + turn score %>
+    <% show_right = last_turn_total || last_turn_throws.any? || prev_throws.any? %>
+    <% if show_right %>
       <div class="flex flex-col items-end gap-1.5 flex-shrink-0">
 
         <%# Average %>
@@ -103,16 +115,24 @@
           </span>
         </div>
 
-        <%# Current/last turn — bigger, bright %>
-        <% if last_turn_throws.any? %>
+        <%# Total mode — show single number %>
+        <% if last_turn_total %>
+          <span style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;line-height:1;
+                       color:#ddd">
+            <%= last_turn_total %>
+          </span>
+
+        <%# Single mode — show throw badges %>
+        <% elsif last_turn_throws.any? %>
           <div class="flex items-center gap-1">
             <% last_turn_throws.each do |t| %>
               <span style="font-family:'DM Mono',monospace;font-size:0.65rem;
                            padding:2px 6px;border-radius:3px;
                            <%= t.multiplier == 'double' ? 'background:#7f1d1d;color:#fca5a5;border:1px solid #991b1b' :
                                t.multiplier == 'triple' ? 'background:#1e3a5f;color:#93c5fd;border:1px solid #1d4ed8' :
+                               t.multiplier == 'miss'   ? 'background:#1a1010;color:#444;border:1px solid #2a1a1a' :
                                'background:#222;color:#ddd;border:1px solid #3a3a3a' %>">
-                <%= t.multiplier == 'single' ? '' : t.multiplier[0].upcase %><%= t.segment %>
+                <%= t.multiplier == 'miss' ? '✕' : t.multiplier == 'single' ? '' : t.multiplier[0].upcase %><%= t.multiplier == 'miss' ? '' : t.segment %>
               </span>
             <% end %>
             <% (3 - last_turn_throws.size).times do %>
@@ -121,21 +141,21 @@
                            background:#111;color:#222;border:1px solid #1a1a1a">—</span>
             <% end %>
           </div>
-        <% end %>
 
-        <%# Previous turn — smaller, dimmed %>
-        <% if prev_throws.any? %>
-          <div class="flex items-center gap-1" style="opacity:0.25">
-            <% prev_throws.each do |t| %>
-              <span style="font-family:'DM Mono',monospace;font-size:0.5rem;
-                           padding:1px 3px;border-radius:2px;
-                           <%= t.multiplier == 'double' ? 'background:#7f1d1d;color:#fca5a5;border:1px solid #991b1b' :
-                               t.multiplier == 'triple' ? 'background:#1e3a5f;color:#93c5fd;border:1px solid #1d4ed8' :
-                               'background:#1a1a1a;color:#555;border:1px solid #222' %>">
-                <%= t.multiplier == 'single' ? '' : t.multiplier[0].upcase %><%= t.segment %>
-              </span>
-            <% end %>
-          </div>
+          <%# Previous turn — dimmed %>
+          <% if prev_throws.any? %>
+            <div class="flex items-center gap-1" style="opacity:0.25">
+              <% prev_throws.each do |t| %>
+                <span style="font-family:'DM Mono',monospace;font-size:0.5rem;
+                             padding:1px 3px;border-radius:2px;
+                             <%= t.multiplier == 'double' ? 'background:#7f1d1d;color:#fca5a5;border:1px solid #991b1b' :
+                                 t.multiplier == 'triple' ? 'background:#1e3a5f;color:#93c5fd;border:1px solid #1d4ed8' :
+                                 'background:#1a1a1a;color:#555;border:1px solid #222' %>">
+                  <%= t.multiplier == 'single' ? '' : t.multiplier[0].upcase %><%= t.segment %>
+                </span>
+              <% end %>
+            </div>
+          <% end %>
         <% end %>
 
       </div>

@@ -29,14 +29,23 @@ module HasThrowHistory
   end
 
   def three_dart_average(player)
-    all = all_throws_for(player)
-    return 0.0 if all.empty?
+    # Use all legs for finished matches, current leg for active matches
+    legs_to_check = finished? ? legs : [ current_leg ].compact
 
-    total_points = all.sum(&:points)
-    total_darts  = all.size
+    completed_turns = legs_to_check.flat_map do |leg|
+      leg.turns
+         .where(player_id: player.id)
+         .where.not(completed_at: nil)
+         .to_a
+    end
 
-    # Average per 3 darts
-    ((total_points.to_f / total_darts) * 3).round(1)
+    return 0.0 if completed_turns.blank?
+
+    total_points = completed_turns.sum do |turn|
+      turn.total_score.present? ? turn.total_score : turn.throws.sum(&:points)
+    end
+
+    (total_points.to_f / completed_turns.size).round(1)
   end
 
   def last_turn_throws_for(player)
