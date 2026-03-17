@@ -119,8 +119,11 @@
   }
 </style>
 
-<% multi_set = match.best_of_sets > 1 %>
-<% multi_leg = match.best_of_legs > 1 %>
+<% multi_set  = match.best_of_sets > 1 %>
+<% multi_leg  = match.best_of_legs > 1 %>
+<% total_secs = (match.finished_at - match.created_at).to_i %>
+<% total_mins = total_secs / 60 %>
+<% total_secs_rem = total_secs % 60 %>
 
 <div class="relative flex items-center justify-center min-h-screen overflow-hidden">
 
@@ -151,17 +154,14 @@
     <div class="winner-card">
       <p class="winner-name"><%= match.winner.display_name %></p>
       <p class="mono text-zinc-600 text-xs tracking-widest mt-1">
-        <% if multi_set %>
-          WINS THE MATCH
-        <% elsif multi_leg %>
-          WINS THE LEG
-        <% else %>
-          TAKES THE LEG
+        <% if multi_set %>WINS THE MATCH
+        <% elsif multi_leg %>WINS THE LEG
+        <% else %>TAKES THE LEG
         <% end %>
       </p>
     </div>
 
-    <%# Sets/legs scoreline %>
+    <%# Sets/legs scoreline with per-leg/set duration %>
     <% if multi_set || multi_leg %>
       <div style="animation: rise 0.6s 0.4s ease both; opacity: 0">
         <p class="mono text-zinc-700 text-xs tracking-widest mb-3">
@@ -185,12 +185,36 @@
             <% end %>
           <% end %>
         </div>
+
+        <%# Per-leg durations %>
+        <% all_legs = match.legs.order(:created_at).select(&:finished?) %>
+        <% if all_legs.any? %>
+          <div class="flex items-center justify-center gap-3 flex-wrap mt-3">
+            <% all_legs.each_with_index do |leg, i| %>
+              <% leg_secs = (leg.finished_at - leg.created_at).to_i %>
+              <% leg_mins = leg_secs / 60 %>
+              <% leg_secs_rem = leg_secs % 60 %>
+              <div style="background:#111;border:1px solid #1e1e1e;border-radius:6px;
+                          padding:4px 10px;text-align:center">
+                <p style="font-family:'DM Mono',monospace;font-size:0.5rem;color:#333;
+                           letter-spacing:0.1em;margin-bottom:2px">LEG <%= i + 1 %></p>
+                <p style="font-family:'DM Mono',monospace;font-size:0.7rem;color:#555">
+                  <%= format("%d:%02d", leg_mins, leg_secs_rem) %>
+                </p>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
       </div>
     <% end %>
 
-    <p class="finish-time">
-      FINISHED AT &nbsp;<%= match.finished_at.strftime("%H:%M") %>
-    </p>
+    <%# Finish time + total duration %>
+    <div class="finish-time">
+      <p>FINISHED AT &nbsp;<%= match.finished_at.strftime("%H:%M") %></p>
+      <p style="margin-top:4px;font-size:0.7rem;color:#333">
+        DURATION &nbsp;<%= format("%d:%02d", total_mins, total_secs_rem) %>
+      </p>
+    </div>
 
     <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mt-4">
       <%= link_to "NEW MATCH", matches_path, class: "btn-new-match" %>

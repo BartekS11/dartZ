@@ -270,11 +270,21 @@
                         focus:outline-none focus:border-red-600" %>
           <div data-lobby-target="dropdown1" class="saved-dropdown"></div>
         </div>
-
-        <div class="flex items-center justify-center px-1">
-          <span style="font-family:'Bebas Neue',sans-serif"
-                class="text-2xl text-red-700 opacity-60">VS</span>
-        </div>
+<div class="flex flex-col items-center justify-center px-1 gap-2">
+  <span style="font-family:'Bebas Neue',sans-serif"
+        class="text-2xl text-red-700 opacity-60">VS</span>
+  <button type="button"
+          data-action="click->lobby#swapPlayers"
+          class="text-zinc-600 hover:text-red-500 transition-colors"
+          title="Swap players"
+          style="font-size:1rem;background:none;border:none;cursor:pointer;
+                 padding:4px;border-radius:6px;border:1px solid #222;
+                 transition:all 0.15s ease"
+          onmouseover="this.style.borderColor='#dc2626'"
+          onmouseout="this.style.borderColor='#222'">
+    ⇅
+  </button>
+</div>
 
         <%# Player 2 %>
         <div class="player-card">
