@@ -10,8 +10,9 @@ class ThrowsController < ApplicationController
       darts_remaining = 3 - @turn.throws.count
       max_possible    = darts_remaining * 60
 
+      @turn.update!(total_score: total)
+
       if total > max_possible || total > @match.score_for(@turn.player)
-        # Bust — complete turn without scoring
         @turn.complete_turn!(broadcast: false)
       else
         @turn.distribute_total!(total)
