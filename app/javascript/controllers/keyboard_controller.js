@@ -167,6 +167,7 @@ handleUndo(e) {
     if (turnTotal === 41)      this.playSound("41")
     if (turnTotal === 45)      this.playSound("45")
     if (turnTotal === 180)     this.playSound("180")
+    if (turnTotal === 100)     this.playSound("100")
     this.submitThrow(parsed.segment, parsed.multiplier)
   }
 
@@ -192,6 +193,7 @@ handleUndo(e) {
     if (total === 41)  this.playSound("41")
     if (total === 45)  this.playSound("45")
     if (total === 180) this.playSound("180")
+    if (total === 100) this.playSound("100")
     this.submitThrow(null, null, total)
   }
 
