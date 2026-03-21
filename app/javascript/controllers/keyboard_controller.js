@@ -161,6 +161,12 @@ handleUndo(e) {
     this.inputTarget.value = ""
     this.resetScoreCardPreview()
 
+    const turnTotal = this.throwStack.reduce((s, t) => s + t.points, 0)
+    if (parsed.points === 26)  this.playSound("26")
+    if (parsed.points === 0)   this.playSound("no-score")
+    if (turnTotal === 41)      this.playSound("41")
+    if (turnTotal === 45)      this.playSound("45")
+    if (turnTotal === 180)     this.playSound("180")
     this.submitThrow(parsed.segment, parsed.multiplier)
   }
 
@@ -180,6 +186,12 @@ handleUndo(e) {
 
     this.inputTarget.value = ""
     this.resetScoreCardPreview()
+
+    if (total === 0)   this.playSound("no-score")
+    if (total === 26)  this.playSound("26")
+    if (total === 41)  this.playSound("41")
+    if (total === 45)  this.playSound("45")
+    if (total === 180) this.playSound("180")
     this.submitThrow(null, null, total)
   }
 
@@ -239,6 +251,12 @@ submitThrow(segment, multiplier, totalPoints) {
       const html = await response.text()
       Turbo.renderStreamMessage(html)
     }
+  }
+
+  // ── Scream ─────────────────────────────────────────────────────────────────
+
+  playSound(name) {
+    new Audio(`/sounds/${name}.mp3`).play()
   }
 
   // ── Parse ──────────────────────────────────────────────────────────────────

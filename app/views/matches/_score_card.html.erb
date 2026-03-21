@@ -1,5 +1,6 @@
 <% is_active        = player == match.current_player %>
 <% avg              = match.three_dart_average(player) %>
+<% twentysix_count = match.count_26s_for(player) %>
 <% score            = match.score_for(player) %>
 <% pct              = [(501 - score) * 100 / 501, 0].max %>
 <% sets_won         = match.sets_won_by(player) %>
@@ -114,6 +115,18 @@
             <%= avg %>
           </span>
         </div>
+
+        <%# 26 count %>
+        <% if twentysix_count > 0 %>
+          <div class="flex items-baseline gap-1">
+            <span style="font-family:'DM Mono',monospace;font-size:0.5rem;
+                         letter-spacing:0.12em;color:#333;text-transform:uppercase">26</span>
+            <span style="font-family:'Bebas Neue',sans-serif;font-size:1.4rem;line-height:1;
+                         color:#dc2626">
+              <%= twentysix_count %>
+            </span>
+          </div>
+        <% end %>
 
         <%# Total mode — show single number %>
         <% if last_turn_total %>

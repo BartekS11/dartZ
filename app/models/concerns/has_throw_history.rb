@@ -28,6 +28,22 @@ module HasThrowHistory
     (total_points.to_f / total_turns).round(1)
   end
 
+  def count_26s_for(player)
+    legs_to_check = finished? ? legs : [ current_leg ].compact
+
+    completed_turns = legs_to_check.flat_map do |leg|
+      leg.turns
+         .where(player_id: player.id)
+         .where.not(completed_at: nil)
+         .to_a
+    end
+
+    completed_turns.count do |turn|
+      total = turn.total_score.present? ? turn.total_score : turn.throws.sum(&:points)
+      total == 26
+    end
+  end
+
   def three_dart_average(player)
     # Use all legs for finished matches, current leg for active matches
     legs_to_check = finished? ? legs : [ current_leg ].compact
