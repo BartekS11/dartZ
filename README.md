@@ -95,7 +95,7 @@ bin/rails db:create db:migrate
 bin/dev
 ```
 
-
+```mermaid
 erDiagram
     USER ||--o{ SESSION : has
     USER ||--o{ PLAYER : has
@@ -104,22 +104,16 @@ erDiagram
     MATCH ||--o{ PLAYER : has
     MATCH ||--o{ MATCH_SET : has
     MATCH ||--o{ LEG : has
-    MATCH ||--o{ TURN : through_legs
-    MATCH ||--o{ THROW : through_turns
     
     PLAYER ||--o{ LEG_PLAYER : has
     PLAYER ||--o{ TURN : has
-    PLAYER ||--o{ LEG : through_leg_players
     PLAYER }o--|| MATCH : belongs_to
     
     MATCH_SET ||--o{ LEG : has
-    MATCH_SET ||--o{ TURN : through_legs
-    MATCH_SET ||--o{ THROW : through_turns
     MATCH_SET }o--|| MATCH : belongs_to
     
     LEG ||--o{ LEG_PLAYER : has
     LEG ||--o{ TURN : has
-    LEG ||--o{ PLAYER : through_leg_players
     LEG }o--|| MATCH : belongs_to
     LEG }o--o{ MATCH_SET : belongs_to
     
@@ -131,3 +125,4 @@ erDiagram
     TURN }o--|| PLAYER : belongs_to
     
     THROW }o--|| TURN : belongs_to
+```
