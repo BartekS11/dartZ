@@ -17,4 +17,22 @@ Rails.application.routes.draw do
   patch "legs/:id/checkout", to: "legs#checkout", as: :leg_checkout
 
   delete "turns/:turn_id/throws/last", to: "throws#undo", as: :undo_turn_throw
+
+  namespace :api do
+  namespace :v1 do
+    # Auth
+    post "auth/register", to: "auth#register"
+    post "auth/login",    to: "auth#login"
+    post "auth/guest",    to: "auth#guest"
+
+    # Matches
+    resources :matches, only: [ :index, :create, :show ] do
+      resources :throws, only: [ :create ] do
+        collection do
+          delete "last", to: "throws#undo"
+        end
+      end
+    end
+  end
+end
 end

@@ -1,16 +1,40 @@
 module ApplicationCable
   class Connection < ActionCable::Connection::Base
-    identified_by :current_user
+    identified_by :current_user, :guest_id
 
     def connect
-      set_current_user || reject_unauthorized_connection
+      # Try JWT token first (mobile)
+      token = request.params[:token] || request.headers["Authorization"]&.split(" ")&.last
+
+      if token
+        connect_via_jwt(token)
+      else
+        connect_via_session
+      end
     end
 
     private
-      def set_current_user
-        if session = Session.find_by(id: cookies.signed[:session_id])
-          self.current_user = session.user
-        end
+
+    def connect_via_jwt(token)
+      decoded     = JsonWebToken.decode(token)
+      if decoded[:guest]
+        self.guest_id    = decoded[:guest_id]
+        self.current_user = nil
+      else
+        self.current_user = User.find(decoded[:user_id])
+        self.guest_id     = nil
       end
+    rescue ExceptionHandler::InvalidToken
+      reject_unauthorized_connection
+    end
+
+    def connect_via_session
+      if (user_id = cookies.encrypted[:user_id] || env["warden"]&.user&.id)
+        self.current_user = User.find(user_id)
+      else
+        self.guest_id    = SecureRandom.uuid
+        self.current_user = nil
+      end
+    end
   end
 end

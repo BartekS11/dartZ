@@ -17,6 +17,12 @@ gem "stimulus-rails"
 # Use Tailwind CSS [https://github.com/rails/tailwindcss-rails]
 gem "tailwindcss-rails"
 
+# Support for JWT token based auth for client apps (mobile)
+gem "jwt"
+
+# Allow CORS support
+gem "rack-cors"
+
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
 gem "bcrypt", "~> 3.1.7"
 
