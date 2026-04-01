@@ -10,6 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <meta name="turbo-cache-control" content="no-store">
   <style>
     * { box-sizing: border-box; }
 
@@ -158,14 +159,17 @@
       <% end %>
 
       <%# Nav %>
-      <nav class="flex items-center gap-4">
-        <% if Current.user %>
-          <span class="nav-email hidden sm:block"><%= Current.user.email_address %></span>
-          <%= button_to "LOGOUT", session_path, method: :delete, class: "btn-logout" %>
-        <% else %>
-          <%= link_to "LOGIN â†’", new_session_path, class: "btn-login" %>
-        <% end %>
-      </nav>
+<nav class="flex items-center gap-4">
+  <% if Current.user %>
+    <span class="nav-email hidden sm:block"><%= Current.user.email_address %></span>
+    <%= link_to "Play vs bot", new_bot_match_path,
+          class: "text-zinc-600 hover:text-red-500 transition-colors text-lg",
+          title: "Play vs Bot" %>
+    <%= button_to "LOGOUT", session_path, method: :delete, class: "btn-logout" %>
+  <% else %>
+    <%= link_to "LOGIN →", new_session_path, class: "btn-login" %>
+  <% end %>
+</nav>
 
     </div>
   </header>

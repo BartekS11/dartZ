@@ -1,5 +1,6 @@
 class MatchesController < ApplicationController
-  skip_before_action :require_authentication, only: %i[index show create summary checkout]
+  sallow_unauthenticated_access
+  before_action :resume_session_optional, only: %i[index show create checkout]
   rescue_from ActiveRecord::RecordNotFound, with: :match_not_found
 
   def index

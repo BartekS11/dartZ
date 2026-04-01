@@ -1,5 +1,5 @@
 class ThrowsController < ApplicationController
-  skip_before_action :require_authentication
+  allow_unauthenticated_access
 
   def create
     @turn  = Turn.find(params[:turn_id])

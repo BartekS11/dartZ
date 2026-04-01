@@ -1,5 +1,5 @@
 class LegsController < ApplicationController
-  skip_before_action :require_authentication
+  allow_unauthenticated_access
 
   def checkout
     @leg   = Leg.find(params[:id])

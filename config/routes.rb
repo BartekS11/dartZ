@@ -3,7 +3,7 @@ Rails.application.routes.draw do
 
   resource :session
   resources :passwords, param: :token
-
+  resource :bot_match, only: [ :new, :create ]
   resources :matches, only: %i[index show create]
   resources :turns, only: [] do
     resources :throws, only: :create

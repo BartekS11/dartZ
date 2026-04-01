@@ -8,11 +8,16 @@ class Player < ApplicationRecord
 
   validates :name, presence: true
 
+  def bot?
+    bot == true
+  end
+
   def guest?
-    user_id.nil?
+    user_id.nil? && !bot?
   end
 
   def display_name
-    guest? ? name : user.email_address
+    return name if bot? || guest?
+    user.email_address
   end
 end

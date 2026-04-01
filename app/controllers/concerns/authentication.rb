@@ -12,6 +12,10 @@ module Authentication
     end
   end
 
+  def resume_session_optional
+    Current.session ||= find_session_by_cookie
+  end
+
   private
     def authenticated?
       resume_session

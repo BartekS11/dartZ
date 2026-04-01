@@ -10,9 +10,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_17_195921) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_29_192926) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "dart_setups", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.integer "dart_model_id", null: false
+    t.string "name"
+    t.text "notes"
+    t.integer "player_id", null: false
+    t.integer "point_length_mm"
+    t.integer "shaft_length_mm"
+    t.string "shaft_type"
+    t.datetime "updated_at", null: false
+    t.decimal "weight_g", precision: 4, scale: 1
+    t.index ["player_id"], name: "index_dart_setups_on_player_id"
+  end
 
   create_table "leg_players", force: :cascade do |t|
     t.datetime "created_at", null: false
@@ -59,7 +73,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_17_195921) do
   end
 
   create_table "players", force: :cascade do |t|
+    t.boolean "bot", default: false, null: false
+    t.integer "bot_level", default: 10
     t.datetime "created_at", null: false
+    t.integer "dart_setup_id"
     t.bigint "match_id"
     t.string "name"
     t.datetime "updated_at", null: false

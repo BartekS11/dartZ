@@ -6,6 +6,7 @@ module TurnFlow
     update!(completed_at: Time.current)
     leg.start_next_turn! unless leg.finished?
     broadcast_turn_change! if broadcast
+    enqueue_bot_turn_if_needed
   end
 
   def completed?
@@ -13,6 +14,13 @@ module TurnFlow
   end
 
   private
+
+  def enqueue_bot_turn_if_needed
+    return if leg.finished?
+    next_turn = leg.current_turn
+    return unless next_turn&.player&.bot?
+    BotTurnJob.perform_later(next_turn.id)
+  end
 
   def broadcast_turn_change!
     match = leg.match
