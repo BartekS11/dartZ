@@ -1,7 +1,8 @@
 class BotMatchesController < ApplicationController
   before_action :require_authentication
 
-  def new; end
+  def new
+  end
 
   def create
     @match = Match.new(

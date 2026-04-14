@@ -163,7 +163,7 @@
   <% if Current.user %>
     <span class="nav-email hidden sm:block"><%= Current.user.email_address %></span>
     <%= link_to "Play vs bot", new_bot_match_path,
-          class: "text-zinc-600 hover:text-red-500 transition-colors text-lg",
+          class: "nav-email text-zinc-600 hover:text-red-500 transition-colors",
           title: "Play vs Bot" %>
     <%= button_to "LOGOUT", session_path, method: :delete, class: "btn-logout" %>
   <% else %>

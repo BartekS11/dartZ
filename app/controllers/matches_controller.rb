@@ -1,5 +1,5 @@
 class MatchesController < ApplicationController
-  sallow_unauthenticated_access
+  allow_unauthenticated_access
   before_action :resume_session_optional, only: %i[index show create checkout]
   rescue_from ActiveRecord::RecordNotFound, with: :match_not_found
 
