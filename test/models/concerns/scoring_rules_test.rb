@@ -48,7 +48,7 @@ module Stubs
       inner.define_singleton_method(:count) { count }
       inner
     end
-    obj.define_singleton_method(:complete_turn!) { @completed = true }
+    obj.define_singleton_method(:complete_turn!) { |broadcast: true| @completed = true }
     obj.define_singleton_method(:completed?)     { !!@completed }
     obj.define_singleton_method(:leg_player_stub) { lp }
     obj.define_singleton_method(:leg_stub)        { leg_obj }

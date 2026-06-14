@@ -33,6 +33,7 @@ module Api
         player1 = match.players.create!(name: p1_name, user: current_api_user)
         player2 = match.players.create!(name: p2_name)
 
+        match.ensure_match_identifier!
         match.start_first_set!
 
         render json: match_state(match), status: :created
@@ -46,8 +47,9 @@ module Api
 
       def match_summary(match)
         {
-          id:           match.id,
-          finished:     match.finished?,
+          id:               match.id,
+          match_identifier: match.match_identifier,
+          finished:         match.finished?,
           created_at:   match.created_at.iso8601,
           best_of_legs: match.best_of_legs,
           best_of_sets: match.best_of_sets,
@@ -68,8 +70,9 @@ module Api
         current_turn = current_leg&.current_turn
 
         {
-          id:             match.id,
-          finished:       match.finished?,
+          id:               match.id,
+          match_identifier: match.match_identifier,
+          finished:         match.finished?,
           best_of_legs:   match.best_of_legs,
           best_of_sets:   match.best_of_sets,
           winner:         match.winner&.display_name,

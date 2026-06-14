@@ -18,6 +18,7 @@ class BotMatchesController < ApplicationController
     @match.players.create!(name: human_name, user: Current.user)
     @match.players.create!(name: bot_name, bot: true, bot_level: bot_level)
 
+    @match.ensure_match_identifier!
     @match.start_first_set!
 
     # If bot goes first, enqueue immediately

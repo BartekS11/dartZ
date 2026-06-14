@@ -9,6 +9,20 @@ class Match < ApplicationRecord
   has_many :turns,    through: :legs
   has_many :throws,   through: :turns
 
+  validates :match_identifier, uniqueness: true, allow_blank: true
+
+  def display_identifier
+    match_identifier.presence || "##{id}"
+  end
+
+  def ensure_match_identifier!
+    return match_identifier if match_identifier.present?
+
+    generate_match_identifier
+    update!(match_identifier: match_identifier) if persisted?
+    match_identifier
+  end
+
   def winner
     return nil unless finished?
     match_sets.order(:created_at).last
@@ -65,5 +79,32 @@ class Match < ApplicationRecord
     return if new_score < 0
 
     update_score_for(player, new_score)
+  end
+
+  private
+
+  def generate_match_identifier
+    loop do
+      identifier = build_match_identifier
+      self.match_identifier = identifier
+      break identifier unless Match.where(match_identifier: identifier).where.not(id: id).exists?
+    end
+  end
+
+  def build_match_identifier
+    user_ids = players.map(&:user_id).compact.uniq
+    scope = if user_ids.empty?
+      "GUEST"
+    elsif user_ids.one?
+      "USER-#{user_ids.first}"
+    else
+      "MULTIUSER-#{user_ids.max}"
+    end
+
+    timestamp = Time.zone.respond_to?(:now) ? Time.zone.now : Time.zone
+    date = timestamp.strftime("%Y%m%d")
+    suffix = SecureRandom.hex(3).upcase
+
+    "#{scope}-#{date}-#{suffix}"
   end
 end

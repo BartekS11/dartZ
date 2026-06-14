@@ -54,27 +54,27 @@ module TurnScoring
   private
 
   def split_into_valid_chunks(total)
-  valid = ((1..20).to_a +
+    valid = ((1..20).to_a +
            (1..20).map { |s| s * 2 } +
            (1..20).map { |s| s * 3 } +
            [ 25, 50 ]).uniq.sort.reverse
 
-  remaining = total
-  chunks    = []
+    remaining = total
+    chunks    = []
 
-  3.times do
-    break if remaining == 0
+    3.times do
+      break if remaining == 0
 
-    chunk = valid.find { |v|
-      v <= remaining &&
-      (remaining - v == 0 || remaining - v >= 2)
-    }
-    break unless chunk
+      chunk = valid.find { |v|
+        v <= remaining &&
+        (remaining - v == 0 || remaining - v >= 2)
+      }
+      break unless chunk
 
-    chunks << chunk
-    remaining -= chunk
+      chunks << chunk
+      remaining -= chunk
+    end
+
+    chunks.empty? ? [ total ] : chunks
   end
-
-  chunks.empty? ? [ total ] : chunks
-end
 end

@@ -31,6 +31,7 @@ class MatchesControllerTest < ActionDispatch::IntegrationTest
     match = Match.create!
     match.players.create!(name: "You", user: @user)
     match.players.create!(name: "Guest")
+    match.start_first_set!
 
     get match_path(match)
 

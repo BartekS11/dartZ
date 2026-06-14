@@ -38,6 +38,7 @@ class MatchesController < ApplicationController
     player1 = @match.players.create!(name: p1_name, user: Current.user)
     player2 = @match.players.create!(name: p2_name)
 
+    @match.ensure_match_identifier!
     @match.start_first_set!
 
     redirect_to match_path(@match)
@@ -53,7 +54,12 @@ class MatchesController < ApplicationController
         winner: match.winner == player
       }
     end
-    render json: { id: match.id, finished: match.finished?, players: players_data }
+    render json: {
+      id: match.id,
+      match_identifier: match.match_identifier,
+      finished: match.finished?,
+      players: players_data
+    }
   end
 
   def checkout

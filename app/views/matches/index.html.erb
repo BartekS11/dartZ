@@ -427,7 +427,7 @@
               <div class="flex items-center gap-3 min-w-0 flex-shrink-0">
                 <span class="text-zinc-700 mono text-xs w-5 text-right"><%= i + 1 %></span>
                 <div>
-                  <p class="match-id text-zinc-500 text-base">Match #<%= match.id %></p>
+                  <p class="match-id text-zinc-500 text-base">Match <%= match.display_identifier %></p>
                   <p class="text-zinc-700 text-xs mono"><%= match.created_at.strftime("%d %b · %H:%M") %></p>
                   <%# Format badge %>
                   <% if match.best_of_sets > 1 || match.best_of_legs > 1 %>

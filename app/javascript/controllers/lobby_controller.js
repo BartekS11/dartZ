@@ -274,6 +274,8 @@ clearPlayers() {
           </div>`
       }).join("")
 
+      const identifier = data.match_identifier || `#${data.id}`
+
       const badge = data.finished
         ? `<span style="font-family:'DM Mono',monospace;font-size:0.65rem;color:#f87171;
                         border:1px solid #7f1d1d;background:#450a0a;padding:2px 6px;border-radius:4px">FINISHED</span>`
@@ -285,7 +287,7 @@ clearPlayers() {
           <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px">
             <div style="flex-shrink:0">
               <p style="font-family:'Bebas Neue',sans-serif;color:#555;font-size:1rem;letter-spacing:0.05em">
-                Match #${data.id}
+                Match ${identifier}
               </p>
               <p style="font-family:'DM Mono',monospace;font-size:0.65rem;color:#3a3a3a">${date}</p>
             </div>

@@ -23,7 +23,6 @@ class Throw < ApplicationRecord
     triple: 3
   }
 
-  # Bull can only be single or double
   validates :multiplier,
             inclusion: {
               in: %w[single double],

@@ -19,7 +19,7 @@ gem "tailwindcss-rails"
 
 # Support for JWT token based auth for client apps (mobile)
 gem "jwt"
-
+gem "mocha"
 # Allow CORS support
 gem "rack-cors"
 
