@@ -1,118 +1,113 @@
-<div class="row justify-content-center g-4">
-  <div class="col-12 col-xl-9">
-    <div class="row g-4 align-items-start">
-      <div class="col-12 col-lg-4">
-        <div class="mb-4">
-          <div class="theme-section-label mono mb-2">Bot challenge</div>
-          <h1 class="theme-section-title bebas mb-2">Play vs Bot</h1>
-          <p class="theme-subtitle mb-0">Pick a name, set the bot level, and start a compact 501 session fast.</p>
-        </div>
-
-        <div class="theme-card p-3 p-md-4">
-          <div class="theme-section-label mono mb-2">Quick notes</div>
-          <div class="d-grid gap-2">
-            <div class="theme-chip mono">Bot level 1–5 · beginner</div>
-            <div class="theme-chip mono">6–12 · steady scoring</div>
-            <div class="theme-chip mono">13–17 · strong finisher</div>
-            <div class="theme-chip mono">18–20 · near-pro pressure</div>
-          </div>
-        </div>
+<div class="mx-auto max-w-6xl">
+  <div class="grid gap-6 lg:grid-cols-[minmax(0,0.78fr)_minmax(0,1.22fr)] lg:gap-8">
+    <section class="space-y-6">
+      <div class="space-y-3">
+        <div class="theme-section-label mono">Bot challenge</div>
+        <h1 class="theme-section-title bebas">Play a focused practice match.</h1>
+        <p class="theme-subtitle max-w-lg">Same palette, less noise: quick setup, clear difficulty groups, and a mobile-friendly form.</p>
       </div>
 
-      <div class="col-12 col-lg-8">
-        <div class="theme-card p-3 p-md-4">
-          <div class="d-flex align-items-center justify-content-between gap-3 flex-wrap mb-4">
+      <div class="theme-card p-4 md:p-5">
+        <div class="theme-section-label mono mb-3">Difficulty guide</div>
+        <div class="grid gap-2">
+          <div class="theme-chip mono justify-start">Level 1–5 · beginner rhythm</div>
+          <div class="theme-chip mono justify-start">Level 6–12 · steady scoring</div>
+          <div class="theme-chip mono justify-start">Level 13–17 · strong finishing</div>
+          <div class="theme-chip mono justify-start">Level 18–20 · near-pro pressure</div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="theme-card p-4 md:p-6">
+        <div class="mb-5 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <div class="theme-section-label mono mb-1">New bot match</div>
+            <h2 class="bebas mb-2 text-3xl leading-none">Compact setup</h2>
+            <p class="theme-subtitle mb-0 text-sm">Choose names, set the level, and start fast.</p>
+          </div>
+          <%= link_to "← Back", matches_path, class: "btn theme-btn-outline rounded-pill mono" %>
+        </div>
+
+        <%= form_with url: bot_match_path, method: :post, data: { turbo: false } do |f| %>
+          <div class="grid gap-4 md:grid-cols-2">
             <div>
-              <div class="theme-section-label mono mb-1">New bot match</div>
-              <h2 class="bebas fs-2 mb-0">Compact setup</h2>
+              <label class="mono mb-2 block text-xs uppercase tracking-[0.18em] text-zinc-500">Your name</label>
+              <%= f.text_field :player_name,
+                    value: Current.user.display_name,
+                    placeholder: "Your name",
+                    maxlength: 20,
+                    autocomplete: "off",
+                    class: "form-control theme-form-input mono" %>
             </div>
-            <%= link_to "← Back", matches_path, class: "btn theme-btn-outline rounded-pill mono" %>
+
+            <div>
+              <label class="mono mb-2 block text-xs uppercase tracking-[0.18em] text-zinc-500">Bot name</label>
+              <%= f.text_field :bot_name,
+                    placeholder: "Optional bot name",
+                    maxlength: 20,
+                    autocomplete: "off",
+                    class: "form-control theme-form-input mono" %>
+            </div>
           </div>
 
-          <%= form_with url: bot_match_path, method: :post, data: { turbo: false } do |f| %>
-            <div class="row g-3 mb-3">
-              <div class="col-12 col-md-6">
-                <label class="mono text-subtle-theme small text-uppercase mb-2 d-block">Your name</label>
-                <%= f.text_field :player_name,
-                      value: Current.user.display_name,
-                      placeholder: "Your name",
-                      maxlength: 20,
-                      autocomplete: "off",
-                      class: "form-control theme-form-input mono" %>
-              </div>
-
-              <div class="col-12 col-md-6">
-                <label class="mono text-subtle-theme small text-uppercase mb-2 d-block">Bot name</label>
-                <%= f.text_field :bot_name,
-                      placeholder: "Optional bot name",
-                      maxlength: 20,
-                      autocomplete: "off",
-                      class: "form-control theme-form-input mono" %>
-              </div>
-            </div>
-
-            <div class="theme-panel p-3 mb-3">
-              <label class="mono text-subtle-theme small text-uppercase mb-3 d-block">Bot difficulty</label>
-              <div class="d-grid gap-3">
-                <% [["Beginner", (1..5).to_a], ["Intermediate", (6..12).to_a], ["Advanced", (13..17).to_a], ["Pro", (18..20).to_a]].each do |label, levels| %>
-                  <div>
-                    <div class="mono text-subtle-theme" style="font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:0.45rem;"><%= label %></div>
-                    <div class="d-flex flex-wrap gap-2">
-                      <% levels.each do |lvl| %>
-                        <button type="button"
-                                class="btn btn-sm theme-btn-outline rounded-pill mono bot-level-btn <%= 'border-danger text-danger' if lvl == 10 %>"
-                                onclick="document.getElementById('bot_level').value=<%= lvl.to_json %>; document.querySelectorAll('.bot-level-btn').forEach(b => b.classList.remove('border-danger','text-danger')); this.classList.add('border-danger','text-danger')">
-                          <%= lvl %>
-                        </button>
-                      <% end %>
-                    </div>
+          <div class="theme-panel mt-4 p-4">
+            <label class="mono mb-4 block text-xs uppercase tracking-[0.18em] text-zinc-500">Bot difficulty</label>
+            <div class="grid gap-4">
+              <% [["Beginner", (1..5).to_a], ["Intermediate", (6..12).to_a], ["Advanced", (13..17).to_a], ["Pro", (18..20).to_a]].each do |label, levels| %>
+                <div>
+                  <div class="mono mb-2 text-[0.68rem] uppercase tracking-[0.16em] text-zinc-500"><%= label %></div>
+                  <div class="flex flex-wrap gap-2">
+                    <% levels.each do |lvl| %>
+                      <button type="button"
+                              class="btn btn-sm theme-btn-outline rounded-pill mono bot-level-btn <%= 'border-danger text-danger' if lvl == 10 %>"
+                              onclick="document.getElementById('bot_level').value=<%= lvl.to_json %>; document.querySelectorAll('.bot-level-btn').forEach(b => b.classList.remove('border-danger','text-danger')); this.classList.add('border-danger','text-danger')">
+                        <%= lvl %>
+                      </button>
+                    <% end %>
                   </div>
+                </div>
+              <% end %>
+            </div>
+            <%= f.hidden_field :bot_level, value: 10, id: "bot_level" %>
+          </div>
+
+          <div class="mt-4 grid gap-4 md:grid-cols-2">
+            <div class="theme-panel p-4">
+              <div class="mono mb-3 text-xs uppercase tracking-[0.18em] text-zinc-500">Best of legs</div>
+              <div class="flex flex-wrap gap-2">
+                <% [[1, "1"], [3, "Bo3"], [5, "Bo5"]].each do |val, label| %>
+                  <button type="button"
+                          class="btn btn-sm theme-btn-outline rounded-pill mono bot-legs-btn <%= 'border-danger text-danger' if val == 1 %>"
+                          onclick="document.getElementById('best_of_legs').value=<%= val.to_json %>; document.querySelectorAll('.bot-legs-btn').forEach(b => b.classList.remove('border-danger','text-danger')); this.classList.add('border-danger','text-danger')">
+                    <%= label %>
+                  </button>
                 <% end %>
               </div>
-              <%= f.hidden_field :bot_level, value: 10, id: "bot_level" %>
+              <%= f.hidden_field :best_of_legs, value: 1, id: "best_of_legs" %>
             </div>
 
-            <div class="theme-panel p-3 mb-4">
-              <label class="mono text-subtle-theme small text-uppercase mb-3 d-block">Match format</label>
-              <div class="row g-3">
-                <div class="col-12 col-md-6">
-                  <div class="mono text-subtle-theme" style="font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:0.45rem;">Best of legs</div>
-                  <div class="d-flex flex-wrap gap-2">
-                    <% [[1, "1"], [3, "Bo3"], [5, "Bo5"]].each do |val, label| %>
-                      <button type="button"
-                              class="btn btn-sm theme-btn-outline rounded-pill mono bot-legs-btn <%= 'border-danger text-danger' if val == 1 %>"
-                              onclick="document.getElementById('best_of_legs').value=<%= val.to_json %>; document.querySelectorAll('.bot-legs-btn').forEach(b => b.classList.remove('border-danger','text-danger')); this.classList.add('border-danger','text-danger')">
-                        <%= label %>
-                      </button>
-                    <% end %>
-                  </div>
-                  <%= f.hidden_field :best_of_legs, value: 1, id: "best_of_legs" %>
-                </div>
-
-                <div class="col-12 col-md-6">
-                  <div class="mono text-subtle-theme" style="font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:0.45rem;">Best of sets</div>
-                  <div class="d-flex flex-wrap gap-2">
-                    <% [[1, "1"], [3, "Bo3"], [5, "Bo5"]].each do |val, label| %>
-                      <button type="button"
-                              class="btn btn-sm theme-btn-outline rounded-pill mono bot-sets-btn <%= 'border-danger text-danger' if val == 1 %>"
-                              onclick="document.getElementById('best_of_sets').value=<%= val.to_json %>; document.querySelectorAll('.bot-sets-btn').forEach(b => b.classList.remove('border-danger','text-danger')); this.classList.add('border-danger','text-danger')">
-                        <%= label %>
-                      </button>
-                    <% end %>
-                  </div>
-                  <%= f.hidden_field :best_of_sets, value: 1, id: "best_of_sets" %>
-                </div>
+            <div class="theme-panel p-4">
+              <div class="mono mb-3 text-xs uppercase tracking-[0.18em] text-zinc-500">Best of sets</div>
+              <div class="flex flex-wrap gap-2">
+                <% [[1, "1"], [3, "Bo3"], [5, "Bo5"]].each do |val, label| %>
+                  <button type="button"
+                          class="btn btn-sm theme-btn-outline rounded-pill mono bot-sets-btn <%= 'border-danger text-danger' if val == 1 %>"
+                          onclick="document.getElementById('best_of_sets').value=<%= val.to_json %>; document.querySelectorAll('.bot-sets-btn').forEach(b => b.classList.remove('border-danger','text-danger')); this.classList.add('border-danger','text-danger')">
+                    <%= label %>
+                  </button>
+                <% end %>
               </div>
+              <%= f.hidden_field :best_of_sets, value: 1, id: "best_of_sets" %>
             </div>
+          </div>
 
-            <div class="d-grid d-md-flex gap-3 justify-content-end">
-              <%= link_to "Cancel", matches_path, class: "btn theme-btn-outline rounded-pill mono" %>
-              <%= f.submit "Start Match",
-                    class: "btn theme-btn-primary rounded-pill bebas fs-4 px-4" %>
-            </div>
-          <% end %>
-        </div>
+          <div class="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-end">
+            <%= link_to "Cancel", matches_path, class: "btn theme-btn-outline rounded-pill mono" %>
+            <%= f.submit "Start Match", class: "btn theme-btn-primary rounded-pill px-4 bebas text-xl" %>
+          </div>
+        <% end %>
       </div>
-    </div>
+    </section>
   </div>
 </div>

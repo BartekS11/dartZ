@@ -18,6 +18,11 @@ module TurnScoring
 
     chunks = split_into_valid_chunks(total)
 
+    unless chunks
+      active_turn.complete_turn!(broadcast: false) unless active_turn.completed?
+      return
+    end
+
     chunks.each do |points|
       current_leg = leg.match.current_leg
       break unless current_leg
@@ -55,26 +60,24 @@ module TurnScoring
 
   def split_into_valid_chunks(total)
     valid = ((1..20).to_a +
-           (1..20).map { |s| s * 2 } +
-           (1..20).map { |s| s * 3 } +
-           [ 25, 50 ]).uniq.sort.reverse
+      (1..20).map { |s| s * 2 } +
+      (1..20).map { |s| s * 3 } +
+      [ 25, 50 ]).uniq.sort.reverse
 
-    remaining = total
-    chunks    = []
+    find_exact_chunks(total, 3, valid)
+  end
 
-    3.times do
-      break if remaining == 0
+  def find_exact_chunks(remaining, darts_left, valid)
+    return [] if remaining.zero?
+    return nil if darts_left.zero? || remaining.negative?
 
-      chunk = valid.find { |v|
-        v <= remaining &&
-        (remaining - v == 0 || remaining - v >= 2)
-      }
-      break unless chunk
+    valid.each do |points|
+      next if points > remaining
 
-      chunks << chunk
-      remaining -= chunk
+      tail = find_exact_chunks(remaining - points, darts_left - 1, valid)
+      return [ points, *tail ] if tail
     end
 
-    chunks.empty? ? [ total ] : chunks
+    nil
   end
 end

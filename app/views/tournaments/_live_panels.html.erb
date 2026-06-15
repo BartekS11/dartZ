@@ -1,0 +1,174 @@
+<% playoff_rounds = tournament.rounds.where(stage_type: "playoffs").order(:number, :created_at) %>
+<% upper_rounds = playoff_rounds.select { |round| round.bracket == "upper" } %>
+<% lower_rounds = playoff_rounds.select { |round| round.bracket == "lower" } %>
+<% final_rounds = playoff_rounds.select { |round| round.bracket == "final" || round.bracket.blank? } %>
+<% bronze_rounds = playoff_rounds.select { |round| round.bracket == "bronze" } %>
+
+<div id="tournament-live-panels" class="grid gap-6 xl:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)]">
+  <section class="space-y-4">
+    <div class="theme-card p-4 md:p-5">
+      <div class="mb-3 flex items-center justify-between gap-3">
+        <div>
+          <div class="theme-section-label mono mb-1">Standings</div>
+          <h2 class="bebas text-2xl leading-none">Players</h2>
+        </div>
+        <% if can_admin %>
+          <div class="flex flex-wrap gap-2">
+            <%= button_to "Regenerate", regenerate_tournament_path(tournament, admin_token: admin_token), method: :post, class: "btn btn-sm theme-btn-outline rounded-pill mono" %>
+            <%= button_to "Reseed", reseed_tournament_path(tournament, admin_token: admin_token), method: :post, class: "btn btn-sm theme-btn-outline rounded-pill mono" %>
+            <% if tournament.format_type == 'swiss' && tournament.manual_advance_allowed? && tournament.can_generate_next_swiss_round? %>
+              <%= button_to "Next swiss round", advance_round_tournament_path(tournament, admin_token: admin_token), method: :post, class: "btn btn-sm theme-btn-primary rounded-pill mono" %>
+            <% end %>
+            <% if tournament.format_type == 'playoffs' && tournament.manual_advance_allowed? %>
+              <%= button_to "Advance bracket", advance_round_tournament_path(tournament, admin_token: admin_token), method: :post, class: "btn btn-sm theme-btn-primary rounded-pill mono" %>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+
+      <div class="grid gap-2">
+        <% tournament.standings.each_with_index do |entry, idx| %>
+          <div class="rounded-2xl border border-white/5 bg-white/[0.02] p-3">
+            <div class="flex items-center justify-between gap-3">
+              <div>
+                <div class="mono text-xs text-zinc-500">#<%= idx + 1 %> <%= entry.group_name.present? ? "· Group #{entry.group_name}" : "" %></div>
+                <div class="font-semibold text-white"><%= entry.name %></div>
+              </div>
+              <div class="text-right text-sm text-zinc-300">
+                <div><strong><%= entry.wins %></strong>W · <strong><%= entry.losses %></strong>L</div>
+                <div>Leg diff <%= entry.leg_difference %></div>
+                <% if tournament.format_type == "swiss" %><div>Buchholz <%= entry.buchholz %></div><% end %>
+              </div>
+            </div>
+            <% if can_admin %>
+              <div class="mt-3 grid gap-2 sm:grid-cols-[minmax(0,1fr)_auto_auto]">
+                <%= form_with model: entry, url: tournament_entry_path(tournament, entry, admin_token: admin_token), method: :patch, class: "contents" do |f| %>
+                  <%= f.text_field :name, class: "form-control theme-form-input", placeholder: "Player name" %>
+                  <%= f.number_field :seed, min: 1, class: "form-control theme-form-input", placeholder: "Seed" %>
+                  <%= f.submit "Save", class: "btn theme-btn-outline rounded-pill mono" %>
+                <% end %>
+              </div>
+              <div class="mt-2 flex justify-end">
+                <%= button_to "Remove", tournament_entry_path(tournament, entry, admin_token: admin_token), method: :delete, class: "btn btn-sm theme-btn-outline rounded-pill mono" %>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </section>
+
+  <section class="space-y-4">
+    <% if tournament.format_type == "playoffs" %>
+      <div class="theme-card p-4 md:p-5">
+        <div class="mb-4">
+          <div class="theme-section-label mono mb-1">Bracket</div>
+          <h2 class="bebas text-2xl leading-none">Tournament tree</h2>
+        </div>
+
+        <% if upper_rounds.any? %>
+          <div class="space-y-5">
+            <div class="bracket-scroll">
+              <div class="bracket-board bracket-upper">
+                <% upper_rounds.each_with_index do |round, index| %>
+                  <div class="bracket-column <%= 'bracket-column-linked' if index.positive? %>">
+                    <div class="bracket-column-title mono"><%= round.name %></div>
+                    <div class="bracket-round-card">
+                      <div class="grid gap-3">
+                        <% round.tournament_matches.order(:position).each do |match| %>
+                          <%= render "tournaments/match_card", match: match, tournament: tournament, can_admin: can_admin, admin_token: admin_token, bracket: true %>
+                        <% end %>
+                      </div>
+                    </div>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+
+            <% if lower_rounds.any? %>
+              <div>
+                <div class="mono mb-3 text-xs uppercase tracking-[0.16em] text-amber-300">Lower bracket</div>
+                <div class="bracket-scroll">
+                  <div class="bracket-board bracket-lower">
+                    <% lower_rounds.each_with_index do |round, index| %>
+                      <div class="bracket-column <%= 'bracket-column-linked' if index.positive? %>">
+                        <div class="bracket-column-title mono"><%= round.name %></div>
+                        <div class="bracket-round-card">
+                          <div class="grid gap-3">
+                            <% round.tournament_matches.order(:position).each do |match| %>
+                              <%= render "tournaments/match_card", match: match, tournament: tournament, can_admin: can_admin, admin_token: admin_token, bracket: true %>
+                            <% end %>
+                          </div>
+                        </div>
+                      </div>
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+            <% end %>
+
+            <% if final_rounds.any? %>
+              <div>
+                <div class="mono mb-3 text-xs uppercase tracking-[0.16em] text-green-300">Final</div>
+                <div class="bracket-scroll">
+                  <div class="bracket-board bracket-final">
+                    <% final_rounds.each_with_index do |round, index| %>
+                      <div class="bracket-column <%= 'bracket-column-linked' if index.positive? %>">
+                        <div class="bracket-column-title mono"><%= round.name %></div>
+                        <div class="bracket-round-card">
+                          <div class="grid gap-3">
+                            <% round.tournament_matches.order(:position).each do |match| %>
+                              <%= render "tournaments/match_card", match: match, tournament: tournament, can_admin: can_admin, admin_token: admin_token, bracket: true %>
+                            <% end %>
+                          </div>
+                        </div>
+                      </div>
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+            <% end %>
+
+            <% if bronze_rounds.any? %>
+              <div>
+                <div class="mono mb-3 text-xs uppercase tracking-[0.16em] text-orange-300">Bronze</div>
+                <div class="bracket-scroll">
+                  <div class="bracket-board bracket-bronze">
+                    <% bronze_rounds.each_with_index do |round, index| %>
+                      <div class="bracket-column <%= 'bracket-column-linked' if index.positive? %>">
+                        <div class="bracket-column-title mono"><%= round.name %></div>
+                        <div class="bracket-round-card">
+                          <div class="grid gap-3">
+                            <% round.tournament_matches.order(:position).each do |match| %>
+                              <%= render "tournaments/match_card", match: match, tournament: tournament, can_admin: can_admin, admin_token: admin_token, bracket: true %>
+                            <% end %>
+                          </div>
+                        </div>
+                      </div>
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        <% else %>
+          <div class="text-sm text-zinc-500">Bracket rounds will appear here once generated.</div>
+        <% end %>
+      </div>
+    <% else %>
+      <% tournament.rounds.order(:number).each do |round| %>
+        <div class="theme-card p-4 md:p-5">
+          <div class="mb-3">
+            <div class="theme-section-label mono mb-1"><%= round.stage_type %></div>
+            <h2 class="bebas text-2xl leading-none"><%= round.name %></h2>
+          </div>
+          <div class="grid gap-3">
+            <% round.tournament_matches.order(:position).each do |match| %>
+              <%= render "tournaments/match_card", match: match, tournament: tournament, can_admin: can_admin, admin_token: admin_token %>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    <% end %>
+  </section>
+</div>

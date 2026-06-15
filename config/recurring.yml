@@ -18,3 +18,8 @@ production:
     class: MatchCleanupJob
     queue: default
     schedule: every day at 4am
+
+  cleanup_stale_tournaments:
+    class: TournamentCleanupJob
+    queue: default
+    schedule: every day at 4:20am

@@ -28,7 +28,8 @@ module ScoringRules
       end
 
       lp.update!(score: new_score)
-      complete_turn!(broadcast: broadcast) if throws.size >= max_throws
+      throw_count = throws.respond_to?(:size) ? throws.size : throws.count
+      complete_turn!(broadcast: broadcast) if throw_count >= max_throws
   end
 
   private

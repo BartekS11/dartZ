@@ -1,0 +1,50 @@
+<div class="mx-auto max-w-7xl space-y-6">
+  <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+    <div>
+      <div class="theme-section-label mono mb-2">Tournaments</div>
+      <h1 class="theme-section-title bebas">Create and run events your way.</h1>
+      <p class="theme-subtitle max-w-2xl">Groups, swiss, or playoffs. Guest creators get public tournaments with admin recovery, while signed-in creators get owner + participant scoped access.</p>
+    </div>
+    <%= link_to "New tournament", new_tournament_path, class: "btn theme-btn-primary rounded-pill px-4 py-3 bebas text-xl" %>
+  </div>
+
+  <% if Current.user && @my_tournaments.any? %>
+    <section class="space-y-3">
+      <div>
+        <div class="theme-section-label mono mb-1">Signed-in tournaments</div>
+        <h2 class="bebas text-3xl leading-none">Your events</h2>
+      </div>
+      <div class="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+        <% @my_tournaments.each do |tournament| %>
+          <%= link_to tournament_path(tournament), class: "theme-match-card p-4 no-underline" do %>
+            <div class="mono text-xs uppercase tracking-[0.16em] text-zinc-500"><%= tournament.format_type %></div>
+            <div class="bebas mt-2 text-2xl leading-none text-white"><%= tournament.title %></div>
+            <div class="mt-3 flex flex-wrap gap-2">
+              <span class="theme-chip mono"><%= tournament.entries.count %> players</span>
+              <span class="theme-chip mono"><%= tournament.status %></span>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+    </section>
+  <% end %>
+
+  <section class="space-y-3">
+    <div>
+      <div class="theme-section-label mono mb-1">Public guest tournaments</div>
+      <h2 class="bebas text-3xl leading-none">Discover public events</h2>
+    </div>
+    <div class="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+      <% @guest_tournaments.each do |tournament| %>
+        <%= link_to tournament_path(tournament), class: "theme-match-card p-4 no-underline" do %>
+          <div class="mono text-xs uppercase tracking-[0.16em] text-zinc-500"><%= tournament.format_type %></div>
+          <div class="bebas mt-2 text-2xl leading-none text-white"><%= tournament.title %></div>
+          <div class="mt-3 flex flex-wrap gap-2">
+            <span class="theme-chip mono"><%= tournament.entries.count %> players</span>
+            <span class="theme-chip mono"><%= tournament.status %></span>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  </section>
+</div>

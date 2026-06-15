@@ -31,91 +31,85 @@
   <% end %>
 </div>
 
-<div class="row justify-content-center" data-controller="match-view">
-  <div class="col-12 col-xl-10">
-    <div id="game-over-section">
-      <% if @match.finished? %>
-        <%= render "matches/game_over", match: @match, presenter: @presenter %>
-      <% end %>
-    </div>
+<div class="mx-auto max-w-7xl" data-controller="match-view">
+  <div id="game-over-section">
+    <% if @match.finished? %>
+      <%= render "matches/game_over", match: @match, presenter: @presenter %>
+    <% end %>
+  </div>
 
-    <div id="header-section">
-      <% unless @match.finished? %>
-        <div class="theme-card p-3 p-md-4 mb-4 match-header-card">
-          <div class="d-flex align-items-center justify-content-between gap-3 flex-wrap">
-            <%= link_to "← Back", matches_path, class: "btn theme-btn-outline rounded-pill mono d-none d-md-inline-flex" %>
-
-            <div class="text-center flex-grow-1 match-header-meta">
-              <div class="theme-section-label mono mb-1">Live match</div>
-              <h1 class="bebas mb-2" style="font-size:clamp(2rem,6vw,3rem);letter-spacing:0.05em;"><%= @match.ui_identifier %></h1>
-              <div class="d-flex flex-wrap align-items-center justify-content-center gap-2">
+  <div id="header-section">
+    <% unless @match.finished? %>
+      <section class="theme-card mb-4 p-4 md:p-5">
+        <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <div class="flex items-start gap-3">
+            <%= link_to "← Back", matches_path, class: "btn theme-btn-outline rounded-pill mono hidden px-3 md:inline-flex" %>
+            <div>
+              <div class="theme-section-label mono mb-2">Live match</div>
+              <h1 class="bebas mb-2 text-[clamp(1.8rem,4.5vw,2.8rem)] leading-none tracking-[0.02em]"><%= @match.ui_identifier %></h1>
+              <div class="flex flex-wrap gap-2">
                 <% if @match.best_of_sets > 1 %>
                   <span class="theme-chip mono">Bo<%= @match.best_of_sets %> sets</span>
                 <% end %>
                 <span class="theme-chip mono">Bo<%= @match.best_of_legs %> legs</span>
+                <span class="theme-chip mono is-live">In progress</span>
               </div>
             </div>
+          </div>
 
-            <div class="text-md-end match-header-meta">
-              <div class="mono text-subtle-theme small">Created</div>
-              <div class="mono small"><%= @match.created_at.strftime("%d %b · %H:%M") %></div>
+          <div class="hidden gap-3 sm:grid-cols-2 lg:grid lg:min-w-[20rem]">
+            <div class="rounded-2xl border border-white/5 bg-white/[0.02] p-3">
+              <div class="mono text-[0.68rem] uppercase tracking-[0.16em] text-zinc-500">Started</div>
+              <div class="mt-1 text-sm text-zinc-200"><%= @match.created_at.strftime("%d %b %Y · %H:%M") %></div>
+            </div>
+            <div class="rounded-2xl border border-white/5 bg-white/[0.02] p-3">
+              <div class="mono text-[0.68rem] uppercase tracking-[0.16em] text-zinc-500">Players</div>
+              <div class="mt-1 text-sm text-zinc-200"><%= @match.players.map(&:display_name).join(" · ") %></div>
             </div>
           </div>
         </div>
-      <% end %>
-    </div>
+      </section>
+    <% end %>
+  </div>
 
-    <% unless @match.finished? %>
-      <div class="mobile-view-switch mb-3">
-        <div class="theme-card p-2">
-          <div class="d-grid gap-2" style="grid-template-columns:repeat(2,minmax(0,1fr));">
-            <button type="button"
-                    class="btn mono"
-                    data-match-view-target="padButton"
-                    data-action="match-view#showPad">
-              Throw pad
-            </button>
-            <button type="button"
-                    class="btn mono"
-                    data-match-view-target="inputButton"
-                    data-action="match-view#showInput">
-              Input
-            </button>
-          </div>
+  <% unless @match.finished? %>
+    <div class="mobile-view-switch mb-3">
+      <div class="theme-card p-2">
+        <div class="grid grid-cols-2 gap-2">
+          <button type="button" class="btn mono" data-match-view-target="padButton" data-action="match-view#showPad">Throw pad</button>
+          <button type="button" class="btn mono" data-match-view-target="inputButton" data-action="match-view#showInput">Input</button>
         </div>
       </div>
+    </div>
+  <% end %>
+
+  <div id="score-cards-section">
+    <% unless @match.finished? %>
+      <section class="mb-3 grid grid-cols-2 gap-2 md:mb-4 md:gap-4">
+        <% @presenter.players.each do |player| %>
+          <%= render "matches/score_card", match: @match, presenter: @presenter, player: player %>
+        <% end %>
+      </section>
     <% end %>
+  </div>
 
-    <div id="score-cards-section">
-      <% unless @match.finished? %>
-        <div class="row g-3 g-md-4 mb-4">
-          <% @presenter.players.each do |player| %>
-            <div class="col-12 col-md-6">
-              <%= render "matches/score_card", match: @match, presenter: @presenter, player: player %>
-            </div>
-          <% end %>
-        </div>
-      <% end %>
-    </div>
-
-    <div id="keyboard-section">
-      <% unless @match.finished? %>
-        <div class="row g-4">
-          <div class="col-12 col-lg-5 order-2 order-lg-1" data-match-view-target="input">
-            <div class="theme-panel p-3 p-md-4 h-100">
-              <div id="current-player">
-                <%= render "matches/current_player", match: @match, presenter: @presenter, turn: @turn %>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-12 col-lg-7 order-1 order-lg-2" data-match-view-target="pad">
-            <div id="dart-board">
-              <%= render "matches/dart_board", match: @match, turn: @turn %>
+  <div id="keyboard-section">
+    <% unless @match.finished? %>
+      <section class="grid gap-4 lg:grid-cols-[minmax(0,0.82fr)_minmax(0,1.18fr)]">
+        <div data-match-view-target="input">
+          <div class="theme-panel h-full p-4 md:p-5">
+            <div id="current-player">
+              <%= render "matches/current_player", match: @match, presenter: @presenter, turn: @turn %>
             </div>
           </div>
         </div>
-      <% end %>
-    </div>
+
+        <div data-match-view-target="pad">
+          <div id="dart-board">
+            <%= render "matches/dart_board", match: @match, turn: @turn %>
+          </div>
+        </div>
+      </section>
+    <% end %>
   </div>
 </div>

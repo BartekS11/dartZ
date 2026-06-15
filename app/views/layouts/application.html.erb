@@ -10,93 +10,88 @@
   <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
   <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
   <%= stylesheet_link_tag "dartz_theme", "data-turbo-track": "reload" %>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
   <meta name="turbo-cache-control" content="no-store">
 </head>
 
 <body class="dartz-body">
-  <div class="theme-shell d-flex flex-column">
+  <div class="theme-shell flex min-h-screen flex-col">
     <header class="site-header">
-      <div class="container py-3">
-        <div class="d-flex align-items-center justify-content-between gap-3 flex-wrap">
-          <%= link_to root_path, class: "brand-lockup" do %>
-            <span class="brand-mark">
-              <svg viewBox="0 0 28 28" width="28" height="28" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <circle cx="14" cy="14" r="13" stroke="var(--theme-border-strong)" stroke-width="1" />
-                <circle cx="14" cy="14" r="9" stroke="var(--theme-muted)" stroke-width="1" />
-                <circle cx="14" cy="14" r="5" stroke="var(--theme-primary)" stroke-width="1" />
-                <circle cx="14" cy="14" r="2" fill="var(--theme-primary)" />
-                <line x1="14" y1="1" x2="14" y2="5" stroke="var(--theme-muted)" stroke-width="1" />
-                <line x1="14" y1="23" x2="14" y2="27" stroke="var(--theme-muted)" stroke-width="1" />
-                <line x1="1" y1="14" x2="5" y2="14" stroke="var(--theme-muted)" stroke-width="1" />
-                <line x1="23" y1="14" x2="27" y2="14" stroke="var(--theme-muted)" stroke-width="1" />
-              </svg>
-            </span>
-            <span>
-              <span class="brand-wordmark bebas d-block"><%= theme_app_name.delete(theme_app_accent) %><span class="accent"><%= theme_app_accent %></span></span>
-              <span class="brand-tagline mono d-block">steel tip score tracker</span>
-            </span>
+      <div class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
+        <%= link_to root_path, class: "brand-lockup min-w-0" do %>
+          <span class="brand-mark shrink-0">
+            <svg viewBox="0 0 28 28" width="28" height="28" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <circle cx="14" cy="14" r="13" stroke="var(--theme-border-strong)" stroke-width="1" />
+              <circle cx="14" cy="14" r="9" stroke="var(--theme-muted)" stroke-width="1" />
+              <circle cx="14" cy="14" r="5" stroke="var(--theme-primary)" stroke-width="1" />
+              <circle cx="14" cy="14" r="2" fill="var(--theme-primary)" />
+              <line x1="14" y1="1" x2="14" y2="5" stroke="var(--theme-muted)" stroke-width="1" />
+              <line x1="14" y1="23" x2="14" y2="27" stroke="var(--theme-muted)" stroke-width="1" />
+              <line x1="1" y1="14" x2="5" y2="14" stroke="var(--theme-muted)" stroke-width="1" />
+              <line x1="23" y1="14" x2="27" y2="14" stroke="var(--theme-muted)" stroke-width="1" />
+            </svg>
+          </span>
+          <span class="min-w-0">
+            <span class="brand-wordmark bebas block"><%= theme_app_name.delete(theme_app_accent) %><span class="accent"><%= theme_app_accent %></span></span>
+          </span>
+        <% end %>
+
+        <nav class="flex items-center gap-2 sm:gap-3">
+          <% if content_for?(:mobile_header_action) %>
+            <div class="md:hidden">
+              <%= yield :mobile_header_action %>
+            </div>
           <% end %>
 
-          <nav class="d-flex align-items-center gap-2 gap-md-3 flex-wrap justify-content-end">
-            <% if content_for?(:mobile_header_action) %>
-              <div class="d-md-none">
-                <%= yield :mobile_header_action %>
-              </div>
-            <% end %>
+          <% if Current.user %>
+            <span class="mono hidden text-xs text-zinc-500 md:inline"><%= Current.user.display_name %></span>
+            <%= link_to "Tournaments", tournaments_path, class: "btn btn-sm theme-btn-outline rounded-pill px-3 d-none d-md-inline-flex" %>
+            <%= link_to "Play vs bot", new_bot_match_path, class: "btn btn-sm theme-btn-outline rounded-pill px-3 d-none d-md-inline-flex" %>
 
-            <% if Current.user %>
-              <span class="mono text-subtle-theme small d-none d-md-inline"><%= Current.user.display_name %></span>
-              <%= link_to "Play vs bot", new_bot_match_path, class: "btn btn-sm theme-btn-outline rounded-pill px-3 d-none d-md-inline-flex" %>
-
-              <details class="profile-menu">
-                <summary class="profile-menu-summary mono" aria-label="Open profile menu">
-                  ☰
-                </summary>
-                <div class="profile-menu-panel">
-                  <div>
-                    <div class="profile-menu-label mono mb-1">Signed in as</div>
-                    <div class="profile-menu-value bebas fs-4"><%= Current.user.display_name %></div>
-                    <div class="profile-menu-value mono small text-subtle-theme"><%= Current.user.email_address %></div>
-                  </div>
-
-                  <div class="profile-menu-divider"></div>
-
-                  <%= form_with model: Current.user, url: profile_path, method: :patch, class: "d-grid gap-2" do |f| %>
-                    <div>
-                      <label class="profile-menu-label mono mb-2 d-block">Nickname</label>
-                      <%= f.text_field :nickname,
-                            maxlength: 20,
-                            placeholder: "Set your nickname",
-                            class: "form-control theme-form-input mono" %>
-                    </div>
-                    <%= f.submit "Save nickname", class: "btn btn-sm theme-btn-primary rounded-pill mono" %>
-                  <% end %>
-
-                  <div class="profile-menu-divider"></div>
-
-                  <div class="d-grid gap-2">
-                    <%= link_to "Play vs bot", new_bot_match_path, class: "btn btn-sm theme-btn-outline rounded-pill mono d-md-none" %>
-                    <%= button_to "Logout", session_path,
-                          method: :delete,
-                          class: "btn btn-sm theme-btn-outline rounded-pill mono w-100",
-                          form: {
-                            onsubmit: "localStorage.removeItem('dartz_player1');localStorage.removeItem('dartz_player2');localStorage.removeItem('dartz_players');localStorage.removeItem('dartz_matches');"
-                          } %>
-                  </div>
+            <details class="profile-menu">
+              <summary class="profile-menu-summary mono" aria-label="Open profile menu">☰</summary>
+              <div class="profile-menu-panel">
+                <div>
+                  <div class="profile-menu-label mono mb-1">Signed in as</div>
+                  <div class="bebas text-3xl leading-none"><%= Current.user.display_name %></div>
+                  <div class="mono mt-1 text-xs text-zinc-500"><%= Current.user.email_address %></div>
                 </div>
-              </details>
-            <% else %>
-              <%= link_to "Login", new_session_path, class: "btn btn-sm theme-btn-outline rounded-pill px-3" %>
-            <% end %>
-          </nav>
-        </div>
+
+                <div class="profile-menu-divider"></div>
+
+                <%= form_with model: Current.user, url: profile_path, method: :patch, class: "grid gap-2" do |f| %>
+                  <div>
+                    <label class="profile-menu-label mono mb-2 block">Nickname</label>
+                    <%= f.text_field :nickname,
+                          maxlength: 20,
+                          placeholder: "Set your nickname",
+                          class: "form-control theme-form-input mono" %>
+                  </div>
+                  <%= f.submit "Save nickname", class: "btn btn-sm theme-btn-primary rounded-pill mono" %>
+                <% end %>
+
+                <div class="profile-menu-divider"></div>
+
+                <div class="grid gap-2">
+                  <%= link_to "Tournaments", tournaments_path, class: "btn btn-sm theme-btn-outline rounded-pill mono" %>
+                  <%= link_to "Play vs bot", new_bot_match_path, class: "btn btn-sm theme-btn-outline rounded-pill mono d-md-none" %>
+                  <%= button_to "Logout", session_path,
+                        method: :delete,
+                        class: "btn btn-sm theme-btn-outline rounded-pill mono w-100",
+                        form: {
+                          onsubmit: "localStorage.removeItem('dartz_player1');localStorage.removeItem('dartz_player2');localStorage.removeItem('dartz_players');localStorage.removeItem('dartz_matches');"
+                        } %>
+                </div>
+              </div>
+            </details>
+          <% else %>
+            <%= link_to "Tournaments", tournaments_path, class: "btn btn-sm theme-btn-outline rounded-pill px-3 d-none d-md-inline-flex" %>
+            <%= link_to "Login", new_session_path, class: "btn btn-sm theme-btn-outline rounded-pill px-3" %>
+          <% end %>
+        </nav>
       </div>
     </header>
 
-    <main class="container flex-grow-1 py-4 py-md-5">
+    <main class="mx-auto flex w-full max-w-7xl flex-1 flex-col px-4 py-5 sm:px-6 md:py-8 lg:px-8">
       <% if notice %>
         <div class="flash-theme notice mono mb-4">⚡ <%= notice %></div>
       <% end %>
@@ -106,6 +101,21 @@
 
       <%= yield %>
     </main>
+
+    <footer class="border-t border-white/5 bg-black/20">
+      <div class="mx-auto grid w-full max-w-7xl gap-6 px-4 py-6 sm:px-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] lg:px-8">
+        <div>
+          <div class="mono mb-2 text-xs uppercase tracking-[0.18em] text-zinc-500"><%= theme_app_name %></div>
+          <p class="mb-0 max-w-2xl text-sm leading-6 text-zinc-400">Before shipping in the European Union, make sure you replace placeholder legal text with your real operator details, privacy information, cookie setup, and consumer-facing terms.</p>
+        </div>
+
+        <div class="grid gap-2 text-sm text-zinc-400 sm:grid-cols-2 lg:justify-self-end">
+          <%= link_to "Privacy Policy", privacy_policy_path, class: "footer-link" %>
+          <%= link_to "Terms of Service", terms_of_service_path, class: "footer-link" %>
+          <%= link_to "Contact & Operator Info", contact_page_path, class: "footer-link sm:col-span-2" %>
+        </div>
+      </div>
+    </footer>
   </div>
 </body>
 </html>

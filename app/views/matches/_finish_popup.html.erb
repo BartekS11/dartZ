@@ -3,37 +3,24 @@
 <% multi_leg  = match.best_of_legs > 1 %>
 <% set_winner = multi_set && leg.match_set.finished? && leg.match_set.winner == player %>
 <% match_won  = match.finished? && match.winner == player %>
+<% popup_class = match_won ? 'is-match' : set_winner ? 'is-set' : 'is-leg' %>
+<% accent_class = match_won ? 'text-red-300' : set_winner ? 'text-amber-300' : 'text-green-300' %>
 
-<div id="finish-popup-overlay"
-     style="position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:100;
-            display:flex;align-items:center;justify-content:center;
-            backdrop-filter:blur(4px)">
-
-  <div style="background:#111;border:1px solid #2a2a2a;
-              border-top:2px solid <%= match_won ? '#ef4444' : set_winner ? '#f59e0b' : '#22c55e' %>;
-              border-radius:16px;padding:2rem;max-width:420px;width:92%;
-              box-shadow:0 0 60px rgba(<%= match_won ? '220,38,38' : set_winner ? '245,158,11' : '34,197,94' %>,0.15)">
-
-    <div class="text-center mb-5">
-      <p style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.2em;
-                color:<%= match_won ? '#ef4444' : set_winner ? '#f59e0b' : '#16a34a' %>;
-                text-transform:uppercase;margin-bottom:8px">
+<div id="finish-popup-overlay" class="finish-popup-overlay">
+  <div class="finish-popup-card <%= popup_class %>">
+    <div class="mb-5 text-center">
+      <p class="mono mb-2 text-[0.68rem] uppercase tracking-[0.2em] <%= accent_class %>">
         <% if match_won %>
-          🏆 Match Won
+          Match won
         <% elsif set_winner %>
-          Set Won
+          Set won
         <% else %>
-          🎯 Checkout
+          Checkout complete
         <% end %>
       </p>
 
-      <p style="font-family:'Bebas Neue',sans-serif;font-size:2.5rem;line-height:1;
-                color:<%= match_won ? '#ef4444' : set_winner ? '#f59e0b' : '#4ade80' %>;
-                letter-spacing:0.05em">
-        <%= player.display_name %>
-      </p>
-
-      <p style="font-family:'DM Mono',monospace;font-size:0.7rem;color:#555;margin-top:4px">
+      <p class="bebas text-4xl leading-none text-white"><%= player.display_name %></p>
+      <p class="mono mt-2 text-xs uppercase tracking-[0.16em] text-zinc-500">
         <% if match_won %>
           wins the match
         <% elsif set_winner %>
@@ -45,56 +32,38 @@
     </div>
 
     <% unless leg.checkout_throws.present? %>
-      <form action="<%= leg_checkout_path(leg) %>" method="post" id="checkout-form">
+      <form action="<%= leg_checkout_path(leg) %>" method="post" id="checkout-form" data-turbo="false">
         <input type="hidden" name="_method" value="patch">
         <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
 
         <div class="mb-4">
-          <p style="font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.15em;
-                    color:#444;text-transform:uppercase;margin-bottom:12px;text-align:center">
+          <p class="mono mb-3 text-center text-[0.68rem] uppercase tracking-[0.16em] text-zinc-500">
             How many darts were needed to finish?
           </p>
 
-          <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;">
+          <div class="grid grid-cols-3 gap-3">
             <% [1, 2, 3].each do |n| %>
-              <label class="checkout-choice" style="cursor:pointer;display:block;">
+              <label class="checkout-choice">
                 <input type="radio"
                        name="checkout_throws"
                        value="<%= n %>"
                        required
-                       style="position:absolute;opacity:0;pointer-events:none;"
+                       class="absolute opacity-0 pointer-events-none"
                        onchange="document.querySelectorAll('#checkout-form .checkout-choice').forEach(el => el.classList.remove('active')); this.closest('.checkout-choice').classList.add('active');">
-                <span style="display:block;text-align:center;padding:14px 8px;border-radius:10px;
-                             border:1px solid #2a2a2a;background:#0a0a0a;color:#666;
-                             font-family:'Bebas Neue',sans-serif;font-size:1.6rem;transition:all 0.15s ease;">
-                  <%= n %>
-                </span>
+                <span><%= n %></span>
               </label>
             <% end %>
           </div>
-
-          <style>
-            .checkout-choice.active span {
-              background:#052e16 !important;
-              border-color:#16a34a !important;
-              color:#4ade80 !important;
-            }
-          </style>
         </div>
 
-        <button type="submit"
-                style="width:100%;font-family:'Bebas Neue',sans-serif;font-size:1rem;
-                       letter-spacing:0.1em;background:#16a34a;color:white;
-                       border:1px solid #22c55e;border-radius:8px;padding:12px;cursor:pointer;">
+        <button type="submit" class="btn w-100 rounded-pill border-0 bg-green-600 px-4 py-3 text-white bebas text-xl hover:bg-green-500">
           <%= match_won ? 'See Results →' : 'Next Leg →' %>
         </button>
       </form>
     <% else %>
       <button type="button"
               onclick="this.closest('#finish-popup-overlay').style.display='none'"
-              style="width:100%;font-family:'Bebas Neue',sans-serif;font-size:1rem;
-                     letter-spacing:0.1em;background:#dc2626;color:white;
-                     border:1px solid #ef4444;border-radius:8px;padding:12px;cursor:pointer">
+              class="btn theme-btn-primary w-100 rounded-pill px-4 py-3 bebas text-xl">
         <%= match_won ? 'See Results →' : 'Continue →' %>
       </button>
     <% end %>

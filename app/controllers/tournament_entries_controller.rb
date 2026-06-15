@@ -1,0 +1,65 @@
+class TournamentEntriesController < ApplicationController
+  allow_unauthenticated_access
+  before_action :resume_session_optional
+  before_action :set_tournament
+  before_action :set_entry, only: %i[update destroy]
+
+  def create
+    unless @tournament.join_token == params[:join_token]
+      redirect_to tournament_path(@tournament), alert: "Invalid join link."
+      return
+    end
+
+    name = params[:name].to_s.strip
+    entry = @tournament.entries.build(name:)
+    entry.user = Current.user if Current.user
+
+    if entry.save
+      TournamentGenerator.new(@tournament).call if @tournament.tournament_matches.none? && @tournament.entries.size >= 2
+      @tournament.broadcast_live_update!
+      redirect_to tournament_path(@tournament, participant_token: entry.access_token), notice: "Joined tournament."
+    else
+      redirect_to tournament_path(@tournament), alert: entry.errors.full_messages.to_sentence
+    end
+  end
+
+  def update
+    unless @tournament.can_administer?(user: Current.user, admin_token: params[:admin_token])
+      redirect_to tournament_path(@tournament), alert: "Unauthorized"
+      return
+    end
+
+    if @entry.update(entry_params)
+      @tournament.broadcast_live_update!
+      redirect_to tournament_path(@tournament, admin_token: params[:admin_token]), notice: "Player updated."
+    else
+      redirect_to tournament_path(@tournament, admin_token: params[:admin_token]), alert: @entry.errors.full_messages.to_sentence
+    end
+  end
+
+  def destroy
+    unless @tournament.can_administer?(user: Current.user, admin_token: params[:admin_token])
+      redirect_to tournament_path(@tournament), alert: "Unauthorized"
+      return
+    end
+
+    @entry.destroy!
+    TournamentGenerator.new(@tournament).call if @tournament.entries.size >= 2
+    @tournament.broadcast_live_update!
+    redirect_to tournament_path(@tournament, admin_token: params[:admin_token]), notice: "Player removed."
+  end
+
+  private
+
+  def set_tournament
+    @tournament = Tournament.find(params[:tournament_id])
+  end
+
+  def set_entry
+    @entry = @tournament.entries.find(params[:id])
+  end
+
+  def entry_params
+    params.require(:tournament_entry).permit(:name, :seed)
+  end
+end

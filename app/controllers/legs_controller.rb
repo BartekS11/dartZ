@@ -6,6 +6,9 @@ class LegsController < ApplicationController
     @match = @leg.match
     @leg.update!(checkout_throws: params[:checkout_throws].presence)
 
-    redirect_to match_path(@match), status: :see_other
+    respond_to do |format|
+      format.turbo_stream
+      format.html { redirect_to match_path(@match), status: :see_other }
+    end
   end
 end

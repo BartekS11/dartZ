@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_14_173000) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_15_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -104,6 +104,105 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_14_173000) do
     t.index ["turn_id"], name: "index_throws_on_turn_id"
   end
 
+  create_table "tournament_entries", force: :cascade do |t|
+    t.string "access_token", null: false
+    t.decimal "buchholz", precision: 8, scale: 2, default: "0.0", null: false
+    t.datetime "created_at", null: false
+    t.integer "draws", default: 0, null: false
+    t.string "group_name"
+    t.integer "legs_against", default: 0, null: false
+    t.integer "legs_for", default: 0, null: false
+    t.integer "losses", default: 0, null: false
+    t.string "name", null: false
+    t.integer "points", default: 0, null: false
+    t.integer "seed"
+    t.string "status", default: "active", null: false
+    t.bigint "tournament_id", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id"
+    t.integer "wins", default: 0, null: false
+    t.index ["access_token"], name: "index_tournament_entries_on_access_token", unique: true
+    t.index ["tournament_id", "name"], name: "index_tournament_entries_on_tournament_id_and_name", unique: true
+    t.index ["tournament_id"], name: "index_tournament_entries_on_tournament_id"
+    t.index ["user_id"], name: "index_tournament_entries_on_user_id"
+  end
+
+  create_table "tournament_matches", force: :cascade do |t|
+    t.bigint "away_entry_id"
+    t.integer "away_legs", default: 0, null: false
+    t.integer "away_sets", default: 0, null: false
+    t.integer "best_of_legs", default: 1, null: false
+    t.integer "best_of_sets", default: 1, null: false
+    t.string "bracket"
+    t.boolean "bye", default: false, null: false
+    t.datetime "completed_at"
+    t.datetime "created_at", null: false
+    t.bigint "home_entry_id"
+    t.integer "home_legs", default: 0, null: false
+    t.integer "home_sets", default: 0, null: false
+    t.bigint "linked_match_id"
+    t.integer "position"
+    t.jsonb "settings", default: {}, null: false
+    t.string "source", default: "generated", null: false
+    t.string "status", default: "pending", null: false
+    t.bigint "tournament_id", null: false
+    t.bigint "tournament_round_id", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "winner_entry_id"
+    t.index ["away_entry_id"], name: "index_tournament_matches_on_away_entry_id"
+    t.index ["home_entry_id"], name: "index_tournament_matches_on_home_entry_id"
+    t.index ["linked_match_id"], name: "index_tournament_matches_on_linked_match_id"
+    t.index ["tournament_id"], name: "index_tournament_matches_on_tournament_id"
+    t.index ["tournament_round_id", "position"], name: "index_tournament_matches_on_tournament_round_id_and_position", unique: true
+    t.index ["tournament_round_id"], name: "index_tournament_matches_on_tournament_round_id"
+    t.index ["winner_entry_id"], name: "index_tournament_matches_on_winner_entry_id"
+  end
+
+  create_table "tournament_rounds", force: :cascade do |t|
+    t.string "bracket"
+    t.datetime "created_at", null: false
+    t.string "group_name"
+    t.string "name", null: false
+    t.integer "number", null: false
+    t.jsonb "settings", default: {}, null: false
+    t.string "stage_type", null: false
+    t.string "status", default: "pending", null: false
+    t.bigint "tournament_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tournament_id", "number", "bracket", "group_name"], name: "idx_tournament_rounds_uniqueness"
+    t.index ["tournament_id"], name: "index_tournament_rounds_on_tournament_id"
+  end
+
+  create_table "tournaments", force: :cascade do |t|
+    t.string "admin_token", null: false
+    t.boolean "allow_wildcards", default: false, null: false
+    t.boolean "auto_advance", default: true, null: false
+    t.integer "best_of_legs", default: 1, null: false
+    t.integer "best_of_sets", default: 1, null: false
+    t.boolean "bronze_match", default: false, null: false
+    t.datetime "created_at", null: false
+    t.string "format_type", null: false
+    t.integer "group_count"
+    t.string "join_token", null: false
+    t.boolean "manual_advance_allowed", default: true, null: false
+    t.bigint "owner_user_id"
+    t.string "playoff_mode", default: "single_elimination", null: false
+    t.integer "playoff_qualifier_count"
+    t.datetime "published_at"
+    t.string "seeding_mode", default: "auto", null: false
+    t.jsonb "settings", default: {}, null: false
+    t.string "share_token", null: false
+    t.string "status", default: "draft", null: false
+    t.integer "swiss_round_count"
+    t.string "title", null: false
+    t.datetime "updated_at", null: false
+    t.string "visibility", default: "public_guest", null: false
+    t.index ["admin_token"], name: "index_tournaments_on_admin_token", unique: true
+    t.index ["join_token"], name: "index_tournaments_on_join_token", unique: true
+    t.index ["owner_user_id"], name: "index_tournaments_on_owner_user_id"
+    t.index ["share_token"], name: "index_tournaments_on_share_token", unique: true
+  end
+
   create_table "turns", force: :cascade do |t|
     t.datetime "completed_at"
     t.datetime "created_at", null: false
@@ -133,6 +232,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_14_173000) do
   add_foreign_key "players", "users"
   add_foreign_key "sessions", "users"
   add_foreign_key "throws", "turns"
+  add_foreign_key "tournament_entries", "tournaments"
+  add_foreign_key "tournament_entries", "users"
+  add_foreign_key "tournament_matches", "matches", column: "linked_match_id"
+  add_foreign_key "tournament_matches", "tournament_entries", column: "away_entry_id"
+  add_foreign_key "tournament_matches", "tournament_entries", column: "home_entry_id"
+  add_foreign_key "tournament_matches", "tournament_entries", column: "winner_entry_id"
+  add_foreign_key "tournament_matches", "tournament_rounds"
+  add_foreign_key "tournament_matches", "tournaments"
+  add_foreign_key "tournament_rounds", "tournaments"
+  add_foreign_key "tournaments", "users", column: "owner_user_id"
   add_foreign_key "turns", "legs"
   add_foreign_key "turns", "players"
 end

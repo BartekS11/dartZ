@@ -5,6 +5,22 @@ Rails.application.routes.draw do
   resource :profile, only: [ :update ]
   resources :passwords, param: :token
   resource :bot_match, only: [ :new, :create ]
+
+  get "privacy", to: "legal_pages#privacy", as: :privacy_policy
+  get "terms", to: "legal_pages#terms", as: :terms_of_service
+  get "contact", to: "legal_pages#contact", as: :contact_page
+
+  resources :tournaments, only: %i[index show new create update destroy] do
+    post :regenerate, on: :member
+    post :reseed, on: :member
+    post :advance_round, on: :member
+    resources :entries, only: %i[create update destroy], controller: "tournament_entries"
+    resources :tournament_matches, only: [] do
+      post :launch, on: :member
+      patch :report, on: :member
+    end
+  end
+
   resources :matches, only: %i[index show create] do
     collection do
       delete :clear

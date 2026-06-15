@@ -1,0 +1,9 @@
+<%= turbo_stream.replace "finish-popup" do %>
+  <div id="finish-popup"></div>
+<% end %>
+
+<%= turbo_stream.append "finish-popup" do %>
+  <script>
+    window.Turbo.visit(<%= match_path(@match).to_json.html_safe %>)
+  </script>
+<% end %>

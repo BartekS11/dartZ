@@ -1,0 +1,68 @@
+<div class="mx-auto max-w-5xl">
+  <div class="theme-card p-4 md:p-6">
+    <div class="mb-6">
+      <div class="theme-section-label mono mb-2">Tournament setup</div>
+      <h1 class="bebas text-3xl leading-none md:text-4xl">Create tournament</h1>
+      <p class="theme-subtitle mt-2">One tournament uses one mode: groups, swiss, or playoffs.</p>
+    </div>
+
+    <%= form_with model: @tournament, class: "grid gap-4" do |f| %>
+      <div>
+        <label class="auth-label">Title</label>
+        <%= f.text_field :title, class: "form-control theme-form-input", placeholder: "Friday Night Open" %>
+      </div>
+
+      <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        <div>
+          <label class="auth-label">Format</label>
+          <%= f.select :format_type, Tournament::FORMATS.map { |v| [v.titleize, v] }, {}, class: "form-select theme-form-input" %>
+        </div>
+        <div>
+          <label class="auth-label">Best of legs</label>
+          <%= f.number_field :best_of_legs, min: 1, class: "form-control theme-form-input" %>
+        </div>
+        <div>
+          <label class="auth-label">Best of sets</label>
+          <%= f.number_field :best_of_sets, min: 1, class: "form-control theme-form-input" %>
+        </div>
+        <div>
+          <label class="auth-label">Seeding</label>
+          <%= f.select :seeding_mode, Tournament::SEEDING_MODES.map { |v| [v.titleize, v] }, {}, class: "form-select theme-form-input" %>
+        </div>
+        <div>
+          <label class="auth-label">Playoff mode</label>
+          <%= f.select :playoff_mode, Tournament::PLAYOFF_MODES.map { |v| [v.humanize, v] }, {}, class: "form-select theme-form-input" %>
+        </div>
+        <div>
+          <label class="auth-label">Group count</label>
+          <%= f.number_field :group_count, min: 2, class: "form-control theme-form-input", placeholder: "For groups" %>
+        </div>
+        <div>
+          <label class="auth-label">Swiss rounds</label>
+          <%= f.number_field :swiss_round_count, min: 1, class: "form-control theme-form-input", placeholder: "Auto if blank" %>
+        </div>
+        <div>
+          <label class="auth-label">Playoff qualifiers</label>
+          <%= f.number_field :playoff_qualifier_count, min: 2, class: "form-control theme-form-input", placeholder: "Optional" %>
+        </div>
+      </div>
+
+      <div class="grid gap-3 md:grid-cols-3">
+        <label class="theme-panel flex items-center gap-3 p-3 text-sm text-zinc-300"><%= f.check_box :bronze_match %> Bronze match option</label>
+        <label class="theme-panel flex items-center gap-3 p-3 text-sm text-zinc-300"><%= f.check_box :auto_advance %> Auto advance</label>
+        <label class="theme-panel flex items-center gap-3 p-3 text-sm text-zinc-300"><%= f.check_box :manual_advance_allowed %> Manual advance allowed</label>
+        <label class="theme-panel flex items-center gap-3 p-3 text-sm text-zinc-300 md:col-span-3"><%= f.check_box :allow_wildcards %> Allow wildcard playoff qualification when relevant</label>
+      </div>
+
+      <div>
+        <label class="auth-label">Players (one per line)</label>
+        <%= text_area_tag "tournament[entry_names]", nil, rows: 10, class: "form-control theme-form-input", placeholder: "Player 1\nPlayer 2\nPlayer 3" %>
+      </div>
+
+      <div class="flex flex-col gap-3 sm:flex-row sm:justify-end">
+        <%= link_to "Cancel", tournaments_path, class: "btn theme-btn-outline rounded-pill mono" %>
+        <%= f.submit "Create tournament", class: "btn theme-btn-primary rounded-pill px-4 py-3 bebas text-xl" %>
+      </div>
+    <% end %>
+  </div>
+</div>
