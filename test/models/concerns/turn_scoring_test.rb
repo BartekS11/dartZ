@@ -38,11 +38,11 @@ class TurnScoringTest < ActiveSupport::TestCase
   end
 
   test "points_to_segment converts common scores correctly" do
-    assert_equal [20, "triple"], Turn.points_to_segment(60)
-    assert_equal [20, "double"], Turn.points_to_segment(40)
-    assert_equal [10, "double"], Turn.points_to_segment(20)
-    assert_equal [25, "double"], Turn.points_to_segment(50)
-    assert_equal [25, "single"], Turn.points_to_segment(25)
+    assert_equal [ 20, "triple" ], Turn.points_to_segment(60)
+    assert_equal [ 20, "double" ], Turn.points_to_segment(40)
+    assert_equal [ 10, "double" ], Turn.points_to_segment(20)
+    assert_equal [ 25, "double" ], Turn.points_to_segment(50)
+    assert_equal [ 25, "single" ], Turn.points_to_segment(25)
   end
 
   private
@@ -54,6 +54,6 @@ class TurnScoringTest < ActiveSupport::TestCase
     set = match.match_sets.create!
     leg = set.legs.create!(match: match)
     leg.start_first_turn!
-    [match, player, other, leg, leg.current_turn]
+    [ match, player, other, leg, leg.current_turn ]
   end
 end

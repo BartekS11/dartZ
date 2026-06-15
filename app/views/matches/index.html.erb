@@ -1,498 +1,171 @@
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap');
-
-  .dart-bg {
-    background-color: #0a0a0a;
-    background-image:
-      radial-gradient(circle at 20% 50%, rgba(185,28,28,0.08) 0%, transparent 50%),
-      radial-gradient(circle at 80% 20%, rgba(185,28,28,0.05) 0%, transparent 40%),
-      repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,255,255,0.02) 39px, rgba(255,255,255,0.02) 40px),
-      repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255,255,255,0.02) 39px, rgba(255,255,255,0.02) 40px);
-    min-height: 100vh;
-    font-family: 'DM Sans', sans-serif;
-  }
-
-  .match-card {
-    background: linear-gradient(135deg, #141414 0%, #1a1a1a 100%);
-    border: 1px solid #2a2a2a;
-    border-left: 3px solid #dc2626;
-    transition: all 0.2s ease;
-    position: relative;
-    overflow: hidden;
-    text-decoration: none;
-    display: block;
-  }
-
-  .match-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: linear-gradient(135deg, rgba(220,38,38,0.05) 0%, transparent 60%);
-    opacity: 0;
-    transition: opacity 0.2s ease;
-  }
-
-  .match-card:hover {
-    border-color: #dc2626;
-    border-left-color: #ef4444;
-    transform: translateX(4px);
-    box-shadow: -4px 0 20px rgba(220,38,38,0.2);
-  }
-
-  .match-card:hover::before { opacity: 1; }
-
-  .btn-primary {
-    background: #dc2626;
-    font-family: 'Bebas Neue', sans-serif;
-    letter-spacing: 0.1em;
-    font-size: 1rem;
-    transition: all 0.15s ease;
-    border: 1px solid #ef4444;
-  }
-
-  .btn-primary:hover {
-    background: #ef4444;
-    box-shadow: 0 0 20px rgba(220,38,38,0.4);
-    transform: translateY(-1px);
-  }
-
-  .match-id { font-family: 'Bebas Neue', sans-serif; letter-spacing: 0.05em; }
-  .mono     { font-family: 'DM Mono', monospace; }
-
-  .player-row { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
-  .player-row:last-child { margin-bottom: 0; }
-
-  .player-name {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.68rem;
-    letter-spacing: 0.05em;
-    color: #555;
-    flex: 1;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .player-name.winner { color: #4ade80; }
-
-  .player-score {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 1rem;
-    min-width: 32px;
-    text-align: right;
-    color: #2a2a2a;
-  }
-
-  .player-score.winner { color: #4ade80; }
-  .player-score.active { color: #666; }
-
-  .player-avg {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.6rem;
-    min-width: 38px;
-    text-align: right;
-    letter-spacing: 0.04em;
-  }
-
-  .avg-high { color: #22c55e; }
-  .avg-mid  { color: #f59e0b; }
-  .avg-low  { color: #3a3a3a; }
-
-  .progress-bar-track {
-    height: 2px;
-    background: #1a1a1a;
-    border-radius: 2px;
-    overflow: hidden;
-    margin-top: 2px;
-    margin-bottom: 4px;
-  }
-
-  .progress-bar-fill {
-    height: 100%;
-    border-radius: 2px;
-    transition: width 0.3s ease;
-  }
-
-  .player-card {
-    flex: 1;
-    background: #0f0f0f;
-    border: 1px solid #222;
-    border-top: 2px solid #dc2626;
-    border-radius: 12px;
-    padding: 1rem;
-    position: relative;
-  }
-
-  .saved-dropdown {
-    display: none;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    z-index: 50;
-    background: #111;
-    border: 1px solid #2a2a2a;
-    border-radius: 8px;
-    margin-top: 4px;
-    overflow: hidden;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.6);
-  }
-
-  .saved-btn {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.6rem;
-    letter-spacing: 0.1em;
-    color: #444;
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0;
-    transition: color 0.15s ease;
-  }
-
-  .saved-btn:hover { color: #dc2626; }
-
-  .format-section {
-    background: #0f0f0f;
-    border: 1px solid #1e1e1e;
-    border-radius: 12px;
-    padding: 1rem;
-    margin-bottom: 1rem;
-  }
-
-  .format-presets {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-  }
-
-  .preset-btn {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.65rem;
-    letter-spacing: 0.08em;
-    padding: 4px 10px;
-    border-radius: 6px;
-    border: 1px solid #2a2a2a;
-    background: #111;
-    color: #555;
-    cursor: pointer;
-    transition: all 0.15s ease;
-  }
-
-  .preset-btn:hover,
-  .preset-btn.active {
-    border-color: #dc2626;
-    color: #ef4444;
-    background: rgba(220,38,38,0.08);
-  }
-
-  .format-custom-input {
-    background: #111;
-    border: 1px solid #222;
-    color: #fff;
-    font-family: 'DM Mono', monospace;
-    font-size: 0.8rem;
-    width: 48px;
-    padding: 4px 8px;
-    border-radius: 6px;
-    text-align: center;
-    transition: border-color 0.15s ease;
-  }
-
-  .format-custom-input:focus {
-    outline: none;
-    border-color: #dc2626;
-  }
-</style>
-
-<div class="dart-bg px-4 py-10" data-controller="lobby">
-  <div class="max-w-2xl mx-auto">
-
-    <%# Header %>
-    <div class="mb-10">
-      <div class="flex items-center gap-3 mb-1">
-        <div class="w-8 h-1 bg-red-600"></div>
-        <span class="text-red-600 text-xs tracking-widest uppercase mono">dartZ</span>
-      </div>
-      <h1 style="font-family:'Bebas Neue',sans-serif;font-size:3.5rem;line-height:1;
-                 color:#f5f5f5;letter-spacing:0.02em">
-        Your Matches
-      </h1>
-      <p class="text-zinc-500 text-sm mt-2">Track your 501 sessions</p>
-    </div>
-<%# Match list header %>
-<div class="flex items-center justify-between mb-3">
-  <p class="mono text-xs text-zinc-700 tracking-widest uppercase">Recent Matches</p>
-  <div class="flex items-center gap-3">
-    <button type="button"
-            data-action="click->lobby#clearMatches"
-            class="mono text-xs text-zinc-700 hover:text-red-500 tracking-widest transition-colors">
-      CLEAR MATCHES ✕
-    </button>
-    <div style="width:1px;height:10px;background:#2a2a2a"></div>
-    <button type="button"
-            data-action="click->lobby#clearPlayers"
-            class="mono text-xs text-zinc-700 hover:text-red-500 tracking-widest transition-colors">
-      CLEAR PLAYERS ✕
-    </button>
-  </div>
-</div>
-    <%# Returning players greeting %>
-    <div id="greeting-wrapper" class="hidden text-center mb-6">
-      <p class="mono text-xs text-zinc-600 tracking-widest mb-1">LAST PLAYERS</p>
-      <p data-lobby-target="greeting"
-         style="font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:0.08em"
-         class="text-zinc-400"></p>
-    </div>
-
-    <%# New Match Form %>
-    <%= form_with url: matches_path, method: :post,
-          data: { turbo: false, action: "submit->lobby#savePlayers" } do |f| %>
-
-      <%# Players %>
-      <div class="flex gap-3 mb-4">
-
-        <%# Player 1 %>
-        <div class="player-card">
-          <div class="flex items-center justify-between mb-2">
-            <p class="mono text-xs text-zinc-600 tracking-widest">PLAYER 1</p>
-            <button type="button"
-                    data-action="click->lobby#toggleDropdown1"
-                    class="saved-btn">▼ SAVED</button>
-          </div>
-          <%= f.text_field :player1_name,
-                placeholder: "Enter name",
-                maxlength: 20,
-                autocomplete: "off",
-                data: { lobby_target: "player1", action: "input->lobby#save" },
-                class: "w-full bg-zinc-950 border border-zinc-800 text-white text-center
-                        font-mono text-sm px-3 py-2 rounded-lg
-                        focus:outline-none focus:border-red-600" %>
-          <div data-lobby-target="dropdown1" class="saved-dropdown"></div>
-        </div>
-<div class="flex flex-col items-center justify-center px-1 gap-2">
-  <span style="font-family:'Bebas Neue',sans-serif"
-        class="text-2xl text-red-700 opacity-60">VS</span>
-  <button type="button"
-          data-action="click->lobby#swapPlayers"
-          class="text-zinc-600 hover:text-red-500 transition-colors"
-          title="Swap players"
-          style="font-size:1rem;background:none;border:none;cursor:pointer;
-                 padding:4px;border-radius:6px;border:1px solid #222;
-                 transition:all 0.15s ease"
-          onmouseover="this.style.borderColor='#dc2626'"
-          onmouseout="this.style.borderColor='#222'">
-    ⇅
-  </button>
-</div>
-
-        <%# Player 2 %>
-        <div class="player-card">
-          <div class="flex items-center justify-between mb-2">
-            <p class="mono text-xs text-zinc-600 tracking-widest">PLAYER 2</p>
-            <button type="button"
-                    data-action="click->lobby#toggleDropdown2"
-                    class="saved-btn">▼ SAVED</button>
-          </div>
-          <%= f.text_field :player2_name,
-                placeholder: "Enter name",
-                maxlength: 20,
-                autocomplete: "off",
-                data: { lobby_target: "player2", action: "input->lobby#save" },
-                class: "w-full bg-zinc-950 border border-zinc-800 text-white text-center
-                        font-mono text-sm px-3 py-2 rounded-lg
-                        focus:outline-none focus:border-red-600" %>
-          <div data-lobby-target="dropdown2" class="saved-dropdown"></div>
+<div class="row justify-content-center g-4"
+     data-controller="lobby"
+     data-lobby-signed-in-value="<%= Current.user.present? %>"
+     data-lobby-current-user-name-value="<%= Current.user&.display_name.to_s %>">
+  <div class="col-12 col-xl-10">
+    <div class="row g-4 align-items-start">
+      <div class="col-12 col-lg-5">
+        <div class="mb-4">
+          <div class="theme-section-label mono mb-2">DartZ lobby</div>
+          <h1 class="theme-section-title bebas mb-2">Your Matches</h1>
+          <p class="theme-subtitle mb-0">Start a leg fast, continue live matches, and keep recent sessions within reach.</p>
         </div>
 
-      </div>
+        <div id="greeting-wrapper" class="theme-card p-3 p-md-4 mb-4 hidden">
+          <p class="mono text-subtle-theme small text-uppercase mb-1">Last players</p>
+          <p data-lobby-target="greeting" class="bebas fs-2 mb-0"></p>
+        </div>
 
-      <%# Format picker %>
-      <div class="format-section">
-        <p class="mono text-xs text-zinc-600 tracking-widest uppercase mb-3">Match Format</p>
-
-        <div class="grid grid-cols-2 gap-4">
-
-          <%# Legs %>
-          <div>
-            <p class="mono text-xs text-zinc-700 tracking-widest mb-2">LEGS</p>
-            <div class="format-presets mb-2">
-              <% [[1,"1"], [3,"Bo3"], [5,"Bo5"]].each do |val, label| %>
-                <button type="button"
-                        class="preset-btn <%= val == 1 ? 'active' : '' %>"
-                        onclick="
-                          document.getElementById('best_of_legs').value = <%= val.to_json %>;
-                          this.closest('.format-presets').querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
-                          this.classList.add('active')">
-                  <%= label %>
-                </button>
-              <% end %>
+        <div class="theme-card p-3 p-md-4">
+          <div class="d-flex align-items-center justify-content-between gap-3 mb-3">
+            <div>
+              <p class="theme-section-label mono mb-1">New match</p>
+              <h2 class="bebas mb-0 fs-2">501 setup</h2>
             </div>
-<div class="flex items-center gap-2 mt-1">
-  <span class="mono text-xs text-zinc-700 tracking-widest">CUSTOM</span>
-  <div class="flex items-center rounded-lg overflow-hidden border border-zinc-800 bg-zinc-950">
-    <button type="button"
-            onclick="const i=document.getElementById('best_of_legs');i.value=Math.max(1,parseInt(i.value||1)-1)"
-            class="mono text-zinc-600 hover:text-red-500 border-r border-zinc-800
-                   bg-transparent px-2 py-1.5 text-sm transition-colors cursor-pointer">
-      −
-    </button>
-    <input type="number"
-           id="best_of_legs"
-           name="best_of_legs"
-           value="1"
-           min="1"
-           max="99"
-           class="w-10 bg-transparent text-zinc-400 text-center font-mono text-sm
-                  py-1.5 focus:outline-none focus:text-white transition-colors
-                  [appearance:textfield]
-                  [&::-webkit-outer-spin-button]:appearance-none
-                  [&::-webkit-inner-spin-button]:appearance-none"
-           oninput="this.closest('.format-section').querySelectorAll('.format-presets .preset-btn').forEach(b => b.classList.remove('active'))">
-    <button type="button"
-            onclick="const i=document.getElementById('best_of_legs');i.value=Math.min(99,parseInt(i.value||1)+1)"
-            class="mono text-zinc-600 hover:text-red-500 border-l border-zinc-800
-                   bg-transparent px-2 py-1.5 text-sm transition-colors cursor-pointer">
-      +
-    </button>
-  </div>
-</div>
-          </div>
-
-          <%# Sets %>
-          <div>
-            <p class="mono text-xs text-zinc-700 tracking-widest mb-2">SETS</p>
-            <div class="format-presets mb-2">
-              <% [[1,"1"], [3,"Bo3"], [5,"Bo5"]].each do |val, label| %>
-                <button type="button"
-                        class="preset-btn <%= val == 1 ? 'active' : '' %>"
-                        onclick="
-                          document.getElementById('best_of_sets').value = <%= val.to_json %>;
-                          this.closest('.format-presets').querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
-                          this.classList.add('active')">
-                  <%= label %>
-                </button>
-              <% end %>
+            <div class="d-flex gap-2">
+              <button type="button" data-action="click->lobby#clearMatches" class="btn btn-sm theme-btn-outline rounded-pill mono">Clear matches</button>
+              <button type="button" data-action="click->lobby#clearPlayers" class="btn btn-sm theme-btn-outline rounded-pill mono">Clear players</button>
             </div>
-            <div class="flex items-center gap-2 mt-1">
-  <span class="mono text-xs text-zinc-700 tracking-widest">CUSTOM</span>
-  <div class="flex items-center rounded-lg overflow-hidden border border-zinc-800 bg-zinc-950">
-    <button type="button"
-            onclick="const i=document.getElementById('best_of_sets');i.value=Math.max(1,parseInt(i.value||1)-1)"
-            class="mono text-zinc-600 hover:text-red-500 border-r border-zinc-800
-                   bg-transparent px-2 py-1.5 text-sm transition-colors cursor-pointer">
-      −
-    </button>
-    <input type="number"
-           id="best_of_sets"
-           name="best_of_sets"
-           value="1"
-           min="1"
-           max="99"
-           class="w-10 bg-transparent text-zinc-400 text-center font-mono text-sm
-                  py-1.5 focus:outline-none focus:text-white transition-colors
-                  [appearance:textfield]
-                  [&::-webkit-outer-spin-button]:appearance-none
-                  [&::-webkit-inner-spin-button]:appearance-none"
-           oninput="this.closest('.format-section').querySelectorAll('.format-presets .preset-btn').forEach(b => b.classList.remove('active'))">
-    <button type="button"
-            onclick="const i=document.getElementById('best_of_sets');i.value=Math.min(99,parseInt(i.value||1)+1)"
-            class="mono text-zinc-600 hover:text-red-500 border-l border-zinc-800
-                   bg-transparent px-2 py-1.5 text-sm transition-colors cursor-pointer">
-      +
-    </button>
-  </div>
-</div>
           </div>
 
-        </div>
-      </div>
-
-      <%= f.submit "START MATCH →",
-            class: "btn-primary w-full text-white py-3 px-6 rounded mb-8 block text-center cursor-pointer" %>
-    <% end %>
-
-    <%# Match list header %>
-    <p class="mono text-xs text-zinc-700 tracking-widest uppercase mb-3">Recent Matches</p>
-
-    <%# Logged-in user — server-rendered %>
-    <% if Current.user && @matches.any? %>
-      <div class="space-y-3">
-        <% @matches.order(created_at: :desc).limit(10).each_with_index do |match, i| %>
-          <% winner = match.winner %>
-          <%= link_to match_path(match), class: "match-card rounded-lg p-4" do %>
-            <div class="flex items-start justify-between gap-4">
-
-              <%# Left: match meta %>
-              <div class="flex items-center gap-3 min-w-0 flex-shrink-0">
-                <span class="text-zinc-700 mono text-xs w-5 text-right"><%= i + 1 %></span>
-                <div>
-                  <p class="match-id text-zinc-500 text-base">Match <%= match.display_identifier %></p>
-                  <p class="text-zinc-700 text-xs mono"><%= match.created_at.strftime("%d %b · %H:%M") %></p>
-                  <%# Format badge %>
-                  <% if match.best_of_sets > 1 || match.best_of_legs > 1 %>
-                    <p class="mono text-zinc-700" style="font-size:0.6rem;margin-top:2px">
-                      <% if match.best_of_sets > 1 %>Bo<%= match.best_of_sets %>S · <% end %>Bo<%= match.best_of_legs %>L
-                    </p>
-                  <% end %>
+          <%= form_with url: matches_path, method: :post, data: { turbo: false, action: "submit->lobby#savePlayers" } do |f| %>
+            <div class="row g-3 align-items-center mb-3">
+              <div class="col-12 col-sm-5">
+                <div class="theme-panel p-3 player-card-shell h-100 position-relative">
+                  <div class="d-flex align-items-center justify-content-between mb-2">
+                    <label class="mono text-subtle-theme small text-uppercase">Player 1</label>
+                    <button type="button" data-action="click->lobby#toggleDropdown1" class="saved-btn mono">Saved</button>
+                  </div>
+                  <%= f.text_field :player1_name,
+                        placeholder: "Enter name",
+                        maxlength: 20,
+                        autocomplete: "off",
+                        data: { lobby_target: "player1", action: "input->lobby#save" },
+                        class: "form-control theme-form-input text-center mono" %>
+                  <div data-lobby-target="dropdown1" class="saved-dropdown"></div>
                 </div>
               </div>
 
-              <%# Center: player rows with score + avg %>
-              <div class="flex-1 min-w-0">
-                <% match.players.each do |player| %>
-                  <% is_winner = winner && winner == player %>
-                  <% score     = match.score_for(player) %>
-                  <% avg       = match.three_dart_average(player) %>
-                  <% pct       = [(501 - score) * 100 / 501, 0].max %>
-                  <% avg_class = avg >= 60 ? "avg-high" : avg > 0 && avg >= 40 ? "avg-mid" : "avg-low" %>
-
-                  <div class="player-row">
-                    <span class="player-name <%= is_winner ? "winner" : "" %>">
-                      <%= player.display_name %>
-                    </span>
-                    <%# Sets/legs score if multi %>
-                    <% if match.best_of_sets > 1 %>
-                      <span style="font-family:'Bebas Neue',sans-serif;font-size:0.8rem;
-                                   color:<%= is_winner ? '#4ade80' : '#333' %>">
-                        <%= match.sets_won_by(player) %>S
-                      </span>
-                    <% end %>
-                    <span class="player-score <%= is_winner ? "winner" : match.finished? ? "" : "active" %>">
-                      <%= score %>
-                    </span>
-                    <% if avg > 0 %>
-                      <span class="player-avg <%= avg_class %>">avg&nbsp;<%= avg %></span>
-                    <% end %>
-                  </div>
-
-                  <div class="progress-bar-track">
-                    <div class="progress-bar-fill"
-                         style="width:<%= pct %>%;background:<%= is_winner ? '#16a34a' : '#2a2a2a' %>">
-                    </div>
-                  </div>
-                <% end %>
+              <div class="col-12 col-sm-2 text-center">
+                <div class="d-flex flex-sm-column align-items-center justify-content-center gap-2 h-100">
+                  <span class="bebas fs-3 text-primary-theme opacity-75">VS</span>
+                  <button type="button" data-action="click->lobby#swapPlayers" class="btn swap-badge d-inline-flex align-items-center justify-content-center">⇅</button>
+                </div>
               </div>
 
-              <%# Right: status %>
-              <div class="flex-shrink-0 flex flex-col items-end gap-1">
-                <% if match.finished? %>
-                  <span class="text-xs text-red-400 border border-red-900 bg-red-950 px-2 py-0.5 rounded mono">FINISHED</span>
-                <% else %>
-                  <span class="text-xs text-green-400 border border-green-900 bg-green-950 px-2 py-0.5 rounded mono">LIVE</span>
-                <% end %>
-                <span class="text-red-600 text-xs mono">OPEN →</span>
+              <div class="col-12 col-sm-5">
+                <div class="theme-panel p-3 player-card-shell h-100 position-relative">
+                  <div class="d-flex align-items-center justify-content-between mb-2">
+                    <label class="mono text-subtle-theme small text-uppercase">Player 2</label>
+                    <button type="button" data-action="click->lobby#toggleDropdown2" class="saved-btn mono">Saved</button>
+                  </div>
+                  <%= f.text_field :player2_name,
+                        placeholder: "Enter name",
+                        maxlength: 20,
+                        autocomplete: "off",
+                        data: { lobby_target: "player2", action: "input->lobby#save" },
+                        class: "form-control theme-form-input text-center mono" %>
+                  <div data-lobby-target="dropdown2" class="saved-dropdown"></div>
+                </div>
               </div>
-
             </div>
+
+            <div class="theme-panel p-3 mb-4">
+              <div class="row g-3">
+                <div class="col-12 col-md-6">
+                  <label class="mono text-subtle-theme small text-uppercase mb-2 d-block">Best of legs</label>
+                  <div class="d-flex flex-wrap gap-2 mb-2">
+                    <% [[1, "1"], [3, "Bo3"], [5, "Bo5"]].each do |val, label| %>
+                      <button type="button"
+                              class="btn btn-sm theme-btn-outline rounded-pill mono legs-preset <%= 'border-danger text-danger' if val == 1 %>"
+                              onclick="document.getElementById('best_of_legs').value = <%= val %>; this.closest('.col-md-6').querySelectorAll('.legs-preset').forEach(b => b.classList.remove('border-danger','text-danger')); this.classList.add('border-danger','text-danger')">
+                        <%= label %>
+                      </button>
+                    <% end %>
+                  </div>
+                  <%= number_field_tag :best_of_legs, 1, min: 1, max: 99, id: "best_of_legs", class: "form-control theme-form-input mono" %>
+                </div>
+
+                <div class="col-12 col-md-6">
+                  <label class="mono text-subtle-theme small text-uppercase mb-2 d-block">Best of sets</label>
+                  <div class="d-flex flex-wrap gap-2 mb-2">
+                    <% [[1, "1"], [3, "Bo3"], [5, "Bo5"]].each do |val, label| %>
+                      <button type="button"
+                              class="btn btn-sm theme-btn-outline rounded-pill mono sets-preset <%= 'border-danger text-danger' if val == 1 %>"
+                              onclick="document.getElementById('best_of_sets').value = <%= val %>; this.closest('.col-md-6').querySelectorAll('.sets-preset').forEach(b => b.classList.remove('border-danger','text-danger')); this.classList.add('border-danger','text-danger')">
+                        <%= label %>
+                      </button>
+                    <% end %>
+                  </div>
+                  <%= number_field_tag :best_of_sets, 1, min: 1, max: 99, id: "best_of_sets", class: "form-control theme-form-input mono" %>
+                </div>
+              </div>
+            </div>
+
+            <%= f.submit "Start Match",
+                  class: "btn theme-btn-primary w-100 rounded-pill bebas fs-4 py-3" %>
           <% end %>
-        <% end %>
+        </div>
       </div>
 
-    <%# Guest — localStorage rendered by lobby_controller %>
-    <% else %>
-      <div data-lobby-target="matchList" class="space-y-3"></div>
-    <% end %>
+      <div class="col-12 col-lg-7">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <div>
+            <p class="theme-section-label mono mb-1">Recent matches</p>
+            <h2 class="bebas fs-2 mb-0">Continue or review</h2>
+          </div>
+        </div>
 
+        <% if Current.user && @matches.any? %>
+          <div class="d-grid gap-3">
+            <% @matches.each_with_index do |match, i| %>
+              <% presenter = MatchStatePresenter.new(match) %>
+              <% winner = presenter.winner %>
+              <%= link_to match_path(match), class: "theme-match-card p-3 p-md-4" do %>
+                <div class="row align-items-start g-3 position-relative">
+                  <div class="col-auto">
+                    <div class="match-meta-index mono small"><%= i + 1 %></div>
+                  </div>
+                  <div class="col-12 col-sm-4">
+                    <div class="match-identifier bebas"><%= match.ui_identifier %></div>
+                    <div class="mono text-subtle-theme small mb-2"><%= match.created_at.strftime("%d %b · %H:%M") %></div>
+                    <div class="d-flex flex-wrap gap-2">
+                      <% if match.best_of_sets > 1 %>
+                        <span class="theme-chip mono">Bo<%= match.best_of_sets %> sets</span>
+                      <% end %>
+                      <span class="theme-chip mono">Bo<%= match.best_of_legs %> legs</span>
+                    </div>
+                  </div>
+
+                  <div class="col-12 col-sm-5">
+                    <% presenter.players.each do |player| %>
+                      <% is_winner = winner == player %>
+                      <% score = presenter.score_for(player) %>
+                      <% avg = presenter.three_dart_average(player) %>
+                      <% pct = [(501 - score) * 100 / 501, 0].max %>
+                      <div class="player-line">
+                        <span class="name mono <%= 'is-winner' if is_winner %>"><%= player.display_name %></span>
+                        <span class="value bebas <%= 'is-winner' if is_winner %>"><%= score %></span>
+                        <% if avg > 0 %>
+                          <span class="avg mono">avg <%= avg %></span>
+                        <% end %>
+                      </div>
+                      <div class="progress-thin"><span style="width:<%= pct %>%; background:<%= is_winner ? 'var(--theme-success)' : 'var(--theme-border-strong)' %>"></span></div>
+                    <% end %>
+                  </div>
+
+                  <div class="col-12 col-sm-3 text-sm-end">
+                    <span class="theme-chip mono <%= match.finished? ? 'is-finished' : 'is-live' %>"><%= match.finished? ? 'Finished' : 'Live' %></span>
+                    <div class="mt-3 mono text-primary-theme small">Open →</div>
+                  </div>
+                </div>
+              <% end %>
+            <% end %>
+          </div>
+        <% else %>
+          <div data-lobby-target="matchList" class="d-grid gap-3"></div>
+        <% end %>
+      </div>
+    </div>
   </div>
 </div>

@@ -3,6 +3,8 @@
 CI.run do
   step "Setup", "bin/setup --skip-server"
 
+  step "Tests: Smoke", "bin/rails test test/smoke"
+
   step "Style: Ruby", "bin/rubocop"
   step "Linting: Ruby", "bin/rubocop -A"
 

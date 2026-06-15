@@ -65,7 +65,7 @@ class MatchTest < ActiveSupport::TestCase
 
       identifier = match.ensure_match_identifier!
 
-      assert_equal "MULTIUSER-#{[user_a.id, user_b.id].max}-20260504-AABBCC", identifier
+      assert_equal "MULTIUSER-#{[ user_a.id, user_b.id ].max}-20260504-AABBCC", identifier
       assert_equal identifier, match.reload.match_identifier
     ensure
       SecureRandom.define_singleton_method(:hex, original_hex)
@@ -112,7 +112,7 @@ class MatchTest < ActiveSupport::TestCase
       match.players.create!(name: "Fresh Guest 1")
       match.players.create!(name: "Fresh Guest 2")
 
-      generated = ["aabbcc", "ddeeff"]
+      generated = [ "aabbcc", "ddeeff" ]
       original_hex = SecureRandom.method(:hex)
       SecureRandom.define_singleton_method(:hex) { |_len = nil| generated.shift }
 

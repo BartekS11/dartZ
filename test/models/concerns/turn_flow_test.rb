@@ -78,6 +78,6 @@ class TurnFlowTest < ActiveJob::TestCase
     set = match.match_sets.create!
     leg = set.legs.create!(match: match)
     leg.start_first_turn!
-    [match, leg, leg.current_turn]
+    [ match, leg, leg.current_turn ]
   end
 end

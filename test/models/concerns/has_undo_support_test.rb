@@ -77,7 +77,7 @@ class HasUndoSupportTest < ActiveSupport::TestCase
     set = match.match_sets.create!
     leg = set.legs.create!(match: match)
     leg.start_first_turn!
-    [match, player, other, leg, leg.current_turn]
+    [ match, player, other, leg, leg.current_turn ]
   end
 
   def create_throw(turn, segment, multiplier)

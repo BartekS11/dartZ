@@ -1,42 +1,45 @@
-<div id="dart-board" class="panel p-6 mb-6">
-  <p class="mono text-xs text-zinc-600 tracking-widest uppercase mb-4">Dart Board</p>
-  <div class="grid grid-cols-5 gap-2">
+<div id="dart-board" class="theme-panel p-3 p-md-4">
+  <div class="theme-panel-header pb-3 mb-3 d-flex align-items-center justify-content-between flex-wrap gap-2">
+    <div>
+      <div class="theme-section-label mono">Throw pad</div>
+      <div class="theme-subtitle mt-1">Tap a segment. Built to stay usable on mobile screens.</div>
+    </div>
+    <span class="theme-chip mono">Finish on a double</span>
+  </div>
+
+  <div class="dart-grid mb-3">
     <% (1..20).each do |n| %>
-      <div class="flex flex-col gap-1">
-        <% [ :single, :double, :triple ].each do |m| %>
+      <div class="dart-column">
+        <% [:single, :double, :triple].each do |m| %>
           <%= button_to "#{m.to_s[0].upcase}#{n}",
                 turn_throws_path(turn),
                 params: { throw: { segment: n, multiplier: m } },
                 method: :post,
                 form: { data: { turbo_stream: true } },
-                class: "dart-btn #{m} py-2 rounded text-center w-full" %>
+                class: "dart-btn #{m} mono" %>
         <% end %>
       </div>
     <% end %>
   </div>
-  <div class="divider"></div>
-  <div class="flex justify-center gap-2 mt-2">
-    <%= button_to "BULL",
+
+  <div class="dart-footer-actions">
+    <%= button_to "Bull",
           turn_throws_path(turn),
           params: { throw: { segment: 25, multiplier: :single } },
           method: :post,
           form: { data: { turbo_stream: true } },
-          class: "dart-btn single px-6 py-2 rounded" %>
-    <%= button_to "BULL ×2",
+          class: "dart-btn single mono" %>
+    <%= button_to "Bull ×2",
           turn_throws_path(turn),
           params: { throw: { segment: 25, multiplier: :double } },
           method: :post,
           form: { data: { turbo_stream: true } },
-          class: "dart-btn single px-6 py-2 rounded" %>
-    <%= button_to "MISS",
+          class: "dart-btn double mono" %>
+    <%= button_to "Miss",
           turn_throws_path(turn),
           params: { throw: { segment: 0, multiplier: :miss } },
           method: :post,
           form: { data: { turbo_stream: true } },
-          class: "dart-btn py-2 px-6 rounded",
-          style: "background:#1a1010;border:1px solid #3a1a1a;color:#555;" %>
+          class: "dart-btn miss mono" %>
   </div>
-  <p class="mono text-xs text-zinc-700 text-center mt-4">
-    Bust resets score · Finish on a double
-  </p>
 </div>

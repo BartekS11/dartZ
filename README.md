@@ -95,6 +95,17 @@ bin/rails db:create db:migrate
 bin/dev
 ```
 
+### API v1 feature flag
+
+API v1 can be enabled/disabled with an environment variable:
+
+```bash
+API_V1_ENABLED=true  bin/dev
+API_V1_ENABLED=false bin/dev
+```
+
+When disabled, `/api/v1/*` returns `503 Service Unavailable`.
+
 ```mermaid
 erDiagram
     USER ||--o{ SESSION : has

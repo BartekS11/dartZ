@@ -72,4 +72,118 @@ module HasThrowHistory
     return [] unless last_completed
     last_completed.throws.order(:created_at).to_a
   end
+
+  def completed_turns_for(player)
+    turns
+      .where(player_id: player.id)
+      .where.not(completed_at: nil)
+      .order(:created_at)
+  end
+
+  def turn_total_for(turn)
+    turn.total_score.present? ? turn.total_score : turn.throws.sum(&:points)
+  end
+
+  def highest_turn_for(player)
+    completed_turns_for(player).map { |turn| turn_total_for(turn) }.max.to_i
+  end
+
+  def first_n_turn_average(player, count: 3)
+    sample = completed_turns_for(player).limit(count).to_a
+    return 0.0 if sample.empty?
+
+    (sample.sum { |turn| turn_total_for(turn) }.to_f / sample.size).round(1)
+  end
+
+  def turns_over_for(player, threshold)
+    completed_turns_for(player).count { |turn| turn_total_for(turn) >= threshold }
+  end
+
+  def darts_thrown_for(player)
+    all_throws_for(player).count
+  end
+
+  def throw_counts_by_multiplier(player)
+    all_throws_for(player).group_by(&:multiplier).transform_values(&:count)
+  end
+
+  def per_dart_averages(player)
+    buckets = { 1 => [], 2 => [], 3 => [] }
+
+    completed_turns_for(player).find_each do |turn|
+      turn.throws.order(:created_at).to_a.each_with_index do |throw, index|
+        buckets[index + 1] << throw.points if buckets.key?(index + 1)
+      end
+    end
+
+    buckets.transform_values do |values|
+      values.empty? ? 0.0 : (values.sum.to_f / values.size).round(1)
+    end
+  end
+
+  def checkout_stats_for(player)
+    chances = 0
+    hits = 0
+    darts_used = []
+
+    turn_summaries_for(player).each do |summary|
+      chances += 1 if summary[:start_score].between?(2, 170)
+    end
+
+    legs.order(:created_at).each do |leg|
+      next unless leg.winner_id == player.id
+
+      darts_used << leg.checkout_throws if leg.checkout_throws.present?
+      hits += 1 if leg.checkout_throws.present?
+    end
+
+    {
+      chances: chances,
+      hits: hits,
+      rate: chances.zero? ? 0.0 : ((hits.to_f / chances) * 100).round(1),
+      average_darts: darts_used.empty? ? 0.0 : (darts_used.sum.to_f / darts_used.size).round(1)
+    }
+  end
+
+  def best_leg_for(player)
+    winning_legs = legs.where(winner_id: player.id).order(:created_at)
+    return nil if winning_legs.empty?
+
+    winning_legs.min_by do |leg|
+      leg.turns.where(player_id: player.id).joins(:throws).count
+    end
+  end
+
+  def best_leg_darts_for(player)
+    leg = best_leg_for(player)
+    return nil unless leg
+
+    leg.turns.where(player_id: player.id).joins(:throws).count
+  end
+
+  private
+
+  def turn_summaries_for(player)
+    summaries = []
+
+    legs.order(:created_at).each do |leg|
+      score = 501
+
+      leg.turns.where(player_id: player.id).order(:created_at).each do |turn|
+        total = turn_total_for(turn)
+        summaries << { turn: turn, leg: leg, start_score: score, total: total }
+
+        new_score = score - total
+        score = if new_score < 0 || new_score == 1
+          score
+        elsif new_score.zero?
+          0
+        else
+          new_score
+        end
+      end
+    end
+
+    summaries
+  end
 end

@@ -38,6 +38,10 @@ module DartZ
 
     config.active_job.queue_adapter = :async
 
+    config.x.api_v1_enabled = ActiveModel::Type::Boolean.new.cast(
+      ENV.fetch("API_V1_ENABLED", true)
+    )
+
     # Don't generate system test files.
     config.generators.system_tests = nil
   end

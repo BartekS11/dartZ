@@ -11,9 +11,11 @@ class BotMatchesController < ApplicationController
     )
     @match.save!
 
-    human_name = params[:player_name].to_s.strip.presence || Current.user.email_address
+    human_name = params[:player_name].to_s.strip.presence || Current.user.display_name
     bot_level  = params[:bot_level].to_i.clamp(1, 20)
     bot_name   = params[:bot_name].to_s.strip.presence || "Bot (Level #{bot_level})"
+
+    Current.user.update!(nickname: human_name) if Current.user.nickname != human_name
 
     @match.players.create!(name: human_name, user: Current.user)
     @match.players.create!(name: bot_name, bot: true, bot_level: bot_level)

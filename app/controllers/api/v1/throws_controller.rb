@@ -26,7 +26,7 @@ module Api
         end
 
         @match.reload
-        render json: match_state(@match), status: :created
+        render json: MatchStatePresenter.new(@match).state_payload, status: :created
       end
 
       def undo
@@ -37,7 +37,7 @@ module Api
         @match.undo_last_throw!(mode: mode)
         @match.reload
 
-        render json: match_state(@match)
+        render json: MatchStatePresenter.new(@match).state_payload
       end
 
       private
@@ -46,37 +46,6 @@ module Api
         match = Match.find(params[:match_id])
         match.current_leg&.current_turn&.id or
           raise ActiveRecord::RecordNotFound, "No active turn"
-      end
-
-      def match_state(match)
-        current_leg  = match.current_leg
-        current_turn = current_leg&.current_turn
-
-        {
-          id:              match.id,
-          finished:        match.finished?,
-          current_player:  match.current_player&.display_name,
-          current_turn_id: current_turn&.id,
-          players:         match.players.map { |p|
-            {
-              id:          p.id,
-              name:        p.display_name,
-              score:       match.score_for(p),
-              avg:         match.three_dart_average(p),
-              sets_won:    match.sets_won_by(p),
-              legs_won:    current_leg ? match.current_set&.legs_won_by(p) : 0,
-              winner:      match.winner == p,
-              last_throws: match.last_turn_throws_for(p).map { |t|
-                {
-                  segment:    t.segment,
-                  multiplier: t.multiplier,
-                  points:     t.points
-                }
-              },
-              checkout: CheckoutCalculator.suggest(match.score_for(p))
-            }
-          }
-        }
       end
     end
   end

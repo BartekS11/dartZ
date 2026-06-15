@@ -1,4 +1,6 @@
 class Match < ApplicationRecord
+  before_destroy :destroy_direct_legs
+
   include MatchLifecycle
   include HasThrowHistory
   include HasUndoSupport
@@ -13,6 +15,32 @@ class Match < ApplicationRecord
 
   def display_identifier
     match_identifier.presence || "##{id}"
+  end
+
+  def ui_identifier
+    return "Match ##{id}" if match_identifier.blank?
+
+    parts = match_identifier.split("-")
+    suffix = parts.last
+    date_token = parts[-2]
+
+    date_label = begin
+      Date.strptime(date_token, "%Y%m%d").strftime("%d %b")
+    rescue StandardError
+      date_token
+    end
+
+    label = if match_identifier.start_with?("GUEST-")
+      "Guest"
+    elsif match_identifier.start_with?("USER-")
+      "You"
+    elsif match_identifier.start_with?("MULTIUSER-")
+      "Shared"
+    else
+      "Match"
+    end
+
+    "#{label} · #{date_label} · #{suffix}"
   end
 
   def ensure_match_identifier!
@@ -106,5 +134,9 @@ class Match < ApplicationRecord
     suffix = SecureRandom.hex(3).upcase
 
     "#{scope}-#{date}-#{suffix}"
+  end
+
+  def destroy_direct_legs
+    Leg.where(match_id: id).find_each(&:destroy!)
   end
 end

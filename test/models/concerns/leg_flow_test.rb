@@ -64,6 +64,6 @@ class LegFlowTest < ActiveSupport::TestCase
     match_set = match.match_sets.create!
     leg = match_set.legs.create!(match: match)
     leg.start_first_turn!
-    [match, leg, player1, player2]
+    [ match, leg, player1, player2 ]
   end
 end

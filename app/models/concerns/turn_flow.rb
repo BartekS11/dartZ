@@ -25,20 +25,20 @@ module TurnFlow
   def broadcast_turn_change!
     match = leg.match
     match.reload
+    presenter = MatchStatePresenter.new(match)
 
-    if match.finished?
-      finishing_leg    = match.legs.order(:created_at).last
-      finishing_player = finishing_leg.winner
+    if presenter.finished?
+      finishing_leg = match.match_sets.includes(:legs).order(:created_at).last&.legs&.max_by(&:created_at)
 
       # Web broadcasts
       Turbo::StreamsChannel.broadcast_update_to("match_#{match.id}",
         target: "game-over-section",
         partial: "matches/game_over",
-        locals: { match: match })
+        locals: { match: match, presenter: presenter })
       Turbo::StreamsChannel.broadcast_replace_to("match_#{match.id}",
         target: "finish-popup",
         partial: "matches/finish_popup",
-        locals: { player: finishing_player, leg: finishing_leg })
+        locals: { player: presenter.winner, leg: finishing_leg })
       Turbo::StreamsChannel.broadcast_update_to("match_#{match.id}",
         target: "score-cards-section", html: "")
       Turbo::StreamsChannel.broadcast_update_to("match_#{match.id}",
@@ -47,57 +47,30 @@ module TurnFlow
         target: "header-section", html: "")
 
       # API broadcast for mobile
-      ActionCable.server.broadcast("match_#{match.id}_api", {
-        event:  "match_finished",
-        winner: match.winner&.display_name,
-        players: match.players.map { |p|
-          {
-            id:     p.id,
-            name:   p.display_name,
-            score:  match.score_for(p),
-            avg:    match.three_dart_average(p),
-            winner: match.winner == p
-          }
-        }
-      })
+      ActionCable.server.broadcast("match_#{match.id}_api", presenter.summary_payload.merge(event: "match_finished", winner: presenter.winner&.display_name))
 
       return
     end
 
-    new_turn = match.current_leg.current_turn
+    new_turn = presenter.current_turn
 
     # Web broadcasts
     Turbo::StreamsChannel.broadcast_update_to("match_#{match.id}",
       target: "current-player",
       partial: "matches/current_player",
-      locals: { match: match, turn: new_turn })
+      locals: { match: match, presenter: presenter, turn: new_turn })
     Turbo::StreamsChannel.broadcast_replace_to("match_#{match.id}",
       target: "dart-board",
       partial: "matches/dart_board",
       locals: { match: match, turn: new_turn })
-    match.players.each do |player|
+    presenter.players.each do |player|
       Turbo::StreamsChannel.broadcast_replace_to("match_#{match.id}",
         target: "score-card-#{player.id}",
         partial: "matches/score_card",
-        locals: { match: match, player: player })
+        locals: { match: match, presenter: presenter, player: player })
     end
 
     # API broadcast for mobile
-    ActionCable.server.broadcast("match_#{match.id}_api", {
-      event:           "turn_changed",
-      current_player:  match.current_player&.display_name,
-      current_turn_id: new_turn&.id,
-      players:         match.players.map { |p|
-        {
-          id:       p.id,
-          name:     p.display_name,
-          score:    match.score_for(p),
-          avg:      match.three_dart_average(p),
-          sets_won: match.sets_won_by(p),
-          legs_won: match.current_set&.legs_won_by(p) || 0,
-          checkout: CheckoutCalculator.suggest(match.score_for(p))
-        }
-      }
-    })
+    ActionCable.server.broadcast("match_#{match.id}_api", presenter.state_payload.merge(event: "turn_changed"))
   end
 end

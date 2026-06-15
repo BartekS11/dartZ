@@ -2,12 +2,18 @@ import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
   static targets = ["player1", "player2", "greeting", "matchList", "dropdown1", "dropdown2"]
+  static values = { signedIn: Boolean, currentUserName: String }
 
   connect() {
     const p1 = localStorage.getItem("dartz_player1")
     const p2 = localStorage.getItem("dartz_player2")
 
-    if (p1) this.player1Target.value = p1
+    if (this.signedInValue && this.currentUserNameValue) {
+      this.player1Target.value = this.currentUserNameValue
+    } else if (p1) {
+      this.player1Target.value = p1
+    }
+
     if (p2) this.player2Target.value = p2
 
     this.renderDropdowns()
@@ -179,12 +185,28 @@ export default class extends Controller {
       localStorage.setItem("dartz_matches", JSON.stringify(matches.slice(0, 20)))
     }
   }
-clearMatches() {
+async clearMatches() {
   localStorage.removeItem("dartz_matches")
+
+  if (this.signedInValue) {
+    const response = await fetch("/matches/clear", {
+      method: "DELETE",
+      headers: {
+        "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]')?.content,
+        "Accept": "text/html"
+      }
+    })
+
+    if (response.ok) {
+      window.location.reload()
+      return
+    }
+  }
+
   if (this.hasMatchListTarget) this.matchListTarget.innerHTML = `
-    <div class="text-center py-20 border border-dashed border-zinc-800 rounded-lg">
-      <p class="text-zinc-600 text-sm">No matches yet.</p>
-      <p class="text-zinc-700 text-xs mt-1">Create one to get started.</p>
+    <div class="theme-card p-4 text-center">
+      <p class="text-muted-theme mb-1">No matches yet.</p>
+      <p class="text-subtle-theme small mb-0">Create one to get started.</p>
     </div>`
 }
 swapPlayers() {
@@ -216,16 +238,16 @@ clearPlayers() {
 
     if (stored.length === 0) {
       this.matchListTarget.innerHTML = `
-        <div class="text-center py-20 border border-dashed border-zinc-800 rounded-lg">
-          <p class="text-zinc-600 text-sm">No matches yet.</p>
-          <p class="text-zinc-700 text-xs mt-1">Create one to get started.</p>
+        <div class="theme-card p-4 text-center">
+          <p class="text-muted-theme mb-1">No matches yet.</p>
+          <p class="text-subtle-theme small mb-0">Create one to get started.</p>
         </div>`
       return
     }
 
     this.matchListTarget.innerHTML = stored.map(() => `
-      <div class="match-card rounded-lg p-4 opacity-40 animate-pulse">
-        <div class="h-4 w-20 bg-zinc-800 rounded"></div>
+      <div class="theme-match-card p-4 opacity-50">
+        <div class="placeholder-glow"><span class="placeholder col-4"></span></div>
       </div>
     `).join("")
 
@@ -245,64 +267,45 @@ clearPlayers() {
       })
 
       const playerRows = data.players.map(p => {
-        const pct        = Math.max((501 - p.score) * 100 / 501, 0)
-        const nameColor  = p.winner ? "#4ade80" : "#555"
-        const scoreColor = p.winner ? "#4ade80" : "#3a3a3a"
-        const barColor   = p.winner ? "#16a34a" : "#2a2a2a"
-        const avgColor   = p.avg >= 60 ? "#22c55e" : p.avg >= 40 ? "#f59e0b" : "#3a3a3a"
-        const avgHtml    = p.avg > 0
-          ? `<span style="font-family:'DM Mono',monospace;font-size:0.6rem;color:${avgColor};
-                          min-width:38px;text-align:right;margin-left:4px">avg ${p.avg}</span>`
-          : ""
+        const pct = Math.max((501 - p.score) * 100 / 501, 0)
+        const avgHtml = p.avg > 0 ? `<span class="avg mono">avg ${p.avg}</span>` : ""
 
         return `
-          <div style="margin-bottom:4px">
-            <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
-              <span style="font-family:'DM Mono',monospace;font-size:0.7rem;color:${nameColor};
-                           white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1">
-                ${p.name}
-              </span>
-              <span style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:${scoreColor};
-                           min-width:32px;text-align:right">
-                ${p.score}
-              </span>
+          <div>
+            <div class="player-line">
+              <span class="name mono ${p.winner ? "is-winner" : ""}">${p.name}</span>
+              <span class="value bebas ${p.winner ? "is-winner" : ""}">${p.score}</span>
               ${avgHtml}
             </div>
-            <div style="height:2px;background:#1e1e1e;border-radius:2px;margin-top:2px;overflow:hidden">
-              <div style="height:100%;width:${pct}%;background:${barColor};border-radius:2px"></div>
-            </div>
+            <div class="progress-thin"><span style="width:${pct}%;background:${p.winner ? "var(--theme-success)" : "var(--theme-border-strong)"}"></span></div>
           </div>`
       }).join("")
 
-      const identifier = data.match_identifier || `#${data.id}`
+      const identifier = data.ui_identifier || data.match_identifier || `#${data.id}`
 
       const badge = data.finished
-        ? `<span style="font-family:'DM Mono',monospace;font-size:0.65rem;color:#f87171;
-                        border:1px solid #7f1d1d;background:#450a0a;padding:2px 6px;border-radius:4px">FINISHED</span>`
-        : `<span style="font-family:'DM Mono',monospace;font-size:0.65rem;color:#4ade80;
-                        border:1px solid #14532d;background:#052e16;padding:2px 6px;border-radius:4px">LIVE</span>`
+        ? `<span class="theme-chip mono is-finished">Finished</span>`
+        : `<span class="theme-chip mono is-live">Live</span>`
 
       return `
-        <a href="/matches/${data.id}" class="match-card rounded-lg p-4" style="display:block;text-decoration:none">
-          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px">
-            <div style="flex-shrink:0">
-              <p style="font-family:'Bebas Neue',sans-serif;color:#555;font-size:1rem;letter-spacing:0.05em">
-                Match ${identifier}
-              </p>
-              <p style="font-family:'DM Mono',monospace;font-size:0.65rem;color:#3a3a3a">${date}</p>
+        <a href="/matches/${data.id}" class="theme-match-card p-3 p-md-4">
+          <div class="row align-items-start g-3 position-relative">
+            <div class="col-12 col-sm-4">
+              <div class="match-identifier bebas">Match ${identifier}</div>
+              <div class="mono text-subtle-theme small mb-2">${date}</div>
             </div>
-            <div style="flex:1;min-width:0">${playerRows}</div>
-            <div style="flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+            <div class="col-12 col-sm-5">${playerRows}</div>
+            <div class="col-12 col-sm-3 text-sm-end">
               ${badge}
-              <span style="font-family:'DM Mono',monospace;font-size:0.7rem;color:#dc2626">OPEN →</span>
+              <div class="mt-3 mono text-primary-theme small">Open →</div>
             </div>
           </div>
         </a>`
     }).join("")
 
     this.matchListTarget.innerHTML = cards || `
-      <div class="text-center py-20 border border-dashed border-zinc-800 rounded-lg">
-        <p class="text-zinc-600 text-sm">No matches found.</p>
+      <div class="theme-card p-4 text-center">
+        <p class="text-muted-theme mb-0">No matches found.</p>
       </div>`
   }
 }

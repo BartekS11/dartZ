@@ -33,7 +33,7 @@ class ThrowsController < ApplicationController
   def undo
     @turn  = Turn.find(params[:turn_id])
     @match = @turn.leg.match
-    mode   = request.headers["X-Undo-Mode"] || "single"
+    mode   = request.headers["X-Undo-Mode"] || "total"
 
     @match.undo_last_throw!(mode: mode)
     @match.reload
@@ -47,34 +47,31 @@ class ThrowsController < ApplicationController
   private
 
   def render_streams
-    @match.reload
-    current_turn = @match.finished? ? nil : @match.current_leg&.current_turn
+    presenter = MatchStatePresenter.new(@match)
+    current_turn = presenter.finished? ? nil : presenter.current_turn
 
-    streams = @match.players.flat_map { |p|
-      [
-        turbo_stream.replace("score-card-#{p.id}",
-          partial: "matches/score_card",
-          locals:  { match: @match, player: p })
-      ]
-    }
+    streams = presenter.players.map do |player|
+      turbo_stream.replace("score-card-#{player.id}",
+        partial: "matches/score_card",
+        locals:  { match: @match, presenter: presenter, player: player })
+    end
 
     if current_turn
       streams << turbo_stream.update("current-player",
         partial: "matches/current_player",
-        locals:  { match: @match, turn: current_turn })
+        locals:  { match: @match, presenter: presenter, turn: current_turn })
       streams << turbo_stream.replace("dart-board",
         partial: "matches/dart_board",
         locals:  { match: @match, turn: current_turn })
-    elsif @match.finished?
-      finishing_leg    = @match.legs.order(:created_at).last
-      finishing_player = finishing_leg.winner
+    elsif presenter.finished?
+      finishing_leg = @match.match_sets.includes(:legs).order(:created_at).last&.legs&.max_by(&:created_at)
 
       streams << turbo_stream.update("game-over-section",
         partial: "matches/game_over",
-        locals:  { match: @match })
+        locals:  { match: @match, presenter: presenter })
       streams << turbo_stream.replace("finish-popup",
         partial: "matches/finish_popup",
-        locals:  { player: finishing_player, leg: finishing_leg })
+        locals:  { player: presenter.winner, leg: finishing_leg })
       streams << turbo_stream.update("score-cards-section", html: "")
       streams << turbo_stream.update("keyboard-section",    html: "")
       streams << turbo_stream.update("header-section",      html: "")

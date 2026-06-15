@@ -1,141 +1,118 @@
-<style>
-  .level-btn {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.65rem;
-    padding: 6px 10px;
-    border-radius: 6px;
-    border: 1px solid #2a2a2a;
-    background: #111;
-    color: #555;
-    cursor: pointer;
-    transition: all 0.15s ease;
-    touch-action: manipulation;
-  }
-  .level-btn:hover, .level-btn.active {
-    border-color: #dc2626;
-    color: #ef4444;
-    background: rgba(220,38,38,0.08);
-  }
-  .level-group-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.55rem;
-    letter-spacing: 0.15em;
-    color: #333;
-    text-transform: uppercase;
-    margin-bottom: 6px;
-  }
-</style>
+<div class="row justify-content-center g-4">
+  <div class="col-12 col-xl-9">
+    <div class="row g-4 align-items-start">
+      <div class="col-12 col-lg-4">
+        <div class="mb-4">
+          <div class="theme-section-label mono mb-2">Bot challenge</div>
+          <h1 class="theme-section-title bebas mb-2">Play vs Bot</h1>
+          <p class="theme-subtitle mb-0">Pick a name, set the bot level, and start a compact 501 session fast.</p>
+        </div>
 
-<div class="mb-8">
-  <div class="flex items-center gap-3 mb-1">
-    <div class="w-8 h-1 bg-red-600"></div>
-    <span class="text-red-600 text-xs tracking-widest uppercase mono">dartZ</span>
-  </div>
-  <h1 style="font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,6vw,3rem);
-             color:#f5f5f5;letter-spacing:0.02em">
-    Play vs Bot
-  </h1>
-  <p class="text-zinc-500 text-sm mt-1">Challenge the AI at your skill level</p>
-</div>
-
-<%= form_with url: bot_match_path, method: :post, data: { turbo: false } do |f| %>
-
-  <%# Player name %>
-  <div class="panel p-5 mb-4">
-    <p class="mono text-xs text-zinc-600 tracking-widest uppercase mb-3">Your Name</p>
-    <%= f.text_field :player_name,
-          value: Current.user.email_address,
-          placeholder: "Your name",
-          maxlength: 20,
-          autocomplete: "off",
-          class: "w-full bg-zinc-950 border border-zinc-800 text-white
-                  font-mono text-sm px-3 py-2 rounded-lg
-                  focus:outline-none focus:border-red-600" %>
-  </div>
-
-  <%# Bot name %>
-  <div class="panel p-5 mb-4">
-    <p class="mono text-xs text-zinc-600 tracking-widest uppercase mb-3">Bot Name <span class="text-zinc-700">(optional)</span></p>
-    <%= f.text_field :bot_name,
-          placeholder: "e.g. Robo-Dart",
-          maxlength: 20,
-          autocomplete: "off",
-          class: "w-full bg-zinc-950 border border-zinc-800 text-white
-                  font-mono text-sm px-3 py-2 rounded-lg
-                  focus:outline-none focus:border-red-600" %>
-  </div>
-
-  <%# Bot level %>
-  <div class="panel p-5 mb-4">
-    <p class="mono text-xs text-zinc-600 tracking-widest uppercase mb-4">Bot Difficulty</p>
-
-    <div class="space-y-3">
-      <% [["BEGINNER", (1..5).to_a, "#22c55e"],
-          ["INTERMEDIATE", (6..12).to_a, "#f59e0b"],
-          ["ADVANCED", (13..17).to_a, "#ef4444"],
-          ["PRO", (18..20).to_a, "#dc2626"]].each do |label, levels, color| %>
-        <div>
-          <p class="level-group-label" style="color:<%= color %>20"><%= label %></p>
-          <div class="flex flex-wrap gap-1.5">
-            <% levels.each do |lvl| %>
-              <button type="button"
-                      class="level-btn <%= lvl == 10 ? 'active' : '' %>"
-                      onclick="document.getElementById('bot_level').value=<%= lvl.to_json %>;
-                               document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));
-                               this.classList.add('active')">
-                <%= lvl %>
-              </button>
-            <% end %>
+        <div class="theme-card p-3 p-md-4">
+          <div class="theme-section-label mono mb-2">Quick notes</div>
+          <div class="d-grid gap-2">
+            <div class="theme-chip mono">Bot level 1–5 · beginner</div>
+            <div class="theme-chip mono">6–12 · steady scoring</div>
+            <div class="theme-chip mono">13–17 · strong finisher</div>
+            <div class="theme-chip mono">18–20 · near-pro pressure</div>
           </div>
         </div>
-      <% end %>
-    </div>
+      </div>
 
-    <%= f.hidden_field :bot_level, value: 10, id: "bot_level" %>
-  </div>
+      <div class="col-12 col-lg-8">
+        <div class="theme-card p-3 p-md-4">
+          <div class="d-flex align-items-center justify-content-between gap-3 flex-wrap mb-4">
+            <div>
+              <div class="theme-section-label mono mb-1">New bot match</div>
+              <h2 class="bebas fs-2 mb-0">Compact setup</h2>
+            </div>
+            <%= link_to "← Back", matches_path, class: "btn theme-btn-outline rounded-pill mono" %>
+          </div>
 
-  <%# Format — reuse same format section %>
-  <div class="panel p-5 mb-4">
-    <p class="mono text-xs text-zinc-600 tracking-widest uppercase mb-3">Match Format</p>
-    <div class="grid grid-cols-2 gap-4">
-      <div>
-        <p class="mono text-xs text-zinc-700 tracking-widest mb-2">LEGS</p>
-        <div class="flex gap-1.5 flex-wrap mb-2">
-          <% [[1,"1"],[3,"Bo3"],[5,"Bo5"]].each do |val, label| %>
-            <button type="button"
-                    class="level-btn <%= val == 1 ? 'active' : '' %>"
-                    onclick="document.getElementById('best_of_legs').value=<%= val.to_json %>;
-                             this.closest('.panel').querySelectorAll('.flex.gap-1\\.5:first-of-type .level-btn').forEach(b=>b.classList.remove('active'));
-                             this.classList.add('active')">
-              <%= label %>
-            </button>
+          <%= form_with url: bot_match_path, method: :post, data: { turbo: false } do |f| %>
+            <div class="row g-3 mb-3">
+              <div class="col-12 col-md-6">
+                <label class="mono text-subtle-theme small text-uppercase mb-2 d-block">Your name</label>
+                <%= f.text_field :player_name,
+                      value: Current.user.display_name,
+                      placeholder: "Your name",
+                      maxlength: 20,
+                      autocomplete: "off",
+                      class: "form-control theme-form-input mono" %>
+              </div>
+
+              <div class="col-12 col-md-6">
+                <label class="mono text-subtle-theme small text-uppercase mb-2 d-block">Bot name</label>
+                <%= f.text_field :bot_name,
+                      placeholder: "Optional bot name",
+                      maxlength: 20,
+                      autocomplete: "off",
+                      class: "form-control theme-form-input mono" %>
+              </div>
+            </div>
+
+            <div class="theme-panel p-3 mb-3">
+              <label class="mono text-subtle-theme small text-uppercase mb-3 d-block">Bot difficulty</label>
+              <div class="d-grid gap-3">
+                <% [["Beginner", (1..5).to_a], ["Intermediate", (6..12).to_a], ["Advanced", (13..17).to_a], ["Pro", (18..20).to_a]].each do |label, levels| %>
+                  <div>
+                    <div class="mono text-subtle-theme" style="font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:0.45rem;"><%= label %></div>
+                    <div class="d-flex flex-wrap gap-2">
+                      <% levels.each do |lvl| %>
+                        <button type="button"
+                                class="btn btn-sm theme-btn-outline rounded-pill mono bot-level-btn <%= 'border-danger text-danger' if lvl == 10 %>"
+                                onclick="document.getElementById('bot_level').value=<%= lvl.to_json %>; document.querySelectorAll('.bot-level-btn').forEach(b => b.classList.remove('border-danger','text-danger')); this.classList.add('border-danger','text-danger')">
+                          <%= lvl %>
+                        </button>
+                      <% end %>
+                    </div>
+                  </div>
+                <% end %>
+              </div>
+              <%= f.hidden_field :bot_level, value: 10, id: "bot_level" %>
+            </div>
+
+            <div class="theme-panel p-3 mb-4">
+              <label class="mono text-subtle-theme small text-uppercase mb-3 d-block">Match format</label>
+              <div class="row g-3">
+                <div class="col-12 col-md-6">
+                  <div class="mono text-subtle-theme" style="font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:0.45rem;">Best of legs</div>
+                  <div class="d-flex flex-wrap gap-2">
+                    <% [[1, "1"], [3, "Bo3"], [5, "Bo5"]].each do |val, label| %>
+                      <button type="button"
+                              class="btn btn-sm theme-btn-outline rounded-pill mono bot-legs-btn <%= 'border-danger text-danger' if val == 1 %>"
+                              onclick="document.getElementById('best_of_legs').value=<%= val.to_json %>; document.querySelectorAll('.bot-legs-btn').forEach(b => b.classList.remove('border-danger','text-danger')); this.classList.add('border-danger','text-danger')">
+                        <%= label %>
+                      </button>
+                    <% end %>
+                  </div>
+                  <%= f.hidden_field :best_of_legs, value: 1, id: "best_of_legs" %>
+                </div>
+
+                <div class="col-12 col-md-6">
+                  <div class="mono text-subtle-theme" style="font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:0.45rem;">Best of sets</div>
+                  <div class="d-flex flex-wrap gap-2">
+                    <% [[1, "1"], [3, "Bo3"], [5, "Bo5"]].each do |val, label| %>
+                      <button type="button"
+                              class="btn btn-sm theme-btn-outline rounded-pill mono bot-sets-btn <%= 'border-danger text-danger' if val == 1 %>"
+                              onclick="document.getElementById('best_of_sets').value=<%= val.to_json %>; document.querySelectorAll('.bot-sets-btn').forEach(b => b.classList.remove('border-danger','text-danger')); this.classList.add('border-danger','text-danger')">
+                        <%= label %>
+                      </button>
+                    <% end %>
+                  </div>
+                  <%= f.hidden_field :best_of_sets, value: 1, id: "best_of_sets" %>
+                </div>
+              </div>
+            </div>
+
+            <div class="d-grid d-md-flex gap-3 justify-content-end">
+              <%= link_to "Cancel", matches_path, class: "btn theme-btn-outline rounded-pill mono" %>
+              <%= f.submit "Start Match",
+                    class: "btn theme-btn-primary rounded-pill bebas fs-4 px-4" %>
+            </div>
           <% end %>
         </div>
-        <%= f.hidden_field :best_of_legs, value: 1, id: "best_of_legs" %>
-      </div>
-      <div>
-        <p class="mono text-xs text-zinc-700 tracking-widest mb-2">SETS</p>
-        <div class="flex gap-1.5 flex-wrap mb-2">
-          <% [[1,"1"],[3,"Bo3"],[5,"Bo5"]].each do |val, label| %>
-            <button type="button"
-                    class="level-btn <%= val == 1 ? 'active' : '' %>"
-                    onclick="document.getElementById('best_of_sets').value=<%= val.to_json %>;
-                             this.classList.add('active')">
-              <%= label %>
-            </button>
-          <% end %>
-        </div>
-        <%= f.hidden_field :best_of_sets, value: 1, id: "best_of_sets" %>
       </div>
     </div>
   </div>
-
-  <button type="submit"
-          style="font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:0.1em;
-                 background:#dc2626;color:#fff;border:1px solid #ef4444;
-                 width:100%;padding:12px;border-radius:6px;cursor:pointer;
-                 transition:all 0.15s ease;touch-action:manipulation">
-    START MATCH →
-  </button>
-
-<% end %>
+</div>

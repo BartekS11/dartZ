@@ -20,7 +20,7 @@ class HasThrowHistoryTest < ActiveSupport::TestCase
     throws = match.last_throws_for(player, limit: 2).to_a
 
     assert_equal 2, throws.size
-    assert_equal [10, 40], throws.map(&:points)
+    assert_equal [ 10, 40 ], throws.map(&:points)
   end
 
   test "all_throws_for returns throws across multiple legs" do
@@ -37,7 +37,7 @@ class HasThrowHistoryTest < ActiveSupport::TestCase
     throws = match.all_throws_for(player).to_a
 
     assert_equal 2, throws.size
-    assert_equal [5, 60], throws.map(&:points)
+    assert_equal [ 5, 60 ], throws.map(&:points)
   end
 
   test "average_per_turn calculates using groups of three throws" do
@@ -80,7 +80,7 @@ class HasThrowHistoryTest < ActiveSupport::TestCase
     create_throw(active_turn, 20, :single)
     create_throw(active_turn, 5, :single)
 
-    assert_equal [20, 5], match.last_turn_throws_for(player).map(&:points)
+    assert_equal [ 20, 5 ], match.last_turn_throws_for(player).map(&:points)
   end
 
   private
@@ -92,7 +92,7 @@ class HasThrowHistoryTest < ActiveSupport::TestCase
     set = match.match_sets.create!
     leg = set.legs.create!(match: match)
     leg.start_first_turn!
-    [match, player, other, leg]
+    [ match, player, other, leg ]
   end
 
   def create_throw(turn, segment, multiplier)

@@ -41,7 +41,7 @@ class Throw < ApplicationRecord
     return unless turn
     return if persisted?
 
-    if turn.throws.count >= Turn::MAX_THROWS
+    if turn.throws.size >= Turn::MAX_THROWS
       errors.add(:base, "Maximum of 3 throws per turn")
     end
   end

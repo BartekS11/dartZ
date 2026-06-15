@@ -18,6 +18,6 @@ class Player < ApplicationRecord
 
   def display_name
     return name if bot? || guest?
-    user.email_address
+    user.display_name
   end
 end

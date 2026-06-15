@@ -1,6 +1,6 @@
 class MatchesController < ApplicationController
   allow_unauthenticated_access
-  before_action :resume_session_optional, only: %i[index show create checkout]
+  before_action :resume_session_optional, only: %i[index show create checkout clear]
   rescue_from ActiveRecord::RecordNotFound, with: :match_not_found
 
   def index
@@ -8,20 +8,22 @@ class MatchesController < ApplicationController
       @matches = Match
         .joins(:players)
         .where(players: { user_id: Current.user.id })
+        .includes(players: :user, match_sets: [ { legs: [ { turns: :throws }, { leg_players: :player } ] } ])
         .distinct
+        .order(created_at: :desc)
+        .limit(10)
     else
       @matches = Match.none
     end
   end
 
   def show
-    @match = Match.find(params[:id])
-    @players = @match.players
-    return if @match.finished?
+    @match = Match.includes(players: :user, match_sets: [ { legs: [ { turns: :throws }, { leg_players: :player } ] } ]).find(params[:id])
+    @presenter = MatchStatePresenter.new(@match)
+    @players = @presenter.players
+    return if @presenter.finished?
 
-    current_leg  = @match.current_leg
-    @turn        = current_leg&.current_turn
-    @leg_player  = current_leg&.leg_players&.find_by(player: @turn&.player)
+    @turn = @presenter.current_turn
   end
 
   def create
@@ -30,10 +32,12 @@ class MatchesController < ApplicationController
       best_of_sets: params[:best_of_sets].to_i.clamp(1, 99)
     )
 
-    p1_name = params[:player1_name].to_s.strip.presence || "Player 1"
+    p1_name = params[:player1_name].to_s.strip.presence || Current.user&.display_name || "Player 1"
     p2_name = params[:player2_name].to_s.strip.presence || "Player 2"
 
     @match.save!
+
+    Current.user&.update!(nickname: p1_name) if Current.user && Current.user.nickname != p1_name
 
     player1 = @match.players.create!(name: p1_name, user: Current.user)
     player2 = @match.players.create!(name: p2_name)
@@ -45,21 +49,8 @@ class MatchesController < ApplicationController
   end
 
   def summary
-    match = Match.find(params[:id])
-    players_data = match.players.map do |player|
-      {
-        name:   player.display_name,
-        score:  match.score_for(player),
-        avg:    match.three_dart_average(player),
-        winner: match.winner == player
-      }
-    end
-    render json: {
-      id: match.id,
-      match_identifier: match.match_identifier,
-      finished: match.finished?,
-      players: players_data
-    }
+    match = Match.includes(players: :user, match_sets: [ { legs: [ { turns: :throws }, { leg_players: :player } ] } ]).find(params[:id])
+    render json: MatchStatePresenter.new(match).summary_payload
   end
 
   def checkout
@@ -74,6 +65,19 @@ class MatchesController < ApplicationController
       suggestion: suggestion,
       possible:   suggestion.present?
     }
+  end
+
+  def clear
+    return head :unauthorized unless Current.user
+
+    matches = Match
+      .joins(:players)
+      .where(players: { user_id: Current.user.id })
+      .distinct
+
+    matches.find_each(&:destroy!)
+
+    head :no_content
   end
 
   private

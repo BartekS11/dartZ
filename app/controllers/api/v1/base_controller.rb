@@ -3,9 +3,16 @@ module Api
     class BaseController < ActionController::API
       include ExceptionHandler
 
+      before_action :ensure_api_v1_enabled!
       before_action :authenticate_api_user!
 
       private
+
+      def ensure_api_v1_enabled!
+        return if Rails.configuration.x.api_v1_enabled
+
+        render json: { error: "API v1 is disabled" }, status: :service_unavailable
+      end
 
       def authenticate_api_user!
         header    = request.headers["Authorization"]

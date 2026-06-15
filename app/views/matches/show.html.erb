@@ -1,107 +1,6 @@
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap');
-
-  .dart-bg {
-    background-color: #0a0a0a;
-    background-image:
-      radial-gradient(circle at 10% 30%, rgba(185,28,28,0.1) 0%, transparent 45%),
-      radial-gradient(circle at 90% 70%, rgba(185,28,28,0.06) 0%, transparent 40%),
-      repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,255,255,0.015) 39px, rgba(255,255,255,0.015) 40px),
-      repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255,255,255,0.015) 39px, rgba(255,255,255,0.015) 40px);
-    min-height: 100vh;
-    font-family: 'DM Sans', sans-serif;
-    color: #f5f5f5;
-  }
-
-  .bebas { font-family: 'Bebas Neue', sans-serif; }
-  .mono  { font-family: 'DM Mono', monospace; }
-
-  .score-card {
-    background: linear-gradient(135deg, #141414, #1c1c1c);
-    border: 1px solid #2a2a2a;
-    border-top: 3px solid #dc2626;
-    position: relative;
-    overflow: hidden;
-    transition: all 0.2s ease;
-  }
-
-  .score-card.active-player {
-    border-top-color: #ef4444;
-    box-shadow: 0 0 30px rgba(220,38,38,0.15), inset 0 0 30px rgba(220,38,38,0.03);
-  }
-
-
-  @keyframes pulse-text {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.3; }
-  }
-
-  .score-display {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 6rem;
-    line-height: 1;
-    color: #f5f5f5;
-    letter-spacing: 0.02em;
-    transition: all 0.15s ease;
-  }
-
-  .score-display.active-player { color: #ef4444; }
-
-  .throw-input {
-    background: #111;
-    border: 1px solid #333;
-    color: #f5f5f5;
-    font-family: 'DM Mono', monospace;
-    transition: border-color 0.15s ease, box-shadow 0.15s ease;
-  }
-
-  .throw-input:focus {
-    outline: none;
-    border-color: #dc2626;
-    box-shadow: 0 0 0 2px rgba(220,38,38,0.15);
-  }
-
-  .dart-btn {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.7rem;
-    transition: all 0.1s ease;
-    border: 1px solid transparent;
-    position: relative;
-  }
-
-  .dart-btn:hover { transform: translateY(-2px); filter: brightness(1.2); }
-  .dart-btn:active { transform: translateY(0); }
-
-  .dart-btn.single { background: #1e1e1e; border-color: #333; color: #aaa; }
-  .dart-btn.single:hover { border-color: #dc2626; color: #fff; }
-  .dart-btn.double { background: #7f1d1d; border-color: #991b1b; color: #fca5a5; }
-  .dart-btn.triple { background: #1e3a5f; border-color: #1d4ed8; color: #93c5fd; }
-
-  .panel {
-    background: linear-gradient(135deg, #111 0%, #161616 100%);
-    border: 1px solid #222;
-    border-radius: 12px;
-  }
-
-  .btn-undo {
-    background: transparent;
-    border: 1px solid #444;
-    color: #888;
-    font-family: 'DM Mono', monospace;
-    font-size: 0.75rem;
-    letter-spacing: 0.08em;
-    transition: all 0.15s ease;
-  }
-
-  .btn-undo:hover {
-    border-color: #f59e0b;
-    color: #f59e0b;
-    background: rgba(245,158,11,0.05);
-  }
-
-  #mode-track { transition: background 0.2s ease; }
-  #mode-thumb { transition: transform 0.2s ease; }
-</style>
+<% content_for :mobile_header_action do %>
+  <%= link_to "← Back", matches_path, class: "btn btn-sm theme-btn-outline rounded-pill mono px-3" %>
+<% end %>
 
 <%= turbo_stream_from "match_#{@match.id}" %>
 
@@ -113,81 +12,110 @@
     if (!exists) {
       matches.unshift({
         id: id,
-        player1: "<%= j @match.players.first&.display_name.to_json %>",
-        player2: "<%= j @match.players.second&.display_name.to_json %>",
-        createdAt: "<%= @match.created_at.iso8601.to_json %>"
+        player1: <%= @match.players.first&.display_name.to_json.html_safe %>,
+        player2: <%= @match.players.second&.display_name.to_json.html_safe %>,
+        createdAt: <%= @match.created_at.iso8601.to_json.html_safe %>
       })
       localStorage.setItem("dartz_matches", JSON.stringify(matches.slice(0, 10)))
     }
   })()
 </script>
 
-<%# Finish popup — always in DOM so turbo stream can target it %>
 <div id="finish-popup">
   <% if @match.finished? %>
-    <% finishing_leg    = @match.legs.order(:created_at).last %>
+    <% finishing_leg = @match.match_sets.flat_map(&:legs).max_by(&:created_at) %>
     <% finishing_player = finishing_leg&.winner %>
-    <% if finishing_player %>
+    <% if finishing_player && finishing_leg.checkout_throws.blank? %>
       <%= render "matches/finish_popup", player: finishing_player, leg: finishing_leg %>
     <% end %>
   <% end %>
 </div>
 
-<div class="dart-bg px-4 py-8">
-  <div class="max-w-3xl mx-auto">
-
-    <%# Game over — always in DOM so turbo stream can target it %>
+<div class="row justify-content-center" data-controller="match-view">
+  <div class="col-12 col-xl-10">
     <div id="game-over-section">
       <% if @match.finished? %>
-        <%= render "matches/game_over", match: @match %>
+        <%= render "matches/game_over", match: @match, presenter: @presenter %>
       <% end %>
     </div>
 
-    <%# Header — cleared on finish %>
     <div id="header-section">
       <% unless @match.finished? %>
-        <div class="flex items-center justify-between mb-8">
-          <%= link_to "← BACK", matches_path,
-                class: "mono text-xs text-zinc-600 hover:text-red-500 tracking-widest transition-colors" %>
-          <div class="text-center">
-            <div class="flex items-center gap-2 justify-center">
-              <div class="w-4 h-px bg-red-600"></div>
-              <span class="mono text-red-600 text-xs tracking-widest">MATCH</span>
-              <div class="w-4 h-px bg-red-600"></div>
+        <div class="theme-card p-3 p-md-4 mb-4 match-header-card">
+          <div class="d-flex align-items-center justify-content-between gap-3 flex-wrap">
+            <%= link_to "← Back", matches_path, class: "btn theme-btn-outline rounded-pill mono d-none d-md-inline-flex" %>
+
+            <div class="text-center flex-grow-1 match-header-meta">
+              <div class="theme-section-label mono mb-1">Live match</div>
+              <h1 class="bebas mb-2" style="font-size:clamp(2rem,6vw,3rem);letter-spacing:0.05em;"><%= @match.ui_identifier %></h1>
+              <div class="d-flex flex-wrap align-items-center justify-content-center gap-2">
+                <% if @match.best_of_sets > 1 %>
+                  <span class="theme-chip mono">Bo<%= @match.best_of_sets %> sets</span>
+                <% end %>
+                <span class="theme-chip mono">Bo<%= @match.best_of_legs %> legs</span>
+              </div>
             </div>
-            <h1 class="bebas text-3xl text-white tracking-wider"><%= @match.display_identifier %></h1>
+
+            <div class="text-md-end match-header-meta">
+              <div class="mono text-subtle-theme small">Created</div>
+              <div class="mono small"><%= @match.created_at.strftime("%d %b · %H:%M") %></div>
+            </div>
           </div>
-          <div class="w-16"></div>
         </div>
       <% end %>
     </div>
 
-    <%# Score cards — cleared on finish %>
+    <% unless @match.finished? %>
+      <div class="mobile-view-switch mb-3">
+        <div class="theme-card p-2">
+          <div class="d-grid gap-2" style="grid-template-columns:repeat(2,minmax(0,1fr));">
+            <button type="button"
+                    class="btn mono"
+                    data-match-view-target="padButton"
+                    data-action="match-view#showPad">
+              Throw pad
+            </button>
+            <button type="button"
+                    class="btn mono"
+                    data-match-view-target="inputButton"
+                    data-action="match-view#showInput">
+              Input
+            </button>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
     <div id="score-cards-section">
       <% unless @match.finished? %>
-        <div class="grid grid-cols-2 gap-4 mb-6">
-          <% @match.players.each do |player| %>
-            <%= render "matches/score_card", match: @match, player: player %>
+        <div class="row g-3 g-md-4 mb-4">
+          <% @presenter.players.each do |player| %>
+            <div class="col-12 col-md-6">
+              <%= render "matches/score_card", match: @match, presenter: @presenter, player: player %>
+            </div>
           <% end %>
         </div>
       <% end %>
     </div>
 
-    <%# Keyboard + dart board — cleared on finish %>
     <div id="keyboard-section">
       <% unless @match.finished? %>
-        <div class="panel p-6 mb-6">
-          <p class="mono text-xs text-zinc-600 tracking-widest uppercase mb-4">Keyboard Input</p>
-          <div id="current-player">
-            <%= render "matches/current_player", match: @match, turn: @turn %>
+        <div class="row g-4">
+          <div class="col-12 col-lg-5 order-2 order-lg-1" data-match-view-target="input">
+            <div class="theme-panel p-3 p-md-4 h-100">
+              <div id="current-player">
+                <%= render "matches/current_player", match: @match, presenter: @presenter, turn: @turn %>
+              </div>
+            </div>
           </div>
-        </div>
 
-        <div id="dart-board">
-          <%= render "matches/dart_board", match: @match, turn: @turn %>
+          <div class="col-12 col-lg-7 order-1 order-lg-2" data-match-view-target="pad">
+            <div id="dart-board">
+              <%= render "matches/dart_board", match: @match, turn: @turn %>
+            </div>
+          </div>
         </div>
       <% end %>
     </div>
-
   </div>
 </div>

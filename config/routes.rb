@@ -2,9 +2,14 @@ Rails.application.routes.draw do
   root "matches#index"
 
   resource :session
+  resource :profile, only: [ :update ]
   resources :passwords, param: :token
   resource :bot_match, only: [ :new, :create ]
-  resources :matches, only: %i[index show create]
+  resources :matches, only: %i[index show create] do
+    collection do
+      delete :clear
+    end
+  end
   resources :turns, only: [] do
     resources :throws, only: :create
   end

@@ -1,0 +1,89 @@
+<% presenter ||= MatchStatePresenter.new(match) %>
+<div class="mt-4 pt-3 border-top border-theme" data-controller="stats-visibility">
+  <div class="theme-section-label mono mb-3">Match stats</div>
+
+  <div class="d-grid gap-2">
+    <% presenter.players.each do |player| %>
+      <% stats          = presenter.stats_for(player) %>
+      <% completed_turns = stats[:completed_turns] %>
+      <% darts_thrown    = stats[:darts_thrown] %>
+      <% highest_turn    = stats[:highest_turn] %>
+      <% first_nine_avg  = stats[:first_nine_avg] %>
+      <% ton_plus        = stats[:ton_plus] %>
+      <% one_forty_plus  = stats[:one_forty_plus] %>
+      <% one_eighty      = stats[:one_eighty] %>
+      <% split           = stats[:split] %>
+      <% per_dart        = stats[:per_dart] %>
+      <% checkout        = stats[:checkout] %>
+      <% best_leg        = stats[:best_leg] %>
+      <% best_leg_darts  = stats[:best_leg_darts] %>
+
+      <details class="stats-details compact" data-stats-visibility-target="details">
+        <summary class="stats-summary compact d-flex align-items-center justify-content-between gap-2">
+          <div class="min-w-0 flex-grow-1">
+            <div class="mono text-subtle-theme" style="font-size:0.68rem;letter-spacing:0.12em;text-transform:uppercase"><%= player.display_name %></div>
+            <div class="d-flex flex-wrap gap-1 mt-2">
+              <span class="theme-chip mono">avg <%= presenter.three_dart_average(player) %></span>
+              <span class="theme-chip mono">high <%= highest_turn %></span>
+              <span class="theme-chip mono">co <%= checkout[:rate] %>%</span>
+            </div>
+          </div>
+          <span class="mono text-subtle-theme" style="font-size:0.7rem;">▾</span>
+        </summary>
+
+        <div class="stats-details-body compact pt-2">
+          <div class="compact-stats-section">
+            <div class="stats-block-title mono mb-2">Scoring</div>
+            <div class="compact-stats-list">
+              <div class="compact-stat"><span>Darts</span><strong><%= darts_thrown %></strong></div>
+              <div class="compact-stat"><span>Turns</span><strong><%= completed_turns.count %></strong></div>
+              <div class="compact-stat"><span>Avg / turn</span><strong><%= presenter.average_per_turn(player) %></strong></div>
+              <div class="compact-stat"><span>1st 9 avg</span><strong><%= first_nine_avg %></strong></div>
+              <div class="compact-stat"><span>100+</span><strong><%= ton_plus %></strong></div>
+              <div class="compact-stat"><span>140+</span><strong><%= one_forty_plus %></strong></div>
+              <div class="compact-stat"><span>180s</span><strong><%= one_eighty %></strong></div>
+              <div class="compact-stat"><span>Best leg darts</span><strong><%= best_leg_darts || '—' %></strong></div>
+            </div>
+          </div>
+
+          <div class="compact-stats-section mt-3">
+            <div class="stats-block-title mono mb-2">Checkout</div>
+            <div class="compact-stats-list">
+              <div class="compact-stat"><span>Chances</span><strong><%= checkout[:chances] %></strong></div>
+              <div class="compact-stat"><span>Hits</span><strong><%= checkout[:hits] %></strong></div>
+              <div class="compact-stat"><span>Checkout %</span><strong><%= checkout[:rate] %></strong></div>
+              <div class="compact-stat"><span>Avg darts</span><strong><%= checkout[:average_darts] %></strong></div>
+              <div class="compact-stat"><span>Doubles thrown</span><strong><%= split.fetch('double', 0) %></strong></div>
+              <div class="compact-stat"><span>Double CO</span><strong><%= checkout[:hits] %></strong></div>
+            </div>
+          </div>
+
+          <div class="compact-stats-section mt-3">
+            <div class="stats-block-title mono mb-2">Split & positions</div>
+            <div class="compact-stats-list">
+              <div class="compact-stat"><span>Singles</span><strong><%= split.fetch('single', 0) %></strong></div>
+              <div class="compact-stat"><span>Triples</span><strong><%= split.fetch('triple', 0) %></strong></div>
+              <div class="compact-stat"><span>Misses</span><strong><%= split.fetch('miss', 0) %></strong></div>
+              <div class="compact-stat"><span>Dart 1 avg</span><strong><%= per_dart[1] %></strong></div>
+              <div class="compact-stat"><span>Dart 2 avg</span><strong><%= per_dart[2] %></strong></div>
+              <div class="compact-stat"><span>Dart 3 avg</span><strong><%= per_dart[3] %></strong></div>
+              <div class="compact-stat"><span>Best leg</span><strong><%= best_leg ? "L#{presenter.leg_number_for(best_leg)}" : '—' %></strong></div>
+            </div>
+          </div>
+
+          <% if completed_turns.any? %>
+            <div class="mt-3">
+              <div class="stats-block-title mono mb-2">Recent turns</div>
+              <div class="d-flex flex-wrap gap-1">
+                <% completed_turns.last(5).reverse_each do |turn| %>
+                  <% total = presenter.turn_total(turn) %>
+                  <span class="theme-chip mono <%= 'is-live' if total >= 100 %>"><%= total %></span>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </details>
+    <% end %>
+  </div>
+</div>

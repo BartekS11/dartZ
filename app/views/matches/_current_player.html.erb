@@ -1,46 +1,37 @@
+<% presenter ||= MatchStatePresenter.new(match) %>
+<% current_player = presenter.current_player %>
 <div
   data-controller="keyboard"
   data-keyboard-url-value="<%= turn_throws_path(turn) %>"
-  data-keyboard-score-value="<%= match.score_for(match.current_player) %>"
-  data-keyboard-player-id-value="<%= match.current_player.id %>">
+  data-keyboard-score-value="<%= presenter.score_for(current_player) %>"
+  data-keyboard-player-id-value="<%= current_player.id %>">
 
-  <%# Mode toggle + Undo on same row %>
-  <div class="flex items-center justify-between gap-3 mb-4">
-    <button type="button"
-            data-action="click->keyboard#toggleMode"
-            class="flex items-center gap-2 bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2
-                   hover:border-zinc-600 transition-all">
-      <div class="relative w-8 h-4 bg-zinc-700 rounded-full transition-colors"
-           id="mode-track">
-        <div class="absolute top-0.5 left-0.5 w-3 h-3 bg-white rounded-full transition-transform"
-             id="mode-thumb"></div>
-      </div>
-      <span data-keyboard-target="modeLabel"
-            class="mono text-xs text-zinc-500 tracking-widest">SINGLE THROW</span>
-    </button>
-    <button type="button"
-            data-action="click->keyboard#undoLastThrow"
-            class="btn-undo px-4 py-2 rounded-lg">
-      ↩ UNDO
+  <div class="d-flex flex-column flex-md-row align-items-stretch align-items-md-center justify-content-between gap-3 mb-3">
+    <div>
+      <div class="theme-section-label mono mb-1">Turn total</div>
+      <div class="theme-subtitle">Enter the full score for this visit.</div>
+    </div>
+
+    <button type="button" data-action="click->keyboard#undoLastThrow" class="btn btn-undo rounded-pill px-3 py-2 mono small text-uppercase">
+      ↩ Undo
     </button>
   </div>
 
-  <%# Input %>
   <input type="text"
          data-keyboard-target="input"
          data-action="input->keyboard#preview keydown->keyboard#handle"
-         placeholder="20  d20  t20  b  db"
-         class="throw-input w-full px-4 py-3 rounded-lg text-lg"
+         placeholder="e.g. 85 (turn total)"
+         class="throw-input form-control form-control-lg mono"
          autocomplete="off">
-
 </div>
 
-<%# Hidden form — throws_count used by JS to calculate max possible score %>
 <%= form_with url: turn_throws_path(turn),
               method: :post,
-              data: { turbo_stream: true, throws_count: turn.throws.count },
+              data: { turbo_stream: true, throws_count: turn.throws.size },
               html: { id: "keyboard-form" } do |f| %>
   <%= f.hidden_field :segment,    name: "throw[segment]",    id: "keyboard-segment" %>
   <%= f.hidden_field :multiplier, name: "throw[multiplier]", id: "keyboard-multiplier" %>
   <%= f.hidden_field :total,      name: "throw[total]",      id: "keyboard-total" %>
 <% end %>
+
+<%= render "matches/stats_panel", match: match, presenter: presenter %>

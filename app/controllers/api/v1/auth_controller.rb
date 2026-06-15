@@ -6,14 +6,20 @@ module Api
       def register
         user = User.new(
           email_address: params[:email],
-          password:      params[:password]
+          password:      params[:password],
+          nickname:      params[:nickname]
         )
 
         if user.save
           token = JsonWebToken.encode(user_id: user.id)
           render json: {
             token: token,
-            user:  { id: user.id, email: user.email_address }
+            user:  {
+              id: user.id,
+              email: user.email_address,
+              nickname: user.nickname,
+              display_name: user.display_name
+            }
           }, status: :created
         else
           render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
@@ -27,7 +33,12 @@ module Api
           token = JsonWebToken.encode(user_id: user.id)
           render json: {
             token: token,
-            user:  { id: user.id, email: user.email_address }
+            user:  {
+              id: user.id,
+              email: user.email_address,
+              nickname: user.nickname,
+              display_name: user.display_name
+            }
           }
         else
           render json: { error: "Invalid email or password" }, status: :unauthorized
