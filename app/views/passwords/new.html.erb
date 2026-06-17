@@ -1,12 +1,12 @@
-<div class="mx-auto flex min-h-[70vh] w-full max-w-md items-center justify-center">
-  <div class="w-full space-y-6">
-    <div class="text-center">
-      <div class="theme-section-label mono mb-3">Account</div>
-      <h1 class="bebas text-4xl leading-none text-white">Forgot password?</h1>
-      <p class="theme-subtitle mt-2 text-sm">We’ll send reset instructions to your email.</p>
+<div class="page-shell page-shell-compact flex min-h-[70vh] items-center justify-center">
+  <div class="page-stack w-full">
+    <div class="page-header text-center">
+      <div class="theme-section-label mono">Account</div>
+      <h1 class="page-title bebas">Forgot password?</h1>
+      <p class="page-copy text-sm">We’ll send reset instructions to your email.</p>
     </div>
 
-    <div class="auth-card">
+    <div class="auth-card counter-auth-card">
       <% if alert = flash[:alert] %>
         <div class="flash-theme alert mono mb-4">⚠ <%= alert %></div>
       <% end %>

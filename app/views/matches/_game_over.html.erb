@@ -5,14 +5,16 @@
 <% total_mins = total_secs / 60 %>
 <% total_secs_rem = total_secs % 60 %>
 
-<div class="theme-game-over mx-auto max-w-5xl">
+<div class="theme-game-over page-shell page-shell-narrow">
   <div class="mx-auto max-w-3xl">
-    <div class="theme-section-label mono mb-2">Match complete</div>
-    <h1 class="game-over-title bebas mb-3">Nice darts.</h1>
-    <p class="theme-subtitle mx-auto mb-6 max-w-2xl">A cleaner recap of the result, with the winner and the key numbers front and center.</p>
+    <div class="page-header mb-6 text-center">
+      <div class="theme-section-label mono">Match complete</div>
+      <h1 class="game-over-title bebas">Nice darts.</h1>
+      <p class="page-copy mx-auto max-w-2xl">Final result first, the numbers after.</p>
+    </div>
 
-    <div class="mb-6 rounded-[1.6rem] border border-red-500/20 bg-red-500/10 px-5 py-5">
-      <div class="mono mb-2 text-xs uppercase tracking-[0.18em] text-red-300">
+    <div class="counter-summary-tile mb-6 px-5 py-5" style="border-color:color-mix(in srgb, var(--theme-primary) 18%, transparent); background:color-mix(in srgb, var(--theme-primary) 8%, transparent)">
+      <div class="mono mb-2 text-xs uppercase tracking-[0.18em]" style="color:var(--theme-primary-soft)">
         <% if multi_set %>
           Match winner
         <% elsif multi_leg %>
@@ -21,36 +23,36 @@
           Leg winner
         <% end %>
       </div>
-      <div class="bebas text-5xl leading-none text-white"><%= presenter.winner.display_name %></div>
+      <div class="bebas text-5xl leading-none"><%= presenter.winner.display_name %></div>
     </div>
 
     <div class="mb-6 grid gap-3 md:grid-cols-2">
       <% presenter.players.each do |player| %>
         <% is_winner = presenter.winner == player %>
-        <div class="game-over-stat-card h-full text-left">
-          <div class="mono mb-2 text-xs uppercase tracking-[0.16em] text-zinc-500"><%= player.display_name %></div>
-          <div class="mb-1 bebas text-4xl leading-none <%= is_winner ? 'text-green-400' : 'text-white' %>">
+        <div class="game-over-stat-card counter-list-card h-full text-left">
+          <div class="auth-label mb-2"><%= player.display_name %></div>
+          <div class="mb-1 bebas text-4xl leading-none" style="color:<%= is_winner ? 'var(--theme-success)' : 'var(--theme-text)' %>">
             <%= multi_set ? presenter.sets_won_by(player) : presenter.legs_won_by(player) %>
           </div>
-          <div class="mono text-xs uppercase tracking-[0.16em] text-zinc-500">Legs / sets won</div>
-          <div class="mt-3 text-sm text-zinc-300"><span class="bebas mr-2 text-xl align-middle"><%= presenter.three_dart_average(player) %></span> average</div>
+          <div class="auth-label">Legs / sets won</div>
+          <div class="mt-3 text-sm"><span class="bebas mr-2 text-xl align-middle"><%= presenter.three_dart_average(player) %></span>average</div>
         </div>
       <% end %>
     </div>
 
     <div class="mb-6 grid gap-3 md:grid-cols-2">
-      <div class="game-over-stat-card">
-        <div class="mono mb-2 text-xs uppercase tracking-[0.16em] text-zinc-500">Finished at</div>
+      <div class="game-over-stat-card counter-list-card">
+        <div class="auth-label mb-2">Finished at</div>
         <div class="bebas text-3xl leading-none"><%= match.finished_at.strftime("%H:%M") %></div>
       </div>
-      <div class="game-over-stat-card">
-        <div class="mono mb-2 text-xs uppercase tracking-[0.16em] text-zinc-500">Duration</div>
+      <div class="game-over-stat-card counter-list-card">
+        <div class="auth-label mb-2">Duration</div>
         <div class="bebas text-3xl leading-none"><%= format("%d:%02d", total_mins, total_secs_rem) %></div>
       </div>
     </div>
 
     <div class="flex flex-col justify-center gap-3 sm:flex-row">
-      <%= link_to "New match", matches_path, class: "btn theme-btn-primary rounded-pill px-4 bebas text-xl" %>
+      <%= link_to "New match", matches_path, class: "btn theme-btn-primary rounded-pill px-4 py-3 bebas text-xl" %>
       <%= link_to "Back to matches", matches_path, class: "btn theme-btn-outline rounded-pill mono" %>
     </div>
   </div>

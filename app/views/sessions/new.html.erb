@@ -1,12 +1,14 @@
-<div class="mx-auto flex min-h-[70vh] w-full max-w-md items-center justify-center">
-  <div class="w-full space-y-6">
-    <div class="text-center">
-      <div class="theme-section-label mono mb-3">Welcome back</div>
-      <h1 class="bebas text-4xl leading-none text-white">Sign in</h1>
-      <p class="theme-subtitle mt-2 text-sm">A simpler entry point, still true to the existing dark red palette.</p>
-    </div>
+<div class="page-shell flex min-h-[72vh] items-center">
+  <div class="grid w-full gap-6 lg:grid-cols-[minmax(0,1fr)_26rem] lg:items-center">
+    <section class="theme-hero counter-setup-card p-6 md:p-8">
+      <div class="page-header">
+        <div class="theme-section-label mono">Welcome back</div>
+        <h1 class="page-title bebas">Sign in and keep your matches close.</h1>
+        <p class="page-copy max-w-xl">Same palette, cleaner structure, and full light/dark support.</p>
+      </div>
+    </section>
 
-    <div class="auth-card">
+    <section class="auth-card counter-auth-card">
       <% if alert = flash[:alert] %>
         <div class="flash-theme alert mono mb-4">⚠ <%= alert %></div>
       <% end %>
@@ -14,6 +16,11 @@
       <% if notice = flash[:notice] %>
         <div class="flash-theme notice mono mb-4">⚡ <%= notice %></div>
       <% end %>
+
+      <div class="counter-section-header mb-5">
+        <div class="theme-section-label mono">Account</div>
+        <h2 class="section-title bebas">Sign in</h2>
+      </div>
 
       <%= form_with url: session_url, class: "space-y-5" do |form| %>
         <div>
@@ -37,22 +44,13 @@
                 class: "auth-input" %>
         </div>
 
-        <div class="space-y-4 pt-2">
-          <%= form.submit "Sign in", class: "btn theme-btn-primary w-full rounded-pill py-3 bebas text-xl" %>
+        <%= form.submit "Sign in", class: "btn theme-btn-primary w-full rounded-pill py-3 bebas text-xl" %>
 
-          <div class="text-center">
-            <%= link_to "Forgot password?", new_password_path, class: "auth-link" %>
-          </div>
+        <div class="flex items-center justify-between gap-3 border-t pt-3" style="border-color:var(--theme-line)">
+          <%= link_to "Forgot password?", new_password_path, class: "auth-link" %>
+          <%= link_to "Play as guest", matches_path, class: "auth-link" %>
         </div>
       <% end %>
-    </div>
-
-    <div class="theme-card p-4 text-center">
-      <div class="mono mb-2 text-xs uppercase tracking-[0.16em] text-zinc-500">No account needed</div>
-      <%= link_to matches_path, class: "inline-flex items-center justify-center gap-2 text-white no-underline" do %>
-        <span class="bebas text-2xl leading-none">Play as guest</span>
-        <span class="mono text-xs uppercase tracking-[0.16em] text-red-300">→</span>
-      <% end %>
-    </div>
+    </section>
   </div>
 </div>

@@ -4,12 +4,12 @@
 <% set_winner = multi_set && leg.match_set.finished? && leg.match_set.winner == player %>
 <% match_won  = match.finished? && match.winner == player %>
 <% popup_class = match_won ? 'is-match' : set_winner ? 'is-set' : 'is-leg' %>
-<% accent_class = match_won ? 'text-red-300' : set_winner ? 'text-amber-300' : 'text-green-300' %>
+<% accent_color = match_won ? 'var(--theme-primary-soft)' : set_winner ? 'var(--theme-warning)' : 'var(--theme-success)' %>
 
 <div id="finish-popup-overlay" class="finish-popup-overlay">
   <div class="finish-popup-card <%= popup_class %>">
     <div class="mb-5 text-center">
-      <p class="mono mb-2 text-[0.68rem] uppercase tracking-[0.2em] <%= accent_class %>">
+      <p class="mono mb-2 text-[0.68rem] uppercase tracking-[0.2em]" style="color:<%= accent_color %>">
         <% if match_won %>
           Match won
         <% elsif set_winner %>
@@ -19,8 +19,8 @@
         <% end %>
       </p>
 
-      <p class="bebas text-4xl leading-none text-white"><%= player.display_name %></p>
-      <p class="mono mt-2 text-xs uppercase tracking-[0.16em] text-zinc-500">
+      <p class="bebas text-4xl leading-none"><%= player.display_name %></p>
+      <p class="mono mt-2 text-xs uppercase tracking-[0.16em]" style="color:var(--theme-subtle)">
         <% if match_won %>
           wins the match
         <% elsif set_winner %>
@@ -37,7 +37,7 @@
         <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
 
         <div class="mb-4">
-          <p class="mono mb-3 text-center text-[0.68rem] uppercase tracking-[0.16em] text-zinc-500">
+          <p class="mono mb-3 text-center text-[0.68rem] uppercase tracking-[0.16em]" style="color:var(--theme-subtle)">
             How many darts were needed to finish?
           </p>
 
@@ -56,15 +56,15 @@
           </div>
         </div>
 
-        <button type="submit" class="btn w-100 rounded-pill border-0 bg-green-600 px-4 py-3 text-white bebas text-xl hover:bg-green-500">
-          <%= match_won ? 'See Results →' : 'Next Leg →' %>
+        <button type="submit" class="btn theme-btn-primary w-100 rounded-pill px-4 py-3 bebas text-xl">
+          <%= match_won ? 'See results →' : 'Next leg →' %>
         </button>
       </form>
     <% else %>
       <button type="button"
               onclick="this.closest('#finish-popup-overlay').style.display='none'"
               class="btn theme-btn-primary w-100 rounded-pill px-4 py-3 bebas text-xl">
-        <%= match_won ? 'See Results →' : 'Continue →' %>
+        <%= match_won ? 'See results →' : 'Continue →' %>
       </button>
     <% end %>
   </div>

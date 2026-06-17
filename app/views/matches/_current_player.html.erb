@@ -18,11 +18,11 @@
     </button>
   </div>
 
-  <div class="rounded-[1.1rem] border border-white/5 bg-white/[0.02] p-3 md:rounded-[1.25rem] md:p-4">
+  <div class="counter-turn-panel p-3 md:p-4">
     <div class="mb-2 flex flex-wrap items-center justify-between gap-2">
       <div>
-        <div class="mono text-[0.62rem] uppercase tracking-[0.16em] text-zinc-500">Current score</div>
-        <div class="bebas mt-1 text-3xl leading-none text-red-400 md:text-4xl"><%= presenter.score_for(current_player) %></div>
+        <div class="mono text-[0.62rem] uppercase tracking-[0.16em]" style="color:var(--theme-subtle)">Current score</div>
+        <div class="bebas mt-1 text-3xl leading-none md:text-4xl" style="color:var(--theme-primary-soft)"><%= presenter.score_for(current_player) %></div>
       </div>
       <div class="theme-chip mono is-live hidden sm:inline-flex">3 darts per visit</div>
     </div>
@@ -31,7 +31,7 @@
            data-keyboard-target="input"
            data-action="input->keyboard#preview keydown->keyboard#handle"
            placeholder="e.g. 85"
-           class="throw-input form-control form-control-lg mono text-center text-lg md:text-xl"
+           class="throw-input counter-input-field form-control form-control-lg mono text-center text-lg md:text-xl"
            autocomplete="off">
   </div>
 </div>

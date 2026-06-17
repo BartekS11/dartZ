@@ -1,9 +1,9 @@
-<div class="mx-auto max-w-5xl">
-  <div class="theme-card p-4 md:p-6">
-    <div class="mb-6">
-      <div class="theme-section-label mono mb-2">Tournament setup</div>
-      <h1 class="bebas text-3xl leading-none md:text-4xl">Create tournament</h1>
-      <p class="theme-subtitle mt-2">One tournament uses one mode: groups, swiss, or playoffs.</p>
+<div class="page-shell page-shell-narrow">
+  <div class="theme-card counter-setup-card p-5 md:p-7">
+    <div class="page-header mb-6">
+      <div class="theme-section-label mono">Tournament setup</div>
+      <h1 class="page-title bebas">Create tournament</h1>
+      <p class="page-copy mt-2">One clean setup flow for groups, swiss, or playoffs.</p>
     </div>
 
     <%= form_with model: @tournament, class: "grid gap-4" do |f| %>
@@ -47,11 +47,11 @@
         </div>
       </div>
 
-      <div class="grid gap-3 md:grid-cols-3">
-        <label class="theme-panel flex items-center gap-3 p-3 text-sm text-zinc-300"><%= f.check_box :bronze_match %> Bronze match option</label>
-        <label class="theme-panel flex items-center gap-3 p-3 text-sm text-zinc-300"><%= f.check_box :auto_advance %> Auto advance</label>
-        <label class="theme-panel flex items-center gap-3 p-3 text-sm text-zinc-300"><%= f.check_box :manual_advance_allowed %> Manual advance allowed</label>
-        <label class="theme-panel flex items-center gap-3 p-3 text-sm text-zinc-300 md:col-span-3"><%= f.check_box :allow_wildcards %> Allow wildcard playoff qualification when relevant</label>
+      <div class="grid gap-3 md:grid-cols-2">
+        <label class="panel-choice text-sm"><%= f.check_box :bronze_match %> Bronze match option</label>
+        <label class="panel-choice text-sm"><%= f.check_box :auto_advance %> Auto advance</label>
+        <label class="panel-choice text-sm"><%= f.check_box :manual_advance_allowed %> Manual advance allowed</label>
+        <label class="panel-choice text-sm"><%= f.check_box :allow_wildcards %> Allow wildcard playoff qualification</label>
       </div>
 
       <div>
