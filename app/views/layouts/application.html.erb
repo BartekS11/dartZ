@@ -12,9 +12,6 @@
     })()
   </script>
   <%= javascript_importmap_tags %>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <%= stylesheet_link_tag "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap", media: "all" %>
   <%= stylesheet_link_tag "https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css", crossorigin: "anonymous" %>
   <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
   <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
@@ -25,67 +22,60 @@
 <body class="dartz-body" data-controller="theme-mode">
   <div class="theme-shell flex min-h-screen flex-col">
     <header class="site-header">
-      <div class="site-header-frame mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
-        <%= link_to root_path, class: "brand-lockup min-w-0" do %>
-          <span class="brand-mark shrink-0">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-              <circle cx="12" cy="12" r="8.5" stroke="var(--theme-line-strong)" />
-              <circle cx="12" cy="12" r="4.5" stroke="var(--theme-primary)" />
-              <circle cx="12" cy="12" r="1.5" fill="var(--theme-primary)" />
-            </svg>
-          </span>
-          <span class="min-w-0">
-            <span class="brand-wordmark bebas block"><%= theme_app_name.delete(theme_app_accent) %><span class="accent"><%= theme_app_accent %></span></span>
-          </span>
-        <% end %>
-
-        <nav class="site-header-actions">
-          <button type="button"
-                  class="btn btn-sm theme-btn-outline rounded-pill theme-toggle mono"
-                  data-action="theme-mode#toggle"
-                  data-theme-mode-target="button"
-                  aria-label="Toggle light and dark mode">
-            <span data-theme-mode-target="icon">◐</span>
-            <span data-theme-mode-target="label">Dark</span>
-          </button>
-          <% if content_for?(:mobile_header_action) %>
-            <div class="md:hidden">
-              <%= yield :mobile_header_action %>
-            </div>
+      <div class="site-header-frame mx-auto flex max-w-7xl flex-col gap-3 px-4 py-3 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between gap-3">
+          <%= link_to root_path, class: "brand-lockup min-w-0" do %>
+            <span class="brand-mark shrink-0">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M12 3v18M3 12h18" stroke="var(--theme-line-strong)" stroke-linecap="round"/>
+                <circle cx="12" cy="12" r="7" stroke="var(--theme-primary)"/>
+                <circle cx="12" cy="12" r="2" fill="var(--theme-primary)"/>
+              </svg>
+            </span>
+            <span class="min-w-0">
+              <span class="brand-wordmark bebas block"><%= theme_app_name.delete(theme_app_accent) %><span class="accent"><%= theme_app_accent %></span></span>
+              <span class="brand-subline mono"><%= Current.user ? Current.user.display_name : "Fast 501 scoring" %></span>
+            </span>
           <% end %>
 
-          <% if Current.user %>
-            <span class="mono hidden text-xs md:inline" style="color:var(--theme-subtle)"><%= Current.user.display_name %></span>
-            <%= link_to "Tournaments", tournaments_path, class: "btn btn-sm theme-btn-outline rounded-pill px-3 d-none d-md-inline-flex" %>
-            <%= link_to "Play vs bot", new_bot_match_path, class: "btn btn-sm theme-btn-outline rounded-pill px-3 d-none d-md-inline-flex" %>
+          <div class="site-header-actions">
+            <% if content_for?(:mobile_header_action) %>
+              <%= yield :mobile_header_action %>
+            <% end %>
+            <button type="button"
+                    class="btn btn-sm theme-btn-outline rounded-pill theme-toggle mono"
+                    data-action="theme-mode#toggle"
+                    data-theme-mode-target="button"
+                    aria-label="Toggle light and dark mode">
+              <span data-theme-mode-target="icon">◐</span>
+              <span data-theme-mode-target="label">Dark</span>
+            </button>
 
-            <details class="profile-menu">
-              <summary class="profile-menu-summary mono" aria-label="Open profile menu">☰</summary>
-              <div class="profile-menu-panel">
-                <div>
-                  <div class="profile-menu-label mono mb-1">Signed in as</div>
-                  <div class="bebas text-3xl leading-none"><%= Current.user.display_name %></div>
-                  <div class="mono mt-1 text-xs" style="color:var(--theme-subtle)"><%= Current.user.email_address %></div>
-                </div>
-
-                <div class="profile-menu-divider"></div>
-
-                <%= form_with model: Current.user, url: profile_path, method: :patch, class: "grid gap-2" do |f| %>
+            <% if Current.user %>
+              <details class="profile-menu">
+                <summary class="profile-menu-summary mono" aria-label="Open profile menu">☰</summary>
+                <div class="profile-menu-panel">
                   <div>
-                    <label class="profile-menu-label mono mb-2 block">Nickname</label>
-                    <%= f.text_field :nickname,
-                          maxlength: 20,
-                          placeholder: "Set your nickname",
-                          class: "form-control theme-form-input mono" %>
+                    <div class="profile-menu-label mono mb-1">Signed in as</div>
+                    <div class="bebas text-3xl leading-none"><%= Current.user.display_name %></div>
+                    <div class="mono mt-1 text-xs" style="color:var(--theme-subtle)"><%= Current.user.email_address %></div>
                   </div>
-                  <%= f.submit "Save nickname", class: "btn btn-sm theme-btn-primary rounded-pill mono" %>
-                <% end %>
 
-                <div class="profile-menu-divider"></div>
+                  <div class="profile-menu-divider"></div>
 
-                <div class="grid gap-2">
-                  <%= link_to "Tournaments", tournaments_path, class: "btn btn-sm theme-btn-outline rounded-pill mono" %>
-                  <%= link_to "Play vs bot", new_bot_match_path, class: "btn btn-sm theme-btn-outline rounded-pill mono d-md-none" %>
+                  <%= form_with model: Current.user, url: profile_path, method: :patch, class: "grid gap-2" do |f| %>
+                    <div>
+                      <label class="profile-menu-label mono mb-2 block">Nickname</label>
+                      <%= f.text_field :nickname,
+                            maxlength: 20,
+                            placeholder: "Set your nickname",
+                            class: "form-control theme-form-input mono" %>
+                    </div>
+                    <%= f.submit "Save nickname", class: "btn btn-sm theme-btn-primary rounded-pill mono" %>
+                  <% end %>
+
+                  <div class="profile-menu-divider"></div>
+
                   <%= button_to "Logout", session_path,
                         method: :delete,
                         class: "btn btn-sm theme-btn-outline rounded-pill mono w-100",
@@ -93,38 +83,40 @@
                           onsubmit: "localStorage.removeItem('dartz_player1');localStorage.removeItem('dartz_player2');localStorage.removeItem('dartz_players');localStorage.removeItem('dartz_matches');"
                         } %>
                 </div>
-              </div>
-            </details>
-          <% else %>
-            <%= link_to "Tournaments", tournaments_path, class: "btn btn-sm theme-btn-outline rounded-pill px-3 d-none d-md-inline-flex" %>
-            <%= link_to "Login", new_session_path, class: "btn btn-sm theme-btn-outline rounded-pill px-3" %>
+              </details>
+            <% end %>
+          </div>
+        </div>
+
+        <nav class="app-nav mono" aria-label="Primary">
+          <%= link_to "Match", matches_path, class: "app-nav-link #{'is-active' if current_page?(matches_path)}" %>
+          <%= link_to "Bot", new_bot_match_path, class: "app-nav-link #{'is-active' if current_page?(new_bot_match_path)}" %>
+          <%= link_to "Tournaments", tournaments_path, class: "app-nav-link #{'is-active' if request.path.start_with?(tournaments_path)}" %>
+          <% unless Current.user %>
+            <%= link_to "Login", new_session_path, class: "app-nav-link #{'is-active' if current_page?(new_session_path)}" %>
           <% end %>
         </nav>
       </div>
     </header>
 
-    <main class="mx-auto flex w-full max-w-7xl flex-1 flex-col px-4 py-5 sm:px-6 md:py-8 lg:px-8">
+    <main class="mx-auto flex w-full max-w-7xl flex-1 flex-col px-4 py-4 sm:px-6 md:py-6 lg:px-8">
       <% if notice %>
-        <div class="flash-theme notice mono mb-4">⚡ <%= notice %></div>
+        <div class="flash-theme notice mono mb-4">✓ <%= notice %></div>
       <% end %>
       <% if alert %>
-        <div class="flash-theme alert mono mb-4">⚠ <%= alert %></div>
+        <div class="flash-theme alert mono mb-4">! <%= alert %></div>
       <% end %>
 
       <%= yield %>
     </main>
 
-    <footer class="border-t border-[color:var(--theme-line)] bg-transparent">
-      <div class="site-footer-card mx-auto mt-2 grid w-full max-w-7xl gap-6 px-4 py-6 sm:px-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] lg:px-8">
-        <div>
-          <div class="mono mb-2 text-xs uppercase tracking-[0.18em]" style="color:var(--theme-subtle)"><%= theme_app_name %></div>
-          <p class="mb-0 max-w-2xl text-sm leading-6" style="color:var(--theme-muted)">Before shipping in the European Union, make sure you replace placeholder legal text with your real operator details, privacy information, cookie setup, and consumer-facing terms.</p>
-        </div>
-
-        <div class="grid gap-2 text-sm sm:grid-cols-2 lg:justify-self-end" style="color:var(--theme-muted)">
-          <%= link_to "Privacy Policy", privacy_policy_path, class: "footer-link" %>
-          <%= link_to "Terms of Service", terms_of_service_path, class: "footer-link" %>
-          <%= link_to "Contact & Operator Info", contact_page_path, class: "footer-link sm:col-span-2" %>
+    <footer class="site-footer">
+      <div class="mx-auto flex w-full max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-5 text-sm sm:px-6 lg:px-8">
+        <span class="mono" style="color:var(--theme-subtle)"><%= theme_app_name %></span>
+        <div class="flex flex-wrap gap-3">
+          <%= link_to "Privacy", privacy_policy_path, class: "footer-link" %>
+          <%= link_to "Terms", terms_of_service_path, class: "footer-link" %>
+          <%= link_to "Contact", contact_page_path, class: "footer-link" %>
         </div>
       </div>
     </footer>

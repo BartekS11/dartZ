@@ -15,24 +15,28 @@ class BotService
   }.freeze
 
   class << self
-    def play_turn(score:, level:)
+    def play_turn(score:, level:, double_in: false, double_out: true, has_doubled_in: true)
       remaining = score
       throws = []
+      in_play = !double_in || has_doubled_in
 
       3.times do |index|
         break if remaining <= 1
 
         darts_left = 3 - index
-        target = select_target(remaining, level, darts_left)
+        target = in_play ? select_target(remaining, level, darts_left, double_out: double_out) : opening_double_target(level)
         actual = resolve_throw(target, level)
-        points = points_for(actual)
+        throws << actual
 
-        if bust?(remaining, points, actual)
-          throws << actual
-          break
+        unless in_play || double_throw?(actual)
+          next
         end
 
-        throws << actual
+        in_play = true
+        points = points_for(actual)
+
+        break if bust?(remaining, points, actual, double_out: double_out)
+
         remaining -= points
         break if remaining.zero?
       end
@@ -58,9 +62,10 @@ class BotService
 
     private
 
-    def select_target(score, level, darts_left)
-      checkout = CheckoutCalculator.suggest(score, darts_remaining: darts_left)
+    def select_target(score, level, darts_left, double_out: true)
+      checkout = double_out ? CheckoutCalculator.suggest(score, darts_remaining: darts_left) : nil
       return checkout.first if checkout.present?
+      return straight_out_target(score) unless double_out
 
       if score > 170
         high_scoring_target(score, level)
@@ -176,12 +181,29 @@ class BotService
       "MISS"
     end
 
-    def bust?(score, points, throw_name)
+    def opening_double_target(level)
+      return "D20" if level >= 8
+
+      [ "D20", "D16", "D12", "D10" ].sample
+    end
+
+    def straight_out_target(score)
+      return THROW_VALUES.key(score) if THROW_VALUES.value?(score)
+
+      finish_builder_target(score)
+    end
+
+    def bust?(score, points, throw_name, double_out: true)
       new_score = score - points
       return true if new_score < 0 || new_score == 1
       return false unless new_score.zero?
+      return false unless double_out
 
       !double_throw?(throw_name)
+    end
+
+    def legacy_bust?(score, points, throw_name)
+      bust?(score, points, throw_name, double_out: true)
     end
 
     def double_throw?(throw_name)

@@ -167,7 +167,7 @@ module HasThrowHistory
     summaries = []
 
     legs.order(:created_at).each do |leg|
-      score = 501
+      score = starting_score
 
       leg.turns.where(player_id: player.id).order(:created_at).each do |turn|
         total = turn_total_for(turn)

@@ -11,21 +11,33 @@ class Tournament < ApplicationRecord
   has_many :rounds, class_name: "TournamentRound", dependent: :destroy
   has_many :tournament_matches, dependent: :destroy
 
-  validates :title, presence: true
+  validates :title, presence: true, length: { maximum: 100 }
   validates :format_type, inclusion: { in: FORMATS }
   validates :visibility, inclusion: { in: VISIBILITIES }
   validates :status, inclusion: { in: STATUSES }
   validates :seeding_mode, inclusion: { in: SEEDING_MODES }
   validates :playoff_mode, inclusion: { in: PLAYOFF_MODES }
-  validates :best_of_legs, numericality: { greater_than: 0 }
-  validates :best_of_sets, numericality: { greater_than: 0 }
-  validates :swiss_round_count, numericality: { greater_than: 0 }, allow_nil: true
+  validates :best_of_legs, :best_of_sets, numericality: { only_integer: true, greater_than: 0, less_than_or_equal_to: 99 }
+  validates :starting_score, inclusion: { in: Match::X01_STARTING_SCORES }
+  validates :double_in, :double_out, inclusion: { in: [ true, false ] }
+  validates :group_count, :swiss_round_count, :playoff_qualifier_count, numericality: { only_integer: true, greater_than: 0, less_than_or_equal_to: 256 }, allow_nil: true
 
   before_validation :assign_defaults
   before_validation :ensure_tokens
 
   scope :guest_public, -> { where(owner_user_id: nil, visibility: "public_guest") }
   scope :owned_by, ->(user) { where(owner_user: user) }
+
+  def game_mode_labels
+    labels = [ starting_score.to_s ]
+    labels << "Double in" if double_in?
+    labels << "Double out" if double_out?
+    labels
+  end
+
+  def game_settings
+    { starting_score: starting_score, double_in: double_in, double_out: double_out }
+  end
 
   def guest_owned?
     owner_user_id.nil?
@@ -68,12 +80,12 @@ class Tournament < ApplicationRecord
 
   def standings
     entries.to_a.sort_by do |entry|
-      [-entry.wins, -entry.leg_difference, -(format_type == "swiss" ? entry.buchholz.to_f : entry.points), -entry.points, entry.name.downcase]
+      [ -entry.wins, -entry.leg_difference, -(format_type == "swiss" ? entry.buchholz.to_f : entry.points), -entry.points, entry.name.downcase ]
     end
   end
 
   def effective_swiss_round_count
-    swiss_round_count.presence || [Math.log2([entries.count, 2].max).ceil, 1].max
+    swiss_round_count.presence || [ Math.log2([ entries.count, 2 ].max).ceil, 1 ].max
   end
 
   def swiss_rounds
@@ -107,7 +119,7 @@ class Tournament < ApplicationRecord
 
   def broadcast_live_update!(can_admin: false, admin_token: nil)
     Turbo::StreamsChannel.broadcast_replace_to(
-      [self, :live],
+      [ self, :live ],
       target: "tournament-live-panels",
       partial: "tournaments/live_panels",
       locals: { tournament: self, can_admin: can_admin, admin_token: admin_token }

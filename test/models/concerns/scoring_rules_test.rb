@@ -18,13 +18,21 @@ module Stubs
 
     obj = Object.new
     obj.define_singleton_method(:score)       { score_val }
-    obj.define_singleton_method(:update!)     { |attrs| score_val = attrs[:score]; updates << attrs }
+    obj.define_singleton_method(:needs_double_in?) { false }
+    obj.define_singleton_method(:update!) do |attrs|
+      score_val = attrs[:score] if attrs.key?(:score)
+      updates << attrs
+    end
     obj.define_singleton_method(:last_update) { updates.last }
     obj
   end
 
-  def self.leg
+  def self.leg(double_out: true)
+    match = Object.new
+    match.define_singleton_method(:double_out?) { double_out }
+
     obj = Object.new
+    obj.define_singleton_method(:match) { match }
     obj.define_singleton_method(:finish!) { @finished = true }
     obj.define_singleton_method(:finished?) { !!@finished }
     obj

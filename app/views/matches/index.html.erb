@@ -7,7 +7,7 @@
       <div class="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div class="page-header">
           <div class="theme-section-label mono">New match</div>
-          <h2 class="page-title bebas">501 scoreboard</h2>
+          <h2 class="page-title bebas">X01 scoreboard</h2>
           <p class="counter-section-copy">Fast setup, local history, and a cleaner board-first flow.</p>
         </div>
 
@@ -52,7 +52,20 @@
           </div>
         </div>
 
-        <div class="grid gap-3 border-t pt-3 md:grid-cols-2" style="border-color:var(--theme-line)">
+        <div class="grid gap-3 border-t pt-3 md:grid-cols-3" style="border-color:var(--theme-line)">
+          <div>
+            <label class="auth-label mb-2 block">Starting score</label>
+            <div class="mb-2 flex flex-wrap gap-2">
+              <% Match::X01_STARTING_SCORES.each do |score| %>
+                <button type="button"
+                        class="btn btn-sm theme-btn-outline rounded-pill mono score-preset <%= 'is-selected' if score == 501 %>"
+                        onclick="document.getElementById('starting_score').value = <%= score %>; this.closest('div').querySelectorAll('.score-preset').forEach(b => b.classList.remove('is-selected')); this.classList.add('is-selected')">
+                  <%= score %>
+                </button>
+              <% end %>
+            </div>
+            <%= hidden_field_tag :starting_score, 501, id: "starting_score" %>
+          </div>
           <div>
             <label class="auth-label mb-2 block">Best of legs</label>
             <div class="mb-2 flex flex-wrap gap-2">
@@ -82,13 +95,18 @@
           </div>
         </div>
 
+        <div class="grid gap-3 border-t pt-3 md:grid-cols-2" style="border-color:var(--theme-line)">
+          <label class="panel-choice text-sm"><%= hidden_field_tag :double_in, "0" %><%= check_box_tag :double_in, "1", false %> Double in</label>
+          <label class="panel-choice text-sm"><%= hidden_field_tag :double_out, "0" %><%= check_box_tag :double_out, "1", true %> Double out</label>
+        </div>
+
         <div class="flex flex-col gap-2 border-t pt-3 sm:flex-row sm:items-center sm:justify-between" style="border-color:var(--theme-line)">
           <div class="min-w-0 text-sm" style="color:var(--theme-muted)">
             <div id="greeting-wrapper" class="hidden">
               <span class="auth-label">Last players</span>
               <div data-lobby-target="greeting" class="mt-1"></div>
             </div>
-            <span>Simple 501 flow.</span>
+            <span>Choose X01 score and in/out rules.</span>
           </div>
           <%= f.submit "Start match", class: "btn theme-btn-primary rounded-pill px-4 py-2.5 bebas text-lg" %>
         </div>
@@ -123,6 +141,9 @@
               </div>
 
               <div class="mt-2 flex flex-wrap gap-2">
+                <% match.game_mode_labels.each do |label| %>
+                  <span class="theme-chip mono"><%= label %></span>
+                <% end %>
                 <% if match.best_of_sets > 1 %>
                   <span class="theme-chip mono">Bo<%= match.best_of_sets %> sets</span>
                 <% end %>
@@ -134,7 +155,7 @@
                   <% is_winner = winner == player %>
                   <% score = presenter.score_for(player) %>
                   <% avg = presenter.three_dart_average(player) %>
-                  <% pct = [(501 - score) * 100 / 501, 0].max %>
+                  <% pct = [((match.starting_score - score) * 100 / match.starting_score), 0].max %>
                   <div class="min-w-0">
                     <div class="player-line mb-1.5 min-w-0">
                       <span class="name mono <%= 'is-winner' if is_winner %>"><%= player.display_name %></span>

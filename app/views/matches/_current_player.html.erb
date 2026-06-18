@@ -11,6 +11,9 @@
       <div class="theme-section-label mono mb-2">Turn input</div>
       <h2 class="bebas mb-1 text-2xl leading-none md:text-3xl"><%= current_player.display_name %></h2>
       <p class="theme-subtitle mb-0 text-xs md:text-sm">Enter the total for this visit.</p>
+      <% if presenter.needs_double_in?(current_player) %>
+        <span class="theme-chip mono mt-2 inline-flex">Needs double in</span>
+      <% end %>
     </div>
 
     <button type="button" data-action="click->keyboard#undoLastThrow" class="btn btn-undo rounded-pill px-3 py-2 mono text-[0.65rem] uppercase tracking-[0.14em]">

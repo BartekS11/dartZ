@@ -1,8 +1,9 @@
-require "tty-prompt"
 require "fileutils"
 
 class RailsApiMaster
   def initialize
+    require "tty-prompt"
+
     @prompt = TTY::Prompt.new
     @routes_file = "config/routes.rb"
   end
@@ -139,4 +140,4 @@ class RailsApiMaster
   end
 end
 
-RailsApiMaster.new.run
+RailsApiMaster.new.run if __FILE__ == $PROGRAM_NAME

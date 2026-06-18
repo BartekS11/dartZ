@@ -45,7 +45,7 @@ class TournamentsControllerTest < ActionDispatch::IntegrationTest
     post reseed_tournament_path(tournament, admin_token: tournament.admin_token)
 
     assert_redirected_to tournament_path(tournament, admin_token: tournament.admin_token)
-    assert_equal [1, 2, 3], tournament.reload.entries.order(:created_at).pluck(:seed)
+    assert_equal [ 1, 2, 3 ], tournament.reload.entries.order(:created_at).pluck(:seed)
   end
 
   test "guest admin can update tournament settings" do

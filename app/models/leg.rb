@@ -72,7 +72,12 @@ class Leg < ApplicationRecord
 
   def init_players
     match.players.find_each do |player|
-      leg_players.create!(player: player, score: 501)
+      leg_players.create!(
+        player: player,
+        score: match.starting_score,
+        starting_score: match.starting_score,
+        has_doubled_in: !match.double_in?
+      )
     end
   end
 end

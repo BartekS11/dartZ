@@ -8,7 +8,18 @@ module ScoringRules
   def apply_throw!(throw, broadcast: true, skip_checkout_rule: false)
       lp             = leg_player
       starting_score = lp.score
-      new_score      = starting_score - throw.points
+      throw_count    = throws.respond_to?(:size) ? throws.size : throws.count
+
+      if lp.needs_double_in?
+        unless throw.double?
+          complete_turn!(broadcast: broadcast) if throw_count >= max_throws
+          return
+        end
+
+        lp.update!(has_doubled_in: true)
+      end
+
+      new_score = starting_score - throw.points
 
       if new_score < 0 || new_score == 1
         lp.update!(score: starting_score)
@@ -17,7 +28,7 @@ module ScoringRules
       end
 
       if new_score == 0
-        if skip_checkout_rule || throw.double?
+        if legal_checkout?(throw, skip_checkout_rule: skip_checkout_rule)
           lp.update!(score: 0)
           leg.finish!
         else
@@ -28,8 +39,14 @@ module ScoringRules
       end
 
       lp.update!(score: new_score)
-      throw_count = throws.respond_to?(:size) ? throws.size : throws.count
       complete_turn!(broadcast: broadcast) if throw_count >= max_throws
+  end
+
+  def legal_checkout?(throw, skip_checkout_rule: false)
+    return true if skip_checkout_rule
+    return true unless leg.match.double_out?
+
+    throw.double?
   end
 
   private

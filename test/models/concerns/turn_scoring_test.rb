@@ -14,7 +14,7 @@ class TurnScoringTest < ActiveSupport::TestCase
       turn.distribute_total!(161)
     end
 
-    assert_equal [60, 51, 50], turn.reload.throws.order(:created_at).map(&:points)
+    assert_equal [ 60, 51, 50 ], turn.reload.throws.order(:created_at).map(&:points)
     assert_equal 340, match.reload.score_for(player_one)
   end
 end

@@ -10,27 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_15_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_18_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
-
-  create_table "dart_setups", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.integer "dart_model_id", null: false
-    t.string "name"
-    t.text "notes"
-    t.integer "player_id", null: false
-    t.integer "point_length_mm"
-    t.integer "shaft_length_mm"
-    t.string "shaft_type"
-    t.datetime "updated_at", null: false
-    t.decimal "weight_g", precision: 4, scale: 1
-    t.index ["player_id"], name: "index_dart_setups_on_player_id"
-  end
 
   create_table "leg_players", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.integer "current_score"
+    t.boolean "has_doubled_in", default: false, null: false
     t.bigint "leg_id", null: false
     t.bigint "player_id", null: false
     t.integer "score"
@@ -67,17 +54,23 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_15_120000) do
     t.integer "best_of_legs", default: 1, null: false
     t.integer "best_of_sets", default: 1, null: false
     t.datetime "created_at", null: false
+    t.boolean "double_in", default: false, null: false
+    t.boolean "double_out", default: true, null: false
     t.datetime "finished_at"
+    t.string "guest_id"
+    t.string "guest_token"
     t.string "match_identifier"
+    t.integer "starting_score", default: 501, null: false
     t.datetime "updated_at", null: false
     t.integer "winner_id"
+    t.index ["guest_id"], name: "index_matches_on_guest_id"
+    t.index ["guest_token"], name: "index_matches_on_guest_token", unique: true
   end
 
   create_table "players", force: :cascade do |t|
     t.boolean "bot", default: false, null: false
     t.integer "bot_level", default: 10
     t.datetime "created_at", null: false
-    t.integer "dart_setup_id"
     t.bigint "match_id"
     t.string "name"
     t.datetime "updated_at", null: false
@@ -137,6 +130,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_15_120000) do
     t.boolean "bye", default: false, null: false
     t.datetime "completed_at"
     t.datetime "created_at", null: false
+    t.boolean "double_in", default: false, null: false
+    t.boolean "double_out", default: true, null: false
     t.bigint "home_entry_id"
     t.integer "home_legs", default: 0, null: false
     t.integer "home_sets", default: 0, null: false
@@ -144,6 +139,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_15_120000) do
     t.integer "position"
     t.jsonb "settings", default: {}, null: false
     t.string "source", default: "generated", null: false
+    t.integer "starting_score", default: 501, null: false
     t.string "status", default: "pending", null: false
     t.bigint "tournament_id", null: false
     t.bigint "tournament_round_id", null: false
@@ -181,6 +177,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_15_120000) do
     t.integer "best_of_sets", default: 1, null: false
     t.boolean "bronze_match", default: false, null: false
     t.datetime "created_at", null: false
+    t.boolean "double_in", default: false, null: false
+    t.boolean "double_out", default: true, null: false
     t.string "format_type", null: false
     t.integer "group_count"
     t.string "join_token", null: false
@@ -192,6 +190,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_15_120000) do
     t.string "seeding_mode", default: "auto", null: false
     t.jsonb "settings", default: {}, null: false
     t.string "share_token", null: false
+    t.integer "starting_score", default: 501, null: false
     t.string "status", default: "draft", null: false
     t.integer "swiss_round_count"
     t.string "title", null: false

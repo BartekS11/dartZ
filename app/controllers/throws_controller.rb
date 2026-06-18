@@ -1,28 +1,34 @@
 class ThrowsController < ApplicationController
   allow_unauthenticated_access
+  before_action :resume_session_optional
 
   def create
     @turn  = Turn.find(params[:turn_id])
     @match = @turn.leg.match
+    authorize_match!(@match)
+    return if performed?
 
-    if params[:throw][:total].present?
-      total           = params[:throw][:total].to_i
-      darts_remaining = 3 - @turn.throws.count
-      max_possible    = darts_remaining * 60
+    @match.with_lock do
+      @turn.reload
+      if params[:throw][:total].present?
+        total           = params[:throw][:total].to_i
+        darts_remaining = 3 - @turn.throws.count
+        max_possible    = darts_remaining * 60
 
-      @turn.update!(total_score: total)
+        @turn.update!(total_score: total)
 
-      if total > max_possible || total > @match.score_for(@turn.player)
-        @turn.complete_turn!(broadcast: false)
+        if total > max_possible || total > @match.score_for(@turn.player)
+          @turn.complete_turn!(broadcast: false)
+        else
+          @turn.distribute_total!(total)
+        end
       else
-        @turn.distribute_total!(total)
+        @throw = @turn.throws.create!(throw_params)
+        @turn.apply_throw!(@throw)
       end
-    else
-      @throw = @turn.throws.create!(throw_params)
-      @turn.apply_throw!(@throw)
-    end
 
-    @match.reload
+      @match.reload
+    end
 
     respond_to do |format|
       format.turbo_stream { render_streams }
@@ -33,10 +39,15 @@ class ThrowsController < ApplicationController
   def undo
     @turn  = Turn.find(params[:turn_id])
     @match = @turn.leg.match
+    authorize_match!(@match)
+    return if performed?
+
     mode   = request.headers["X-Undo-Mode"] || "total"
 
-    @match.undo_last_throw!(mode: mode)
-    @match.reload
+    @match.with_lock do
+      @match.undo_last_throw!(mode: mode)
+      @match.reload
+    end
 
     respond_to do |format|
       format.turbo_stream { render_streams }

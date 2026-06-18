@@ -16,7 +16,7 @@ export default class extends Controller {
   }
 
   defaultView() {
-    return window.innerWidth < 768 ? "input" : "all"
+    return "all"
   }
 
   show(view) {

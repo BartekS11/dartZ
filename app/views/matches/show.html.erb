@@ -9,13 +9,18 @@
     const matches = JSON.parse(localStorage.getItem("dartz_matches") || "[]")
     const id = <%= @match.id.to_json %>
     const exists = matches.find(m => m.id === id)
+    const guestToken = <%= (Current.user ? nil : @match.guest_token).to_json.html_safe %>
     if (!exists) {
       matches.unshift({
         id: id,
         player1: <%= @match.players.first&.display_name.to_json.html_safe %>,
         player2: <%= @match.players.second&.display_name.to_json.html_safe %>,
+        guestToken: guestToken,
         createdAt: <%= @match.created_at.iso8601.to_json.html_safe %>
       })
+      localStorage.setItem("dartz_matches", JSON.stringify(matches.slice(0, 10)))
+    } else if (guestToken && !exists.guestToken) {
+      exists.guestToken = guestToken
       localStorage.setItem("dartz_matches", JSON.stringify(matches.slice(0, 10)))
     }
   })()
@@ -38,7 +43,7 @@
     <% end %>
   </div>
 
-  <div id="header-section">
+  <div id="header-section" class="hidden md:block">
     <% unless @match.finished? %>
       <section class="theme-hero counter-topbar p-4 md:p-5">
         <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
@@ -46,6 +51,9 @@
             <div class="flex flex-wrap items-center gap-2">
               <%= link_to "← Back", matches_path, class: "btn btn-sm theme-btn-outline rounded-pill mono hidden md:inline-flex" %>
               <span class="theme-chip mono is-live">Live match</span>
+              <% @match.game_mode_labels.each do |label| %>
+                <span class="theme-chip mono"><%= label %></span>
+              <% end %>
               <% if @match.best_of_sets > 1 %>
                 <span class="theme-chip mono">Bo<%= @match.best_of_sets %> sets</span>
               <% end %>
@@ -70,17 +78,6 @@
     <% end %>
   </div>
 
-  <% unless @match.finished? %>
-    <div class="mobile-view-switch">
-      <div class="theme-card p-2">
-        <div class="counter-switch">
-          <button type="button" class="btn mono" data-match-view-target="padButton" data-action="match-view#showPad">Throw pad</button>
-          <button type="button" class="btn mono" data-match-view-target="inputButton" data-action="match-view#showInput">Input</button>
-        </div>
-      </div>
-    </div>
-  <% end %>
-
   <div id="score-cards-section">
     <% unless @match.finished? %>
       <section class="grid gap-3 md:grid-cols-2">
@@ -93,7 +90,7 @@
 
   <div id="keyboard-section">
     <% unless @match.finished? %>
-      <section class="grid gap-4 xl:grid-cols-[minmax(0,0.72fr)_minmax(0,1.28fr)] xl:items-start">
+      <section class="grid gap-3 md:gap-4 xl:grid-cols-[minmax(0,0.72fr)_minmax(0,1.28fr)] xl:items-start">
         <div data-match-view-target="input">
           <div class="theme-card counter-input-card p-4 md:p-5">
             <div id="current-player">

@@ -30,8 +30,18 @@ module Api
         @api_user
       end
 
+      def current_guest_id
+        @guest_id
+      end
+
       def guest_session?
         @api_user.nil? && @guest_id.present?
+      end
+
+      def authorize_api_match!(match)
+        return if MatchAccess.new(match: match, user: current_api_user, guest_id: current_guest_id).allowed?
+
+        raise ExceptionHandler::Unauthorized, "Forbidden"
       end
     end
   end

@@ -26,7 +26,7 @@ class TournamentGenerator
 
   def generate_groups
     entries = ordered_entries
-    group_count = [@tournament.group_count.to_i, 2].max
+    group_count = [ @tournament.group_count.to_i, 2 ].max
     groups = Array.new(group_count) { [] }
 
     entries.each_with_index do |entry, idx|
@@ -38,7 +38,7 @@ class TournamentGenerator
       group_entries.each { |entry| entry.update!(group_name:) }
       round = @tournament.rounds.create!(number: idx + 1, name: "Group #{group_name}", stage_type: "groups", group_name:, status: "active")
       round_robin_pairs(group_entries).each_with_index do |(home, away), pos|
-        round.tournament_matches.create!(tournament: @tournament, home_entry: home, away_entry: away, position: pos + 1, best_of_legs: @tournament.best_of_legs, best_of_sets: @tournament.best_of_sets)
+        round.tournament_matches.create!(tournament: @tournament, home_entry: home, away_entry: away, position: pos + 1, best_of_legs: @tournament.best_of_legs, best_of_sets: @tournament.best_of_sets, **@tournament.game_settings)
       end
     end
   end
@@ -55,7 +55,7 @@ class TournamentGenerator
     round = @tournament.rounds.create!(number: 1, name: "#{@tournament.playoff_mode == 'double_elimination' ? 'Upper' : 'Playoff'} Round 1", stage_type: "playoffs", bracket: "upper", status: "active")
 
     seeded.each_slice(2).with_index do |(home, away), idx|
-      match = round.tournament_matches.create!(tournament: @tournament, home_entry: home, away_entry: away, position: idx + 1, best_of_legs: @tournament.best_of_legs, best_of_sets: @tournament.best_of_sets)
+      match = round.tournament_matches.create!(tournament: @tournament, home_entry: home, away_entry: away, position: idx + 1, best_of_legs: @tournament.best_of_legs, best_of_sets: @tournament.best_of_sets, **@tournament.game_settings)
       if home.present? && away.nil?
         match.update!(bye: true, winner_entry: home, status: "complete", completed_at: Time.current, home_legs: @tournament.best_of_legs)
       end
@@ -75,7 +75,7 @@ class TournamentGenerator
       left = list.take(half)
       right = list.drop(half).reverse
       rounds.concat(left.zip(right).reject { |a, b| a.nil? || b.nil? })
-      list = [list.first] + [list.last] + list[1...-1]
+      list = [ list.first ] + [ list.last ] + list[1...-1]
     end
 
     rounds.uniq

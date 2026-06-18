@@ -51,6 +51,10 @@
       </div>
     </div>
 
+    <div class="mb-6">
+      <%= render "matches/stats_panel", match: match, presenter: presenter %>
+    </div>
+
     <div class="flex flex-col justify-center gap-3 sm:flex-row">
       <%= link_to "New match", matches_path, class: "btn theme-btn-primary rounded-pill px-4 py-3 bebas text-xl" %>
       <%= link_to "Back to matches", matches_path, class: "btn theme-btn-outline rounded-pill mono" %>

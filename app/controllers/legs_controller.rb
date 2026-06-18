@@ -1,10 +1,16 @@
 class LegsController < ApplicationController
   allow_unauthenticated_access
+  before_action :resume_session_optional
 
   def checkout
     @leg   = Leg.find(params[:id])
     @match = @leg.match
-    @leg.update!(checkout_throws: params[:checkout_throws].presence)
+    authorize_match!(@match)
+    return if performed?
+
+    @match.with_lock do
+      @leg.update!(checkout_throws: params[:checkout_throws].presence)
+    end
 
     respond_to do |format|
       format.turbo_stream

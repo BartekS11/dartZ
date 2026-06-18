@@ -54,7 +54,7 @@ module MatchLifecycle
   end
 
   def score_for(player)
-    return 501 unless current_leg
-    current_leg.leg_players.find_by(player: player)&.score || 501
+    return starting_score unless current_leg
+    current_leg.leg_players.find_by(player: player)&.score || starting_score
   end
 end

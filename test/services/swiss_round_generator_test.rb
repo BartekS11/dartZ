@@ -27,8 +27,8 @@ class SwissRoundGeneratorTest < ActiveSupport::TestCase
     round_two = tournament.reload.swiss_rounds.find_by(number: 2)
     assert_not_nil round_two
 
-    first_round_pairs = round_one.tournament_matches.map { |m| [m.home_entry_id, m.away_entry_id].sort }
-    second_round_pairs = round_two.tournament_matches.where.not(away_entry_id: nil).map { |m| [m.home_entry_id, m.away_entry_id].sort }
+    first_round_pairs = round_one.tournament_matches.map { |m| [ m.home_entry_id, m.away_entry_id ].sort }
+    second_round_pairs = round_two.tournament_matches.where.not(away_entry_id: nil).map { |m| [ m.home_entry_id, m.away_entry_id ].sort }
 
     second_round_pairs.each do |pair|
       assert_not_includes first_round_pairs, pair

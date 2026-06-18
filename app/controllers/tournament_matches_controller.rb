@@ -11,18 +11,35 @@ class TournamentMatchesController < ApplicationController
     end
 
     if @tournament_match.linked_match.present?
+      @tournament_match.linked_match.ensure_guest_token!
+      remember_guest_match!(@tournament_match.linked_match, @tournament_match.linked_match.guest_token)
       redirect_to match_path(@tournament_match.linked_match)
       return
     end
 
-    match = Match.create!(best_of_legs: @tournament_match.best_of_legs, best_of_sets: @tournament_match.best_of_sets)
-    match.players.create!(name: @tournament_match.home_entry.name)
-    match.players.create!(name: @tournament_match.away_entry.name)
-    match.start_first_set!
-    match.ensure_match_identifier!
+    match = nil
+    @tournament.with_lock do
+      ApplicationRecord.transaction do
+        @tournament_match.reload
+        match = Match.new(
+          best_of_legs: @tournament_match.best_of_legs,
+          best_of_sets: @tournament_match.best_of_sets,
+          starting_score: @tournament_match.starting_score,
+          double_in: @tournament_match.double_in,
+          double_out: @tournament_match.double_out
+        )
+        match.ensure_guest_token!
+        match.save!
+        match.players.create!(name: @tournament_match.home_entry.name)
+        match.players.create!(name: @tournament_match.away_entry.name)
+        match.start_first_set!
+        match.ensure_match_identifier!
 
-    @tournament_match.update!(linked_match: match, status: "live")
+        @tournament_match.update!(linked_match: match, status: "live")
+      end
+    end
     @tournament.broadcast_live_update!
+    remember_guest_match!(match, match.guest_token)
     redirect_to match_path(match)
   end
 
@@ -38,8 +55,10 @@ class TournamentMatchesController < ApplicationController
     away_legs = params[:away_legs].to_i
     winner = home_sets > away_sets || (home_sets == away_sets && home_legs > away_legs) ? @tournament_match.home_entry : @tournament_match.away_entry
 
-    @tournament_match.update!(home_sets:, away_sets:, home_legs:, away_legs:, winner_entry: winner, status: "complete", completed_at: Time.current)
-    TournamentProgressor.new(@tournament).call
+    @tournament.with_lock do
+      @tournament_match.update!(home_sets:, away_sets:, home_legs:, away_legs:, winner_entry: winner, status: "complete", completed_at: Time.current)
+      TournamentProgressor.new(@tournament).call
+    end
     @tournament.broadcast_live_update!
 
     redirect_to tournament_path(@tournament, admin_token: params[:admin_token]), notice: "Result saved."

@@ -13,6 +13,9 @@ class TournamentsController < ApplicationController
       format_type: "groups",
       best_of_legs: 1,
       best_of_sets: 1,
+      starting_score: 501,
+      double_in: false,
+      double_out: true,
       seeding_mode: "auto",
       playoff_mode: "single_elimination",
       auto_advance: true,
@@ -29,8 +32,11 @@ class TournamentsController < ApplicationController
     entry_names = extract_entry_names
     build_entries(@tournament, entry_names)
 
-    if @tournament.save
-      TournamentGenerator.new(@tournament).call if @tournament.entries.size >= 2
+    if @tournament.valid?
+      ApplicationRecord.transaction do
+        @tournament.save!
+        TournamentGenerator.new(@tournament).call if @tournament.entries.size >= 2
+      end
       redirect_to tournament_path(@tournament, admin_token: (@tournament.guest_owned? ? @tournament.admin_token : nil)), notice: "Tournament created."
     else
       render :new, status: :unprocessable_entity
@@ -55,7 +61,9 @@ class TournamentsController < ApplicationController
     end
 
     if @tournament.update(tournament_params)
-      TournamentGenerator.new(@tournament).call if @tournament.entries.size >= 2
+      @tournament.with_lock do
+        TournamentGenerator.new(@tournament).call if @tournament.entries.size >= 2
+      end
       @tournament.broadcast_live_update!
       redirect_to tournament_path(@tournament, admin_token: params[:admin_token]), notice: "Tournament updated."
     else
@@ -79,7 +87,9 @@ class TournamentsController < ApplicationController
       return
     end
 
-    TournamentGenerator.new(@tournament).call
+    @tournament.with_lock do
+      TournamentGenerator.new(@tournament).call
+    end
     @tournament.broadcast_live_update!
     redirect_to tournament_path(@tournament, admin_token: params[:admin_token]), notice: "Tournament regenerated."
   end
@@ -90,10 +100,12 @@ class TournamentsController < ApplicationController
       return
     end
 
-    @tournament.entries.order(:created_at).each_with_index do |entry, idx|
-      entry.update!(seed: idx + 1)
+    @tournament.with_lock do
+      @tournament.entries.order(:created_at).each_with_index do |entry, idx|
+        entry.update!(seed: idx + 1)
+      end
+      TournamentGenerator.new(@tournament).call if @tournament.entries.size >= 2
     end
-    TournamentGenerator.new(@tournament).call if @tournament.entries.size >= 2
     @tournament.broadcast_live_update!
     redirect_to tournament_path(@tournament, admin_token: params[:admin_token]), notice: "Seeds rebuilt."
   end
@@ -106,8 +118,16 @@ class TournamentsController < ApplicationController
 
     case @tournament.format_type
     when "swiss"
-      if SwissRoundGenerator.new(@tournament).call
-        TournamentProgressor.new(@tournament).call
+      generated = @tournament.with_lock do
+        if SwissRoundGenerator.new(@tournament).call
+          TournamentProgressor.new(@tournament).call
+          true
+        else
+          false
+        end
+      end
+
+      if generated
         @tournament.broadcast_live_update!
         redirect_to tournament_path(@tournament, admin_token: params[:admin_token]), notice: "Next swiss round created."
       else
@@ -115,11 +135,13 @@ class TournamentsController < ApplicationController
       end
     when "playoffs"
       previous_round_count = @tournament.rounds.count
-      PlayoffProgressor.new(@tournament).call
-      TournamentProgressor.new(@tournament).call
+      @tournament.with_lock do
+        PlayoffProgressor.new(@tournament).call
+        TournamentProgressor.new(@tournament).call
+      end
       @tournament.broadcast_live_update!
 
-      if @tournament.rounds.count > previous_round_count || @tournament.status == "complete"
+      if @tournament.rounds.count > previous_round_count || @tournament.reload.status == "complete"
         redirect_to tournament_path(@tournament, admin_token: params[:admin_token]), notice: "Playoff bracket advanced."
       else
         redirect_to tournament_path(@tournament, admin_token: params[:admin_token]), alert: "Unable to advance the playoff bracket yet."
@@ -136,7 +158,7 @@ class TournamentsController < ApplicationController
   end
 
   def tournament_params
-    params.require(:tournament).permit(:title, :format_type, :best_of_legs, :best_of_sets, :seeding_mode, :playoff_mode, :bronze_match, :auto_advance, :manual_advance_allowed, :group_count, :swiss_round_count, :playoff_qualifier_count, :allow_wildcards)
+    params.require(:tournament).permit(:title, :format_type, :best_of_legs, :best_of_sets, :starting_score, :double_in, :double_out, :seeding_mode, :playoff_mode, :bronze_match, :auto_advance, :manual_advance_allowed, :group_count, :swiss_round_count, :playoff_qualifier_count, :allow_wildcards)
   end
 
   def extract_entry_names

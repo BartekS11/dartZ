@@ -26,6 +26,10 @@
           <%= f.number_field :best_of_sets, min: 1, class: "form-control theme-form-input" %>
         </div>
         <div>
+          <label class="auth-label">Starting score</label>
+          <%= f.select :starting_score, Match::X01_STARTING_SCORES.map { |score| [score, score] }, {}, class: "form-select theme-form-input" %>
+        </div>
+        <div>
           <label class="auth-label">Seeding</label>
           <%= f.select :seeding_mode, Tournament::SEEDING_MODES.map { |v| [v.titleize, v] }, {}, class: "form-select theme-form-input" %>
         </div>
@@ -48,6 +52,8 @@
       </div>
 
       <div class="grid gap-3 md:grid-cols-2">
+        <label class="panel-choice text-sm"><%= f.check_box :double_in %> Double in</label>
+        <label class="panel-choice text-sm"><%= f.check_box :double_out %> Double out</label>
         <label class="panel-choice text-sm"><%= f.check_box :bronze_match %> Bronze match option</label>
         <label class="panel-choice text-sm"><%= f.check_box :auto_advance %> Auto advance</label>
         <label class="panel-choice text-sm"><%= f.check_box :manual_advance_allowed %> Manual advance allowed</label>

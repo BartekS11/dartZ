@@ -1,4 +1,6 @@
 class Match < ApplicationRecord
+  X01_STARTING_SCORES = [ 101, 201, 301, 401, 501, 601, 701 ].freeze
+
   before_destroy :destroy_direct_legs
 
   include MatchLifecycle
@@ -12,6 +14,29 @@ class Match < ApplicationRecord
   has_many :throws,   through: :turns
 
   validates :match_identifier, uniqueness: true, allow_blank: true
+  validates :guest_token, uniqueness: true, allow_blank: true
+  validates :best_of_legs, :best_of_sets, numericality: { only_integer: true, greater_than: 0, less_than_or_equal_to: 99 }
+  validates :starting_score, inclusion: { in: X01_STARTING_SCORES }
+  validates :double_in, :double_out, inclusion: { in: [ true, false ] }
+
+  def game_mode_labels
+    labels = [ starting_score.to_s ]
+    labels << "Double in" if double_in?
+    labels << "Double out" if double_out?
+    labels
+  end
+
+  def ensure_guest_token!
+    return guest_token if guest_token.present?
+
+    loop do
+      self.guest_token = SecureRandom.hex(24)
+      break unless Match.where(guest_token: guest_token).where.not(id: id).exists?
+    end
+
+    update!(guest_token: guest_token) if persisted?
+    guest_token
+  end
 
   def display_identifier
     match_identifier.presence || "##{id}"
@@ -72,7 +97,9 @@ class Match < ApplicationRecord
       leg.leg_players.find_or_create_by!(
         player: player
       ) do |lp|
-        lp.score = 501
+        lp.score = starting_score
+        lp.starting_score = starting_score if lp.respond_to?(:starting_score=)
+        lp.has_doubled_in = !double_in? if lp.respond_to?(:has_doubled_in=)
       end
     end
 
@@ -95,8 +122,8 @@ class Match < ApplicationRecord
   end
 
   def score_for(player)
-    return 501 unless current_leg
-    current_leg.leg_players.find_by(player: player)&.score || 501
+    return starting_score unless current_leg
+    current_leg.leg_players.find_by(player: player)&.score || starting_score
   end
 
   def subtract_score!(player, points)

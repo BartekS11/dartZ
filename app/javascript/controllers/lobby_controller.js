@@ -253,8 +253,8 @@ clearPlayers() {
 
     const results = await Promise.all(
       stored.map(m =>
-        fetch(`/matches/${m.id}/summary`)
-          .then(r => r.json())
+        fetch(`/matches/${m.id}/summary${m.guestToken ? `?guest_token=${encodeURIComponent(m.guestToken)}` : ""}`)
+          .then(r => r.ok ? r.json() : null)
            .catch(err => { console.error(`Failed match ${m.id}:`, err); return null })
       )
     )
@@ -267,7 +267,8 @@ clearPlayers() {
       })
 
       const playerRows = data.players.map(p => {
-        const pct = Math.max((501 - p.score) * 100 / 501, 0)
+        const startingScore = data.starting_score || 501
+        const pct = Math.max((startingScore - p.score) * 100 / startingScore, 0)
         const avgHtml = p.avg > 0 ? `<span class="avg mono">avg ${p.avg}</span>` : ""
 
         return `
@@ -286,9 +287,10 @@ clearPlayers() {
       const badge = data.finished
         ? `<span class="theme-chip mono is-finished">Finished</span>`
         : `<span class="theme-chip mono is-live">Live</span>`
+      const modeBadges = (data.game_mode_labels || []).map(label => `<span class="theme-chip mono">${label}</span>`).join("")
 
       return `
-        <a href="/matches/${data.id}" class="theme-match-card p-3 p-md-4">
+        <a href="/matches/${data.id}${stored[i].guestToken ? `?guest_token=${encodeURIComponent(stored[i].guestToken)}` : ""}" class="theme-match-card p-3 p-md-4">
           <div class="row align-items-start g-3 position-relative">
             <div class="col-12 col-sm-4">
               <div class="match-identifier bebas">Match ${identifier}</div>
@@ -297,6 +299,7 @@ clearPlayers() {
             <div class="col-12 col-sm-5">${playerRows}</div>
             <div class="col-12 col-sm-3 text-sm-end">
               ${badge}
+              <div class="mt-2 d-flex flex-wrap gap-1 justify-content-sm-end">${modeBadges}</div>
               <div class="mt-3 mono text-primary-theme small">Open →</div>
             </div>
           </div>

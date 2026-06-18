@@ -29,10 +29,11 @@ module ApplicationCable
     end
 
     def connect_via_session
-      if (user_id = cookies.encrypted[:user_id] || env["warden"]&.user&.id)
-        self.current_user = User.find(user_id)
+      if (session_id = cookies.signed[:session_id])
+        self.current_user = Session.find_by(id: session_id)&.user
+        self.guest_id = nil
       else
-        self.guest_id    = SecureRandom.uuid
+        self.guest_id = SecureRandom.uuid
         self.current_user = nil
       end
     end

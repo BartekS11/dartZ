@@ -20,7 +20,7 @@ class SwissRoundGenerator
 
     if entries.size.odd?
       bye_entry = select_bye_entry(entries)
-      entries = entries - [bye_entry]
+      entries = entries - [ bye_entry ]
       round.tournament_matches.create!(
         tournament: @tournament,
         home_entry: bye_entry,
@@ -30,7 +30,8 @@ class SwissRoundGenerator
         completed_at: Time.current,
         best_of_legs: @tournament.best_of_legs,
         best_of_sets: @tournament.best_of_sets,
-        home_legs: @tournament.best_of_legs
+        home_legs: @tournament.best_of_legs,
+        **@tournament.game_settings
       )
     end
 
@@ -42,7 +43,8 @@ class SwissRoundGenerator
         away_entry: away,
         position: idx + 1,
         best_of_legs: @tournament.best_of_legs,
-        best_of_sets: @tournament.best_of_sets
+        best_of_sets: @tournament.best_of_sets,
+        **@tournament.game_settings
       )
     end
 
@@ -59,7 +61,7 @@ class SwissRoundGenerator
     prior_byes = @tournament.tournament_matches.where(bye: true).pluck(:winner_entry_id).compact
     eligible = entries.reject { |entry| prior_byes.include?(entry.id) }
     pool = eligible.presence || entries
-    pool.min_by { |entry| [entry.wins, entry.leg_difference, entry.points, entry.buchholz.to_f, entry.name.downcase] }
+    pool.min_by { |entry| [ entry.wins, entry.leg_difference, entry.points, entry.buchholz.to_f, entry.name.downcase ] }
   end
 
   def build_pairings(entries)
@@ -84,9 +86,9 @@ class SwissRoundGenerator
     ordered_candidates.each do |candidate|
       next if previous_opponents.fetch(first.id, Set.new).include?(candidate.id)
 
-      remaining = rest - [candidate]
+      remaining = rest - [ candidate ]
       tail = backtrack_pairings(remaining, previous_opponents)
-      return [[first, candidate], *tail] if tail
+      return [ [ first, candidate ], *tail ] if tail
     end
 
     nil

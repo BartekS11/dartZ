@@ -58,6 +58,12 @@ class MatchStatePresenter
     player_state(player)[:last_throws].first(limit)
   end
 
+  def needs_double_in?(player)
+    return false unless match.double_in? && current_leg
+
+    current_leg.leg_players.find { |leg_player| leg_player.player_id == player_key(player) }&.needs_double_in? || false
+  end
+
   def stats_for(player)
     player_state(player)[:stats]
   end
@@ -80,6 +86,8 @@ class MatchStatePresenter
       match_identifier: match.match_identifier,
       ui_identifier: match.ui_identifier,
       finished: finished?,
+      starting_score: match.starting_score,
+      game_mode_labels: match.game_mode_labels,
       players: players.map { |player| summary_player_payload(player) }
     }
   end
@@ -92,6 +100,9 @@ class MatchStatePresenter
       finished: finished?,
       best_of_legs: match.best_of_legs,
       best_of_sets: match.best_of_sets,
+      starting_score: match.starting_score,
+      double_in: match.double_in?,
+      double_out: match.double_out?,
       winner: winner&.display_name,
       current_player: current_player&.display_name,
       current_turn_id: current_turn&.id,
@@ -125,7 +136,7 @@ class MatchStatePresenter
     @leg_position = {}
     @sets_won = Hash.new(0)
     @legs_won = Hash.new(0)
-    @scores = Hash.new(501)
+    @scores = Hash.new(match.starting_score)
     @active_turns = {}
     @last_completed_turns_in_current_leg = {}
 
@@ -143,7 +154,7 @@ class MatchStatePresenter
 
       if @current_leg && leg.id == @current_leg.id
         leg.leg_players.each do |leg_player|
-          @scores[leg_player.player_id] = leg_player.score || 501
+          @scores[leg_player.player_id] = leg_player.score || match.starting_score
         end
       end
 
@@ -193,7 +204,7 @@ class MatchStatePresenter
       end
 
       @player_states[player_id] = {
-        score: @scores.fetch(player_id, 501),
+        score: @scores.fetch(player_id, match.starting_score),
         avg: average_for(avg_turns),
         sets_won: @sets_won[player_id],
         legs_won: @legs_won[player_id],
@@ -255,7 +266,7 @@ class MatchStatePresenter
           points: throw.points
         }
       end,
-      checkout: CheckoutCalculator.suggest(score_for(player))
+      checkout: match.double_out? ? CheckoutCalculator.suggest(score_for(player)) : []
     }
   end
 
@@ -303,7 +314,7 @@ class MatchStatePresenter
     darts_used = []
 
     @match_sets.flat_map(&:legs).sort_by(&:created_at).each do |leg|
-      score = 501
+      score = match.starting_score
 
       leg.turns.to_a.sort_by(&:created_at).each do |turn|
         next unless turn.player_id == player_id

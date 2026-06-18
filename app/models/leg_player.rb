@@ -4,6 +4,10 @@ class LegPlayer < ApplicationRecord
 
   validates :score, numericality: { greater_than_or_equal_to: 0 }
 
+  def needs_double_in?
+    leg.match.double_in? && !has_doubled_in?
+  end
+
   def apply_throw!(points)
     new_score = score - points
 
@@ -15,6 +19,9 @@ class LegPlayer < ApplicationRecord
   end
 
   def finished?(throw)
-    score == 0 && throw.double?
+    double_out = leg&.match&.double_out?
+    double_out = true if double_out.nil?
+
+    score == 0 && (!double_out || throw.double?)
   end
 end

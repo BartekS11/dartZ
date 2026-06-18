@@ -4,38 +4,46 @@ module Api
       def create
         @turn  = Turn.find(params[:match_id] ? find_current_turn : params[:turn_id])
         @match = @turn.leg.match
+        authorize_api_match!(@match)
 
-        if params[:total].present?
-          total           = params[:total].to_i
-          darts_remaining = 3 - @turn.throws.count
-          max_possible    = darts_remaining * 60
+        @match.with_lock do
+          @turn.reload
+          if params[:total].present?
+            total           = params[:total].to_i
+            darts_remaining = 3 - @turn.throws.count
+            max_possible    = darts_remaining * 60
 
-          @turn.update!(total_score: total)
+            @turn.update!(total_score: total)
 
-          if total > max_possible || total > @match.score_for(@turn.player)
-            @turn.complete_turn!(broadcast: false)
+            if total > max_possible || total > @match.score_for(@turn.player)
+              @turn.complete_turn!(broadcast: false)
+            else
+              @turn.distribute_total!(total)
+            end
           else
-            @turn.distribute_total!(total)
+            segment    = params[:segment].to_i
+            multiplier = params[:multiplier].to_s
+
+            @throw = @turn.throws.create!(segment: segment, multiplier: multiplier)
+            @turn.apply_throw!(@throw)
           end
-        else
-          segment    = params[:segment].to_i
-          multiplier = params[:multiplier].to_s
 
-          @throw = @turn.throws.create!(segment: segment, multiplier: multiplier)
-          @turn.apply_throw!(@throw)
+          @match.reload
         end
-
-        @match.reload
         render json: MatchStatePresenter.new(@match).state_payload, status: :created
       end
 
       def undo
-        @turn  = Turn.find(params[:turn_id])
+        @turn  = Turn.find(params[:match_id] ? find_current_turn : params[:turn_id])
         @match = @turn.leg.match
+        authorize_api_match!(@match)
+
         mode   = params[:mode] || "single"
 
-        @match.undo_last_throw!(mode: mode)
-        @match.reload
+        @match.with_lock do
+          @match.undo_last_throw!(mode: mode)
+          @match.reload
+        end
 
         render json: MatchStatePresenter.new(@match).state_payload
       end
@@ -44,6 +52,7 @@ module Api
 
       def find_current_turn
         match = Match.find(params[:match_id])
+        authorize_api_match!(match)
         match.current_leg&.current_turn&.id or
           raise ActiveRecord::RecordNotFound, "No active turn"
       end

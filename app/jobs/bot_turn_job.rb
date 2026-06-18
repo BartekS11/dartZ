@@ -12,11 +12,18 @@ class BotTurnJob < ApplicationJob
 
     score = match.score_for(player)
     level = player.bot_level || 10
+    leg_player = turn.leg.leg_players.find_by!(player: player)
 
     Rails.logger.info "BOT TURN: score=#{score} level=#{level}"
     sleep 1.5
 
-    throws = BotService.play_turn(score: score, level: level)["throws"] || []
+    throws = BotService.play_turn(
+      score: score,
+      level: level,
+      double_in: match.double_in?,
+      double_out: match.double_out?,
+      has_doubled_in: leg_player.has_doubled_in?
+    )["throws"] || []
 
     throws.each_with_index do |throw_name, i|
       turn.reload
@@ -25,8 +32,13 @@ class BotTurnJob < ApplicationJob
       attrs = BotService.throw_to_attributes(throw_name)
       Rails.logger.info "BOT THROW: #{throw_name} → #{attrs.inspect}"
 
-      throw_record = turn.throws.create!(segment: attrs[:segment], multiplier: attrs[:multiplier])
-      turn.apply_throw!(throw_record, broadcast: true)
+      match.with_lock do
+        turn.reload
+        next if turn.completed?
+
+        throw_record = turn.throws.create!(segment: attrs[:segment], multiplier: attrs[:multiplier])
+        turn.apply_throw!(throw_record, broadcast: true)
+      end
 
       sleep 0.8 unless i == throws.size - 1
     end

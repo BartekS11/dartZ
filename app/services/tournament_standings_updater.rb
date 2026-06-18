@@ -59,7 +59,7 @@ class TournamentStandingsUpdater
     points_by_entry = @tournament.entries.index_by(&:id).transform_values(&:points)
 
     @tournament.entries.find_each do |entry|
-      opp_ids = @tournament.tournament_matches.where("home_entry_id = ? OR away_entry_id = ?", entry.id, entry.id).pluck(:home_entry_id, :away_entry_id).flatten.compact - [entry.id]
+      opp_ids = @tournament.tournament_matches.where("home_entry_id = ? OR away_entry_id = ?", entry.id, entry.id).pluck(:home_entry_id, :away_entry_id).flatten.compact - [ entry.id ]
       buchholz = opp_ids.sum { |id| points_by_entry[id].to_i }
       entry.update!(buchholz: buchholz)
     end

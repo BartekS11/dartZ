@@ -67,6 +67,25 @@
           <%= f.hidden_field :bot_level, value: 10, id: "bot_level" %>
         </div>
 
+        <div class="theme-panel counter-list-card mt-4 p-4">
+          <div class="auth-label">Starting score</div>
+          <div class="flex flex-wrap gap-2">
+            <% Match::X01_STARTING_SCORES.each do |score| %>
+              <button type="button"
+                      class="btn btn-sm theme-btn-outline rounded-pill mono bot-score-btn <%= 'is-selected' if score == 501 %>"
+                      onclick="document.getElementById('starting_score').value=<%= score.to_json %>; document.querySelectorAll('.bot-score-btn').forEach(b => b.classList.remove('is-selected')); this.classList.add('is-selected')">
+                <%= score %>
+              </button>
+            <% end %>
+          </div>
+          <%= f.hidden_field :starting_score, value: 501, id: "starting_score" %>
+        </div>
+
+        <div class="mt-4 grid gap-3 md:grid-cols-2">
+          <label class="panel-choice text-sm"><%= hidden_field_tag :double_in, "0" %><%= check_box_tag :double_in, "1", false %> Double in</label>
+          <label class="panel-choice text-sm"><%= hidden_field_tag :double_out, "0" %><%= check_box_tag :double_out, "1", true %> Double out</label>
+        </div>
+
         <div class="mt-4 grid gap-4 md:grid-cols-2">
           <div class="theme-panel counter-list-card p-4">
             <div class="auth-label">Best of legs</div>

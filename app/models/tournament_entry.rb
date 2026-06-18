@@ -8,8 +8,10 @@ class TournamentEntry < ApplicationRecord
   has_many :away_matches, class_name: "TournamentMatch", foreign_key: :away_entry_id, dependent: :nullify
   has_many :won_matches, class_name: "TournamentMatch", foreign_key: :winner_entry_id, dependent: :nullify
 
-  validates :name, presence: true, uniqueness: { scope: :tournament_id, case_sensitive: false }
+  validates :name, presence: true, length: { maximum: 80 }, uniqueness: { scope: :tournament_id, case_sensitive: false }
   validates :status, inclusion: { in: STATUSES }
+  validates :seed, numericality: { only_integer: true, greater_than: 0 }, allow_nil: true
+  validates :wins, :draws, :losses, :points, :legs_for, :legs_against, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   before_validation :ensure_access_token
 

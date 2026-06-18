@@ -20,11 +20,11 @@ class TournamentProgressor
 
       new_status = if statuses.all? { |status| status == "complete" }
                      "complete"
-                   elsif statuses.any? { |status| status == "live" || status == "complete" }
+      elsif statuses.any? { |status| status == "live" || status == "complete" }
                      "active"
-                   else
+      else
                      "pending"
-                   end
+      end
 
       round.update!(status: new_status) if round.status != new_status
     end

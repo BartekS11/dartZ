@@ -74,13 +74,13 @@ class PlayoffProgressor
 
       lower_entries = if upper_round.number == 1
                         upper_round.tournament_matches.order(:position).map { |match| loser_for(match) }.compact
-                      else
+      else
                         previous_lower = lower_rounds.where(number: upper_round.number - 1).first
                         next unless previous_lower&.status == "complete"
 
                         previous_lower.tournament_matches.order(:position).map(&:winner_entry).compact +
                           upper_round.tournament_matches.order(:position).map { |match| loser_for(match) }.compact
-                      end
+      end
 
       next if lower_entries.empty?
 
@@ -107,7 +107,8 @@ class PlayoffProgressor
       away_entry: lower_champion,
       position: 1,
       best_of_legs: @tournament.best_of_legs,
-      best_of_sets: @tournament.best_of_sets
+      best_of_sets: @tournament.best_of_sets,
+      **@tournament.game_settings
     )
   end
 
@@ -130,7 +131,8 @@ class PlayoffProgressor
         bracket:,
         position: idx + 1,
         best_of_legs: @tournament.best_of_legs,
-        best_of_sets: @tournament.best_of_sets
+        best_of_sets: @tournament.best_of_sets,
+        **@tournament.game_settings
       )
 
       if home.present? && away.nil?

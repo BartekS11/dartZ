@@ -3,6 +3,11 @@
     <div>
       <div class="font-semibold"><%= match.label %></div>
       <div class="mono mt-1 text-xs uppercase tracking-[0.16em]" style="color:var(--theme-subtle)"><%= match.status %><%= ' · bye' if match.bye %></div>
+      <div class="mt-2 flex flex-wrap gap-1.5">
+        <% match.game_mode_labels.each do |label| %>
+          <span class="theme-chip mono"><%= label %></span>
+        <% end %>
+      </div>
       <% if match.status == "complete" %>
         <div class="mt-2 text-sm" style="color:var(--theme-muted)">Sets <%= match.home_sets %>-<%= match.away_sets %> · Legs <%= match.home_legs %>-<%= match.away_legs %></div>
       <% end %>
@@ -12,7 +17,7 @@
       <% if can_admin && match.launchable? %>
         <%= button_to "Play match", launch_tournament_tournament_match_path(tournament, match, admin_token: admin_token), method: :post, class: "btn btn-sm theme-btn-primary rounded-pill mono" %>
       <% elsif match.linked_match.present? %>
-        <%= link_to "Open live match", match_path(match.linked_match), class: "btn btn-sm theme-btn-outline rounded-pill mono" %>
+        <%= link_to "Open live match", match_path(match.linked_match, guest_token: (can_admin ? match.linked_match.guest_token : nil)), class: "btn btn-sm theme-btn-outline rounded-pill mono" %>
       <% end %>
     </div>
   </div>

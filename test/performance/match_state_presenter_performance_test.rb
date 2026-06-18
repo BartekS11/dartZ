@@ -30,7 +30,7 @@ class MatchStatePresenterPerformanceTest < ActiveSupport::TestCase
     active_leg.leg_players.find_by!(player: player_one).update!(score: 441)
     active_leg.leg_players.find_by!(player: player_two).update!(score: 501)
 
-    loaded_match = Match.includes(players: :user, match_sets: [{ legs: [{ turns: :throws }, { leg_players: :player }] }]).find(match.id)
+    loaded_match = Match.includes(players: :user, match_sets: [ { legs: [ { turns: :throws }, { leg_players: :player } ] } ]).find(match.id)
 
     elapsed = measure_time do
       presenter = MatchStatePresenter.new(loaded_match)
