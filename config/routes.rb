@@ -3,6 +3,8 @@ Rails.application.routes.draw do
 
   resource :session
   resource :profile, only: [ :update ]
+  resource :dart_setup, only: %i[edit update]
+  resource :billing, only: :show, controller: "billing"
   resources :passwords, param: :token
   resource :bot_match, only: [ :new, :create ]
 

@@ -48,7 +48,9 @@ class MatchesController < ApplicationController
 
       Current.user&.update!(nickname: p1_name) if Current.user && Current.user.nickname != p1_name
 
-      @match.players.create!(name: p1_name, user: Current.user)
+      player_one = @match.players.build(name: p1_name, user: Current.user)
+      assign_current_dart_setup_snapshot(player_one)
+      player_one.save!
       @match.players.create!(name: p2_name)
 
       @match.ensure_match_identifier!
@@ -98,6 +100,13 @@ class MatchesController < ApplicationController
   end
 
   private
+
+  def assign_current_dart_setup_snapshot(player)
+    setup = Current.user&.premium_access? ? Current.user.dart_setup : nil
+    return unless setup
+
+    player.assign_dart_setup_snapshot!(setup)
+  end
 
   def permitted_starting_score
     score = params[:starting_score].to_i

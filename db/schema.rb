@@ -10,9 +10,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_18_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_19_123000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "dart_setups", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "manufacturer", default: "winmau", null: false
+    t.integer "point_length_mm", null: false
+    t.integer "shaft_length_mm", null: false
+    t.string "shaft_type", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.decimal "weight_g", precision: 4, scale: 1, null: false
+    t.index ["user_id"], name: "index_dart_setups_on_user_id", unique: true
+  end
 
   create_table "leg_players", force: :cascade do |t|
     t.datetime "created_at", null: false
@@ -71,11 +83,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_18_120000) do
     t.boolean "bot", default: false, null: false
     t.integer "bot_level", default: 10
     t.datetime "created_at", null: false
+    t.string "dart_setup_fingerprint"
+    t.bigint "dart_setup_id"
+    t.jsonb "dart_setup_snapshot", default: {}, null: false
     t.bigint "match_id"
     t.string "name"
     t.datetime "updated_at", null: false
     t.bigint "user_id"
+    t.index ["dart_setup_id"], name: "index_players_on_dart_setup_id"
     t.index ["match_id"], name: "index_players_on_match_id"
+    t.index ["user_id", "dart_setup_fingerprint"], name: "index_players_on_user_id_and_dart_setup_fingerprint"
     t.index ["user_id"], name: "index_players_on_user_id"
   end
 
@@ -214,19 +231,28 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_18_120000) do
   end
 
   create_table "users", force: :cascade do |t|
+    t.string "account_tier", default: "free", null: false
     t.datetime "created_at", null: false
     t.string "email_address", null: false
     t.string "nickname"
     t.string "password_digest", null: false
+    t.datetime "premium_access_expires_at"
+    t.string "stripe_customer_id"
+    t.string "stripe_subscription_id"
     t.datetime "updated_at", null: false
+    t.index ["account_tier"], name: "index_users_on_account_tier"
     t.index ["email_address"], name: "index_users_on_email_address", unique: true
+    t.index ["stripe_customer_id"], name: "index_users_on_stripe_customer_id", unique: true
+    t.index ["stripe_subscription_id"], name: "index_users_on_stripe_subscription_id", unique: true
   end
 
+  add_foreign_key "dart_setups", "users"
   add_foreign_key "leg_players", "legs"
   add_foreign_key "leg_players", "players"
   add_foreign_key "legs", "match_sets"
   add_foreign_key "legs", "matches"
   add_foreign_key "match_sets", "matches"
+  add_foreign_key "players", "dart_setups"
   add_foreign_key "players", "matches"
   add_foreign_key "players", "users"
   add_foreign_key "sessions", "users"
