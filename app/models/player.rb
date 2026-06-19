@@ -37,6 +37,7 @@ class Player < ApplicationRecord
     return nil unless dart_setup_tracked?
 
     snapshot = dart_setup_snapshot
-    "#{snapshot['manufacturer_label'] || snapshot['manufacturer'].to_s.humanize} · #{snapshot['weight_g']}g · #{snapshot['shaft_type_label'] || snapshot['shaft_type'].to_s.humanize} · #{snapshot['shaft_length_mm']}mm shaft · #{snapshot['point_length_mm']}mm point"
+    weight = snapshot["weight_g"].to_s.sub(/\.0$/, "")
+    "#{snapshot['manufacturer_label'] || snapshot['manufacturer'].to_s.humanize} · #{weight}g · #{snapshot['shaft_type_label'] || snapshot['shaft_type'].to_s.humanize} · #{snapshot['shaft_length_mm']}mm shaft · #{snapshot['point_length_mm']}mm point"
   end
 end

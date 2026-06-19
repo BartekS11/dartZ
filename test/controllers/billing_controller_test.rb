@@ -20,4 +20,16 @@ class BillingControllerTest < ActionDispatch::IntegrationTest
     assert_select "h2", "Pro"
     assert_select "button", text: /Upgrade with Stripe soon/
   end
+
+  test "shows current account tier" do
+    user = create_user("premium-billing@example.com")
+    user.update!(account_tier: "premium")
+    login_as(user)
+
+    get billing_path
+
+    assert_response :success
+    assert_select ".theme-chip", text: /Current: Premium/
+    assert_select ".theme-chip", text: "Current", count: 1
+  end
 end
