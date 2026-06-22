@@ -1,42 +1,26 @@
 <% presenter ||= MatchStatePresenter.new(match) %>
 <% current_player = presenter.current_player %>
 <div
+  class="match-input-panel"
   data-controller="keyboard"
   data-keyboard-url-value="<%= turn_throws_path(turn) %>"
   data-keyboard-score-value="<%= presenter.score_for(current_player) %>"
   data-keyboard-player-id-value="<%= current_player.id %>">
 
-  <div class="mb-3 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+  <div class="match-input-head">
     <div>
-      <div class="theme-section-label mono mb-2">Turn input</div>
-      <h2 class="bebas mb-1 text-2xl leading-none md:text-3xl"><%= current_player.display_name %></h2>
-      <p class="theme-subtitle mb-0 text-xs md:text-sm">Enter the total for this visit.</p>
-      <% if presenter.needs_double_in?(current_player) %>
-        <span class="theme-chip mono mt-2 inline-flex">Needs double in</span>
-      <% end %>
+      <div class="theme-section-label">Current turn</div>
+      <h2><%= current_player.display_name %></h2>
     </div>
-
-    <button type="button" data-action="click->keyboard#undoLastThrow" class="btn btn-undo rounded-pill px-3 py-2 mono text-[0.65rem] uppercase tracking-[0.14em]">
-      ↩ Undo
-    </button>
+    <button type="button" data-action="click->keyboard#undoLastThrow" class="button is-small btn-undo mono">↩ Undo</button>
   </div>
 
-  <div class="counter-turn-panel p-3 md:p-4">
-    <div class="mb-2 flex flex-wrap items-center justify-between gap-2">
-      <div>
-        <div class="mono text-[0.62rem] uppercase tracking-[0.16em]" style="color:var(--theme-subtle)">Current score</div>
-        <div class="bebas mt-1 text-3xl leading-none md:text-4xl" style="color:var(--theme-primary-soft)"><%= presenter.score_for(current_player) %></div>
-      </div>
-      <div class="theme-chip mono is-live hidden sm:inline-flex">3 darts per visit</div>
-    </div>
-
-    <input type="text"
-           data-keyboard-target="input"
-           data-action="input->keyboard#preview keydown->keyboard#handle"
-           placeholder="e.g. 85"
-           class="throw-input counter-input-field form-control form-control-lg mono text-center text-lg md:text-xl"
-           autocomplete="off">
-  </div>
+  <input type="text"
+         data-keyboard-target="input"
+         data-action="input->keyboard#preview keydown->keyboard#handle"
+         placeholder="Enter score"
+         class="input throw-input match-score-input mono has-text-centered"
+         autocomplete="off">
 </div>
 
 <%= form_with url: turn_throws_path(turn),
@@ -48,4 +32,7 @@
   <%= f.hidden_field :total,      name: "throw[total]",      id: "keyboard-total" %>
 <% end %>
 
-<%= render "matches/stats_panel", match: match, presenter: presenter %>
+<details class="match-stats-toggle">
+  <summary class="mono">Stats</summary>
+  <%= render "matches/stats_panel", match: match, presenter: presenter %>
+</details>

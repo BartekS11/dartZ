@@ -1,31 +1,20 @@
-<div class="page-shell page-shell-compact flex min-h-[70vh] items-center justify-center">
-  <div class="page-stack w-full">
-    <div class="page-header text-center">
-      <div class="theme-section-label mono">Account</div>
-      <h1 class="page-title bebas">Forgot password?</h1>
-      <p class="page-copy text-sm">We’ll send reset instructions to your email.</p>
+<div class="page-shell page-shell-compact" style="min-height:70vh; display:grid; place-items:center">
+  <div class="stack-md" style="width:min(32rem,100%)">
+    <div class="page-header has-text-centered">
+      <div class="theme-section-label">Account</div>
+      <h1 class="page-title">Forgot password?</h1>
+      <p class="page-copy">We’ll send reset instructions to your email.</p>
     </div>
 
-    <div class="auth-card counter-auth-card">
-      <% if alert = flash[:alert] %>
-        <div class="flash-theme alert mono mb-4">⚠ <%= alert %></div>
-      <% end %>
+    <div class="auth-card p-5">
+      <% if alert = flash[:alert] %><div class="flash-theme alert mono mb-4">⚠ <%= alert %></div><% end %>
 
-      <%= form_with url: passwords_path, class: "space-y-5" do |form| %>
-        <div>
-          <label class="auth-label">Email address</label>
-          <%= form.email_field :email_address,
-                required: true,
-                autofocus: true,
-                autocomplete: "username",
-                placeholder: "Enter your email address",
-                value: params[:email_address],
-                class: "auth-input" %>
+      <%= form_with url: passwords_path, class: "stack-md" do |form| %>
+        <div class="field">
+          <label class="label auth-label">Email address</label>
+          <%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "username", placeholder: "Enter your email address", value: params[:email_address], class: "input auth-input" %>
         </div>
-
-        <div class="pt-2">
-          <%= form.submit "Send reset instructions", class: "btn theme-btn-primary w-full rounded-pill py-3 bebas text-xl" %>
-        </div>
+        <%= form.submit "Send reset instructions", class: "button theme-btn-primary is-fullwidth is-medium" %>
       <% end %>
     </div>
   </div>

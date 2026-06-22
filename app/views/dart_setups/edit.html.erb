@@ -1,97 +1,59 @@
-<div class="page-shell w-full px-1">
-  <section class="theme-hero counter-setup-card overflow-hidden p-4 md:p-5">
-    <div class="mb-4 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
-      <div class="page-header">
-        <div class="theme-section-label mono">Premium</div>
-        <h1 class="page-title bebas">Dart setup</h1>
-        <p class="counter-section-copy">Save the equipment you use most often.</p>
+<div class="page-shell stack-md">
+  <section class="theme-hero p-5">
+    <div class="level is-align-items-flex-start mb-4">
+      <div class="level-left">
+        <div>
+          <div class="theme-section-label">Premium</div>
+          <h1 class="page-title">Dart setup</h1>
+          <p class="page-copy">Save the equipment you use most often.</p>
+        </div>
       </div>
-      <span class="theme-chip mono is-live"><%= Current.user.account_tier.humanize %></span>
+      <div class="level-right"><span class="theme-chip is-live"><%= Current.user.account_tier.humanize %></span></div>
     </div>
 
-    <%= form_with model: @dart_setup, url: dart_setup_path, method: :patch, class: "grid gap-4" do |f| %>
+    <%= form_with model: @dart_setup, url: dart_setup_path, method: :patch, class: "stack-md" do |f| %>
       <% if @dart_setup.errors.any? %>
-        <div class="flash-theme alert mono">
-          <%= pluralize(@dart_setup.errors.count, "error") %> prevented this setup from being saved.
-        </div>
+        <div class="flash-theme alert mono"><%= pluralize(@dart_setup.errors.count, "error") %> prevented this setup from being saved.</div>
       <% end %>
 
-      <div class="grid gap-3 md:grid-cols-2">
-        <div>
-          <%= f.label :manufacturer, "Manufacturer", class: "auth-label mb-2 block" %>
-          <%= f.select :manufacturer,
-                DartSetup::MANUFACTURER_LABELS.map { |value, label| [label, value] },
-                {},
-                class: "form-select theme-form-input mono" %>
-        </div>
-
-        <div>
-          <%= f.label :weight_g, "Weight (g)", class: "auth-label mb-2 block" %>
-          <%= f.number_field :weight_g,
-                min: 10,
-                max: 60,
-                step: 0.1,
-                class: "form-control theme-form-input mono" %>
-        </div>
-
-        <div>
-          <%= f.label :shaft_type, "Shaft type", class: "auth-label mb-2 block" %>
-          <%= f.select :shaft_type,
-                DartSetup::SHAFT_TYPES.map { |type| [type.humanize, type] },
-                {},
-                class: "form-select theme-form-input mono" %>
-        </div>
-
-        <div>
-          <%= f.label :shaft_length_mm, "Shaft length (mm)", class: "auth-label mb-2 block" %>
-          <%= f.number_field :shaft_length_mm,
-                min: 20,
-                max: 70,
-                step: 1,
-                class: "form-control theme-form-input mono" %>
-        </div>
-
-        <div>
-          <%= f.label :point_length_mm, "Point length (mm)", class: "auth-label mb-2 block" %>
-          <%= f.number_field :point_length_mm,
-                min: 20,
-                max: 60,
-                step: 1,
-                class: "form-control theme-form-input mono" %>
-        </div>
+      <div class="columns is-multiline is-variable is-3">
+        <div class="column is-6"><div class="field"><%= f.label :manufacturer, "Manufacturer", class: "label auth-label" %><div class="select is-fullwidth"><%= f.select :manufacturer, DartSetup::MANUFACTURER_LABELS.map { |value, label| [label, value] }, {}, class: "theme-form-input mono" %></div></div></div>
+        <div class="column is-6"><div class="field"><%= f.label :weight_g, "Weight (g)", class: "label auth-label" %><%= f.number_field :weight_g, min: 10, max: 60, step: 0.1, class: "input theme-form-input mono" %></div></div>
+        <div class="column is-6"><div class="field"><%= f.label :shaft_type, "Shaft type", class: "label auth-label" %><div class="select is-fullwidth"><%= f.select :shaft_type, DartSetup::SHAFT_TYPES.map { |type| [type.humanize, type] }, {}, class: "theme-form-input mono" %></div></div></div>
+        <div class="column is-6"><div class="field"><%= f.label :shaft_length_mm, "Shaft length (mm)", class: "label auth-label" %><%= f.number_field :shaft_length_mm, min: 20, max: 70, step: 1, class: "input theme-form-input mono" %></div></div>
+        <div class="column is-6"><div class="field"><%= f.label :point_length_mm, "Point length (mm)", class: "label auth-label" %><%= f.number_field :point_length_mm, min: 20, max: 60, step: 1, class: "input theme-form-input mono" %></div></div>
       </div>
 
-      <div class="flex flex-col gap-2 border-t pt-4 sm:flex-row sm:items-center sm:justify-between" style="border-color:var(--theme-line)">
-        <p class="m-0 text-sm" style="color:var(--theme-muted)">Stripe can later update the account tier and premium expiry fields.</p>
-        <%= f.submit "Save setup", class: "btn theme-btn-primary rounded-pill px-4 py-2.5 bebas text-lg" %>
+      <div class="level pt-4" style="border-top:1px solid var(--theme-line)">
+        <div class="level-left"><p class="page-copy">Stripe can later update account tier and premium expiry fields.</p></div>
+        <div class="level-right"><%= f.submit "Save setup", class: "button theme-btn-primary is-medium" %></div>
       </div>
     <% end %>
   </section>
 
-  <section class="theme-hero counter-setup-card mt-4 overflow-hidden p-4 md:p-5">
-    <div class="mb-4 page-header">
-      <div class="theme-section-label mono">Premium stats</div>
-      <h2 class="section-title bebas">Stats by dart setup</h2>
-      <p class="counter-section-copy">When you start a match, your current dart setup is snapshotted so future edits do not mix stats from different sets of darts.</p>
+  <section class="theme-card p-5">
+    <div class="mb-4">
+      <div class="theme-section-label">Premium stats</div>
+      <h2 class="section-title">Stats by dart setup</h2>
+      <p class="page-copy">Your current dart setup is snapshotted when matches start, so stats stay accurate after edits.</p>
     </div>
 
     <% if @setup_stats.any? %>
-      <div class="grid gap-3 md:grid-cols-2">
+      <div class="columns is-multiline is-variable is-3">
         <% @setup_stats.each do |stats| %>
-          <article class="theme-match-card p-4">
-            <div class="mb-3">
-              <div class="auth-label mb-1">Setup</div>
-              <h3 class="bebas m-0 text-2xl"><%= stats[:setup] %></h3>
-            </div>
-            <div class="grid grid-cols-2 gap-2 mono text-sm">
-              <div><span style="color:var(--theme-subtle)">Matches</span><br><strong><%= stats[:matches] %></strong></div>
-              <div><span style="color:var(--theme-subtle)">Average</span><br><strong><%= stats[:average_per_turn] %></strong></div>
-              <div><span style="color:var(--theme-subtle)">Highest turn</span><br><strong><%= stats[:highest_turn] %></strong></div>
-              <div><span style="color:var(--theme-subtle)">Darts thrown</span><br><strong><%= stats[:darts_thrown] %></strong></div>
-              <div><span style="color:var(--theme-subtle)">Double hits</span><br><strong><%= stats[:double_hits] %> (<%= stats[:double_hit_share] %>%)</strong></div>
-              <div><span style="color:var(--theme-subtle)">Checkout</span><br><strong><%= stats[:checkout_rate] %>%</strong></div>
-            </div>
-          </article>
+          <div class="column is-6-desktop">
+            <article class="theme-match-card p-4">
+              <div class="mb-3"><div class="auth-label">Setup</div><h3 class="section-title"><%= stats[:setup] %></h3></div>
+              <div class="compact-stats-list mono text-sm">
+                <div class="compact-stat"><span>Matches</span><strong><%= stats[:matches] %></strong></div>
+                <div class="compact-stat"><span>Average</span><strong><%= stats[:average_per_turn] %></strong></div>
+                <div class="compact-stat"><span>Highest turn</span><strong><%= stats[:highest_turn] %></strong></div>
+                <div class="compact-stat"><span>Darts thrown</span><strong><%= stats[:darts_thrown] %></strong></div>
+                <div class="compact-stat"><span>Double hits</span><strong><%= stats[:double_hits] %> (<%= stats[:double_hit_share] %>%)</strong></div>
+                <div class="compact-stat"><span>Checkout</span><strong><%= stats[:checkout_rate] %>%</strong></div>
+              </div>
+            </article>
+          </div>
         <% end %>
       </div>
     <% else %>

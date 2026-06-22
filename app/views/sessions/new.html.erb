@@ -1,56 +1,42 @@
-<div class="page-shell flex min-h-[72vh] items-center">
-  <div class="grid w-full gap-6 lg:grid-cols-[minmax(0,1fr)_26rem] lg:items-center">
-    <section class="theme-hero counter-setup-card p-6 md:p-8">
-      <div class="page-header">
-        <div class="theme-section-label mono">Welcome back</div>
-        <h1 class="page-title bebas">Sign in and keep your matches close.</h1>
-        <p class="page-copy max-w-xl">Same palette, cleaner structure, and full light/dark support.</p>
+<div class="page-shell page-shell-compact">
+  <div class="columns is-variable is-6 is-vcentered" style="min-height:72vh">
+    <section class="column">
+      <div class="theme-hero p-6">
+        <div class="theme-section-label">Welcome back</div>
+        <h1 class="page-title">Sign in and keep your matches close.</h1>
+        <p class="page-copy mt-3">Minimal match history, clean tournament tools, and fast scoring on every screen.</p>
       </div>
     </section>
 
-    <section class="auth-card counter-auth-card">
-      <% if alert = flash[:alert] %>
-        <div class="flash-theme alert mono mb-4">⚠ <%= alert %></div>
-      <% end %>
+    <section class="column is-5-desktop">
+      <div class="auth-card p-5">
+        <% if alert = flash[:alert] %><div class="flash-theme alert mono mb-4">⚠ <%= alert %></div><% end %>
+        <% if notice = flash[:notice] %><div class="flash-theme notice mono mb-4">⚡ <%= notice %></div><% end %>
 
-      <% if notice = flash[:notice] %>
-        <div class="flash-theme notice mono mb-4">⚡ <%= notice %></div>
-      <% end %>
+        <div class="mb-5">
+          <div class="theme-section-label">Account</div>
+          <h2 class="section-title">Sign in</h2>
+        </div>
 
-      <div class="counter-section-header mb-5">
-        <div class="theme-section-label mono">Account</div>
-        <h2 class="section-title bebas">Sign in</h2>
+        <%= form_with url: session_url, class: "stack-md" do |form| %>
+          <div class="field">
+            <label class="label auth-label">Email address</label>
+            <%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "username", placeholder: "Enter your email address", value: params[:email_address], class: "input auth-input" %>
+          </div>
+
+          <div class="field">
+            <label class="label auth-label">Password</label>
+            <%= form.password_field :password, required: true, autocomplete: "current-password", placeholder: "Enter your password", maxlength: 72, class: "input auth-input" %>
+          </div>
+
+          <%= form.submit "Sign in", class: "button theme-btn-primary is-fullwidth is-medium" %>
+
+          <div class="is-flex is-justify-content-space-between pt-3" style="border-top:1px solid var(--theme-line)">
+            <%= link_to "Forgot password?", new_password_path, class: "footer-link" %>
+            <%= link_to "Play as guest", matches_path, class: "footer-link" %>
+          </div>
+        <% end %>
       </div>
-
-      <%= form_with url: session_url, class: "space-y-5" do |form| %>
-        <div>
-          <label class="auth-label">Email address</label>
-          <%= form.email_field :email_address,
-                required: true,
-                autofocus: true,
-                autocomplete: "username",
-                placeholder: "Enter your email address",
-                value: params[:email_address],
-                class: "auth-input" %>
-        </div>
-
-        <div>
-          <label class="auth-label">Password</label>
-          <%= form.password_field :password,
-                required: true,
-                autocomplete: "current-password",
-                placeholder: "Enter your password",
-                maxlength: 72,
-                class: "auth-input" %>
-        </div>
-
-        <%= form.submit "Sign in", class: "btn theme-btn-primary w-full rounded-pill py-3 bebas text-xl" %>
-
-        <div class="flex items-center justify-between gap-3 border-t pt-3" style="border-color:var(--theme-line)">
-          <%= link_to "Forgot password?", new_password_path, class: "auth-link" %>
-          <%= link_to "Play as guest", matches_path, class: "auth-link" %>
-        </div>
-      <% end %>
     </section>
   </div>
 </div>

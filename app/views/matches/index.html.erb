@@ -1,27 +1,28 @@
-<div class="page-shell w-full px-1"
+<div class="page-shell stack-lg"
      data-controller="lobby"
      data-lobby-signed-in-value="<%= Current.user.present? %>"
      data-lobby-current-user-name-value="<%= Current.user&.display_name.to_s %>">
-  <div class="space-y-4">
-    <section class="theme-hero counter-setup-card overflow-hidden p-4 md:p-5">
-      <div class="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <div class="page-header">
-          <div class="theme-section-label mono">New match</div>
-          <h2 class="page-title bebas">X01 scoreboard</h2>
-          <p class="counter-section-copy">Fast setup, local history, and a cleaner board-first flow.</p>
-        </div>
-
-        <div class="flex flex-wrap gap-2">
-          <button type="button" data-action="click->lobby#clearPlayers" class="btn btn-sm theme-btn-outline rounded-pill mono">Clear players</button>
-          <button type="button" data-action="click->lobby#clearMatches" class="btn btn-sm theme-btn-outline rounded-pill mono">Clear history</button>
+  <section class="theme-hero p-5">
+    <div class="level is-align-items-flex-start mb-4">
+      <div class="level-left">
+        <div>
+          <div class="theme-section-label">New match</div>
+          <h1 class="page-title">X01 scoreboard</h1>
+          <p class="page-copy">A minimal setup flow for fast board-side scoring.</p>
         </div>
       </div>
+      <div class="level-right buttons are-small">
+        <button type="button" data-action="click->lobby#clearPlayers" class="button theme-btn-outline mono">Clear players</button>
+        <button type="button" data-action="click->lobby#clearMatches" class="button theme-btn-outline mono">Clear history</button>
+      </div>
+    </div>
 
-      <%= form_with url: matches_path, method: :post, data: { turbo: false, action: "submit->lobby#savePlayers" }, class: "grid gap-3" do |f| %>
-        <div class="grid gap-2 md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] md:items-center">
-          <div class="player-card-shell min-w-0">
-            <div class="mb-2 flex items-center justify-between gap-3">
-              <label class="auth-label mb-0">Player 1</label>
+    <%= form_with url: matches_path, method: :post, data: { turbo: false, action: "submit->lobby#savePlayers" }, class: "stack-md" do |f| %>
+      <div class="columns is-variable is-3 is-vcentered">
+        <div class="column">
+          <div class="player-card-shell">
+            <div class="is-flex is-justify-content-space-between is-align-items-center mb-2">
+              <label class="auth-label">Player 1</label>
               <button type="button" data-action="click->lobby#toggleDropdown1" class="saved-btn mono">Saved</button>
             </div>
             <%= f.text_field :player1_name,
@@ -29,17 +30,19 @@
                   maxlength: 20,
                   autocomplete: "off",
                   data: { lobby_target: "player1", action: "input->lobby#save" },
-                  class: "form-control theme-form-input mono text-center" %>
+                  class: "input theme-form-input mono has-text-centered" %>
             <div data-lobby-target="dropdown1" class="saved-dropdown"></div>
           </div>
+        </div>
 
-          <div class="flex justify-center">
-            <button type="button" data-action="click->lobby#swapPlayers" class="btn swap-badge inline-flex items-center justify-center">⇄</button>
-          </div>
+        <div class="column is-narrow has-text-centered">
+          <button type="button" data-action="click->lobby#swapPlayers" class="button theme-btn-outline swap-badge">⇄</button>
+        </div>
 
-          <div class="player-card-shell min-w-0">
-            <div class="mb-2 flex items-center justify-between gap-3">
-              <label class="auth-label mb-0">Player 2</label>
+        <div class="column">
+          <div class="player-card-shell">
+            <div class="is-flex is-justify-content-space-between is-align-items-center mb-2">
+              <label class="auth-label">Player 2</label>
               <button type="button" data-action="click->lobby#toggleDropdown2" class="saved-btn mono">Saved</button>
             </div>
             <%= f.text_field :player2_name,
@@ -47,136 +50,144 @@
                   maxlength: 20,
                   autocomplete: "off",
                   data: { lobby_target: "player2", action: "input->lobby#save" },
-                  class: "form-control theme-form-input mono text-center" %>
+                  class: "input theme-form-input mono has-text-centered" %>
             <div data-lobby-target="dropdown2" class="saved-dropdown"></div>
           </div>
         </div>
+      </div>
 
-        <div class="grid gap-3 border-t pt-3 md:grid-cols-3" style="border-color:var(--theme-line)">
-          <div>
-            <label class="auth-label mb-2 block">Starting score</label>
-            <div class="mb-2 flex flex-wrap gap-2">
+      <div class="columns is-variable is-3">
+        <div class="column">
+          <div class="theme-panel p-4">
+            <label class="auth-label">Starting score</label>
+            <div class="buttons are-small mt-2">
               <% Match::X01_STARTING_SCORES.each do |score| %>
                 <button type="button"
-                        class="btn btn-sm theme-btn-outline rounded-pill mono score-preset <%= 'is-selected' if score == 501 %>"
-                        onclick="document.getElementById('starting_score').value = <%= score %>; this.closest('div').querySelectorAll('.score-preset').forEach(b => b.classList.remove('is-selected')); this.classList.add('is-selected')">
+                        class="button theme-btn-outline mono score-preset <%= 'is-selected' if score == 501 %>"
+                        onclick="document.getElementById('starting_score').value = <%= score %>; this.closest('.buttons').querySelectorAll('.score-preset').forEach(b => b.classList.remove('is-selected')); this.classList.add('is-selected')">
                   <%= score %>
                 </button>
               <% end %>
             </div>
             <%= hidden_field_tag :starting_score, 501, id: "starting_score" %>
           </div>
-          <div>
-            <label class="auth-label mb-2 block">Best of legs</label>
-            <div class="mb-2 flex flex-wrap gap-2">
+        </div>
+
+        <div class="column">
+          <div class="theme-panel p-4">
+            <label class="auth-label">Best of legs</label>
+            <div class="buttons are-small mt-2">
               <% [[1, "1"], [3, "Bo3"], [5, "Bo5"]].each do |val, label| %>
                 <button type="button"
-                        class="btn btn-sm theme-btn-outline rounded-pill mono legs-preset <%= 'is-selected' if val == 1 %>"
-                        onclick="document.getElementById('best_of_legs').value = <%= val %>; this.closest('div').querySelectorAll('.legs-preset').forEach(b => b.classList.remove('is-selected')); this.classList.add('is-selected')">
+                        class="button theme-btn-outline mono legs-preset <%= 'is-selected' if val == 1 %>"
+                        onclick="document.getElementById('best_of_legs').value = <%= val %>; this.closest('.buttons').querySelectorAll('.legs-preset').forEach(b => b.classList.remove('is-selected')); this.classList.add('is-selected')">
                   <%= label %>
                 </button>
               <% end %>
             </div>
-            <%= number_field_tag :best_of_legs, 1, min: 1, max: 99, id: "best_of_legs", class: "form-control theme-form-input mono" %>
+            <%= number_field_tag :best_of_legs, 1, min: 1, max: 99, id: "best_of_legs", class: "input theme-form-input mono" %>
           </div>
+        </div>
 
-          <div>
-            <label class="auth-label mb-2 block">Best of sets</label>
-            <div class="mb-2 flex flex-wrap gap-2">
+        <div class="column">
+          <div class="theme-panel p-4">
+            <label class="auth-label">Best of sets</label>
+            <div class="buttons are-small mt-2">
               <% [[1, "1"], [3, "Bo3"], [5, "Bo5"]].each do |val, label| %>
                 <button type="button"
-                        class="btn btn-sm theme-btn-outline rounded-pill mono sets-preset <%= 'is-selected' if val == 1 %>"
-                        onclick="document.getElementById('best_of_sets').value = <%= val %>; this.closest('div').querySelectorAll('.sets-preset').forEach(b => b.classList.remove('is-selected')); this.classList.add('is-selected')">
+                        class="button theme-btn-outline mono sets-preset <%= 'is-selected' if val == 1 %>"
+                        onclick="document.getElementById('best_of_sets').value = <%= val %>; this.closest('.buttons').querySelectorAll('.sets-preset').forEach(b => b.classList.remove('is-selected')); this.classList.add('is-selected')">
                   <%= label %>
                 </button>
               <% end %>
             </div>
-            <%= number_field_tag :best_of_sets, 1, min: 1, max: 99, id: "best_of_sets", class: "form-control theme-form-input mono" %>
+            <%= number_field_tag :best_of_sets, 1, min: 1, max: 99, id: "best_of_sets", class: "input theme-form-input mono" %>
           </div>
         </div>
+      </div>
 
-        <div class="grid gap-3 border-t pt-3 md:grid-cols-2" style="border-color:var(--theme-line)">
-          <label class="panel-choice text-sm"><%= hidden_field_tag :double_in, "0" %><%= check_box_tag :double_in, "1", false %> Double in</label>
-          <label class="panel-choice text-sm"><%= hidden_field_tag :double_out, "0" %><%= check_box_tag :double_out, "1", true %> Double out</label>
-        </div>
+      <div class="columns is-variable is-3">
+        <div class="column"><label class="panel-choice"><%= hidden_field_tag :double_in, "0" %><%= check_box_tag :double_in, "1", false %> Double in</label></div>
+        <div class="column"><label class="panel-choice"><%= hidden_field_tag :double_out, "0" %><%= check_box_tag :double_out, "1", true %> Double out</label></div>
+      </div>
 
-        <div class="flex flex-col gap-2 border-t pt-3 sm:flex-row sm:items-center sm:justify-between" style="border-color:var(--theme-line)">
-          <div class="min-w-0 text-sm" style="color:var(--theme-muted)">
-            <div id="greeting-wrapper" class="hidden">
+      <div class="level pt-3" style="border-top:1px solid var(--theme-line)">
+        <div class="level-left">
+          <div class="help-theme">
+            <div id="greeting-wrapper" class="is-hidden">
               <span class="auth-label">Last players</span>
               <div data-lobby-target="greeting" class="mt-1"></div>
             </div>
             <span>Choose X01 score and in/out rules.</span>
           </div>
-          <%= f.submit "Start match", class: "btn theme-btn-primary rounded-pill px-4 py-2.5 bebas text-lg" %>
         </div>
-      <% end %>
-    </section>
-
-    <section class="space-y-2">
-      <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <div class="counter-section-header">
-          <div class="theme-section-label mono">Recent matches</div>
-          <h2 class="section-title bebas">Continue</h2>
-        </div>
-
-        <div class="flex flex-wrap gap-2">
-          <%= link_to "Play vs bot", new_bot_match_path, class: "btn btn-sm theme-btn-outline rounded-pill mono" %>
-          <%= link_to "Tournaments", tournaments_path, class: "btn btn-sm theme-btn-outline rounded-pill mono" %>
+        <div class="level-right">
+          <%= f.submit "Start match", class: "button theme-btn-primary is-medium" %>
         </div>
       </div>
+    <% end %>
+  </section>
 
-      <% if Current.user && @matches.any? %>
-        <div class="counter-list-grid md:grid-cols-2">
-          <% @matches.each_with_index do |match, i| %>
-            <% presenter = MatchStatePresenter.new(match) %>
-            <% winner = presenter.winner %>
-            <%= link_to match_path(match), class: "theme-match-card counter-list-card min-w-0 overflow-hidden p-3 md:p-4" do %>
-              <div class="flex items-start justify-between gap-3">
-                <div class="min-w-0 flex-1">
-                  <div class="auth-label mb-1">#<%= i + 1 %> · <%= match.created_at.strftime("%d %b · %H:%M") %></div>
-                  <div class="match-identifier truncate bebas"><%= match.ui_identifier %></div>
+  <section class="stack-md">
+    <div class="level">
+      <div class="level-left">
+        <div>
+          <div class="theme-section-label">Recent matches</div>
+          <h2 class="section-title">Continue</h2>
+        </div>
+      </div>
+      <div class="level-right buttons are-small">
+        <%= link_to "Play vs bot", new_bot_match_path, class: "button theme-btn-outline mono" %>
+        <%= link_to "Tournaments", tournaments_path, class: "button theme-btn-outline mono" %>
+      </div>
+    </div>
+
+    <% if Current.user && @matches.any? %>
+      <div class="columns is-multiline">
+        <% @matches.each_with_index do |match, i| %>
+          <% presenter = MatchStatePresenter.new(match) %>
+          <% winner = presenter.winner %>
+          <div class="column is-12-tablet is-6-desktop">
+            <%= link_to match_path(match), class: "theme-match-card p-4" do %>
+              <div class="is-flex is-justify-content-space-between is-align-items-flex-start mb-3">
+                <div class="min-w-0">
+                  <div class="auth-label">#<%= i + 1 %> · <%= match.created_at.strftime("%d %b · %H:%M") %></div>
+                  <div class="match-identifier"><%= match.ui_identifier %></div>
                 </div>
-                <span class="theme-chip mono shrink-0 <%= match.finished? ? 'is-finished' : 'is-live' %>"><%= match.finished? ? 'Finished' : 'Live' %></span>
+                <span class="theme-chip <%= match.finished? ? 'is-finished' : 'is-live' %>"><%= match.finished? ? 'Finished' : 'Live' %></span>
               </div>
 
-              <div class="mt-2 flex flex-wrap gap-2">
-                <% match.game_mode_labels.each do |label| %>
-                  <span class="theme-chip mono"><%= label %></span>
-                <% end %>
-                <% if match.best_of_sets > 1 %>
-                  <span class="theme-chip mono">Bo<%= match.best_of_sets %> sets</span>
-                <% end %>
-                <span class="theme-chip mono">Bo<%= match.best_of_legs %> legs</span>
+              <div class="is-flex is-flex-wrap-wrap" style="gap:.45rem">
+                <% match.game_mode_labels.each do |label| %><span class="theme-chip"><%= label %></span><% end %>
+                <% if match.best_of_sets > 1 %><span class="theme-chip">Bo<%= match.best_of_sets %> sets</span><% end %>
+                <span class="theme-chip">Bo<%= match.best_of_legs %> legs</span>
               </div>
 
-              <div class="mt-3 space-y-2">
+              <div class="stack-sm mt-4">
                 <% presenter.players.each do |player| %>
                   <% is_winner = winner == player %>
                   <% score = presenter.score_for(player) %>
                   <% avg = presenter.three_dart_average(player) %>
                   <% pct = [((match.starting_score - score) * 100 / match.starting_score), 0].max %>
-                  <div class="min-w-0">
-                    <div class="player-line mb-1.5 min-w-0">
-                      <span class="name mono <%= 'is-winner' if is_winner %>"><%= player.display_name %></span>
-                      <span class="value bebas shrink-0 <%= 'is-winner' if is_winner %>"><%= score %></span>
-                      <% if avg > 0 %>
-                        <span class="avg mono shrink-0">avg <%= avg %></span>
-                      <% end %>
+                  <div>
+                    <div class="player-line mb-2">
+                      <span class="name <%= 'is-winner' if is_winner %>"><%= player.display_name %></span>
+                      <span class="value <%= 'is-winner' if is_winner %>"><%= score %></span>
+                      <% if avg > 0 %><span class="avg">avg <%= avg %></span><% end %>
                     </div>
                     <div class="progress-thin"><span style="width:<%= pct %>%; background:<%= is_winner ? 'var(--theme-success)' : 'var(--theme-border-strong)' %>"></span></div>
                   </div>
                 <% end %>
               </div>
             <% end %>
-          <% end %>
-        </div>
-      <% else %>
-        <div class="theme-card counter-empty-card p-3.5">
-          <div class="auth-label mb-1">Local sessions</div>
-          <div data-lobby-target="matchList" class="grid gap-2.5"></div>
-        </div>
-      <% end %>
-    </section>
-  </div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="theme-blank-slate">
+        <div class="auth-label mb-1">Local sessions</div>
+        <div data-lobby-target="matchList" class="stack-sm"></div>
+      </div>
+    <% end %>
+  </section>
 </div>

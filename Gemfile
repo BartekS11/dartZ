@@ -14,8 +14,7 @@ gem "importmap-rails"
 gem "turbo-rails"
 # Hotwire's modest JavaScript framework [https://stimulus.hotwired.dev]
 gem "stimulus-rails"
-# Use Tailwind CSS [https://github.com/rails/tailwindcss-rails]
-gem "tailwindcss-rails"
+# Bulma is loaded from CDN in the application layout.
 
 # Support for JWT token based auth for client apps (mobile)
 gem "jwt"

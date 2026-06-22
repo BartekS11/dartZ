@@ -1,118 +1,27 @@
 <% presenter ||= MatchStatePresenter.new(match) %>
-<% state            = presenter.stats_for(player) %>
-<% is_active        = player == presenter.current_player %>
-<% avg              = presenter.three_dart_average(player) %>
-<% score            = presenter.score_for(player) %>
-<% pct              = [((match.starting_score - score) * 100 / match.starting_score), 0].max %>
-<% sets_won         = presenter.sets_won_by(player) %>
-<% legs_won         = presenter.legs_won_by(player) %>
-<% multi_set        = match.best_of_sets > 1 %>
-<% multi_leg        = match.best_of_legs > 1 %>
-<% darts_thrown     = is_active ? presenter.current_turn&.throws&.size.to_i : 0 %>
-<% suggestion       = match.double_out? ? CheckoutCalculator.suggest(score, darts_remaining: 3 - darts_thrown) : [] %>
-<% last_turn_total  = state[:last_completed_turn_in_current_leg]&.total_score %>
-<% last_turn_throws = last_turn_total ? [] : presenter.last_turn_throws_for(player) %>
-<% prev_throws      = last_turn_total ? [] : state[:previous_turn_throws] %>
+<% is_active    = player == presenter.current_player %>
+<% score        = presenter.score_for(player) %>
+<% sets_won     = presenter.sets_won_by(player) %>
+<% legs_won     = presenter.legs_won_by(player) %>
+<% multi_set    = match.best_of_sets > 1 %>
+<% multi_leg    = match.best_of_legs > 1 %>
+<% darts_thrown = is_active ? presenter.current_turn&.throws&.size.to_i : 0 %>
+<% suggestion   = match.double_out? ? CheckoutCalculator.suggest(score, darts_remaining: 3 - darts_thrown) : [] %>
 
-<div id="score-card-<%= player.id %>" class="theme-score-card counter-score-card mobile-score-card h-full p-4 md:p-5 <%= 'is-active' if is_active %>">
-  <div class="mb-3 flex items-start justify-between gap-3">
-    <div class="min-w-0 flex-1">
-      <div class="mb-1 flex flex-wrap items-center gap-1.5">
-        <span class="score-player-name mono text-[0.65rem] uppercase tracking-[0.16em] md:text-xs" style="color:var(--theme-subtle)"><%= player.display_name %></span>
-        <% if player.guest? %>
-          <span class="theme-chip mono hidden md:inline-flex">Guest</span>
-        <% end %>
-        <% if is_active %>
-          <span class="throwing-indicator mono">Throwing</span>
-        <% end %>
-        <% if presenter.needs_double_in?(player) %>
-          <span class="theme-chip mono">Needs double in</span>
-        <% end %>
-      </div>
-
-      <div id="player-<%= player.id %>-score" class="score-display bebas <%= 'is-active' if is_active %>"><%= score %></div>
-
-      <% if suggestion.present? %>
-        <div class="mt-2 hidden flex-wrap gap-1.5 md:flex">
-          <% suggestion.each do |throw| %>
-            <% css = if throw.start_with?('T')
-                       'triple'
-                     elsif throw.start_with?('D') || throw == 'Bull'
-                       'double'
-                     else
-                       'single'
-                     end %>
-            <span class="checkout-pill <%= css %> mono"><%= throw %></span>
-          <% end %>
-        </div>
-      <% end %>
-    </div>
-
-    <div class="grid shrink-0 gap-2 text-right">
-      <div>
-        <div class="score-mini-label mono">Avg</div>
-        <div class="score-mini-value bebas <%= avg >= 60 ? 'text-success' : avg >= 40 ? 'text-warning' : 'text-muted-theme' %>"><%= avg %></div>
-      </div>
-
-      <div>
-        <div class="score-mini-label mono">Progress</div>
-        <div class="score-mini-value bebas"><%= pct %>%</div>
-      </div>
-    </div>
+<div id="score-card-<%= player.id %>" class="match-score-card <%= 'is-active' if is_active %>">
+  <div class="match-score-name-row">
+    <span class="match-score-name"><%= player.display_name %></span>
+    <% if is_active %><span class="throwing-indicator">Throwing</span><% end %>
+    <% if presenter.needs_double_in?(player) %><span class="theme-chip">Double in</span><% end %>
   </div>
 
-  <div class="progress-thin mb-3"><span id="player-<%= player.id %>-progress" style="width:<%= pct %>%; background:<%= is_active ? 'var(--theme-primary)' : 'var(--theme-border-strong)' %>"></span></div>
+  <div id="player-<%= player.id %>-score" class="match-score-number <%= 'is-active' if is_active %>"><%= score %></div>
 
-  <div class="counter-score-grid">
-    <% if multi_set %>
-      <div class="counter-score-metric">
-        <div class="score-mini-label mono">Sets</div>
-        <div class="mt-1 text-3xl leading-none text-primary-theme bebas"><%= sets_won %></div>
-      </div>
+  <div class="match-score-meta">
+    <% if multi_set %><span>Sets <strong><%= sets_won %></strong></span><% end %>
+    <% if multi_leg %><span>Legs <strong><%= legs_won %></strong></span><% end %>
+    <% if suggestion.present? %>
+      <span class="match-checkout-line"><%= suggestion.first(3).join(" · ") %></span>
     <% end %>
-
-    <% if multi_leg %>
-      <div class="counter-score-metric">
-        <div class="score-mini-label mono">Legs</div>
-        <div class="mt-1 text-3xl leading-none text-primary-theme bebas"><%= legs_won %></div>
-      </div>
-    <% end %>
-
-    <div class="counter-score-metric <%= (multi_set || multi_leg) ? 'sm:col-span-1' : 'sm:col-span-3' %>">
-      <div class="score-mini-label mono">Last visit</div>
-      <% if last_turn_total %>
-        <div class="mt-1 text-3xl leading-none bebas"><%= last_turn_total %></div>
-      <% elsif last_turn_throws.any? %>
-        <div class="mt-2 flex flex-wrap gap-1">
-          <% last_turn_throws.each do |t| %>
-            <% css = t.multiplier == 'triple' ? 'triple' : t.multiplier == 'double' ? 'double' : t.multiplier == 'miss' ? 'miss' : 'single' %>
-            <span class="throw-pill <%= css %> mono"><%= t.multiplier == 'miss' ? '✕' : t.multiplier == 'single' ? '' : t.multiplier[0].upcase %><%= t.multiplier == 'miss' ? '' : t.segment %></span>
-          <% end %>
-        </div>
-        <% if prev_throws.any? %>
-          <div class="mt-2 flex flex-wrap gap-1 opacity-50">
-            <% prev_throws.each do |t| %>
-              <% css = t.multiplier == 'triple' ? 'triple' : t.multiplier == 'double' ? 'double' : 'single' %>
-              <span class="throw-pill <%= css %> mono"><%= t.multiplier == 'single' ? '' : t.multiplier[0].upcase %><%= t.segment %></span>
-            <% end %>
-          </div>
-        <% end %>
-      <% else %>
-        <div class="mt-1 text-xs" style="color:var(--theme-subtle)">No turn yet</div>
-      <% end %>
-    </div>
   </div>
-
-  <% if multi_set || multi_leg %>
-    <% count = multi_set ? match.best_of_sets : match.best_of_legs %>
-    <% won   = multi_set ? sets_won : legs_won %>
-    <div class="mt-3 flex items-center justify-between gap-3">
-      <div class="score-mini-label mono"><%= multi_set ? 'Set race' : 'Leg race' %></div>
-      <div class="pip-track">
-        <% count.times do |i| %>
-          <span class="<%= 'is-on' if i < won %>"></span>
-        <% end %>
-      </div>
-    </div>
-  <% end %>
 </div>

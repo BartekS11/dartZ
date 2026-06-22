@@ -53,37 +53,33 @@ export default class extends Controller {
     const players = this.getSavedPlayers()
 
     if (players.length === 0) {
-      el.innerHTML = `
-        <div style="font-family:'DM Mono',monospace;font-size:0.65rem;color:#333;
-                    padding:10px 12px;text-align:center;letter-spacing:0.1em">
-          NO SAVED PLAYERS
-        </div>`
+      el.innerHTML = `<div class="saved-empty mono">No saved players</div>`
       return
     }
 
-    el.innerHTML = players.map(name => `
-      <div class="dropdown-item"
-           style="display:flex;align-items:center;justify-content:space-between;
-                  padding:8px 12px;cursor:pointer;transition:background 0.1s ease;"
-           onmouseover="this.style.background='#1a1a1a'"
-           onmouseout="this.style.background='transparent'"
-           data-action="click->lobby#selectPlayer"
-           data-slot="${slot}"
-           data-name="${name}">
-        <span style="font-family:'DM Mono',monospace;font-size:0.75rem;color:#ccc;
-                     letter-spacing:0.05em">${name}</span>
-        <button type="button"
-                style="font-family:'DM Mono',monospace;font-size:0.6rem;color:#444;
-                       background:none;border:none;cursor:pointer;padding:2px 4px;
-                       transition:color 0.1s ease"
-                onmouseover="this.style.color='#dc2626';event.stopPropagation()"
-                onmouseout="this.style.color='#444'"
-                data-action="click->lobby#removePlayer"
-                data-name="${name}">
-          ✕
-        </button>
-      </div>
-    `).join("")
+    el.innerHTML = players.map(name => {
+      const safeName = this.escapeHTML(name)
+      const dataName = this.escapeAttribute(name)
+
+      return `
+        <div class="saved-player-row" data-action="click->lobby#selectPlayer" data-slot="${slot}" data-name="${dataName}">
+          <span class="saved-player-name mono" title="${dataName}">${safeName}</span>
+          <button type="button" class="saved-player-remove mono" data-action="click->lobby#removePlayer" data-name="${dataName}" aria-label="Remove ${dataName}">×</button>
+        </div>`
+    }).join("")
+  }
+
+  escapeHTML(value) {
+    return String(value)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;")
+  }
+
+  escapeAttribute(value) {
+    return this.escapeHTML(value).replaceAll("`", "&#096;")
   }
 
   selectPlayer(e) {

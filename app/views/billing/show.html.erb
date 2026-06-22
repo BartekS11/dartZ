@@ -1,54 +1,52 @@
-<div class="page-shell w-full px-1">
-  <section class="theme-hero counter-setup-card overflow-hidden p-4 md:p-5">
-    <div class="mb-4 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
-      <div class="page-header">
-        <div class="theme-section-label mono">Account</div>
-        <h1 class="page-title bebas">Upgrade</h1>
-        <p class="counter-section-copy">Placeholder pricing for now. This page is ready to connect to Stripe Checkout later.</p>
+<div class="page-shell stack-md">
+  <section class="theme-hero p-5">
+    <div class="level is-align-items-flex-start">
+      <div class="level-left">
+        <div>
+          <div class="theme-section-label">Account</div>
+          <h1 class="page-title">Upgrade</h1>
+          <p class="page-copy">Placeholder pricing for now. Ready to connect to Stripe Checkout later.</p>
+        </div>
       </div>
-      <span class="theme-chip mono <%= premium_access? ? 'is-live' : '' %>">Current: <%= Current.user.account_tier.humanize %></span>
+      <div class="level-right">
+        <span class="theme-chip <%= premium_access? ? 'is-live' : '' %>">Current: <%= Current.user.account_tier.humanize %></span>
+      </div>
     </div>
+  </section>
 
-    <div class="grid gap-3 md:grid-cols-3">
-      <% @tiers.each do |tier| %>
-        <% current_tier = Current.user.account_tier == tier[:key] %>
-        <article class="theme-match-card flex h-full flex-col gap-3 p-4 <%= current_tier ? 'ring-2' : '' %>" style="<%= current_tier ? 'border-color:var(--theme-primary); box-shadow:0 0 0 1px var(--theme-primary);' : '' %>">
+  <section class="columns is-multiline is-variable is-3">
+    <% @tiers.each do |tier| %>
+      <% current_tier = Current.user.account_tier == tier[:key] %>
+      <div class="column is-12-tablet is-4-desktop">
+        <article class="theme-card p-5 h-full stack-md" style="<%= current_tier ? 'border-color:var(--theme-primary); box-shadow:0 0 0 1px var(--theme-primary);' : '' %>">
           <div>
-            <div class="flex items-center justify-between gap-2">
-              <h2 class="bebas m-0 text-3xl"><%= tier[:name] %></h2>
-              <% if current_tier %>
-                <span class="theme-chip mono is-live">Current</span>
-              <% end %>
+            <div class="is-flex is-justify-content-space-between is-align-items-center">
+              <h2 class="section-title"><%= tier[:name] %></h2>
+              <% if current_tier %><span class="theme-chip is-live">Current</span><% end %>
             </div>
-            <p class="mt-2 text-sm" style="color:var(--theme-muted)"><%= tier[:description] %></p>
+            <p class="page-copy mt-2"><%= tier[:description] %></p>
           </div>
 
           <div>
             <span class="bebas text-5xl"><%= tier[:price] %></span>
-            <span class="mono text-sm" style="color:var(--theme-subtle)">/ <%= tier[:interval] %></span>
+            <span class="help-theme">/ <%= tier[:interval] %></span>
           </div>
 
-          <ul class="m-0 grid flex-1 gap-2 p-0" style="list-style:none">
-            <% tier[:features].each do |feature| %>
-              <li class="mono text-sm">✓ <%= feature %></li>
-            <% end %>
+          <ul class="stack-sm" style="list-style:none; padding:0; margin:0; flex:1">
+            <% tier[:features].each do |feature| %><li class="mono text-sm">✓ <%= feature %></li><% end %>
           </ul>
 
           <% if current_tier %>
-            <button type="button" class="btn theme-btn-outline rounded-pill mono w-100" disabled>Current plan</button>
+            <button type="button" class="button theme-btn-outline is-fullwidth mono" disabled>Current plan</button>
           <% elsif tier[:key] == "free" %>
-            <button type="button" class="btn theme-btn-outline rounded-pill mono w-100" disabled>Included</button>
+            <button type="button" class="button theme-btn-outline is-fullwidth mono" disabled>Included</button>
           <% else %>
-            <button type="button" class="btn theme-btn-primary rounded-pill mono w-100" disabled data-stripe-price-placeholder="<%= tier[:key] %>">
-              Upgrade with Stripe soon
-            </button>
+            <button type="button" class="button theme-btn-primary is-fullwidth mono" disabled data-stripe-price-placeholder="<%= tier[:key] %>">Upgrade with Stripe soon</button>
           <% end %>
         </article>
-      <% end %>
-    </div>
-
-    <div class="mt-4 rounded-3xl border p-3 mono text-sm" style="border-color:var(--theme-line); color:var(--theme-muted)">
-      Future Stripe hook: replace the disabled upgrade buttons with Checkout session creation for the selected tier.
-    </div>
+      </div>
+    <% end %>
   </section>
+
+  <div class="theme-blank-slate mono text-sm">Future Stripe hook: replace disabled upgrade buttons with Checkout session creation for the selected tier.</div>
 </div>

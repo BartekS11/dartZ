@@ -1,13 +1,10 @@
-<div id="dart-board" class="theme-panel counter-pad-card p-4 md:p-5">
-  <div class="theme-panel-header mb-4 flex flex-col gap-3 pb-4 sm:flex-row sm:items-end sm:justify-between">
-    <div>
-      <div class="theme-section-label mono">Throw pad</div>
-      <div class="theme-subtitle mt-1 text-sm">Tap exact segments for per-dart scoring in a flatter counter-style pad.</div>
-    </div>
-    <span class="theme-chip mono">Finish on a double</span>
+<div id="dart-board" class="match-dart-pad">
+  <div class="match-pad-head">
+    <div class="theme-section-label">Throw pad</div>
+    <span class="help-theme">Tap exact darts only when needed.</span>
   </div>
 
-  <div class="dart-grid mb-3">
+  <div class="dart-grid mb-4">
     <% (1..20).each do |n| %>
       <div class="dart-column">
         <% [:single, :double, :triple].each do |m| %>
@@ -23,23 +20,8 @@
   </div>
 
   <div class="dart-footer-actions">
-    <%= button_to "Bull",
-          turn_throws_path(turn),
-          params: { throw: { segment: 25, multiplier: :single } },
-          method: :post,
-          form: { data: { turbo_stream: true } },
-          class: "dart-btn single mono" %>
-    <%= button_to "Bull ×2",
-          turn_throws_path(turn),
-          params: { throw: { segment: 25, multiplier: :double } },
-          method: :post,
-          form: { data: { turbo_stream: true } },
-          class: "dart-btn double mono" %>
-    <%= button_to "Miss",
-          turn_throws_path(turn),
-          params: { throw: { segment: 0, multiplier: :miss } },
-          method: :post,
-          form: { data: { turbo_stream: true } },
-          class: "dart-btn miss mono" %>
+    <%= button_to "Bull", turn_throws_path(turn), params: { throw: { segment: 25, multiplier: :single } }, method: :post, form: { data: { turbo_stream: true } }, class: "dart-btn single mono" %>
+    <%= button_to "Bull ×2", turn_throws_path(turn), params: { throw: { segment: 25, multiplier: :double } }, method: :post, form: { data: { turbo_stream: true } }, class: "dart-btn double mono" %>
+    <%= button_to "Miss", turn_throws_path(turn), params: { throw: { segment: 0, multiplier: :miss } }, method: :post, form: { data: { turbo_stream: true } }, class: "dart-btn miss mono" %>
   </div>
 </div>

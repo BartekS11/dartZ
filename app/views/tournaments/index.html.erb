@@ -1,53 +1,33 @@
-<div class="page-shell space-y-6">
-  <div class="theme-hero p-5 md:p-6">
-    <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-      <div>
-        <div class="theme-section-label mono mb-2">Tournaments</div>
-        <h1 class="page-title bebas">Run events like a board-side counter.</h1>
-        <p class="page-copy max-w-2xl">Create, join, and manage swiss, group, or playoff tournaments in a darker, simpler layout.</p>
+<div class="page-shell stack-lg">
+  <section class="theme-hero p-5">
+    <div class="level is-align-items-flex-end">
+      <div class="level-left">
+        <div>
+          <div class="theme-section-label">Tournaments</div>
+          <h1 class="page-title">Run events like a board-side counter.</h1>
+          <p class="page-copy">Create, join, and manage swiss, group, or playoff tournaments.</p>
+        </div>
       </div>
-      <%= link_to "New tournament", new_tournament_path, class: "btn theme-btn-primary rounded-pill px-4 py-3 bebas text-xl" %>
+      <div class="level-right"><%= link_to "New tournament", new_tournament_path, class: "button theme-btn-primary is-medium" %></div>
     </div>
-  </div>
+  </section>
 
   <% if Current.user && @my_tournaments.any? %>
-    <section class="space-y-3">
-      <div class="counter-section-header">
-        <div class="theme-section-label mono">Your events</div>
-        <h2 class="section-title bebas">Signed-in tournaments</h2>
-        <p class="counter-section-copy">Everything you can manage, reopen, and advance.</p>
-      </div>
-      <div class="counter-list-grid md:grid-cols-2 xl:grid-cols-3">
+    <section class="stack-md">
+      <div><div class="theme-section-label">Your events</div><h2 class="section-title">Signed-in tournaments</h2><p class="page-copy">Everything you can manage, reopen, and advance.</p></div>
+      <div class="columns is-multiline is-variable is-3">
         <% @my_tournaments.each do |tournament| %>
-          <%= link_to tournament_path(tournament), class: "counter-tournament-card no-underline" do %>
-            <div class="auth-label mb-1"><%= tournament.format_type %></div>
-            <div class="bebas text-2xl leading-none"><%= tournament.title %></div>
-            <div class="mt-3 flex flex-wrap gap-2">
-              <span class="theme-chip mono"><%= tournament.entries.count %> players</span>
-              <span class="theme-chip mono"><%= tournament.status %></span>
-            </div>
-          <% end %>
+          <div class="column is-6-tablet is-4-desktop"><%= link_to tournament_path(tournament), class: "counter-tournament-card p-4" do %><div class="auth-label mb-1"><%= tournament.format_type %></div><div class="section-title"><%= tournament.title %></div><div class="is-flex is-flex-wrap-wrap mt-3" style="gap:.45rem"><span class="theme-chip"><%= tournament.entries.count %> players</span><span class="theme-chip"><%= tournament.status %></span></div><% end %></div>
         <% end %>
       </div>
     </section>
   <% end %>
 
-  <section class="space-y-3">
-    <div class="counter-section-header">
-      <div class="theme-section-label mono">Public events</div>
-      <h2 class="section-title bebas">Guest tournaments</h2>
-      <p class="counter-section-copy">Open links and guest-created events ready to join.</p>
-    </div>
-    <div class="counter-list-grid md:grid-cols-2 xl:grid-cols-3">
+  <section class="stack-md">
+    <div><div class="theme-section-label">Public events</div><h2 class="section-title">Guest tournaments</h2><p class="page-copy">Open links and guest-created events ready to join.</p></div>
+    <div class="columns is-multiline is-variable is-3">
       <% @guest_tournaments.each do |tournament| %>
-        <%= link_to tournament_path(tournament), class: "counter-tournament-card no-underline" do %>
-          <div class="auth-label mb-1"><%= tournament.format_type %></div>
-          <div class="bebas text-2xl leading-none"><%= tournament.title %></div>
-          <div class="mt-3 flex flex-wrap gap-2">
-            <span class="theme-chip mono"><%= tournament.entries.count %> players</span>
-            <span class="theme-chip mono"><%= tournament.status %></span>
-          </div>
-        <% end %>
+        <div class="column is-6-tablet is-4-desktop"><%= link_to tournament_path(tournament), class: "counter-tournament-card p-4" do %><div class="auth-label mb-1"><%= tournament.format_type %></div><div class="section-title"><%= tournament.title %></div><div class="is-flex is-flex-wrap-wrap mt-3" style="gap:.45rem"><span class="theme-chip"><%= tournament.entries.count %> players</span><span class="theme-chip"><%= tournament.status %></span></div><% end %></div>
       <% end %>
     </div>
   </section>
