@@ -8,8 +8,8 @@ class TournamentGenerator
     @tournament.tournament_matches.destroy_all
 
     case @tournament.format_type
-    when "groups" then generate_groups
-    when "swiss" then generate_swiss_round_one
+    when "groups", "groups_playoffs" then generate_groups
+    when "swiss", "swiss_playoffs" then generate_swiss_round_one
     when "playoffs" then generate_playoffs
     end
 
@@ -38,7 +38,7 @@ class TournamentGenerator
       group_entries.each { |entry| entry.update!(group_name:) }
       round = @tournament.rounds.create!(number: idx + 1, name: "Group #{group_name}", stage_type: "groups", group_name:, status: "active")
       round_robin_pairs(group_entries).each_with_index do |(home, away), pos|
-        round.tournament_matches.create!(tournament: @tournament, home_entry: home, away_entry: away, position: pos + 1, best_of_legs: @tournament.best_of_legs, best_of_sets: @tournament.best_of_sets, **@tournament.game_settings)
+        round.tournament_matches.create!(tournament: @tournament, home_entry: home, away_entry: away, position: pos + 1, **@tournament.group_match_settings)
       end
     end
   end
@@ -55,9 +55,9 @@ class TournamentGenerator
     round = @tournament.rounds.create!(number: 1, name: "#{@tournament.playoff_mode == 'double_elimination' ? 'Upper' : 'Playoff'} Round 1", stage_type: "playoffs", bracket: "upper", status: "active")
 
     seeded.each_slice(2).with_index do |(home, away), idx|
-      match = round.tournament_matches.create!(tournament: @tournament, home_entry: home, away_entry: away, position: idx + 1, best_of_legs: @tournament.best_of_legs, best_of_sets: @tournament.best_of_sets, **@tournament.game_settings)
+      match = round.tournament_matches.create!(tournament: @tournament, home_entry: home, away_entry: away, position: idx + 1, **@tournament.playoff_match_settings_for_entries(entries.size, bracket: "upper"))
       if home.present? && away.nil?
-        match.update!(bye: true, winner_entry: home, status: "complete", completed_at: Time.current, home_legs: @tournament.best_of_legs)
+        match.update!(bye: true, winner_entry: home, status: "complete", completed_at: Time.current, home_legs: match.best_of_legs)
       end
     end
   end

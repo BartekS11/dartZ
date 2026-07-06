@@ -1,0 +1,146 @@
+<div id="tournament-live-board" class="space-y-6">
+  <section class="theme-card counter-list-card p-4 md:p-5">
+    <div class="mb-4 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+      <div>
+        <div class="theme-section-label mono mb-1">Groups</div>
+        <h2 class="bebas text-3xl leading-none">Standings</h2>
+      </div>
+      <% if can_admin %>
+        <%= link_to "Manage tournament", tournament_path(tournament, admin_token: admin_token), class: "btn btn-sm theme-btn-outline rounded-pill mono" %>
+      <% end %>
+    </div>
+
+    <% if tournament.group_names.any? %>
+      <div class="grid gap-4 xl:grid-cols-2">
+        <% tournament.group_names.each do |group_name| %>
+          <div class="counter-summary-tile overflow-x-auto">
+            <div class="mb-3 flex items-center justify-between gap-3">
+              <h3 class="bebas text-2xl">Group <%= group_name %></h3>
+              <span class="theme-chip mono">Top <%= tournament.qualifiers_per_group_value %> qualify</span>
+            </div>
+            <table class="w-full text-sm">
+              <thead class="mono text-xs uppercase" style="color:var(--theme-muted)">
+                <tr><th class="text-left py-2">#</th><th class="text-left py-2">Player</th><th>W</th><th>L</th><th>LF</th><th>LA</th><th>+/-</th><th>Pts</th></tr>
+              </thead>
+              <tbody>
+                <% tournament.standings_for_group(group_name).each_with_index do |entry, idx| %>
+                  <tr class="border-t" style="border-color:var(--theme-border)">
+                    <td class="py-2 mono"><%= idx + 1 %></td>
+                    <td class="py-2"><%= entry.name %></td>
+                    <td class="text-center"><%= entry.wins %></td>
+                    <td class="text-center"><%= entry.losses %></td>
+                    <td class="text-center"><%= entry.legs_for %></td>
+                    <td class="text-center"><%= entry.legs_against %></td>
+                    <td class="text-center"><%= entry.leg_difference %></td>
+                    <td class="text-center"><%= entry.points %></td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="theme-blank-slate text-sm">No groups generated for this tournament.</div>
+    <% end %>
+  </section>
+
+  <section id="player-stats" class="theme-card counter-list-card p-4 md:p-5 scroll-mt-24">
+    <div class="mb-4 flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+      <div>
+        <div class="theme-section-label mono mb-1">Player stats</div>
+        <h2 class="bebas text-3xl leading-none">Tournament averages</h2>
+      </div>
+      <span class="theme-chip mono">All linked matches</span>
+    </div>
+    <% player_stats = TournamentPlayerStats.new(tournament).call %>
+    <% if player_stats.any? %>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead class="mono text-xs uppercase" style="color:var(--theme-muted)">
+            <tr>
+              <th class="text-left py-2">Player</th>
+              <th class="text-center">M</th>
+              <th class="text-center">W</th>
+              <th class="text-center">L</th>
+              <th class="text-center">Legs</th>
+              <th class="text-center">Avg</th>
+              <th class="text-center">Hi</th>
+              <th class="text-center">100+</th>
+              <th class="text-center">140+</th>
+              <th class="text-center">180</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% player_stats.each do |stat| %>
+              <tr class="border-t" style="border-color:var(--theme-border)">
+                <td class="py-2"><%= stat.entry.name %></td>
+                <td class="text-center"><%= stat.matches_played %></td>
+                <td class="text-center"><%= stat.wins %></td>
+                <td class="text-center"><%= stat.losses %></td>
+                <td class="text-center"><%= stat.legs_for %>-<%= stat.legs_against %></td>
+                <td class="text-center"><strong><%= stat.three_dart_average %></strong></td>
+                <td class="text-center"><%= stat.highest_turn %></td>
+                <td class="text-center"><%= stat.ton_plus %></td>
+                <td class="text-center"><%= stat.one_forty_plus %></td>
+                <td class="text-center"><%= stat.one_eighty %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% else %>
+      <div class="theme-blank-slate text-sm">Player stats will appear once tournament matches are played.</div>
+    <% end %>
+  </section>
+
+  <section class="theme-card counter-list-card p-4 md:p-5">
+    <div class="mb-4">
+      <div class="theme-section-label mono mb-1">Fixtures</div>
+      <h2 class="bebas text-3xl leading-none">Group matches</h2>
+    </div>
+    <% group_rounds = tournament.rounds.where(stage_type: "groups").order(:group_name, :number) %>
+    <% if group_rounds.any? %>
+      <div class="grid gap-4 xl:grid-cols-2">
+        <% group_rounds.each do |round| %>
+          <div class="space-y-3">
+            <h3 class="bebas text-2xl"><%= round.name %></h3>
+            <% round.tournament_matches.order(:position).each do |match| %>
+              <%= render "tournaments/match_card", match: match, tournament: tournament, can_admin: can_admin, admin_token: admin_token %>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="theme-blank-slate text-sm">Group fixtures will appear here once generated.</div>
+    <% end %>
+  </section>
+
+  <section class="theme-card counter-list-card p-4 md:p-5">
+    <div class="mb-4">
+      <div class="theme-section-label mono mb-1">Playoff</div>
+      <h2 class="bebas text-3xl leading-none">Ladder</h2>
+    </div>
+    <% playoff_rounds = tournament.rounds.where(stage_type: "playoffs").order(:number, :created_at) %>
+    <% if playoff_rounds.any? %>
+      <div class="bracket-scroll">
+        <div class="bracket-board">
+          <% playoff_rounds.group_by(&:bracket).each do |bracket, rounds| %>
+            <% rounds.each_with_index do |round, index| %>
+              <div class="bracket-column <%= 'bracket-column-linked' if index.positive? %>">
+                <div class="bracket-column-title mono"><%= [bracket&.humanize, round.name].compact.join(' · ') %></div>
+                <div class="bracket-round-card grid gap-3">
+                  <% round.tournament_matches.order(:position).each do |match| %>
+                    <%= render "tournaments/match_card", match: match, tournament: tournament, can_admin: can_admin, admin_token: admin_token, bracket: true %>
+                  <% end %>
+                </div>
+              </div>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    <% else %>
+      <div class="theme-blank-slate text-sm">Playoff ladder will appear automatically after qualifiers are known.</div>
+    <% end %>
+  </section>
+</div>

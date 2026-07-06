@@ -4,13 +4,13 @@
 <% total_secs = (match.finished_at - match.created_at).to_i %>
 <% total_mins = total_secs / 60 %>
 <% total_secs_rem = total_secs % 60 %>
+<% tournament_match = TournamentMatch.find_by(linked_match: match) %>
 
 <div class="theme-game-over page-shell page-shell-narrow">
   <div class="mx-auto max-w-3xl">
     <div class="page-header mb-6 text-center">
       <div class="theme-section-label mono">Match complete</div>
       <h1 class="game-over-title bebas">Nice darts.</h1>
-      <p class="page-copy mx-auto max-w-2xl">Final result first, the numbers after.</p>
     </div>
 
     <div class="counter-summary-tile mb-6 px-5 py-5" style="border-color:color-mix(in srgb, var(--theme-primary) 18%, transparent); background:color-mix(in srgb, var(--theme-primary) 8%, transparent)">
@@ -56,7 +56,11 @@
     </div>
 
     <div class="flex flex-col justify-center gap-3 sm:flex-row">
-      <%= link_to "New match", matches_path, class: "btn theme-btn-primary rounded-pill px-4 py-3 bebas text-xl" %>
+      <% if tournament_match.present? %>
+        <%= link_to "Back to tournament", live_tournament_path(tournament_match.tournament, share_token: tournament_match.tournament.share_token), class: "btn theme-btn-primary rounded-pill px-4 py-3 bebas text-xl", data: { turbo: false } %>
+      <% else %>
+        <%= link_to "New match", matches_path, class: "btn theme-btn-primary rounded-pill px-4 py-3 bebas text-xl" %>
+      <% end %>
       <%= link_to "Back to matches", matches_path, class: "btn theme-btn-outline rounded-pill mono" %>
     </div>
   </div>

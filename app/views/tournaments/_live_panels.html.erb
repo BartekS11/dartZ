@@ -4,13 +4,13 @@
 <% final_rounds = playoff_rounds.select { |round| round.bracket == "final" || round.bracket.blank? } %>
 <% bronze_rounds = playoff_rounds.select { |round| round.bracket == "bronze" } %>
 
-<div id="tournament-live-panels" class="grid gap-6 xl:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)]">
-  <section class="space-y-4">
+<div id="tournament-live-panels" class="tournament-board grid gap-6 xl:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)]">
+  <section class="space-y-4 tournament-column tournament-players-column">
     <div class="theme-card counter-list-card p-4 md:p-5">
-      <div class="mb-3 flex items-center justify-between gap-3">
+      <div class="mb-3 flex items-center justify-between gap-3 tournament-section-head">
         <div>
-          <div class="theme-section-label mono mb-1">Standings</div>
-          <h2 class="bebas text-2xl leading-none">Players</h2>
+          <div class="theme-section-label mono mb-1">01</div>
+          <h2 class="bebas text-2xl leading-none">Players / standings</h2>
         </div>
         <% if can_admin %>
           <div class="flex flex-wrap gap-2">
@@ -28,13 +28,16 @@
 
       <div class="grid gap-2">
         <% tournament.standings.each_with_index do |entry, idx| %>
-          <div class="counter-standings-row">
+          <div class="counter-standings-row tournament-player-row">
             <div class="flex items-center justify-between gap-3">
-              <div>
-                <div class="mono text-xs" style="color:var(--theme-subtle)">#<%= idx + 1 %> <%= entry.group_name.present? ? "· Group #{entry.group_name}" : "" %></div>
-                <div class="font-semibold"><%= entry.name %></div>
+              <div class="flex min-w-0 items-center gap-3">
+                <span class="tournament-rank mono">#<%= idx + 1 %></span>
+                <div class="min-w-0">
+                  <% if entry.group_name.present? %><div class="mono text-xs" style="color:var(--theme-subtle)">Group <%= entry.group_name %></div><% end %>
+                  <div class="tournament-player-name"><%= entry.name %></div>
+                </div>
               </div>
-              <div class="text-right text-sm" style="color:var(--theme-muted)">
+              <div class="tournament-player-stats text-right text-sm" style="color:var(--theme-muted)">
                 <div><strong><%= entry.wins %></strong>W · <strong><%= entry.losses %></strong>L</div>
                 <div>Leg diff <%= entry.leg_difference %></div>
                 <% if tournament.format_type == "swiss" %><div>Buchholz <%= entry.buchholz %></div><% end %>
@@ -58,12 +61,12 @@
     </div>
   </section>
 
-  <section class="space-y-4">
+  <section class="space-y-4 tournament-column tournament-matches-column">
     <% if tournament.format_type == "playoffs" %>
       <div class="theme-card counter-list-card p-4 md:p-5">
-        <div class="mb-4">
-          <div class="theme-section-label mono mb-1">Bracket</div>
-          <h2 class="bebas text-2xl leading-none">Tournament tree</h2>
+        <div class="mb-4 tournament-section-head">
+          <div class="theme-section-label mono mb-1">02</div>
+          <h2 class="bebas text-2xl leading-none">Bracket / matches</h2>
         </div>
 
         <% if upper_rounds.any? %>
@@ -158,7 +161,7 @@
     <% else %>
       <% tournament.rounds.order(:number).each do |round| %>
         <div class="theme-card counter-list-card p-4 md:p-5">
-          <div class="mb-3">
+          <div class="mb-3 tournament-section-head">
             <div class="theme-section-label mono mb-1"><%= round.stage_type %></div>
             <h2 class="bebas text-2xl leading-none"><%= round.name %></h2>
           </div>

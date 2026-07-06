@@ -4,6 +4,8 @@ CI.run do
   step "Setup", "bin/setup --skip-server"
 
   step "Tests: Smoke", "bin/rails test test/smoke"
+  step "Tests: Pure Ruby core", %q(ruby -Ilib -e 'Dir["test/lib/darts/core/**/*_test.rb"].sort.each { |file| require "./#{file}" }')
+  step "Tests: Rails", "bin/rails test"
 
   step "Style: Ruby", "bin/rubocop"
   step "Linting: Ruby", "bin/rubocop -A"

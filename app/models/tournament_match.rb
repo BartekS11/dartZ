@@ -37,8 +37,12 @@ class TournamentMatch < ApplicationRecord
 
     winner_name = linked_match.winner&.display_name
     self.winner_entry = [ home_entry, away_entry ].find { |entry| entry&.name == winner_name }
-    self.home_legs = linked_match.legs.where(winner_id: linked_match.players.find_by(name: home_entry&.name)&.id).count
-    self.away_legs = linked_match.legs.where(winner_id: linked_match.players.find_by(name: away_entry&.name)&.id).count
+    home_player = linked_match.players.find_by(name: home_entry&.name)
+    away_player = linked_match.players.find_by(name: away_entry&.name)
+    self.home_sets = linked_match.match_sets.where(winner_id: home_player&.id).count
+    self.away_sets = linked_match.match_sets.where(winner_id: away_player&.id).count
+    self.home_legs = linked_match.legs.where(winner_id: home_player&.id).count
+    self.away_legs = linked_match.legs.where(winner_id: away_player&.id).count
     self.status = "complete"
     self.completed_at = linked_match.finished_at || Time.current
     save!

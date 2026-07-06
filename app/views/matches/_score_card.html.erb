@@ -7,6 +7,7 @@
 <% multi_leg    = match.best_of_legs > 1 %>
 <% darts_thrown = is_active ? presenter.current_turn&.throws&.size.to_i : 0 %>
 <% suggestion   = match.double_out? ? CheckoutCalculator.suggest(score, darts_remaining: 3 - darts_thrown) : [] %>
+<% last_throw_total = presenter.last_turn_total_for(player) %>
 
 <div id="score-card-<%= player.id %>" class="match-score-card <%= 'is-active' if is_active %>">
   <div class="match-score-name-row">
@@ -15,11 +16,23 @@
     <% if presenter.needs_double_in?(player) %><span class="theme-chip">Double in</span><% end %>
   </div>
 
-  <div id="player-<%= player.id %>-score" class="match-score-number <%= 'is-active' if is_active %>"><%= score %></div>
+  <div class="match-score-main-row">
+    <div id="player-<%= player.id %>-score" class="match-score-number <%= 'is-active' if is_active %>"><%= score %></div>
+    <% if last_throw_total.present? %>
+      <div class="match-last-throw-pill">
+        <span>Last throw</span>
+        <strong><%= last_throw_total %></strong>
+      </div>
+    <% end %>
+  </div>
 
-  <div class="match-score-meta">
-    <% if multi_set %><span>Sets <strong><%= sets_won %></strong></span><% end %>
-    <% if multi_leg %><span>Legs <strong><%= legs_won %></strong></span><% end %>
+  <div class="match-score-meta <%= 'has-leg-set-score' if multi_set || multi_leg %>">
+    <% if multi_set %>
+      <span class="match-progress-pill">Sets <strong><%= sets_won %></strong></span>
+    <% end %>
+    <% if multi_leg %>
+      <span class="match-progress-pill">Legs <strong><%= legs_won %></strong></span>
+    <% end %>
     <% if suggestion.present? %>
       <span class="match-checkout-line"><%= suggestion.first(3).join(" · ") %></span>
     <% end %>

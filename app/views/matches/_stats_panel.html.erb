@@ -1,8 +1,7 @@
 <% presenter ||= MatchStatePresenter.new(match) %>
 <div class="mt-5 pt-5" style="border-top:1px solid var(--theme-line)" data-controller="stats-visibility">
-  <div class="mb-3">
+  <div class="mb-3 stats-panel-head">
     <div class="theme-section-label">Match stats</div>
-    <p class="counter-section-copy">Expandable breakdowns per player.</p>
   </div>
 
   <div class="stack-sm">
@@ -21,69 +20,78 @@
       <% best_leg        = stats[:best_leg] %>
       <% best_leg_darts  = stats[:best_leg_darts] %>
 
-      <details class="stats-details" data-stats-visibility-target="details">
-        <summary class="stats-summary is-flex is-justify-content-space-between is-align-items-center">
-          <div>
-            <div class="auth-label"><%= player.display_name %></div>
-            <div class="is-flex is-flex-wrap-wrap mt-3" style="gap:.45rem">
-              <span class="theme-chip">avg <%= presenter.three_dart_average(player) %></span>
-              <span class="theme-chip">high <%= highest_turn %></span>
-              <span class="theme-chip">co <%= checkout[:rate] %>%</span>
+      <details class="stats-details match-stats-player" data-stats-visibility-target="details">
+        <summary class="stats-summary">
+          <div class="stats-summary-grid">
+            <div>
+              <div class="auth-label"><%= player.display_name %></div>
             </div>
+            <div class="stats-summary-number">
+              <span>Avg</span>
+              <strong><%= presenter.three_dart_average(player) %></strong>
+            </div>
+            <div class="stats-summary-number">
+              <span>High</span>
+              <strong><%= highest_turn %></strong>
+            </div>
+            <div class="stats-summary-number">
+              <span>CO</span>
+              <strong><%= checkout[:rate] %>%</strong>
+            </div>
+            <div class="stats-expand-indicator mono">Open</div>
           </div>
-          <span class="help-theme">▾</span>
         </summary>
 
-        <div class="stats-details-body">
-          <div class="columns is-variable is-3">
-            <div class="column">
-              <div class="stats-block-title mb-2">Scoring</div>
-              <div class="compact-stats-list">
-                <div class="compact-stat"><span>Darts</span><strong><%= darts_thrown %></strong></div>
-                <div class="compact-stat"><span>Turns</span><strong><%= completed_turns.count %></strong></div>
-                <div class="compact-stat"><span>Avg / turn</span><strong><%= presenter.average_per_turn(player) %></strong></div>
-                <div class="compact-stat"><span>1st 9 avg</span><strong><%= first_nine_avg %></strong></div>
-                <div class="compact-stat"><span>100+</span><strong><%= ton_plus %></strong></div>
-                <div class="compact-stat"><span>140+</span><strong><%= one_forty_plus %></strong></div>
-                <div class="compact-stat"><span>180s</span><strong><%= one_eighty %></strong></div>
-                <div class="compact-stat"><span>Best leg darts</span><strong><%= best_leg_darts || '—' %></strong></div>
-              </div>
+        <div class="stats-details-body match-stats-body">
+          <section class="match-stats-section">
+            <div class="stats-block-title">Scoring</div>
+            <div class="compact-stats-list match-stats-grid">
+              <div class="compact-stat"><span>Darts</span><strong><%= darts_thrown %></strong></div>
+              <div class="compact-stat"><span>Turns</span><strong><%= completed_turns.count %></strong></div>
+              <div class="compact-stat"><span>Avg / turn</span><strong><%= presenter.average_per_turn(player) %></strong></div>
+              <div class="compact-stat"><span>1st 9 avg</span><strong><%= first_nine_avg %></strong></div>
+              <div class="compact-stat"><span>100+</span><strong><%= ton_plus %></strong></div>
+              <div class="compact-stat"><span>140+</span><strong><%= one_forty_plus %></strong></div>
+              <div class="compact-stat"><span>180s</span><strong><%= one_eighty %></strong></div>
+              <div class="compact-stat"><span>Best leg darts</span><strong><%= best_leg_darts || '—' %></strong></div>
             </div>
+          </section>
 
-            <div class="column">
-              <div class="stats-block-title mb-2">Checkout</div>
-              <div class="compact-stats-list">
-                <div class="compact-stat"><span>Chances</span><strong><%= checkout[:chances] %></strong></div>
-                <div class="compact-stat"><span>Hits</span><strong><%= checkout[:hits] %></strong></div>
-                <div class="compact-stat"><span>Checkout %</span><strong><%= checkout[:rate] %></strong></div>
-                <div class="compact-stat"><span>Avg darts</span><strong><%= checkout[:average_darts] %></strong></div>
-                <div class="compact-stat"><span>Doubles thrown</span><strong><%= split.fetch('double', 0) %></strong></div>
-                <div class="compact-stat"><span>Double CO</span><strong><%= checkout[:hits] %></strong></div>
-              </div>
+          <section class="match-stats-section">
+            <div class="stats-block-title">Checkout</div>
+            <div class="compact-stats-list match-stats-grid">
+              <div class="compact-stat"><span>Chances</span><strong><%= checkout[:chances] %></strong></div>
+              <div class="compact-stat"><span>Hits</span><strong><%= checkout[:hits] %></strong></div>
+              <div class="compact-stat"><span>Checkout %</span><strong><%= checkout[:rate] %></strong></div>
+              <div class="compact-stat"><span>Avg darts</span><strong><%= checkout[:average_darts] %></strong></div>
+              <div class="compact-stat"><span>Doubles thrown</span><strong><%= split.fetch('double', 0) %></strong></div>
+              <div class="compact-stat"><span>Double CO</span><strong><%= checkout[:hits] %></strong></div>
             </div>
-          </div>
+          </section>
 
-          <div class="stats-block-title mb-2 mt-3">Split & positions</div>
-          <div class="compact-stats-list">
-            <div class="compact-stat"><span>Singles</span><strong><%= split.fetch('single', 0) %></strong></div>
-            <div class="compact-stat"><span>Triples</span><strong><%= split.fetch('triple', 0) %></strong></div>
-            <div class="compact-stat"><span>Misses</span><strong><%= split.fetch('miss', 0) %></strong></div>
-            <div class="compact-stat"><span>Dart 1 avg</span><strong><%= per_dart[1] %></strong></div>
-            <div class="compact-stat"><span>Dart 2 avg</span><strong><%= per_dart[2] %></strong></div>
-            <div class="compact-stat"><span>Dart 3 avg</span><strong><%= per_dart[3] %></strong></div>
-            <div class="compact-stat"><span>Best leg</span><strong><%= best_leg ? "L#{presenter.leg_number_for(best_leg)}" : '—' %></strong></div>
-          </div>
+          <section class="match-stats-section">
+            <div class="stats-block-title">Split & positions</div>
+            <div class="compact-stats-list match-stats-grid">
+              <div class="compact-stat"><span>Singles</span><strong><%= split.fetch('single', 0) %></strong></div>
+              <div class="compact-stat"><span>Triples</span><strong><%= split.fetch('triple', 0) %></strong></div>
+              <div class="compact-stat"><span>Misses</span><strong><%= split.fetch('miss', 0) %></strong></div>
+              <div class="compact-stat"><span>Dart 1 avg</span><strong><%= per_dart[1] %></strong></div>
+              <div class="compact-stat"><span>Dart 2 avg</span><strong><%= per_dart[2] %></strong></div>
+              <div class="compact-stat"><span>Dart 3 avg</span><strong><%= per_dart[3] %></strong></div>
+              <div class="compact-stat"><span>Best leg</span><strong><%= best_leg ? "L#{presenter.leg_number_for(best_leg)}" : '—' %></strong></div>
+            </div>
+          </section>
 
           <% if completed_turns.any? %>
-            <div class="mt-4">
-              <div class="stats-block-title mb-2">Recent turns</div>
-              <div class="is-flex is-flex-wrap-wrap" style="gap:.45rem">
+            <section class="match-stats-section">
+              <div class="stats-block-title">Recent turns</div>
+              <div class="is-flex is-flex-wrap-wrap mt-3" style="gap:.45rem">
                 <% completed_turns.last(5).reverse_each do |turn| %>
                   <% total = presenter.turn_total(turn) %>
                   <span class="theme-chip <%= 'is-live' if total >= 100 %>"><%= total %></span>
                 <% end %>
               </div>
-            </div>
+            </section>
           <% end %>
         </div>
       </details>

@@ -76,5 +76,19 @@ class TournamentsControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_redirected_to tournaments_path
+
+    get tournaments_path
+    assert_response :success
+    assert_select ".section-title", { text: "Delete Me", count: 0 }
+  end
+
+  test "admin show renders delete as a separate delete form" do
+    tournament = Tournament.create!(title: "Delete Form Cup", format_type: "groups", best_of_legs: 3, best_of_sets: 1)
+
+    get tournament_path(tournament, admin_token: tournament.admin_token)
+
+    assert_response :success
+    assert_select "form[action=?] input[name='_method'][value='delete']", tournament_path(tournament, admin_token: tournament.admin_token), count: 1
+    assert_select "form[action=?] input[type='submit'][value='Save changes']", tournament_path(tournament, admin_token: tournament.admin_token), count: 1
   end
 end

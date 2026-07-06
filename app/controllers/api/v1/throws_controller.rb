@@ -6,30 +6,15 @@ module Api
         @match = @turn.leg.match
         authorize_api_match!(@match)
 
-        @match.with_lock do
-          @turn.reload
-          if params[:total].present?
-            total           = params[:total].to_i
-            darts_remaining = 3 - @turn.throws.count
-            max_possible    = darts_remaining * 60
-
-            @turn.update!(total_score: total)
-
-            if total > max_possible || total > @match.score_for(@turn.player)
-              @turn.complete_turn!(broadcast: false)
-            else
-              @turn.distribute_total!(total)
-            end
-          else
-            segment    = params[:segment].to_i
-            multiplier = params[:multiplier].to_s
-
-            @throw = @turn.throws.create!(segment: segment, multiplier: multiplier)
-            @turn.apply_throw!(@throw)
-          end
-
-          @match.reload
-        end
+        @match = ThrowSubmission.call(
+          turn: @turn,
+          total: params[:total],
+          throw_attributes: {
+            segment: params[:segment].to_i,
+            multiplier: params[:multiplier].to_s
+          }
+        )
+        broadcast_tournament_update!
         render json: MatchStatePresenter.new(@match).state_payload, status: :created
       end
 
@@ -45,10 +30,20 @@ module Api
           @match.reload
         end
 
+        broadcast_tournament_update!
         render json: MatchStatePresenter.new(@match).state_payload
       end
 
       private
+
+      def broadcast_tournament_update!
+        tournament_match = TournamentMatch.find_by(linked_match: @match)
+        return unless tournament_match
+
+        tournament = tournament_match.tournament
+        tournament.sync_from_linked_matches! if @match.finished?
+        tournament.broadcast_live_update!
+      end
 
       def find_current_turn
         match = Match.find(params[:match_id])

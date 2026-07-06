@@ -1,23 +1,45 @@
-<div class="counter-standings-row <%= local_assigns[:bracket] ? 'bracket-match-card' : '' %>">
+<div class="counter-standings-row tournament-match-row <%= local_assigns[:bracket] ? 'bracket-match-card' : '' %>">
   <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-    <div>
-      <div class="font-semibold"><%= match.label %></div>
-      <div class="mono mt-1 text-xs uppercase tracking-[0.16em]" style="color:var(--theme-subtle)"><%= match.status %><%= ' · bye' if match.bye %></div>
-      <div class="mt-2 flex flex-wrap gap-1.5">
+    <div class="min-w-0">
+      <div class="tournament-match-label flex flex-wrap items-center gap-2">
+        <% home_winner = match.status == "complete" && match.winner_entry == match.home_entry %>
+        <% away_winner = match.status == "complete" && match.winner_entry == match.away_entry %>
+        <span style="color:<%= home_winner ? 'var(--theme-success)' : 'var(--theme-text)' %>; font-weight:<%= home_winner ? '800' : '600' %>"><%= match.home_entry&.name || "TBD" %></span>
+        <span class="mono text-xs" style="color:var(--theme-muted)">vs</span>
+        <span style="color:<%= away_winner ? 'var(--theme-success)' : 'var(--theme-text)' %>; font-weight:<%= away_winner ? '800' : '600' %>"><%= match.away_entry&.name || "TBD" %></span>
+      </div>
+      <div class="mt-2 flex flex-wrap items-center gap-2">
+        <span class="tournament-status mono tournament-status-<%= match.status %>"><%= match.status %><%= ' · bye' if match.bye %></span>
         <% match.game_mode_labels.each do |label| %>
           <span class="theme-chip mono"><%= label %></span>
         <% end %>
       </div>
-      <% if match.status == "complete" %>
-        <div class="mt-2 text-sm" style="color:var(--theme-muted)">Sets <%= match.home_sets %>-<%= match.away_sets %> · Legs <%= match.home_legs %>-<%= match.away_legs %></div>
-      <% end %>
+      <% live_presenter = TournamentMatchLivePresenter.new(match) %>
+      <div class="tournament-result-line mt-2">
+        <% if match.status == "complete" %>
+          <% if match.best_of_sets > 1 %>
+            Sets
+            <strong style="color:<%= home_winner ? 'var(--theme-success)' : 'var(--theme-muted)' %>"><%= match.home_sets %></strong>-<strong style="color:<%= away_winner ? 'var(--theme-success)' : 'var(--theme-muted)' %>"><%= match.away_sets %></strong>
+            · Legs
+            <strong style="color:<%= home_winner ? 'var(--theme-success)' : 'var(--theme-muted)' %>"><%= match.home_legs %></strong>-<strong style="color:<%= away_winner ? 'var(--theme-success)' : 'var(--theme-muted)' %>"><%= match.away_legs %></strong>
+          <% else %>
+            Legs
+            <strong style="color:<%= home_winner ? 'var(--theme-success)' : 'var(--theme-muted)' %>"><%= match.home_legs %></strong>-<strong style="color:<%= away_winner ? 'var(--theme-success)' : 'var(--theme-muted)' %>"><%= match.away_legs %></strong>
+          <% end %>
+        <% else %>
+          <strong><%= live_presenter.primary_score %></strong>
+          <% if live_presenter.secondary_score.present? %>
+            <span> · <%= live_presenter.secondary_score %></span>
+          <% end %>
+        <% end %>
+      </div>
     </div>
 
-    <div class="flex flex-wrap gap-2">
+    <div class="flex flex-wrap gap-2 tournament-match-actions">
       <% if can_admin && match.launchable? %>
-        <%= button_to "Play match", launch_tournament_tournament_match_path(tournament, match, admin_token: admin_token), method: :post, class: "btn btn-sm theme-btn-primary rounded-pill mono" %>
+        <%= button_to "Play match", launch_tournament_tournament_match_path(tournament, match, admin_token: admin_token), method: :post, form: { data: { turbo: false } }, class: "btn btn-sm theme-btn-primary rounded-pill mono" %>
       <% elsif match.linked_match.present? %>
-        <%= link_to "Open live match", match_path(match.linked_match, guest_token: (can_admin ? match.linked_match.guest_token : nil)), class: "btn btn-sm theme-btn-outline rounded-pill mono" %>
+        <%= link_to "Open live match", match_path(match.linked_match, guest_token: match.linked_match.guest_token), data: { turbo: false }, class: "btn btn-sm theme-btn-outline rounded-pill mono" %>
       <% end %>
     </div>
   </div>

@@ -10,7 +10,7 @@ export default class extends Controller {
     this.boundSync = this.syncScoreFromDOM.bind(this)
     document.addEventListener("turbo:before-stream-render", this.boundSync)
 
-    if (this.hasInputTarget) {
+    if (this.hasInputTarget && !this.inputTarget.disabled) {
       this.inputTarget.placeholder = "e.g. 85 (turn total)"
       this.inputTarget.focus()
     }
@@ -101,6 +101,7 @@ handleUndo(e) {
   // ── Input handling ─────────────────────────────────────────────────────────
 
   handle(e) {
+    if (this.hasInputTarget && this.inputTarget.disabled) return
     if (e.key !== "Enter") return
     e.preventDefault()
 
@@ -132,6 +133,8 @@ handleUndo(e) {
   // ── Submit ─────────────────────────────────────────────────────────────────
 
 submitThrow(segment, multiplier, totalPoints) {
+  if (this.hasInputTarget && this.inputTarget.disabled) return
+
   const form      = document.getElementById("keyboard-form")
   const segInput  = document.getElementById("keyboard-segment")
   const multInput = document.getElementById("keyboard-multiplier")
@@ -154,7 +157,7 @@ submitThrow(segment, multiplier, totalPoints) {
   // Wait for turbo stream to finish re-rendering then focus
   const focusInput = () => {
     const input = document.querySelector('[data-keyboard-target="input"]')
-    if (input) {
+    if (input && !input.disabled) {
       input.focus()
     } else {
       requestAnimationFrame(focusInput)
@@ -166,6 +169,8 @@ submitThrow(segment, multiplier, totalPoints) {
   // ── Undo ───────────────────────────────────────────────────────────────────
 
   async undoLastThrow() {
+    if (this.hasInputTarget && this.inputTarget.disabled) return
+
     const form   = document.getElementById("keyboard-form")
     const turnId = form?.action.match(/turns\/(\d+)/)?.[1]
     if (!turnId) return

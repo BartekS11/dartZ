@@ -5,7 +5,6 @@
         <div>
           <div class="theme-section-label">Premium</div>
           <h1 class="page-title">Dart setup</h1>
-          <p class="page-copy">Save the equipment you use most often.</p>
         </div>
       </div>
       <div class="level-right"><span class="theme-chip is-live"><%= Current.user.account_tier.humanize %></span></div>
@@ -25,7 +24,7 @@
       </div>
 
       <div class="level pt-4" style="border-top:1px solid var(--theme-line)">
-        <div class="level-left"><p class="page-copy">Stripe can later update account tier and premium expiry fields.</p></div>
+        <div class="level-left"></div>
         <div class="level-right"><%= f.submit "Save setup", class: "button theme-btn-primary is-medium" %></div>
       </div>
     <% end %>
@@ -35,7 +34,6 @@
     <div class="mb-4">
       <div class="theme-section-label">Premium stats</div>
       <h2 class="section-title">Stats by dart setup</h2>
-      <p class="page-copy">Your current dart setup is snapshotted when matches start, so stats stay accurate after edits.</p>
     </div>
 
     <% if @setup_stats.any? %>

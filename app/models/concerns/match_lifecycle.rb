@@ -35,6 +35,7 @@ module MatchLifecycle
 
   def finish!(winner)
     update!(finished_at: Time.current)
+    sync_tournament_match_after_finish!
   end
 
   def finished?
@@ -56,5 +57,19 @@ module MatchLifecycle
   def score_for(player)
     return starting_score unless current_leg
     current_leg.leg_players.find_by(player: player)&.score || starting_score
+  end
+
+  private
+
+  def sync_tournament_match_after_finish!
+    tournament_match = TournamentMatch.find_by(linked_match: self)
+    return unless tournament_match
+
+    tournament = tournament_match.tournament
+    tournament.with_lock do
+      tournament_match.reload.sync_from_linked_match!
+      TournamentProgressor.new(tournament).call
+    end
+    tournament.broadcast_live_update!
   end
 end

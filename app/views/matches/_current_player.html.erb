@@ -1,7 +1,8 @@
 <% presenter ||= MatchStatePresenter.new(match) %>
 <% current_player = presenter.current_player %>
+<% bot_turn = current_player&.bot? %>
 <div
-  class="match-input-panel"
+  class="match-input-panel <%= 'is-disabled bot-turn-disabled' if bot_turn %>"
   data-controller="keyboard"
   data-keyboard-url-value="<%= turn_throws_path(turn) %>"
   data-keyboard-score-value="<%= presenter.score_for(current_player) %>"
@@ -11,16 +12,20 @@
     <div>
       <div class="theme-section-label">Current turn</div>
       <h2><%= current_player.display_name %></h2>
+      <% if bot_turn %>
+        <div class="mono mt-2 text-xs uppercase tracking-[0.14em]" style="color:var(--theme-muted)">Bot is throwing — input locked</div>
+      <% end %>
     </div>
-    <button type="button" data-action="click->keyboard#undoLastThrow" class="button is-small btn-undo mono">↩ Undo</button>
+    <button type="button" data-action="click->keyboard#undoLastThrow" class="button is-small btn-undo mono" <%= 'disabled' if bot_turn %>>↩ Undo</button>
   </div>
 
   <input type="text"
          data-keyboard-target="input"
          data-action="input->keyboard#preview keydown->keyboard#handle"
-         placeholder="Enter score"
+         placeholder="<%= bot_turn ? 'Waiting for bot…' : 'Enter score' %>"
          class="input throw-input match-score-input mono has-text-centered"
-         autocomplete="off">
+         autocomplete="off"
+         <%= 'disabled' if bot_turn %>>
 </div>
 
 <%= form_with url: turn_throws_path(turn),

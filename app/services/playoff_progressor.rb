@@ -4,13 +4,34 @@ class PlayoffProgressor
   end
 
   def call
-    return unless @tournament.format_type == "playoffs"
+    return unless @tournament.playoff_enabled?
 
     if @tournament.playoff_mode == "single_elimination"
       progress_single_elimination
     else
       progress_double_elimination
     end
+  end
+
+  def create_initial_round!(entries)
+    return if @tournament.rounds.where(stage_type: "playoffs").exists?
+
+    entries = entries.compact
+    return if entries.size < 2
+
+    bracket_size = 1
+    bracket_size *= 2 while bracket_size < entries.size
+    seeded = entries + Array.new(bracket_size - entries.size)
+    round = @tournament.rounds.create!(number: next_round_number, name: "#{@tournament.playoff_mode == 'double_elimination' ? 'Upper' : 'Playoff'} Round 1", stage_type: "playoffs", bracket: "upper", status: "active")
+
+    seeded.each_slice(2).with_index do |(home, away), idx|
+      match = round.tournament_matches.create!(tournament: @tournament, home_entry: home, away_entry: away, bracket: "upper", position: idx + 1, **@tournament.playoff_match_settings_for_entries(entries.size, bracket: "upper"))
+      if home.present? && away.nil?
+        match.update!(bye: true, winner_entry: home, status: "complete", completed_at: Time.current, home_legs: match.best_of_legs)
+      end
+    end
+
+    round
   end
 
   private
@@ -35,12 +56,15 @@ class PlayoffProgressor
       finalize_single_elimination_if_ready!
       return
     end
-    return if upper_rounds.exists?(number: latest_upper.number + 1)
+    next_number = latest_upper.number + 1
+    next_bracket = winners.size == 2 ? "final" : "upper"
+    return if @tournament.rounds.where(stage_type: "playoffs", number: next_number, bracket: next_bracket).exists?
+    return if next_bracket == "final" && final_round.present?
 
     create_round_from_entries!(
-      name: winners.size == 2 ? "Grand Final" : "Playoff Round #{latest_upper.number + 1}",
-      number: latest_upper.number + 1,
-      bracket: winners.size == 2 ? "final" : "upper",
+      name: next_bracket == "final" ? "Grand Final" : "Playoff Round #{next_number}",
+      number: next_number,
+      bracket: next_bracket,
       entries: winners
     )
   end
@@ -106,9 +130,7 @@ class PlayoffProgressor
       home_entry: upper_champion,
       away_entry: lower_champion,
       position: 1,
-      best_of_legs: @tournament.best_of_legs,
-      best_of_sets: @tournament.best_of_sets,
-      **@tournament.game_settings
+      **@tournament.playoff_match_settings_for_entries(2, bracket: "final")
     )
   end
 
@@ -130,13 +152,11 @@ class PlayoffProgressor
         away_entry: away,
         bracket:,
         position: idx + 1,
-        best_of_legs: @tournament.best_of_legs,
-        best_of_sets: @tournament.best_of_sets,
-        **@tournament.game_settings
+        **@tournament.playoff_match_settings_for_entries(entries.size, bracket: bracket)
       )
 
       if home.present? && away.nil?
-        match.update!(bye: true, winner_entry: home, status: "complete", completed_at: Time.current, home_legs: @tournament.best_of_legs)
+        match.update!(bye: true, winner_entry: home, status: "complete", completed_at: Time.current, home_legs: match.best_of_legs)
       end
     end
 

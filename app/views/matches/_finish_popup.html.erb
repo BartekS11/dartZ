@@ -5,6 +5,9 @@
 <% match_won  = match.finished? && match.winner == player %>
 <% popup_class = match_won ? 'is-match' : set_winner ? 'is-set' : 'is-leg' %>
 <% accent_color = match_won ? 'var(--theme-primary-soft)' : set_winner ? 'var(--theme-warning)' : 'var(--theme-success)' %>
+<% checkout_turn = leg.turns.includes(:throws).where(player: player).order(:created_at).last %>
+<% checkout_score = checkout_turn&.throws&.sum(&:points).to_i %>
+<% minimum_checkout_darts = CheckoutCalculator.darts_needed(checkout_score, double_out: match.double_out?) %>
 
 <div id="finish-popup-overlay" class="finish-popup-overlay">
   <div class="finish-popup-card <%= popup_class %>">
@@ -43,27 +46,34 @@
 
           <div class="grid grid-cols-3 gap-3">
             <% [1, 2, 3].each do |n| %>
-              <label class="checkout-choice">
+              <% possible = CheckoutCalculator.possible_checkout_darts?(checkout_score, n, double_out: match.double_out?) %>
+              <label class="checkout-choice <%= 'is-disabled' unless possible %>" title="<%= possible ? '' : "#{checkout_score} cannot be finished in #{n} dart#{'s' unless n == 1}" %>">
                 <input type="radio"
                        name="checkout_throws"
                        value="<%= n %>"
                        required
+                       <%= 'disabled' unless possible %>
                        class="absolute opacity-0 pointer-events-none"
                        onchange="document.querySelectorAll('#checkout-form .checkout-choice').forEach(el => el.classList.remove('active')); this.closest('.checkout-choice').classList.add('active');">
                 <span><%= n %></span>
               </label>
             <% end %>
           </div>
+          <% if minimum_checkout_darts.present? %>
+            <p class="mono mt-2 text-center text-[0.62rem] uppercase tracking-[0.12em]" style="color:var(--theme-muted)">
+              <%= checkout_score %> checkout needs at least <%= minimum_checkout_darts %> dart<%= 's' unless minimum_checkout_darts == 1 %>.
+            </p>
+          <% end %>
         </div>
 
-        <button type="submit" class="btn theme-btn-primary w-100 rounded-pill px-4 py-3 bebas text-xl">
+        <button type="submit" class="btn theme-btn-primary w-full rounded-pill px-4 py-3 bebas text-xl">
           <%= match_won ? 'See results →' : 'Next leg →' %>
         </button>
       </form>
     <% else %>
       <button type="button"
               onclick="this.closest('#finish-popup-overlay').style.display='none'"
-              class="btn theme-btn-primary w-100 rounded-pill px-4 py-3 bebas text-xl">
+              class="btn theme-btn-primary w-full rounded-pill px-4 py-3 bebas text-xl">
         <%= match_won ? 'See results →' : 'Continue →' %>
       </button>
     <% end %>

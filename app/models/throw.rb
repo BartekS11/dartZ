@@ -31,8 +31,7 @@ class Throw < ApplicationRecord
             if: -> { segment == 25 }
 
   def points
-    return 0 if multiplier == "miss" || segment == 0
-    segment * self.class.multipliers.fetch(multiplier)
+    Darts::Core::Throw.new(segment: segment, multiplier: multiplier).points
   end
 
   private

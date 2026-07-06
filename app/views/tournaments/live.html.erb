@@ -1,0 +1,27 @@
+<%= turbo_stream_from [@tournament, :live] %>
+
+<div class="page-shell space-y-5">
+  <div class="theme-hero p-5 md:p-6">
+    <div class="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
+      <div class="space-y-3">
+        <div class="theme-section-label mono">Live tournament board</div>
+        <h1 class="page-title bebas"><%= @tournament.title %></h1>
+        <div class="flex flex-wrap gap-2">
+          <span class="theme-chip mono"><%= @tournament.format_type.humanize %></span>
+          <span class="theme-chip mono"><%= @tournament.entries.count %> players</span>
+          <span class="theme-chip mono"><%= @tournament.status %></span>
+          <span class="theme-chip mono">Groups Bo<%= @tournament.best_of_legs %></span>
+          <% if @tournament.playoff_enabled? %>
+            <span class="theme-chip mono">Playoffs Bo<%= @tournament.playoff_best_of_legs || @tournament.best_of_legs %></span>
+          <% end %>
+        </div>
+      </div>
+      <div class="flex flex-wrap gap-2">
+        <%= link_to "Player stats", "#player-stats", class: "btn theme-btn-primary rounded-pill mono" %>
+        <%= link_to "Tournament details", tournament_path(@tournament, admin_token: (params[:admin_token] if @can_admin), share_token: (params[:share_token] unless @can_admin)), class: "btn theme-btn-outline rounded-pill mono" %>
+      </div>
+    </div>
+  </div>
+
+  <%= render "tournaments/live_board", tournament: @tournament, can_admin: @can_admin, admin_token: params[:admin_token] %>
+</div>

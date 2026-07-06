@@ -3,8 +3,18 @@
     <div class="page-header mb-6">
       <div class="theme-section-label mono">Tournament setup</div>
       <h1 class="page-title bebas">Create tournament</h1>
-      <p class="page-copy mt-2">One clean setup flow for groups, swiss, or playoffs.</p>
     </div>
+
+    <% if @tournament.errors.any? %>
+      <div class="theme-notification is-danger-light mono mb-4">
+        <strong><%= pluralize(@tournament.errors.count, "error") %> prevented this tournament from being created:</strong>
+        <ul class="mt-2 list-disc pl-5">
+          <% @tournament.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
 
     <%= form_with model: @tournament, class: "grid gap-4" do |f| %>
       <div>
@@ -49,6 +59,26 @@
           <label class="auth-label">Playoff qualifiers</label>
           <%= f.number_field :playoff_qualifier_count, min: 2, class: "form-control theme-form-input", placeholder: "Optional" %>
         </div>
+        <div>
+          <label class="auth-label">Qualifiers per group</label>
+          <%= f.number_field :qualifiers_per_group, min: 1, class: "form-control theme-form-input", placeholder: "Top X" %>
+        </div>
+        <div>
+          <label class="auth-label">Playoff best of legs</label>
+          <%= f.number_field :playoff_best_of_legs, min: 1, class: "form-control theme-form-input" %>
+        </div>
+        <div>
+          <label class="auth-label">Playoff best of sets</label>
+          <%= f.number_field :playoff_best_of_sets, min: 1, class: "form-control theme-form-input" %>
+        </div>
+        <div>
+          <label class="auth-label">Semifinal best of legs</label>
+          <%= f.select :semifinal_best_of_legs, [["Bo1", 1], ["Bo3", 3], ["Bo5", 5]], {}, class: "form-select theme-form-input" %>
+        </div>
+        <div>
+          <label class="auth-label">Final best of legs</label>
+          <%= f.select :final_best_of_legs, [["Bo1", 1], ["Bo3", 3], ["Bo5", 5]], {}, class: "form-select theme-form-input" %>
+        </div>
       </div>
 
       <div class="grid gap-3 md:grid-cols-2">
@@ -62,7 +92,7 @@
 
       <div>
         <label class="auth-label">Players (one per line)</label>
-        <%= text_area_tag "tournament[entry_names]", nil, rows: 10, class: "form-control theme-form-input", placeholder: "Player 1\nPlayer 2\nPlayer 3" %>
+        <%= text_area_tag "tournament[entry_names]", @entry_names, rows: 10, class: "form-control theme-form-input", placeholder: "Player 1\nPlayer 2\nPlayer 3" %>
       </div>
 
       <div class="flex flex-col gap-3 sm:flex-row sm:justify-end">

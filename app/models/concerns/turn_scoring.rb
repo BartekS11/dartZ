@@ -16,7 +16,7 @@ module TurnScoring
       return
     end
 
-    chunks = split_into_valid_chunks(total)
+    chunks = split_into_valid_chunks(total, checkout_score: leg.match.score_for(player), skip_checkout_rule: skip_checkout_rule)
 
     unless chunks
       active_turn.complete_turn!(broadcast: false) unless active_turn.completed?
@@ -58,13 +58,42 @@ module TurnScoring
 
   private
 
-  def split_into_valid_chunks(total)
-    valid = ((1..20).to_a +
-      (1..20).map { |s| s * 2 } +
-      (1..20).map { |s| s * 3 } +
-      [ 25, 50 ]).uniq.sort.reverse
+  def split_into_valid_chunks(total, checkout_score:, skip_checkout_rule: true)
+    return checkout_chunks(total, skip_checkout_rule: skip_checkout_rule) if total == checkout_score
+
+    valid = valid_dart_points
+    find_exact_chunks(total, 3, valid)
+  end
+
+  def checkout_chunks(total, skip_checkout_rule: true)
+    valid = valid_dart_points
+    finishing_points = if leg.match.double_out? && !skip_checkout_rule
+      double_points
+    else
+      valid
+    end
+
+    (1..3).each do |dart_count|
+      sequence = find_checkout_sequence(total, dart_count, valid, finishing_points)
+      return sequence if sequence
+    end
 
     find_exact_chunks(total, 3, valid)
+  end
+
+  def find_checkout_sequence(total, dart_count, valid, finishing_points)
+    return finishing_points.find { |points| points == total }&.then { |points| [ points ] } if dart_count == 1
+
+    valid.each do |points|
+      next if points >= total
+      remaining = total - points
+      next if remaining == 1
+
+      tail = find_checkout_sequence(remaining, dart_count - 1, valid, finishing_points)
+      return [ points, *tail ] if tail
+    end
+
+    nil
   end
 
   def find_exact_chunks(remaining, darts_left, valid)
@@ -79,5 +108,16 @@ module TurnScoring
     end
 
     nil
+  end
+
+  def valid_dart_points
+    ((1..20).to_a +
+      double_points +
+      (1..20).map { |s| s * 3 } +
+      [ 25, 50 ]).uniq.sort.reverse
+  end
+
+  def double_points
+    (1..20).map { |s| s * 2 } + [ 50 ]
   end
 end

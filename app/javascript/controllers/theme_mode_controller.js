@@ -17,6 +17,7 @@ export default class extends Controller {
 
   apply(theme) {
     document.documentElement.dataset.theme = theme
+    document.documentElement.classList.toggle("dark", theme === "dark")
     localStorage.setItem("dartz_theme_mode", theme)
 
     if (this.hasLabelTarget) this.labelTarget.textContent = theme === "dark" ? "Dark" : "Light"

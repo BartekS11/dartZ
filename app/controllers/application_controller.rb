@@ -1,5 +1,7 @@
 class ApplicationController < ActionController::Base
   include Authentication
+
+  MAX_GUEST_MATCH_TOKENS = 20
   # Only allow modern browsers supporting webp images, web push, badges, import maps, CSS nesting, and CSS :has.
   allow_browser versions: :modern
 
@@ -31,11 +33,12 @@ class ApplicationController < ActionController::Base
   end
 
   def remember_guest_match!(match, token = params[:guest_token])
-    return if Current.user || token.blank? || match.guest_token.blank?
+    return if token.blank? || match.guest_token.blank?
+    return if Current.user && TournamentMatch.find_by(linked_match: match).blank?
     return unless MatchAccess.new(match: match, guest_token: token).allowed?
 
     tokens = cookies.signed[:guest_match_tokens] || {}
-    tokens = tokens.to_h.merge(match.id.to_s => token)
+    tokens = tokens.to_h.merge(match.id.to_s => token).to_a.last(MAX_GUEST_MATCH_TOKENS).to_h
     cookies.signed.permanent[:guest_match_tokens] = { value: tokens, httponly: true, same_site: :lax }
   end
 

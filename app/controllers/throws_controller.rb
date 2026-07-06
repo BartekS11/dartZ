@@ -8,27 +8,11 @@ class ThrowsController < ApplicationController
     authorize_match!(@match)
     return if performed?
 
-    @match.with_lock do
-      @turn.reload
-      if params[:throw][:total].present?
-        total           = params[:throw][:total].to_i
-        darts_remaining = 3 - @turn.throws.count
-        max_possible    = darts_remaining * 60
-
-        @turn.update!(total_score: total)
-
-        if total > max_possible || total > @match.score_for(@turn.player)
-          @turn.complete_turn!(broadcast: false)
-        else
-          @turn.distribute_total!(total)
-        end
-      else
-        @throw = @turn.throws.create!(throw_params)
-        @turn.apply_throw!(@throw)
-      end
-
-      @match.reload
-    end
+    @match = ThrowSubmission.call(
+      turn: @turn,
+      total: params[:throw][:total],
+      throw_attributes: throw_params
+    )
 
     respond_to do |format|
       format.turbo_stream { render_streams }
@@ -88,7 +72,18 @@ class ThrowsController < ApplicationController
       streams << turbo_stream.update("header-section",      html: "")
     end
 
+    broadcast_tournament_update!
+
     render turbo_stream: streams
+  end
+
+  def broadcast_tournament_update!
+    tournament_match = TournamentMatch.find_by(linked_match: @match)
+    return unless tournament_match
+
+    tournament = tournament_match.tournament
+    tournament.sync_from_linked_matches! if @match.finished?
+    tournament.broadcast_live_update!
   end
 
   def throw_params

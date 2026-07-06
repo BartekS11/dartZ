@@ -1,19 +1,18 @@
 class TournamentMatchesController < ApplicationController
+  include TournamentAccessControl
+
   allow_unauthenticated_access only: %i[launch report]
   before_action :resume_session_optional
   before_action :set_tournament
   before_action :set_tournament_match
 
   def launch
-    unless @tournament.can_administer?(user: Current.user, admin_token: params[:admin_token])
-      redirect_to tournament_path(@tournament), alert: "Unauthorized"
-      return
-    end
+    return unless authorize_tournament_admin!
 
     if @tournament_match.linked_match.present?
       @tournament_match.linked_match.ensure_guest_token!
       remember_guest_match!(@tournament_match.linked_match, @tournament_match.linked_match.guest_token)
-      redirect_to match_path(@tournament_match.linked_match)
+      redirect_to match_path(@tournament_match.linked_match, guest_token: @tournament_match.linked_match.guest_token)
       return
     end
 
@@ -21,33 +20,25 @@ class TournamentMatchesController < ApplicationController
     @tournament.with_lock do
       ApplicationRecord.transaction do
         @tournament_match.reload
-        match = Match.new(
-          best_of_legs: @tournament_match.best_of_legs,
-          best_of_sets: @tournament_match.best_of_sets,
-          starting_score: @tournament_match.starting_score,
-          double_in: @tournament_match.double_in,
-          double_out: @tournament_match.double_out
+        match = MatchCreator.call(
+          settings: MatchSettings.from_tournament_match(@tournament_match),
+          players: [
+            { name: @tournament_match.home_entry.name },
+            { name: @tournament_match.away_entry.name }
+          ],
+          guest_match: true
         )
-        match.ensure_guest_token!
-        match.save!
-        match.players.create!(name: @tournament_match.home_entry.name)
-        match.players.create!(name: @tournament_match.away_entry.name)
-        match.start_first_set!
-        match.ensure_match_identifier!
 
         @tournament_match.update!(linked_match: match, status: "live")
       end
     end
     @tournament.broadcast_live_update!
     remember_guest_match!(match, match.guest_token)
-    redirect_to match_path(match)
+    redirect_to match_path(match, guest_token: match.guest_token)
   end
 
   def report
-    unless @tournament.can_administer?(user: Current.user, admin_token: params[:admin_token])
-      redirect_to tournament_path(@tournament), alert: "Unauthorized"
-      return
-    end
+    return unless authorize_tournament_admin!
 
     home_sets = params[:home_sets].to_i
     away_sets = params[:away_sets].to_i
@@ -61,7 +52,7 @@ class TournamentMatchesController < ApplicationController
     end
     @tournament.broadcast_live_update!
 
-    redirect_to tournament_path(@tournament, admin_token: params[:admin_token]), notice: "Result saved."
+    redirect_to tournament_admin_path, notice: "Result saved."
   end
 
   private

@@ -27,8 +27,8 @@ DartZ allows users to create matches, track turns, enter throws (via UI or keybo
 - Ruby on Rails 8  
 - Hotwire (Turbo + Stimulus)
 - Importmap (no bundler required)
-- TailwindCSS
-- PostreSQL 
+- Bulma CSS + custom theme variables
+- PostgreSQL 
 
 ---
 

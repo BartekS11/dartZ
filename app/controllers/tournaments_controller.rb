@@ -1,7 +1,9 @@
 class TournamentsController < ApplicationController
+  include TournamentAccessControl
+
   allow_unauthenticated_access
   before_action :resume_session_optional
-  before_action :set_tournament, only: %i[show update destroy regenerate advance_round reseed]
+  before_action :set_tournament, only: %i[show live update destroy regenerate advance_round reseed]
 
   def index
     @guest_tournaments = Tournament.guest_public.order(created_at: :desc).limit(30)
@@ -9,13 +11,21 @@ class TournamentsController < ApplicationController
   end
 
   def new
+    @entry_names = ""
     @tournament = Tournament.new(
-      format_type: "groups",
+      format_type: "groups_playoffs",
       best_of_legs: 1,
       best_of_sets: 1,
+      playoff_best_of_legs: 1,
+      playoff_best_of_sets: 1,
+      semifinal_best_of_legs: 3,
+      final_best_of_legs: 5,
       starting_score: 501,
+      playoff_starting_score: 501,
       double_in: false,
       double_out: true,
+      playoff_double_in: false,
+      playoff_double_out: true,
       seeding_mode: "auto",
       playoff_mode: "single_elimination",
       auto_advance: true,
@@ -30,6 +40,7 @@ class TournamentsController < ApplicationController
     @tournament.visibility = Current.user ? "participant_only" : "public_guest"
 
     entry_names = extract_entry_names
+    @entry_names = params[:tournament][:entry_names].to_s
     build_entries(@tournament, entry_names)
 
     if @tournament.valid?
@@ -45,7 +56,7 @@ class TournamentsController < ApplicationController
 
   def show
     @tournament.sync_from_linked_matches!
-    unless @tournament.can_view?(user: Current.user, admin_token: params[:admin_token], participant_token: params[:participant_token], join_token: params[:join_token])
+    unless @tournament.can_view?(user: Current.user, admin_token: params[:admin_token], participant_token: params[:participant_token], join_token: params[:join_token], share_token: params[:share_token])
       redirect_to tournaments_path, alert: "You don't have access to that tournament."
       return
     end
@@ -54,51 +65,49 @@ class TournamentsController < ApplicationController
     @participant_token = params[:participant_token]
   end
 
-  def update
-    unless @tournament.can_administer?(user: Current.user, admin_token: params[:admin_token])
-      redirect_to tournament_path(@tournament), alert: "Unauthorized"
+  def live
+    @tournament.sync_from_linked_matches!
+    unless @tournament.can_view?(user: Current.user, admin_token: params[:admin_token], participant_token: params[:participant_token], join_token: params[:join_token], share_token: params[:share_token])
+      redirect_to tournaments_path, alert: "You don't have access to that tournament."
       return
     end
+
+    @can_admin = @tournament.can_administer?(user: Current.user, admin_token: params[:admin_token])
+  end
+
+  def update
+    return unless authorize_tournament_admin!
 
     if @tournament.update(tournament_params)
       @tournament.with_lock do
         TournamentGenerator.new(@tournament).call if @tournament.entries.size >= 2
       end
       @tournament.broadcast_live_update!
-      redirect_to tournament_path(@tournament, admin_token: params[:admin_token]), notice: "Tournament updated."
+      redirect_to tournament_admin_path, notice: "Tournament updated."
     else
-      redirect_to tournament_path(@tournament, admin_token: params[:admin_token]), alert: @tournament.errors.full_messages.to_sentence
+      redirect_to tournament_admin_path, alert: @tournament.errors.full_messages.to_sentence
     end
   end
 
   def destroy
-    unless @tournament.can_administer?(user: Current.user, admin_token: params[:admin_token])
-      redirect_to tournament_path(@tournament), alert: "Unauthorized"
-      return
-    end
+    return unless authorize_tournament_admin!
 
     @tournament.destroy!
     redirect_to tournaments_path, notice: "Tournament deleted."
   end
 
   def regenerate
-    unless @tournament.can_administer?(user: Current.user, admin_token: params[:admin_token])
-      redirect_to tournament_path(@tournament), alert: "Unauthorized"
-      return
-    end
+    return unless authorize_tournament_admin!
 
     @tournament.with_lock do
       TournamentGenerator.new(@tournament).call
     end
     @tournament.broadcast_live_update!
-    redirect_to tournament_path(@tournament, admin_token: params[:admin_token]), notice: "Tournament regenerated."
+    redirect_to tournament_admin_path, notice: "Tournament regenerated."
   end
 
   def reseed
-    unless @tournament.can_administer?(user: Current.user, admin_token: params[:admin_token])
-      redirect_to tournament_path(@tournament), alert: "Unauthorized"
-      return
-    end
+    return unless authorize_tournament_admin!
 
     @tournament.with_lock do
       @tournament.entries.order(:created_at).each_with_index do |entry, idx|
@@ -107,14 +116,11 @@ class TournamentsController < ApplicationController
       TournamentGenerator.new(@tournament).call if @tournament.entries.size >= 2
     end
     @tournament.broadcast_live_update!
-    redirect_to tournament_path(@tournament, admin_token: params[:admin_token]), notice: "Seeds rebuilt."
+    redirect_to tournament_admin_path, notice: "Seeds rebuilt."
   end
 
   def advance_round
-    unless @tournament.can_administer?(user: Current.user, admin_token: params[:admin_token])
-      redirect_to tournament_path(@tournament), alert: "Unauthorized"
-      return
-    end
+    return unless authorize_tournament_admin!
 
     case @tournament.format_type
     when "swiss"
@@ -129,9 +135,9 @@ class TournamentsController < ApplicationController
 
       if generated
         @tournament.broadcast_live_update!
-        redirect_to tournament_path(@tournament, admin_token: params[:admin_token]), notice: "Next swiss round created."
+        redirect_to tournament_admin_path, notice: "Next swiss round created."
       else
-        redirect_to tournament_path(@tournament, admin_token: params[:admin_token]), alert: "Unable to generate the next swiss round yet."
+        redirect_to tournament_admin_path, alert: "Unable to generate the next swiss round yet."
       end
     when "playoffs"
       previous_round_count = @tournament.rounds.count
@@ -142,12 +148,12 @@ class TournamentsController < ApplicationController
       @tournament.broadcast_live_update!
 
       if @tournament.rounds.count > previous_round_count || @tournament.reload.status == "complete"
-        redirect_to tournament_path(@tournament, admin_token: params[:admin_token]), notice: "Playoff bracket advanced."
+        redirect_to tournament_admin_path, notice: "Playoff bracket advanced."
       else
-        redirect_to tournament_path(@tournament, admin_token: params[:admin_token]), alert: "Unable to advance the playoff bracket yet."
+        redirect_to tournament_admin_path, alert: "Unable to advance the playoff bracket yet."
       end
     else
-      redirect_to tournament_path(@tournament, admin_token: params[:admin_token]), alert: "Manual round advance is not available for this format."
+      redirect_to tournament_admin_path, alert: "Manual round advance is not available for this format."
     end
   end
 
@@ -158,7 +164,7 @@ class TournamentsController < ApplicationController
   end
 
   def tournament_params
-    params.require(:tournament).permit(:title, :format_type, :best_of_legs, :best_of_sets, :starting_score, :double_in, :double_out, :seeding_mode, :playoff_mode, :bronze_match, :auto_advance, :manual_advance_allowed, :group_count, :swiss_round_count, :playoff_qualifier_count, :allow_wildcards)
+    params.require(:tournament).permit(:title, :format_type, :best_of_legs, :best_of_sets, :starting_score, :double_in, :double_out, :playoff_best_of_legs, :playoff_best_of_sets, :semifinal_best_of_legs, :final_best_of_legs, :playoff_starting_score, :playoff_double_in, :playoff_double_out, :qualifiers_per_group, :seeding_mode, :playoff_mode, :bronze_match, :auto_advance, :manual_advance_allowed, :group_count, :swiss_round_count, :playoff_qualifier_count, :allow_wildcards)
   end
 
   def extract_entry_names

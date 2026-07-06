@@ -31,31 +31,19 @@ class MatchesController < ApplicationController
   end
 
   def create
-    @match = Match.new(
-      best_of_legs: params[:best_of_legs].to_i.clamp(1, 99),
-      best_of_sets: params[:best_of_sets].to_i.clamp(1, 99),
-      starting_score: permitted_starting_score,
-      double_in: truthy_param?(:double_in),
-      double_out: truthy_param?(:double_out, default: true)
-    )
-
     p1_name = params[:player1_name].to_s.strip.presence || Current.user&.display_name || "Player 1"
     p2_name = params[:player2_name].to_s.strip.presence || "Player 2"
 
-    ApplicationRecord.transaction do
-      @match.ensure_guest_token! unless Current.user
-      @match.save!
-
-      Current.user&.update!(nickname: p1_name) if Current.user && Current.user.nickname != p1_name
-
-      player_one = @match.players.build(name: p1_name, user: Current.user)
-      assign_current_dart_setup_snapshot(player_one)
-      player_one.save!
-      @match.players.create!(name: p2_name)
-
-      @match.ensure_match_identifier!
-      @match.start_first_set!
-    end
+    @match = MatchCreator.call(
+      settings: MatchSettings.from_params(params),
+      players: [
+        { name: p1_name, user: Current.user, dart_setup: current_dart_setup_snapshot },
+        { name: p2_name }
+      ],
+      guest_match: Current.user.nil?,
+      nickname_user: Current.user,
+      nickname: p1_name
+    )
 
     remember_guest_match!(@match, @match.guest_token) unless Current.user
     redirect_to match_path(@match)
@@ -101,22 +89,8 @@ class MatchesController < ApplicationController
 
   private
 
-  def assign_current_dart_setup_snapshot(player)
-    setup = Current.user&.premium_access? ? Current.user.dart_setup : nil
-    return unless setup
-
-    player.assign_dart_setup_snapshot!(setup)
-  end
-
-  def permitted_starting_score
-    score = params[:starting_score].to_i
-    Match::X01_STARTING_SCORES.include?(score) ? score : 501
-  end
-
-  def truthy_param?(key, default: false)
-    return default unless params.key?(key)
-
-    ActiveModel::Type::Boolean.new.cast(params[key])
+  def current_dart_setup_snapshot
+    Current.user&.premium_access? ? Current.user.dart_setup : nil
   end
 
   def match_not_found

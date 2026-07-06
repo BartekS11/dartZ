@@ -6,7 +6,7 @@ class SwissRoundGenerator
   end
 
   def call
-    return unless @tournament.format_type == "swiss"
+    return unless @tournament.swiss_stage_enabled?
     return unless @tournament.can_generate_next_swiss_round?
 
     entries = ranked_entries
@@ -28,10 +28,8 @@ class SwissRoundGenerator
         bye: true,
         status: "complete",
         completed_at: Time.current,
-        best_of_legs: @tournament.best_of_legs,
-        best_of_sets: @tournament.best_of_sets,
         home_legs: @tournament.best_of_legs,
-        **@tournament.game_settings
+        **@tournament.group_match_settings
       )
     end
 
@@ -42,9 +40,7 @@ class SwissRoundGenerator
         home_entry: home,
         away_entry: away,
         position: idx + 1,
-        best_of_legs: @tournament.best_of_legs,
-        best_of_sets: @tournament.best_of_sets,
-        **@tournament.game_settings
+        **@tournament.group_match_settings
       )
     end
 

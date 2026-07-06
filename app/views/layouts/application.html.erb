@@ -5,140 +5,130 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <%= csrf_meta_tags %>
   <%= csp_meta_tag %>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/icon.png" type="image/png">
   <script>
     (function() {
       const theme = localStorage.getItem("dartz_theme_mode") || "dark"
       document.documentElement.dataset.theme = theme
+      document.documentElement.classList.toggle("dark", theme === "dark")
     })()
   </script>
+  <script>
+    tailwind = { config: { darkMode: "class" } }
+  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
   <%= javascript_importmap_tags %>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <%= stylesheet_link_tag "https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=Oswald:wght@400;500;600;700&display=swap", crossorigin: "anonymous" %>
-  <%= stylesheet_link_tag "https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css", crossorigin: "anonymous" %>
+  <%= stylesheet_link_tag "https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.5.2/flowbite.min.css", crossorigin: "anonymous" %>
   <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
   <%= stylesheet_link_tag "bulma_bridge", "data-turbo-track": "reload" %>
   <%= stylesheet_link_tag "dartz_theme", "data-turbo-track": "reload" %>
   <meta name="turbo-cache-control" content="no-store">
 </head>
 
-<body class="dartz-body" data-controller="theme-mode">
-  <div class="app-shell">
+<body class="dartz-body bg-slate-950 text-slate-100" data-controller="theme-mode">
+  <div class="app-shell min-h-screen">
     <header class="app-header">
-      <nav class="navbar is-transparent" role="navigation" aria-label="Primary navigation">
-        <div class="container is-max-widescreen">
-          <div class="navbar-brand">
-            <%= link_to root_path, class: "navbar-item brand-lockup" do %>
-              <span class="brand-mark" aria-hidden="true">
-                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M12 3v18M3 12h18" stroke="var(--theme-line-strong)" stroke-linecap="round"/>
-                  <circle cx="12" cy="12" r="7" stroke="var(--theme-primary)"/>
-                  <circle cx="12" cy="12" r="2" fill="var(--theme-primary)"/>
-                </svg>
-              </span>
-              <span>
-                <span class="brand-wordmark"><%= theme_app_name.delete(theme_app_accent) %><span><%= theme_app_accent %></span></span>
-                <span class="brand-subline"><%= Current.user ? Current.user.display_name : "Fast 501 scoring" %></span>
-              </span>
-            <% end %>
-          </div>
+      <nav class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8" aria-label="Primary navigation">
+        <div class="flex min-h-[4.75rem] flex-wrap items-center justify-between gap-3 py-3">
+          <%= link_to root_path, class: "group flex min-w-0 items-center gap-3 rounded-2xl text-white no-underline" do %>
+            <span class="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-red-600 shadow-lg shadow-red-600/25 ring-1 ring-white/10" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 3v18M3 12h18" stroke="currentColor" stroke-linecap="round" opacity=".55"/>
+                <circle cx="12" cy="12" r="7" stroke="currentColor"/>
+                <circle cx="12" cy="12" r="2" fill="currentColor"/>
+              </svg>
+            </span>
+            <span class="min-w-0">
+              <span class="brand-wordmark block truncate text-xl"><%= theme_app_name.delete(theme_app_accent) %><span><%= theme_app_accent %></span></span>
+              <span class="brand-subline"><%= Current.user ? Current.user.display_name : "501" %></span>
+            </span>
+          <% end %>
 
-          <div class="navbar-menu is-active app-navbar-menu">
-            <div class="navbar-start app-nav">
-              <%= link_to "Match", matches_path, class: "navbar-item app-nav-link #{'is-active' if current_page?(matches_path)}" %>
-              <%= link_to "Bot", new_bot_match_path, class: "navbar-item app-nav-link #{'is-active' if current_page?(new_bot_match_path)}" %>
-              <%= link_to "Tournaments", tournaments_path, class: "navbar-item app-nav-link #{'is-active' if request.path.start_with?(tournaments_path)}" %>
+          <div class="flex flex-1 flex-wrap items-center justify-end gap-2" data-controller="profile-menu">
+            <div class="flex max-w-full gap-2 overflow-x-auto rounded-2xl border border-white/10 bg-white/[0.04] p-1 backdrop-blur-xl">
+              <%= link_to "Match", matches_path, class: "app-nav-link #{'is-active' if current_page?(matches_path)}" %>
+              <%= link_to "Bot", new_bot_match_path, class: "app-nav-link #{'is-active' if current_page?(new_bot_match_path)}" %>
+              <%= link_to "Tournaments", tournaments_path, class: "app-nav-link #{'is-active' if request.path.start_with?(tournaments_path)}" %>
               <% if Current.user %>
-                <%= link_to "Upgrade", billing_path, class: "navbar-item app-nav-link #{'is-active' if current_page?(billing_path)}" %>
+                <%= link_to "Upgrade", billing_path, class: "app-nav-link #{'is-active' if current_page?(billing_path)}" %>
               <% end %>
               <% if premium_access? %>
-                <%= link_to "Dart setup", edit_dart_setup_path, class: "navbar-item app-nav-link #{'is-active' if request.path.start_with?(edit_dart_setup_path)}" %>
+                <%= link_to "Dart setup", edit_dart_setup_path, class: "app-nav-link #{'is-active' if request.path.start_with?(edit_dart_setup_path)}" %>
               <% end %>
               <% unless Current.user %>
-                <%= link_to "Login", new_session_path, class: "navbar-item app-nav-link #{'is-active' if current_page?(new_session_path)}" %>
-              <% end %>
-            </div>
-
-            <div class="navbar-end app-actions">
-              <% if content_for?(:mobile_header_action) %>
-                <div class="navbar-item"><%= yield :mobile_header_action %></div>
+                <%= link_to "Login", new_session_path, class: "app-nav-link #{'is-active' if current_page?(new_session_path)}" %>
               <% end %>
 
-              <div class="navbar-item">
-                <button type="button"
-                        class="button is-small theme-btn-outline theme-toggle mono"
-                        data-action="theme-mode#toggle"
-                        data-theme-mode-target="button"
-                        aria-label="Toggle light and dark mode">
-                  <span data-theme-mode-target="icon">◐</span>
-                  <span data-theme-mode-target="label">Dark</span>
-                </button>
-              </div>
+              <button type="button"
+                      class="app-nav-link"
+                      data-action="theme-mode#toggle"
+                      data-theme-mode-target="button"
+                      aria-label="Toggle light and dark mode">
+                <span data-theme-mode-target="icon">◐</span>
+                <span data-theme-mode-target="label">Dark</span>
+              </button>
 
               <% if Current.user %>
-                <div class="navbar-item">
-                  <details class="profile-menu">
-                    <summary class="profile-menu-summary mono" aria-label="Open profile menu">Menu</summary>
-                    <div class="profile-menu-panel">
-                      <div>
-                        <div class="eyebrow">Signed in as</div>
-                        <div class="profile-name"><%= Current.user.display_name %></div>
-                        <div class="profile-email"><%= Current.user.email_address %></div>
-                        <span class="theme-chip <%= premium_access? ? 'is-live' : '' %>">Tier: <%= Current.user.account_tier.humanize %></span>
-                      </div>
-
-                      <hr>
-
-                      <%= form_with model: Current.user, url: profile_path, method: :patch, class: "stack-sm" do |f| %>
-                        <div class="field">
-                          <%= f.label :nickname, "Nickname", class: "label" %>
-                          <%= f.text_field :nickname, maxlength: 20, placeholder: "Set your nickname", class: "input theme-form-input mono" %>
-                        </div>
-                        <%= f.submit "Save nickname", class: "button is-small theme-btn-primary is-fullwidth mono" %>
-                      <% end %>
-
-                      <hr>
-
-                      <% if premium_access? %>
-                        <%= link_to "Dart setup", edit_dart_setup_path, class: "button is-small theme-btn-primary is-fullwidth mono" %>
-                      <% else %>
-                        <p class="help-theme">Premium: dart setup customization locked.</p>
-                      <% end %>
-                      <%= link_to "Upgrade", billing_path, class: "button is-small theme-btn-outline is-fullwidth mono mt-2" %>
-
-                      <hr>
-
-                      <%= button_to "Logout", session_path,
-                            method: :delete,
-                            class: "button is-small theme-btn-outline is-fullwidth mono",
-                            form: {
-                              onsubmit: "localStorage.removeItem('dartz_player1');localStorage.removeItem('dartz_player2');localStorage.removeItem('dartz_players');localStorage.removeItem('dartz_matches');"
-                            } %>
-                    </div>
-                  </details>
-                </div>
+                <button id="profileMenuButton" class="app-nav-link" type="button" data-profile-menu-target="button" data-action="profile-menu#toggle" aria-controls="profileMenu" aria-expanded="false">
+                  Account ▾
+                </button>
               <% end %>
             </div>
+
+            <% if content_for?(:mobile_header_action) %>
+              <%= yield :mobile_header_action %>
+            <% end %>
+
+            <% if Current.user %>
+              <div id="profileMenu" data-profile-menu-target="menu" class="absolute right-4 top-20 z-50 hidden w-80 rounded-3xl border border-slate-700 bg-slate-900 p-4 shadow-2xl shadow-black/40 md:right-8">
+                <div class="mb-3">
+                  <div class="eyebrow">Signed in as</div>
+                  <div class="profile-name"><%= Current.user.display_name %></div>
+                  <div class="profile-email"><%= Current.user.email_address %></div>
+                  <span class="theme-chip <%= premium_access? ? 'is-live' : '' %>">Tier: <%= Current.user.account_tier.humanize %></span>
+                </div>
+                <div class="my-3 h-px bg-slate-700"></div>
+                <%= form_with model: Current.user, url: profile_path, method: :patch, class: "stack-sm" do |f| %>
+                  <%= f.label :nickname, "Nickname", class: "auth-label" %>
+                  <%= f.text_field :nickname, maxlength: 20, placeholder: "Set your nickname", class: "theme-form-input mono" %>
+                  <%= f.submit "Save nickname", class: "theme-btn-primary mono rounded-xl px-3 py-2 text-sm" %>
+                <% end %>
+                <div class="my-3 h-px bg-slate-700"></div>
+                <div class="grid gap-2">
+                  <% if premium_access? %>
+                    <%= link_to "Dart setup", edit_dart_setup_path, class: "theme-btn-primary mono rounded-xl px-3 py-2 text-center text-sm" %>
+                  <% else %>
+                  <% end %>
+                  <%= link_to "Upgrade", billing_path, class: "theme-btn-outline mono rounded-xl px-3 py-2 text-center text-sm" %>
+                  <%= button_to "Logout", session_path,
+                        method: :delete,
+                        class: "theme-btn-outline mono w-full rounded-xl px-3 py-2 text-sm",
+                        form: { onsubmit: "localStorage.removeItem('dartz_player1');localStorage.removeItem('dartz_player2');localStorage.removeItem('dartz_players');localStorage.removeItem('dartz_matches');" } %>
+                </div>
+              </div>
+            <% end %>
           </div>
         </div>
       </nav>
     </header>
 
-    <main class="section app-main">
-      <div class="container is-max-widescreen">
-        <% if notice %>
-          <div class="notification theme-notification is-success-light mono">✓ <%= notice %></div>
-        <% end %>
-        <% if alert %>
-          <div class="notification theme-notification is-danger-light mono">! <%= alert %></div>
-        <% end %>
+    <main class="app-main mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+      <% if notice %>
+        <div class="theme-notification is-success-light mono mb-4">✓ <%= notice %></div>
+      <% end %>
+      <% if alert %>
+        <div class="theme-notification is-danger-light mono mb-4">! <%= alert %></div>
+      <% end %>
 
-        <%= yield %>
-      </div>
+      <%= yield %>
     </main>
 
     <footer class="app-footer">
-      <div class="container is-max-widescreen is-flex is-justify-content-space-between is-align-items-center is-flex-wrap-wrap">
+      <div class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
         <span class="footer-brand"><%= theme_app_name %></span>
         <div class="footer-links">
           <%= link_to "Privacy", privacy_policy_path %>
@@ -148,5 +138,6 @@
       </div>
     </footer>
   </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.5.2/flowbite.min.js"></script>
 </body>
 </html>

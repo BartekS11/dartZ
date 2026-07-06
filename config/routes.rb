@@ -13,6 +13,7 @@ Rails.application.routes.draw do
   get "contact", to: "legal_pages#contact", as: :contact_page
 
   resources :tournaments, only: %i[index show new create update destroy] do
+    get :live, on: :member
     post :regenerate, on: :member
     post :reseed, on: :member
     post :advance_round, on: :member

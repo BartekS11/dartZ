@@ -1,7 +1,7 @@
-<div id="dart-board" class="match-dart-pad">
+<% bot_turn = turn&.player&.bot? %>
+<div id="dart-board" class="match-dart-pad <%= 'is-disabled bot-turn-disabled' if bot_turn %>">
   <div class="match-pad-head">
     <div class="theme-section-label">Throw pad</div>
-    <span class="help-theme">Tap exact darts only when needed.</span>
   </div>
 
   <div class="dart-grid mb-4">
@@ -13,6 +13,7 @@
                 params: { throw: { segment: n, multiplier: m } },
                 method: :post,
                 form: { data: { turbo_stream: true } },
+                disabled: bot_turn,
                 class: "dart-btn #{m} mono" %>
         <% end %>
       </div>
@@ -20,8 +21,8 @@
   </div>
 
   <div class="dart-footer-actions">
-    <%= button_to "Bull", turn_throws_path(turn), params: { throw: { segment: 25, multiplier: :single } }, method: :post, form: { data: { turbo_stream: true } }, class: "dart-btn single mono" %>
-    <%= button_to "Bull ×2", turn_throws_path(turn), params: { throw: { segment: 25, multiplier: :double } }, method: :post, form: { data: { turbo_stream: true } }, class: "dart-btn double mono" %>
-    <%= button_to "Miss", turn_throws_path(turn), params: { throw: { segment: 0, multiplier: :miss } }, method: :post, form: { data: { turbo_stream: true } }, class: "dart-btn miss mono" %>
+    <%= button_to "Bull", turn_throws_path(turn), params: { throw: { segment: 25, multiplier: :single } }, method: :post, form: { data: { turbo_stream: true } }, disabled: bot_turn, class: "dart-btn single mono" %>
+    <%= button_to "Bull ×2", turn_throws_path(turn), params: { throw: { segment: 25, multiplier: :double } }, method: :post, form: { data: { turbo_stream: true } }, disabled: bot_turn, class: "dart-btn double mono" %>
+    <%= button_to "Miss", turn_throws_path(turn), params: { throw: { segment: 0, multiplier: :miss } }, method: :post, form: { data: { turbo_stream: true } }, disabled: bot_turn, class: "dart-btn miss mono" %>
   </div>
 </div>

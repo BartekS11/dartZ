@@ -54,6 +54,13 @@ class MatchStatePresenter
     player_state(player)[:last_turn_throws]
   end
 
+  def last_turn_total_for(player)
+    turn = player_state(player)[:stats][:last_completed_turn_in_current_leg]
+    return nil unless turn
+
+    turn_total_for(turn)
+  end
+
   def last_throws_for(player, limit: 3)
     player_state(player)[:last_throws].first(limit)
   end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_19_123000) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_24_121000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -196,15 +196,23 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_19_123000) do
     t.datetime "created_at", null: false
     t.boolean "double_in", default: false, null: false
     t.boolean "double_out", default: true, null: false
+    t.integer "final_best_of_legs"
     t.string "format_type", null: false
     t.integer "group_count"
     t.string "join_token", null: false
     t.boolean "manual_advance_allowed", default: true, null: false
     t.bigint "owner_user_id"
+    t.integer "playoff_best_of_legs"
+    t.integer "playoff_best_of_sets"
+    t.boolean "playoff_double_in"
+    t.boolean "playoff_double_out"
     t.string "playoff_mode", default: "single_elimination", null: false
     t.integer "playoff_qualifier_count"
+    t.integer "playoff_starting_score"
     t.datetime "published_at"
+    t.integer "qualifiers_per_group"
     t.string "seeding_mode", default: "auto", null: false
+    t.integer "semifinal_best_of_legs"
     t.jsonb "settings", default: {}, null: false
     t.string "share_token", null: false
     t.integer "starting_score", default: 501, null: false

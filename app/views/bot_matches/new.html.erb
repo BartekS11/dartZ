@@ -3,8 +3,7 @@
     <section class="column is-4-desktop">
       <div class="theme-hero p-5 h-full">
         <div class="theme-section-label">Bot challenge</div>
-        <h1 class="page-title">Practice with a clean setup.</h1>
-        <p class="page-copy mt-3">Choose a level, start fast, and keep the interface simple.</p>
+        <h1 class="page-title">Practice</h1>
         <div class="stack-sm mt-5">
           <div class="theme-chip">Level 1–5 · beginner rhythm</div>
           <div class="theme-chip">Level 6–12 · steady scoring</div>
@@ -34,12 +33,14 @@
                 <div class="auth-label mb-2"><%= label %></div>
                 <div class="buttons are-small">
                   <% levels.each do |lvl| %>
-                    <button type="button" class="button theme-btn-outline mono bot-level-btn <%= 'is-selected' if lvl == 10 %>" onclick="document.getElementById('bot_level').value=<%= lvl.to_json %>; document.querySelectorAll('.bot-level-btn').forEach(b => b.classList.remove('is-selected')); this.classList.add('is-selected')"><%= lvl %></button>
+                    <label class="button theme-btn-outline mono bot-choice-radio <%= 'is-selected' if lvl == 10 %>">
+                      <%= radio_button_tag :bot_level, lvl, lvl == 10, class: "sr-only", onchange: "this.closest('.theme-panel').querySelectorAll('.bot-choice-radio').forEach(el => el.classList.remove('is-selected')); this.closest('.bot-choice-radio').classList.add('is-selected')" %>
+                      <span><%= lvl %></span>
+                    </label>
                   <% end %>
                 </div>
               </div>
             <% end %>
-            <%= f.hidden_field :bot_level, value: 10, id: "bot_level" %>
           </div>
 
           <div class="columns is-variable is-3">
@@ -48,10 +49,12 @@
                 <div class="auth-label mb-2">Starting score</div>
                 <div class="buttons are-small">
                   <% Match::X01_STARTING_SCORES.each do |score| %>
-                    <button type="button" class="button theme-btn-outline mono bot-score-btn <%= 'is-selected' if score == 501 %>" onclick="document.getElementById('starting_score').value=<%= score.to_json %>; document.querySelectorAll('.bot-score-btn').forEach(b => b.classList.remove('is-selected')); this.classList.add('is-selected')"><%= score %></button>
+                    <label class="button theme-btn-outline mono bot-choice-radio <%= 'is-selected' if score == 501 %>">
+                      <%= radio_button_tag :starting_score, score, score == 501, class: "sr-only", onchange: "this.closest('.buttons').querySelectorAll('.bot-choice-radio').forEach(el => el.classList.remove('is-selected')); this.closest('.bot-choice-radio').classList.add('is-selected')" %>
+                      <span><%= score %></span>
+                    </label>
                   <% end %>
                 </div>
-                <%= f.hidden_field :starting_score, value: 501, id: "starting_score" %>
               </div>
             </div>
             <div class="column"><label class="panel-choice"><%= hidden_field_tag :double_in, "0" %><%= check_box_tag :double_in, "1", false %> Double in</label><label class="panel-choice mt-3"><%= hidden_field_tag :double_out, "0" %><%= check_box_tag :double_out, "1", true %> Double out</label></div>
@@ -60,13 +63,23 @@
           <div class="columns is-variable is-3">
             <div class="column">
               <div class="theme-panel p-4"><div class="auth-label mb-2">Best of legs</div><div class="buttons are-small">
-                <% [[1, "1"], [3, "Bo3"], [5, "Bo5"]].each do |val, label| %><button type="button" class="button theme-btn-outline mono bot-legs-btn <%= 'is-selected' if val == 1 %>" onclick="document.getElementById('best_of_legs').value=<%= val.to_json %>; document.querySelectorAll('.bot-legs-btn').forEach(b => b.classList.remove('is-selected')); this.classList.add('is-selected')"><%= label %></button><% end %>
-              </div><%= f.hidden_field :best_of_legs, value: 1, id: "best_of_legs" %></div>
+                <% [[1, "1"], [3, "Bo3"], [5, "Bo5"]].each do |val, label| %>
+                  <label class="button theme-btn-outline mono bot-choice-radio <%= 'is-selected' if val == 1 %>">
+                    <%= radio_button_tag :best_of_legs, val, val == 1, class: "sr-only", onchange: "this.closest('.buttons').querySelectorAll('.bot-choice-radio').forEach(el => el.classList.remove('is-selected')); this.closest('.bot-choice-radio').classList.add('is-selected')" %>
+                    <span><%= label %></span>
+                  </label>
+                <% end %>
+              </div></div>
             </div>
             <div class="column">
               <div class="theme-panel p-4"><div class="auth-label mb-2">Best of sets</div><div class="buttons are-small">
-                <% [[1, "1"], [3, "Bo3"], [5, "Bo5"]].each do |val, label| %><button type="button" class="button theme-btn-outline mono bot-sets-btn <%= 'is-selected' if val == 1 %>" onclick="document.getElementById('best_of_sets').value=<%= val.to_json %>; document.querySelectorAll('.bot-sets-btn').forEach(b => b.classList.remove('is-selected')); this.classList.add('is-selected')"><%= label %></button><% end %>
-              </div><%= f.hidden_field :best_of_sets, value: 1, id: "best_of_sets" %></div>
+                <% [[1, "1"], [3, "Bo3"], [5, "Bo5"]].each do |val, label| %>
+                  <label class="button theme-btn-outline mono bot-choice-radio <%= 'is-selected' if val == 1 %>">
+                    <%= radio_button_tag :best_of_sets, val, val == 1, class: "sr-only", onchange: "this.closest('.buttons').querySelectorAll('.bot-choice-radio').forEach(el => el.classList.remove('is-selected')); this.closest('.bot-choice-radio').classList.add('is-selected')" %>
+                    <span><%= label %></span>
+                  </label>
+                <% end %>
+              </div></div>
             </div>
           </div>
 

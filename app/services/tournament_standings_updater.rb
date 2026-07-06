@@ -6,7 +6,7 @@ class TournamentStandingsUpdater
   def call
     reset_standings!
     apply_completed_matches!
-    update_buchholz! if @tournament.format_type == "swiss"
+    update_buchholz! if @tournament.swiss_stage_enabled?
   end
 
   private
@@ -18,7 +18,10 @@ class TournamentStandingsUpdater
   end
 
   def apply_completed_matches!
-    @tournament.tournament_matches.includes(:home_entry, :away_entry, :winner_entry).where(status: "complete").find_each do |match|
+    matches = @tournament.tournament_matches.includes(:tournament_round, :home_entry, :away_entry, :winner_entry).where(status: "complete")
+    matches = matches.joins(:tournament_round).where.not(tournament_rounds: { stage_type: "playoffs" }) if @tournament.combined_with_playoffs?
+
+    matches.find_each do |match|
       if match.bye? && match.winner_entry.present?
         entry = match.winner_entry
         entry.wins += 1
