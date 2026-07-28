@@ -35,7 +35,7 @@
   <%= f.hidden_field :segment,    name: "throw[segment]",    id: "keyboard-segment" %>
   <%= f.hidden_field :multiplier, name: "throw[multiplier]", id: "keyboard-multiplier" %>
   <%= f.hidden_field :total,      name: "throw[total]",      id: "keyboard-total" %>
-  <%= hidden_field_tag :actor_player_id, current_match_player&.id %>
+  <%= hidden_field_tag :actor_player_id, current_player.id %>
 <% end %>
 
 <details class="match-stats-toggle">

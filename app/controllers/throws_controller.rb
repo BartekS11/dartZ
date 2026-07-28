@@ -48,22 +48,28 @@ class ThrowsController < ApplicationController
   def authorize_remote_turn!(match, player)
     return true unless match.invite_match?
 
-    actor_player_id = params[:actor_player_id].presence || request.headers["X-Actor-Player-Id"].presence
-    local_player = actor_player_id.present? ? match.players.find_by(id: actor_player_id) : current_match_player(match)
-    return true if local_player&.id == player.id
+    actor_player_id =
+      params[:actor_player_id].presence ||
+      request.headers["X-Actor-Player-Id"].presence
+
+    actor_player =
+      actor_player_id.present? ? match.players.find_by(id: actor_player_id) : nil
+
+    return true if actor_player&.id == player.id
 
     respond_to do |format|
       format.turbo_stream { head :conflict }
       format.html { redirect_to match_path(match), alert: "Waiting for the other player." }
       format.json { render json: { error: "Not your turn" }, status: :conflict }
     end
+
     false
   end
 
   def render_streams
     presenter = MatchStatePresenter.new(@match)
     current_turn = presenter.finished? ? nil : presenter.current_turn
-    match_player = current_match_player
+    match_player = @match.players.find_by(id: params[:actor_player_id])
 
     streams = presenter.players.map do |player|
       turbo_stream.replace(
@@ -81,12 +87,12 @@ class ThrowsController < ApplicationController
       streams << turbo_stream.update(
         "current-player",
         partial: "matches/current_player",
-        locals: {
-          match: @match,
-          presenter: presenter,
-          turn: current_turn,
-          current_match_player: match_player
-        }
+locals: {
+  match: @match,
+  presenter: presenter,
+  turn: current_turn,
+current_match_player: current_turn.player
+}
       )
 
       streams << turbo_stream.replace(
