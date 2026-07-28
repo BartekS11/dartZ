@@ -18,6 +18,8 @@ class ThrowSubmission
       @match.reload
     end
 
+    broadcast_match_update if @broadcast
+
     @match
   end
 
@@ -45,4 +47,19 @@ class ThrowSubmission
     throw = @turn.throws.create!(@throw_attributes)
     @turn.apply_throw!(throw, broadcast: @broadcast)
   end
+end
+
+def broadcast_match_update
+  presenter = MatchStatePresenter.new(@match)
+
+  @match.broadcast_replace_to(
+    "match_#{@match.id}",
+    target: "match-live",
+    partial: "matches/live",
+    locals: {
+      match: @match,
+      presenter: presenter,
+      turn: presenter.current_turn
+    }
+  )
 end
