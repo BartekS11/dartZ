@@ -24,6 +24,9 @@ proxy:
   ssl: false 
   host: dartz.pl
   app_port: 3000
+  run:
+    http_port: 18082
+    https_port: 18443
   # host_port: 18082
   # ssl_port: 18443 
 
