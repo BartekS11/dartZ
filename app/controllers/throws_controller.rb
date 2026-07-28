@@ -7,6 +7,7 @@ class ThrowsController < ApplicationController
     @match = @turn.leg.match
     authorize_match!(@match)
     return if performed?
+    return unless authorize_remote_turn!(@match, @turn.player)
 
     @match = ThrowSubmission.call(
       turn: @turn,
@@ -26,6 +27,9 @@ class ThrowsController < ApplicationController
     authorize_match!(@match)
     return if performed?
 
+    last_throw_player = @match.throws.order(created_at: :desc).first&.turn&.player || @turn.player
+    return unless authorize_remote_turn!(@match, last_throw_player)
+
     mode   = request.headers["X-Undo-Mode"] || "total"
 
     @match.with_lock do
@@ -40,6 +44,21 @@ class ThrowsController < ApplicationController
   end
 
   private
+
+  def authorize_remote_turn!(match, player)
+    return true unless match.invite_match?
+
+    actor_player_id = params[:actor_player_id].presence || request.headers["X-Actor-Player-Id"].presence
+    local_player = actor_player_id.present? ? match.players.find_by(id: actor_player_id) : current_match_player(match)
+    return true if local_player&.id == player.id
+
+    respond_to do |format|
+      format.turbo_stream { head :conflict }
+      format.html { redirect_to match_path(match), alert: "Waiting for the other player." }
+      format.json { render json: { error: "Not your turn" }, status: :conflict }
+    end
+    false
+  end
 
   def render_streams
     presenter = MatchStatePresenter.new(@match)
@@ -72,9 +91,17 @@ class ThrowsController < ApplicationController
       streams << turbo_stream.update("header-section",      html: "")
     end
 
+    broadcast_match_update!(streams)
     broadcast_tournament_update!
 
     render turbo_stream: streams
+  end
+
+  def broadcast_match_update!(streams)
+    Turbo::StreamsChannel.broadcast_stream_to(
+      "match_#{@match.id}",
+      content: streams.map(&:to_s).join
+    )
   end
 
   def broadcast_tournament_update!

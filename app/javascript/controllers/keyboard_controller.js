@@ -154,14 +154,18 @@ submitThrow(segment, multiplier, totalPoints) {
   this.inputTarget.value = ""
   form.requestSubmit()
 
-  // Wait for turbo stream to finish re-rendering then focus
+  // Wait briefly for turbo stream to finish re-rendering, then focus only if input is enabled.
+  // Do not loop forever: after a turn submit, this page may be locked while the opponent plays.
+  let attempts = 0
   const focusInput = () => {
+    attempts += 1
     const input = document.querySelector('[data-keyboard-target="input"]')
     if (input && !input.disabled) {
       input.focus()
-    } else {
-      requestAnimationFrame(focusInput)
+      return
     }
+
+    if (attempts < 10) requestAnimationFrame(focusInput)
   }
   requestAnimationFrame(focusInput)
 }
@@ -175,12 +179,16 @@ submitThrow(segment, multiplier, totalPoints) {
     const turnId = form?.action.match(/turns\/(\d+)/)?.[1]
     if (!turnId) return
 
+    const matchView = document.querySelector("[data-match-view-my-player-id-value]")
+    const actorPlayerId = matchView?.dataset?.matchViewMyPlayerIdValue
+
     const response = await fetch(`/turns/${turnId}/throws/last`, {
       method:  "DELETE",
       headers: {
         "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]')?.content,
         "Accept":       "text/vnd.turbo-stream.html",
-        "X-Undo-Mode":  "total"
+        "X-Undo-Mode":  "total",
+        "X-Actor-Player-Id": actorPlayerId || ""
       }
     })
 

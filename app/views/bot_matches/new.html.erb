@@ -4,6 +4,7 @@
       <div class="theme-hero p-5 h-full">
         <div class="theme-section-label">Bot challenge</div>
         <h1 class="page-title">Practice</h1>
+        <p class="page-copy mt-3">Pick a level, then start. Everything else has safe defaults.</p>
         <div class="stack-sm mt-5">
           <div class="theme-chip">Level 1–5 · beginner rhythm</div>
           <div class="theme-chip">Level 6–12 · steady scoring</div>
@@ -20,11 +21,14 @@
           <div class="level-right"><%= link_to "← Back", matches_path, class: "button theme-btn-outline mono" %></div>
         </div>
 
-        <%= form_with url: bot_match_path, method: :post, data: { turbo: false }, class: "stack-md" do |f| %>
+        <%= form_with url: bot_match_path, method: :post, data: { turbo: false }, class: "stack-md simple-setup" do |f| %>
+          <div class="simple-step"><div class="simple-step-number">1</div><div><div class="theme-section-label">Names</div><p class="page-copy">Use your name and optionally rename the bot.</p></div></div>
           <div class="columns is-variable is-3">
             <div class="column"><div class="field"><label class="label auth-label">Your name</label><%= f.text_field :player_name, value: Current.user.display_name, placeholder: "Your name", maxlength: 20, autocomplete: "off", class: "input theme-form-input mono" %></div></div>
             <div class="column"><div class="field"><label class="label auth-label">Bot name</label><%= f.text_field :bot_name, placeholder: "Optional bot name", maxlength: 20, autocomplete: "off", class: "input theme-form-input mono" %></div></div>
           </div>
+
+          <div class="simple-step"><div class="simple-step-number">2</div><div><div class="theme-section-label">Difficulty</div><p class="page-copy">10 is a good normal practice bot.</p></div></div>
 
           <div class="theme-panel p-4 stack-md">
             <label class="auth-label">Bot difficulty</label>
@@ -42,6 +46,8 @@
               </div>
             <% end %>
           </div>
+
+          <div class="simple-step"><div class="simple-step-number">3</div><div><div class="theme-section-label">Rules</div><p class="page-copy">Default is regular 501 double-out.</p></div></div>
 
           <div class="columns is-variable is-3">
             <div class="column">
@@ -85,7 +91,7 @@
 
           <div class="buttons is-justify-content-flex-end">
             <%= link_to "Cancel", matches_path, class: "button theme-btn-outline mono" %>
-            <%= f.submit "Start match", class: "button theme-btn-primary is-medium" %>
+            <%= f.submit "Start practice", class: "button theme-btn-primary is-medium" %>
           </div>
         <% end %>
       </div>

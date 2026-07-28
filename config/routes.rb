@@ -29,10 +29,17 @@ Rails.application.routes.draw do
       delete :clear
     end
   end
+
+  post "match_invites", to: "match_invites#create_invite", as: :match_invites
+  get "match_invites/:id", to: "match_invites#show", as: :match_invite
+  get "match_invites/:id/status", to: "match_invites#status", as: :match_invite_status
+  delete "match_invites/:id", to: "match_invites#cancel", as: :cancel_match_invite
+  get "join/:token", to: "match_invites#join", as: :match_invite_join
+  post "join/:token", to: "match_invites#create", as: :accept_match_invite
+
   resources :turns, only: [] do
     resources :throws, only: :create
   end
-  get "up" => "rails/health#show", as: :rails_health_check
 
   get "matches/:id/throws", to: "matches#throws", as: :matches_throws
   get "matches/:id/summary", to: "matches#summary", as: :match_summary
@@ -59,4 +66,7 @@ Rails.application.routes.draw do
     end
   end
 end
+
+  # Rails health check
+  get "up" => "rails/health#show", as: :rails_health_check
 end

@@ -2,27 +2,36 @@
      data-controller="lobby"
      data-lobby-signed-in-value="<%= Current.user.present? %>"
      data-lobby-current-user-name-value="<%= Current.user&.display_name.to_s %>">
-  <section class="theme-hero p-5">
+  <section class="theme-hero simple-setup p-5">
     <div class="level is-align-items-flex-start mb-4">
       <div class="level-left">
         <div>
-          <div class="theme-section-label">New match</div>
-          <h1 class="page-title">X01 scoreboard</h1>
+          <div class="theme-section-label">Start here</div>
+          <h1 class="page-title">New game</h1>
+          <p class="page-copy mt-2">Add two names. Leave the rules alone unless you need to change them.</p>
         </div>
       </div>
       <div class="level-right buttons are-small">
-        <button type="button" data-action="click->lobby#clearPlayers" class="button theme-btn-outline mono">Clear players</button>
+        <button type="button" data-action="click->lobby#clearPlayers" class="button theme-btn-outline mono">Clear names</button>
         <button type="button" data-action="click->lobby#clearMatches" class="button theme-btn-outline mono">Clear history</button>
       </div>
     </div>
 
     <%= form_with url: matches_path, method: :post, data: { turbo: false, action: "submit->lobby#savePlayers" }, class: "stack-md" do |f| %>
+      <div class="simple-step">
+        <div class="simple-step-number">1</div>
+        <div>
+          <div class="theme-section-label">Players</div>
+          <p class="page-copy">Who is playing?</p>
+        </div>
+      </div>
+
       <div class="columns is-variable is-3 is-vcentered">
         <div class="column">
           <div class="player-card-shell">
             <div class="is-flex is-justify-content-space-between is-align-items-center mb-2">
               <label class="auth-label">Player 1</label>
-              <button type="button" data-action="click->lobby#toggleDropdown1" class="saved-btn mono">Saved</button>
+              <button type="button" data-action="click->lobby#toggleDropdown1" class="saved-btn mono">Saved names</button>
             </div>
             <%= f.text_field :player1_name,
                   placeholder: "Enter name",
@@ -42,7 +51,7 @@
           <div class="player-card-shell">
             <div class="is-flex is-justify-content-space-between is-align-items-center mb-2">
               <label class="auth-label">Player 2</label>
-              <button type="button" data-action="click->lobby#toggleDropdown2" class="saved-btn mono">Saved</button>
+              <button type="button" data-action="click->lobby#toggleDropdown2" class="saved-btn mono">Saved names</button>
             </div>
             <%= f.text_field :player2_name,
                   placeholder: "Enter name",
@@ -52,6 +61,14 @@
                   class: "input theme-form-input mono has-text-centered" %>
             <div data-lobby-target="dropdown2" class="saved-dropdown"></div>
           </div>
+        </div>
+      </div>
+
+      <div class="simple-step">
+        <div class="simple-step-number">2</div>
+        <div>
+          <div class="theme-section-label">Rules</div>
+          <p class="page-copy">Default is regular 501 double-out.</p>
         </div>
       </div>
 
@@ -110,6 +127,14 @@
         <div class="column"><label class="panel-choice"><%= hidden_field_tag :double_out, "0" %><%= check_box_tag :double_out, "1", true %> Double out</label></div>
       </div>
 
+      <div class="simple-step">
+        <div class="simple-step-number">3</div>
+        <div>
+          <div class="theme-section-label">Play</div>
+          <p class="page-copy">Start scoring. The app handles turns, busts, and finishes.</p>
+        </div>
+      </div>
+
       <div class="level pt-3" style="border-top:1px solid var(--theme-line)">
         <div class="level-left">
           <div class="help-theme">
@@ -119,8 +144,13 @@
             </div>
           </div>
         </div>
-        <div class="level-right">
-          <%= f.submit "Start match", class: "button theme-btn-primary is-medium" %>
+        <div class="level-right buttons">
+          <%= button_tag "Create invite match",
+                type: "submit",
+                name: "invite_match",
+                value: "1",
+                class: "button theme-btn-outline is-medium" %>
+          <%= f.submit "Start game", class: "button theme-btn-primary is-medium" %>
         </div>
       </div>
     <% end %>
@@ -131,7 +161,7 @@
       <div class="level-left">
         <div>
           <div class="theme-section-label">Recent matches</div>
-          <h2 class="section-title">Continue</h2>
+          <h2 class="section-title">Keep playing</h2>
         </div>
       </div>
       <div class="level-right buttons are-small">

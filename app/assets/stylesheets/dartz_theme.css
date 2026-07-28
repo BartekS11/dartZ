@@ -1456,3 +1456,867 @@ button.app-nav-link [data-theme-mode-target="icon"] {
 .tournament-delete-confirm:hover {
   background: color-mix(in srgb, #ef4444 34%, var(--theme-surface)) !important;
 }
+
+/* Simple mobile-first redesign: flat, square, obvious. */
+body.dartz-body {
+  background: var(--theme-bg) !important;
+  color: var(--theme-text);
+}
+
+.app-main,
+.simple-nav,
+.footer-inner {
+  width: min(100%, 80rem);
+  margin-inline: auto;
+  padding-inline: clamp(.75rem, 3vw, 1.5rem);
+}
+
+.app-main {
+  padding-top: .85rem;
+  padding-bottom: 5rem;
+}
+
+.app-header {
+  border-bottom: 2px solid var(--theme-line);
+  background: var(--theme-bg) !important;
+  backdrop-filter: none;
+}
+
+.simple-nav {
+  position: relative;
+  display: grid;
+  gap: .65rem;
+  padding-top: .65rem;
+  padding-bottom: .65rem;
+}
+
+.simple-nav-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .75rem;
+  min-width: 0;
+}
+
+.brand-lockup {
+  display: inline-flex;
+  align-items: center;
+  gap: .65rem;
+  min-width: 0;
+  color: var(--theme-text);
+  text-decoration: none;
+}
+
+.brand-mark {
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 2px solid var(--theme-primary);
+  background: transparent;
+  color: var(--theme-primary-soft);
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 1.4rem;
+  font-weight: 800;
+}
+
+.brand-copy { min-width: 0; }
+
+.simple-nav-scroll {
+  display: flex;
+  gap: .4rem;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  padding-bottom: .15rem;
+}
+.simple-nav-scroll::-webkit-scrollbar { display: none; }
+
+.app-nav-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  min-height: 2.75rem;
+  padding: .72rem .85rem !important;
+  border: 1px solid var(--theme-line) !important;
+  background: transparent !important;
+  color: var(--theme-muted) !important;
+  text-decoration: none;
+}
+
+.app-nav-link.is-active,
+.app-nav-link:hover,
+button.app-nav-link:hover {
+  background: var(--theme-primary) !important;
+  border-color: var(--theme-primary) !important;
+  color: #fff !important;
+}
+
+.profile-menu-panel,
+#profileMenu {
+  position: absolute;
+  top: calc(100% + .25rem);
+  right: .75rem;
+  z-index: 60;
+  width: min(24rem, calc(100vw - 1.5rem));
+  display: grid;
+  gap: 1rem;
+  padding: 1rem;
+  border: 2px solid var(--theme-line) !important;
+  background: var(--theme-bg-soft) !important;
+}
+#profileMenu.hidden { display: none !important; }
+.profile-menu-panel hr { border: 0; border-top: 1px solid var(--theme-line); margin: 0; }
+
+.footer-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: .75rem;
+}
+
+.page-shell,
+.page-shell-narrow,
+.page-shell-compact {
+  max-width: none;
+  width: 100%;
+}
+
+.theme-hero,
+.theme-card,
+.auth-card,
+.theme-panel,
+.counter-list-card,
+.counter-tournament-card,
+.theme-match-card,
+.theme-legal-card,
+.counter-admin-card {
+  padding: 1rem 0 !important;
+  border: 0 !important;
+  border-top: 2px solid var(--theme-line) !important;
+  background: transparent !important;
+}
+
+.theme-hero:first-child,
+.page-shell > .theme-card:first-child,
+.page-shell > .auth-card:first-child {
+  border-top: 0 !important;
+}
+
+.page-title {
+  font-size: clamp(2.25rem, 13vw, 4.25rem);
+  line-height: .92;
+}
+
+.section-title {
+  font-size: clamp(1.35rem, 6vw, 2rem);
+}
+
+.theme-section-label,
+.auth-label,
+.eyebrow {
+  color: var(--theme-muted);
+  letter-spacing: .11em;
+}
+
+.dartz-body .button,
+.dartz-body .btn,
+.theme-btn-primary,
+.theme-btn-outline,
+.saved-btn,
+.panel-choice,
+.theme-chip,
+.tag.theme-chip,
+.dartz-body .input,
+.dartz-body .textarea,
+.dartz-body .select select,
+.theme-form-input,
+.auth-input,
+.throw-input {
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+.dartz-body .button,
+.dartz-body .btn,
+.theme-btn-primary,
+.theme-btn-outline {
+  min-height: 3rem;
+  border-width: 2px !important;
+  font-weight: 800;
+}
+
+.theme-btn-primary,
+.dartz-body .button.theme-btn-primary,
+.dartz-body .btn.theme-btn-primary {
+  background: var(--theme-primary) !important;
+  border-color: var(--theme-primary) !important;
+  color: #fff !important;
+}
+
+.theme-btn-outline,
+.dartz-body .button.theme-btn-outline,
+.dartz-body .btn.theme-btn-outline {
+  background: transparent !important;
+  border-color: var(--theme-line-strong) !important;
+  color: var(--theme-text) !important;
+}
+
+.dartz-body .input,
+.dartz-body .textarea,
+.dartz-body .select select,
+.theme-form-input,
+.auth-input,
+.throw-input {
+  min-height: 3.25rem;
+  border: 2px solid var(--theme-line-strong) !important;
+  background: transparent !important;
+  font-size: 1rem;
+}
+
+.dartz-body .input:focus,
+.dartz-body .textarea:focus,
+.theme-form-input:focus,
+.auth-input:focus,
+.throw-input:focus {
+  border-color: var(--theme-primary) !important;
+  outline: 3px solid color-mix(in srgb, var(--theme-primary) 28%, transparent) !important;
+  box-shadow: none !important;
+}
+
+.panel-choice {
+  min-height: 3.25rem;
+  border: 2px solid var(--theme-line-strong) !important;
+  background: transparent !important;
+  color: var(--theme-text) !important;
+}
+
+.theme-chip,
+.tag.theme-chip {
+  border: 1px solid var(--theme-line-strong) !important;
+  background: transparent !important;
+}
+
+.columns.is-variable,
+.columns.is-multiline {
+  row-gap: .75rem;
+}
+
+.simple-setup {
+  counter-reset: setup-step;
+}
+
+.simple-step {
+  display: grid;
+  grid-template-columns: 2.75rem minmax(0, 1fr);
+  gap: .8rem;
+  align-items: start;
+  padding: .85rem 0;
+  border-top: 2px solid var(--theme-line);
+}
+
+.simple-step-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.35rem;
+  height: 2.35rem;
+  border: 2px solid var(--theme-primary);
+  color: var(--theme-primary-soft);
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-weight: 800;
+}
+
+.match-focus-bar {
+  position: sticky;
+  top: 6.6rem;
+  z-index: 20;
+  background: var(--theme-bg);
+  border-bottom: 2px solid var(--theme-line);
+  padding: .5rem 0;
+}
+
+.match-score-strip {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: .75rem;
+  margin-bottom: .75rem;
+}
+
+.match-score-card,
+.theme-score-card {
+  border-top: 2px solid var(--theme-line) !important;
+  padding-top: .75rem !important;
+}
+
+.dart-grid,
+.dart-footer-actions {
+  gap: .35rem !important;
+}
+
+.dart-btn {
+  min-height: 3rem;
+  border-width: 2px !important;
+}
+
+.tournament-owned-card,
+.tournament-guest-card {
+  padding: 1rem 0 1rem .75rem !important;
+  border-top-width: 2px !important;
+}
+
+.tournament-index-delete,
+.tournament-delete-modal,
+.tournament-delete-modal-card {
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+@media (max-width: 760px) {
+  .app-main {
+    padding-inline: .75rem;
+    padding-bottom: 6rem;
+  }
+
+  .simple-nav {
+    padding-inline: .75rem;
+  }
+
+  .brand-subline { display: none; }
+
+  .app-nav-link {
+    min-height: 2.9rem;
+    padding-inline: .8rem !important;
+    font-size: .72rem;
+  }
+
+  .level,
+  .level-left,
+  .level-right,
+  .buttons {
+    display: flex;
+    align-items: stretch;
+    width: 100%;
+  }
+
+  .buttons .button,
+  .level-right .button,
+  .level-right .btn,
+  input[type="submit"].button,
+  .dartz-body .button.is-medium {
+    width: 100%;
+  }
+
+  .columns {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: .85rem !important;
+  }
+
+  .column {
+    width: 100% !important;
+    padding: 0 !important;
+  }
+
+  .theme-hero,
+  .theme-card,
+  .auth-card,
+  .theme-panel,
+  .counter-list-card,
+  .counter-tournament-card,
+  .theme-match-card {
+    padding-block: .85rem !important;
+  }
+
+  .player-card-shell {
+    padding-top: .8rem;
+  }
+
+  .swap-badge {
+    width: 100% !important;
+    height: 3rem !important;
+  }
+
+  .match-focus-bar {
+    top: 6.9rem;
+  }
+
+  .match-focus-title strong {
+    display: block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .score-display {
+    font-size: clamp(4rem, 25vw, 6.5rem);
+  }
+
+  .dart-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+  }
+
+  .dart-btn {
+    min-height: 3.25rem;
+    font-size: .95rem;
+  }
+
+  .dart-footer-actions {
+    position: sticky;
+    bottom: .5rem;
+    z-index: 25;
+    background: var(--theme-bg);
+    padding-top: .5rem;
+  }
+
+  .footer-inner {
+    align-items: flex-start;
+    padding-inline: .75rem;
+  }
+}
+
+/* Calm pass: fewer boxes, fewer dividers, simpler reading flow. */
+.app-header {
+  border-bottom: 1px solid color-mix(in srgb, var(--theme-line) 55%, transparent) !important;
+}
+
+.app-footer {
+  border-top: 0 !important;
+}
+
+.simple-nav {
+  gap: .5rem;
+}
+
+.brand-mark {
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 0 !important;
+  background: var(--theme-primary) !important;
+  color: #fff !important;
+}
+
+.simple-nav-scroll {
+  gap: .25rem;
+}
+
+.app-nav-link {
+  min-height: 2.45rem;
+  border: 0 !important;
+  border-bottom: 2px solid transparent !important;
+  padding: .58rem .65rem !important;
+  color: var(--theme-muted) !important;
+}
+
+.app-nav-link.is-active,
+.app-nav-link:hover,
+button.app-nav-link:hover {
+  background: transparent !important;
+  border-color: var(--theme-primary) !important;
+  color: var(--theme-text) !important;
+}
+
+.app-nav-theme-toggle {
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+.theme-hero,
+.theme-card,
+.auth-card,
+.theme-panel,
+.counter-list-card,
+.counter-tournament-card,
+.theme-match-card,
+.theme-legal-card,
+.counter-admin-card,
+.theme-score-card,
+.match-score-card,
+.counter-standings-row,
+.bracket-round-card,
+.player-card-shell,
+.counter-turn-panel,
+.counter-score-metric,
+.counter-summary-tile,
+.theme-blank-slate,
+.tournament-owned-card,
+.tournament-guest-card {
+  border-top: 0 !important;
+  border-bottom: 0 !important;
+}
+
+.theme-hero,
+.theme-card,
+.auth-card {
+  padding-top: .65rem !important;
+  padding-bottom: 1rem !important;
+}
+
+.theme-panel,
+.counter-list-card,
+.counter-tournament-card,
+.theme-match-card,
+.theme-legal-card,
+.counter-admin-card {
+  padding-block: .65rem !important;
+}
+
+.page-shell.stack-lg,
+.stack-lg {
+  gap: 1rem;
+}
+
+.stack-md {
+  gap: .75rem;
+}
+
+.simple-step {
+  grid-template-columns: 2rem minmax(0, 1fr);
+  gap: .65rem;
+  padding: .6rem 0;
+  border-top: 0 !important;
+}
+
+.simple-step-number {
+  width: 1.65rem;
+  height: 1.65rem;
+  border: 0 !important;
+  background: color-mix(in srgb, var(--theme-primary) 16%, transparent);
+  color: var(--theme-primary-soft);
+  font-size: .82rem;
+}
+
+.dartz-body .button,
+.dartz-body .btn,
+.theme-btn-primary,
+.theme-btn-outline {
+  border-width: 0 !important;
+  min-height: 2.9rem;
+}
+
+.theme-btn-outline,
+.dartz-body .button.theme-btn-outline,
+.dartz-body .btn.theme-btn-outline {
+  background: color-mix(in srgb, var(--theme-text) 6%, transparent) !important;
+  border-color: transparent !important;
+}
+
+.dartz-body .input,
+.dartz-body .textarea,
+.dartz-body .select select,
+.theme-form-input,
+.auth-input,
+.throw-input {
+  border: 0 !important;
+  border-bottom: 2px solid var(--theme-line-strong) !important;
+  background: color-mix(in srgb, var(--theme-text) 4%, transparent) !important;
+}
+
+.panel-choice {
+  border: 0 !important;
+  background: color-mix(in srgb, var(--theme-text) 5%, transparent) !important;
+}
+
+.theme-chip,
+.tag.theme-chip {
+  border: 0 !important;
+  background: color-mix(in srgb, var(--theme-text) 6%, transparent) !important;
+}
+
+.progress-thin {
+  height: .22rem;
+  background: color-mix(in srgb, var(--theme-text) 10%, transparent) !important;
+}
+
+.match-focus-bar {
+  border-bottom: 0 !important;
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--theme-line) 45%, transparent);
+}
+
+.match-score-strip {
+  gap: .5rem;
+}
+
+.tournament-owned-section,
+.tournament-guest-section,
+.tournament-link-panel {
+  border-left: 0 !important;
+  padding-left: 0 !important;
+}
+
+.tournament-owned-card,
+.tournament-guest-card {
+  background: transparent !important;
+  padding-left: 0 !important;
+}
+
+.tournament-owned-card:hover,
+.tournament-guest-card:hover,
+a.theme-match-card:hover,
+a.counter-tournament-card:hover {
+  background: color-mix(in srgb, var(--theme-text) 4%, transparent) !important;
+}
+
+.profile-menu-panel,
+#profileMenu,
+.saved-dropdown,
+.tournament-delete-modal {
+  border: 0 !important;
+  background: var(--theme-bg-soft) !important;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--theme-line) 55%, transparent) !important;
+}
+
+@media (max-width: 760px) {
+  .app-nav-link {
+    min-height: 2.55rem;
+    padding-inline: .58rem !important;
+  }
+
+  .theme-hero,
+  .theme-card,
+  .auth-card,
+  .theme-panel,
+  .counter-list-card,
+  .counter-tournament-card,
+  .theme-match-card {
+    padding-block: .55rem !important;
+  }
+
+  .dart-btn {
+    border-width: 0 !important;
+    background: color-mix(in srgb, var(--theme-text) 7%, transparent) !important;
+  }
+}
+
+/* Minimal pass: remove the visible box/line clutter from setup screens. */
+.simple-setup,
+.simple-setup *,
+.simple-setup *::before,
+.simple-setup *::after {
+  box-shadow: none !important;
+}
+
+.simple-setup .theme-panel,
+.simple-setup .player-card-shell,
+.simple-setup .panel-choice,
+.simple-setup .theme-card,
+.simple-setup .theme-hero,
+.simple-setup .columns,
+.simple-setup .column,
+.simple-setup .level,
+.simple-setup .level-left,
+.simple-setup .level-right,
+.simple-setup [style*="border"] {
+  border: 0 !important;
+}
+
+.simple-setup .simple-step {
+  padding: .35rem 0 .15rem;
+  border: 0 !important;
+}
+
+.simple-setup .simple-step-number {
+  background: transparent !important;
+  color: var(--theme-primary-soft);
+  width: 1.2rem;
+  height: 1.2rem;
+}
+
+.simple-setup .input,
+.simple-setup .theme-form-input,
+.simple-setup input[type="number"],
+.simple-setup input[type="text"] {
+  border: 0 !important;
+  background: color-mix(in srgb, var(--theme-text) 6%, transparent) !important;
+}
+
+.simple-setup .input:focus,
+.simple-setup .theme-form-input:focus,
+.simple-setup input[type="number"]:focus,
+.simple-setup input[type="text"]:focus {
+  border: 0 !important;
+  outline: 2px solid color-mix(in srgb, var(--theme-primary) 42%, transparent) !important;
+}
+
+.simple-setup .button,
+.simple-setup .btn,
+.simple-setup .theme-btn-outline,
+.simple-setup .panel-choice,
+.simple-setup .theme-chip {
+  border: 0 !important;
+  background: color-mix(in srgb, var(--theme-text) 5%, transparent) !important;
+}
+
+.simple-setup .button.theme-btn-primary,
+.simple-setup .btn.theme-btn-primary,
+.simple-setup input[type="submit"].theme-btn-primary {
+  background: var(--theme-primary) !important;
+  color: #fff !important;
+}
+
+.simple-setup .button.is-selected,
+.simple-setup .score-preset.is-selected,
+.simple-setup .legs-preset.is-selected,
+.simple-setup .sets-preset.is-selected,
+.simple-setup .bot-choice-radio.is-selected,
+.simple-setup .bot-choice-radio:has(input:checked) {
+  background: color-mix(in srgb, var(--theme-primary) 22%, transparent) !important;
+  color: var(--theme-text) !important;
+}
+
+.simple-setup .saved-btn {
+  background: transparent !important;
+  color: var(--theme-muted) !important;
+}
+
+/* Make the global shell quieter too: active nav is text color, not another line. */
+.app-nav-link,
+.app-nav-link.is-active,
+.app-nav-link:hover,
+button.app-nav-link:hover {
+  border: 0 !important;
+}
+
+.app-nav-link.is-active {
+  color: var(--theme-primary-soft) !important;
+}
+
+/* Airy pass: more breathing room, red only for primary action/state text. */
+.app-main {
+  padding-top: clamp(1.25rem, 4vw, 2.25rem) !important;
+}
+
+.page-shell,
+.simple-setup,
+.stack-lg {
+  gap: clamp(1.5rem, 5vw, 2.75rem) !important;
+}
+
+.stack-md {
+  gap: clamp(1rem, 3vw, 1.75rem) !important;
+}
+
+.theme-hero,
+.theme-card,
+.auth-card,
+.theme-panel,
+.counter-list-card,
+.counter-tournament-card,
+.theme-match-card,
+.theme-legal-card,
+.counter-admin-card {
+  padding-block: clamp(1rem, 3.5vw, 2rem) !important;
+}
+
+.simple-setup .simple-step {
+  padding: 1.1rem 0 .35rem !important;
+  margin-top: .35rem;
+}
+
+.simple-setup .simple-step:first-of-type {
+  margin-top: 0;
+}
+
+.simple-setup .columns {
+  margin-bottom: clamp(.75rem, 3vw, 1.5rem) !important;
+}
+
+.simple-setup .theme-panel,
+.simple-setup .player-card-shell {
+  padding-block: .85rem !important;
+}
+
+.simple-setup .input,
+.simple-setup .theme-form-input,
+.simple-setup input[type="number"],
+.simple-setup input[type="text"] {
+  min-height: 3.65rem !important;
+  padding-inline: 1rem !important;
+  background: color-mix(in srgb, var(--theme-text) 4%, transparent) !important;
+}
+
+.simple-setup .button,
+.simple-setup .btn,
+.simple-setup .theme-btn-outline,
+.simple-setup .panel-choice {
+  min-height: 3.35rem !important;
+  background: color-mix(in srgb, var(--theme-text) 4%, transparent) !important;
+}
+
+.simple-setup .buttons {
+  gap: .6rem !important;
+}
+
+.simple-setup .button.is-selected,
+.simple-setup .score-preset.is-selected,
+.simple-setup .legs-preset.is-selected,
+.simple-setup .sets-preset.is-selected,
+.simple-setup .bot-choice-radio.is-selected,
+.simple-setup .bot-choice-radio:has(input:checked) {
+  background: color-mix(in srgb, var(--theme-text) 9%, transparent) !important;
+  color: var(--theme-text) !important;
+}
+
+.simple-setup .button.theme-btn-primary,
+.simple-setup .btn.theme-btn-primary,
+.simple-setup input[type="submit"].theme-btn-primary {
+  background: var(--theme-primary) !important;
+  color: #fff !important;
+}
+
+.brand-mark {
+  background: color-mix(in srgb, var(--theme-primary) 82%, #000) !important;
+}
+
+.theme-chip.is-live,
+.theme-chip.is-finished,
+.theme-chip,
+.tag.theme-chip {
+  border-color: transparent !important;
+}
+
+.dartz-body .input:focus,
+.dartz-body .textarea:focus,
+.theme-form-input:focus,
+.auth-input:focus,
+.throw-input:focus,
+.simple-setup .input:focus,
+.simple-setup .theme-form-input:focus,
+.simple-setup input[type="number"]:focus,
+.simple-setup input[type="text"]:focus {
+  outline: none !important;
+  background: color-mix(in srgb, var(--theme-text) 7%, transparent) !important;
+}
+
+.match-score-card.is-active,
+.theme-score-card.is-active,
+.counter-standings-row.is-active,
+.tournament-owned-card,
+.tournament-guest-card {
+  border-color: transparent !important;
+}
+
+.theme-score-card.is-active::before {
+  display: none !important;
+}
+
+@media (max-width: 760px) {
+  .app-main {
+    padding-top: 1.25rem !important;
+  }
+
+  .page-shell,
+  .simple-setup,
+  .stack-lg {
+    gap: 1.65rem !important;
+  }
+
+  .simple-setup .simple-step {
+    padding-top: 1rem !important;
+  }
+
+  .simple-setup .buttons {
+    gap: .55rem !important;
+  }
+}

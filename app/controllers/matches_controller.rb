@@ -23,6 +23,12 @@ class MatchesController < ApplicationController
     return if performed?
 
     remember_guest_match!(@match)
+    if @match.invite_pending?
+      redirect_to match_invite_path(@match)
+      return
+    end
+
+    @current_match_player = current_match_player(@match)
     @presenter = MatchStatePresenter.new(@match)
     @players = @presenter.players
     return if @presenter.finished?
@@ -31,6 +37,11 @@ class MatchesController < ApplicationController
   end
 
   def create
+    if params[:invite_match].present?
+      create_invite_match
+      return
+    end
+
     p1_name = params[:player1_name].to_s.strip.presence || Current.user&.display_name || "Player 1"
     p2_name = params[:player2_name].to_s.strip.presence || "Player 2"
 
@@ -88,6 +99,31 @@ class MatchesController < ApplicationController
   end
 
   private
+
+  def create_invite_match
+    p1_name = params[:player1_name].to_s.strip.presence || Current.user&.display_name || "Player 1"
+
+    @match = Match.new(MatchSettings.from_params(params).to_h)
+
+    ApplicationRecord.transaction do
+      @match.ensure_guest_token! if Current.user.nil?
+      @match.ensure_invite_token!
+      @match.save!
+
+      if Current.user && Current.user.nickname != p1_name
+        Current.user.update!(nickname: p1_name)
+      end
+
+      player = @match.players.build(name: p1_name, user: Current.user)
+      player.assign_dart_setup_snapshot!(current_dart_setup_snapshot) if current_dart_setup_snapshot
+      player.save!
+      remember_match_player!(@match, player)
+      @match.ensure_match_identifier!
+    end
+
+    remember_guest_match!(@match, @match.guest_token) unless Current.user
+    redirect_to match_invite_path(@match)
+  end
 
   def current_dart_setup_snapshot
     Current.user&.premium_access? ? Current.user.dart_setup : nil

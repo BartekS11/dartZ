@@ -20,8 +20,15 @@ export default class extends Controller {
     document.documentElement.classList.toggle("dark", theme === "dark")
     localStorage.setItem("dartz_theme_mode", theme)
 
-    if (this.hasLabelTarget) this.labelTarget.textContent = theme === "dark" ? "Dark" : "Light"
-    if (this.hasIconTarget) this.iconTarget.textContent = theme === "dark" ? "◐" : "◑"
-    if (this.hasButtonTarget) this.buttonTarget.setAttribute("aria-pressed", theme === "light")
+    const nextTheme = theme === "dark" ? "light" : "dark"
+    const nextThemeLabel = `${nextTheme.charAt(0).toUpperCase()}${nextTheme.slice(1)} theme`
+
+    if (this.hasLabelTarget) this.labelTarget.textContent = nextThemeLabel
+    if (this.hasIconTarget) this.iconTarget.textContent = theme === "dark" ? "◑" : "◐"
+    if (this.hasButtonTarget) {
+      this.buttonTarget.setAttribute("aria-pressed", theme === "light")
+      this.buttonTarget.setAttribute("aria-label", `Switch to ${nextTheme} theme`)
+      this.buttonTarget.setAttribute("title", `Switch to ${nextTheme} theme`)
+    }
   }
 }

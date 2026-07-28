@@ -32,6 +32,34 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def remember_match_player!(match, player)
+    return if match.blank? || player.blank?
+
+    player_ids = cookies.signed[:match_player_ids] || {}
+    player_ids = player_ids.to_h.merge(match.id.to_s => player.id).to_a.last(MAX_GUEST_MATCH_TOKENS).to_h
+    cookies.signed.permanent[:match_player_ids] = { value: player_ids, httponly: true, same_site: :lax }
+  end
+
+  def current_match_player(match)
+    return nil if match.blank?
+
+    if params[:player_id].present?
+      param_player = match.players.find_by(id: params[:player_id])
+      if param_player
+        remember_match_player!(match, param_player)
+        return param_player
+      end
+    end
+
+    if Current.user
+      user_player = match.players.find_by(user_id: Current.user.id)
+      return user_player if user_player
+    end
+
+    player_id = (cookies.signed[:match_player_ids] || {})[match.id.to_s]
+    match.players.find_by(id: player_id) if player_id.present?
+  end
+
   def remember_guest_match!(match, token = params[:guest_token])
     return if token.blank? || match.guest_token.blank?
     return if Current.user && TournamentMatch.find_by(linked_match: match).blank?

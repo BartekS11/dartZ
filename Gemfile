@@ -14,6 +14,7 @@ gem "importmap-rails"
 gem "turbo-rails"
 # Hotwire's modest JavaScript framework [https://stimulus.hotwired.dev]
 gem "stimulus-rails"
+gem "rqrcode"
 # Bulma is loaded from CDN in the application layout.
 
 # Support for JWT token based auth for client apps (mobile)
