@@ -1,8 +1,9 @@
 <% presenter ||= MatchStatePresenter.new(match) %>
 <% current_player = presenter.current_player %>
 <% bot_turn = current_player&.bot? %>
+<% my_turn = current_match_player&.id == current_player&.id %>
 <div
-  class="match-input-panel <%= 'is-disabled bot-turn-disabled' if bot_turn %>"
+  class="match-input-panel <%= 'is-disabled' unless my_turn %>"
   data-controller="keyboard"
   data-keyboard-url-value="<%= turn_throws_path(turn) %>"
   data-keyboard-score-value="<%= presenter.score_for(current_player) %>"
@@ -16,16 +17,21 @@
         <div class="mono mt-2 text-xs uppercase tracking-[0.14em]" style="color:var(--theme-muted)">Bot is throwing — input locked</div>
       <% end %>
     </div>
-    <button type="button" data-action="click->keyboard#undoLastThrow" class="button is-small btn-undo mono" <%= 'disabled' if bot_turn %>>↩ Undo</button>
+    <button type="button"
+        data-action="click->keyboard#undoLastThrow"
+        class="button is-small btn-undo mono"
+        <%= 'disabled' unless my_turn %>>
+  ↩ Undo
+</button>
   </div>
 
-  <input type="text"
-         data-keyboard-target="input"
-         data-action="input->keyboard#preview keydown->keyboard#handle"
-         placeholder="<%= bot_turn ? 'Waiting for bot…' : 'Enter score' %>"
-         class="input throw-input match-score-input mono has-text-centered"
-         autocomplete="off"
-         <%= 'disabled' if bot_turn %>>
+<input type="text"
+       data-keyboard-target="input"
+       data-action="input->keyboard#preview keydown->keyboard#handle"
+       placeholder="<%= my_turn ? 'Enter score' : 'Waiting for opponent…' %>"
+       class="input throw-input match-score-input mono has-text-centered"
+       autocomplete="off"
+       <%= 'disabled' unless my_turn %>>
 </div>
 
 <%= form_with url: turn_throws_path(turn),
@@ -35,7 +41,7 @@
   <%= f.hidden_field :segment,    name: "throw[segment]",    id: "keyboard-segment" %>
   <%= f.hidden_field :multiplier, name: "throw[multiplier]", id: "keyboard-multiplier" %>
   <%= f.hidden_field :total,      name: "throw[total]",      id: "keyboard-total" %>
-  <%= hidden_field_tag :actor_player_id, current_player.id %>
+  <%= hidden_field_tag :actor_player_id, current_match_player&.id %>
 <% end %>
 
 <details class="match-stats-toggle">
