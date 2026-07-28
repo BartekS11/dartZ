@@ -69,7 +69,7 @@ class ThrowsController < ApplicationController
   def render_streams
     presenter = MatchStatePresenter.new(@match)
     current_turn = presenter.finished? ? nil : presenter.current_turn
-    match_player = @match.players.find_by(id: params[:actor_player_id])
+    match_player = current_match_player(@match)
 
     streams = presenter.players.map do |player|
       turbo_stream.replace(
@@ -91,7 +91,7 @@ locals: {
     match: @match,
     presenter: presenter,
     turn: current_turn,
-    current_match_player: current_match_player
+    current_match_player: match_player
   }
       )
 
