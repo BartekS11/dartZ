@@ -1,6 +1,10 @@
+<% presenter ||= MatchStatePresenter.new(match) %>
+<% current_match_player ||= nil %>
+
 <div id="match-live" class="page-shell match-focus"
      data-controller="match-view"
-     data-match-view-remote-invite-value="<%= match.invite_match? %>">
+     data-match-view-remote-invite-value="<%= match.invite_match? %>"
+     data-match-view-my-player-id-value="<%= current_match_player&.id %>">
 
   <div id="game-over-section">
     <% if match.finished? %>
@@ -14,7 +18,9 @@
 
       <div class="match-focus-title">
         <span class="theme-chip is-live">Live</span>
-        <strong><%= match.players.map(&:display_name).join(" vs ") %></strong>
+        <strong>
+          <%= match.players.map(&:display_name).join(" vs ") %>
+        </strong>
       </div>
     </div>
 
@@ -28,13 +34,14 @@
     </div>
 
     <div id="keyboard-section" class="match-play-area">
+
       <div data-match-view-target="input">
         <div id="current-player">
           <%= render "matches/current_player",
-      match: @match,
-      presenter: @presenter,
-      turn: @turn,
-      current_match_player: @current_match_player %>
+                match: match,
+                presenter: presenter,
+                turn: turn,
+                current_match_player: current_match_player %>
         </div>
       </div>
 
@@ -43,6 +50,8 @@
               match: match,
               turn: turn %>
       </div>
+
     </div>
   <% end %>
+
 </div>
