@@ -38,10 +38,10 @@
       <div data-match-view-target="input">
         <div id="current-player">
           <%= render "matches/current_player",
-                match: match,
-                presenter: presenter,
-                turn: turn,
-                current_match_player: current_match_player %>
+           match: match,
+           presenter: presenter,
+           turn: presenter.current_turn,
+           current_match_player: current_match_player(match) %>
         </div>
       </div>
 
