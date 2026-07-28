@@ -18,7 +18,7 @@ class ThrowSubmission
       @match.reload
     end
 
-    broadcast_match_update if @broadcast
+    # broadcast_match_update if @broadcast
 
     @match
   end
@@ -58,7 +58,8 @@ class ThrowSubmission
       locals: {
         match: @match,
         presenter: presenter,
-        turn: presenter.current_turn
+        turn: presenter.current_turn,
+        current_match_player: nil
       }
     )
   end

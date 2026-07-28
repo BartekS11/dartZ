@@ -88,11 +88,11 @@ class ThrowsController < ApplicationController
         "current-player",
         partial: "matches/current_player",
 locals: {
-  match: @match,
-  presenter: presenter,
-  turn: current_turn,
-current_match_player: current_turn.player
-}
+    match: @match,
+    presenter: presenter,
+    turn: current_turn,
+    current_match_player: current_match_player
+  }
       )
 
       streams << turbo_stream.replace(
