@@ -1,6 +1,7 @@
 <% presenter ||= MatchStatePresenter.new(match) %>
 <% current_player = presenter.current_player %>
 <% bot_turn = current_player&.bot? %>
+<% current_match_player ||= current_match_player(match) %>
 <div
   class="match-input-panel <%= 'is-disabled bot-turn-disabled' if bot_turn %>"
   data-controller="keyboard"
@@ -35,6 +36,7 @@
   <%= f.hidden_field :segment,    name: "throw[segment]",    id: "keyboard-segment" %>
   <%= f.hidden_field :multiplier, name: "throw[multiplier]", id: "keyboard-multiplier" %>
   <%= f.hidden_field :total,      name: "throw[total]",      id: "keyboard-total" %>
+  <%= hidden_field_tag :actor_player_id, current_match_player&.id %>
 <% end %>
 
 <details class="match-stats-toggle">

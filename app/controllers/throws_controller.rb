@@ -73,7 +73,7 @@ class ThrowsController < ApplicationController
     if current_turn
       streams << turbo_stream.update("current-player",
         partial: "matches/current_player",
-        locals:  { match: @match, presenter: presenter, turn: current_turn })
+        locals:  { match: @match, presenter: presenter, turn: current_turn, current_match_player: current_match_player(@match) })
       streams << turbo_stream.replace("dart-board",
         partial: "matches/dart_board",
         locals:  { match: @match, turn: current_turn })
