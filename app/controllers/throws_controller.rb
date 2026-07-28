@@ -168,19 +168,9 @@ class ThrowsController < ApplicationController
     params.require(:throw).permit(:segment, :multiplier)
   end
 
-  def current_match_player
+  def current_match_player(match = @match)
     return nil unless params[:actor_player_id].present?
 
-    @match.match_players.find_by(
-      player_id: params[:actor_player_id]
-    )
-  end
-
-  def current_match_player
-  return nil unless params[:actor_player_id].present?
-
-  @match.match_players.find_by(
-    player_id: params[:actor_player_id]
-  )
+    match.players.find_by(id: params[:actor_player_id])
   end
 end
