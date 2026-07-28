@@ -47,7 +47,6 @@ class Throw < ApplicationRecord
 
   def broadcast_match_update
   match = turn.leg.match_set.match
-  presenter = MatchStatePresenter.new(match)
 
   match.broadcast_replace_to(
     "match_#{match.id}",
@@ -55,9 +54,8 @@ class Throw < ApplicationRecord
     partial: "matches/live",
     locals: {
       match: match,
-      presenter: presenter,
-      turn: presenter.current_turn,
-      current_match_player: nil
+      presenter: MatchStatePresenter.new(match),
+      turn: MatchStatePresenter.new(match).current_turn
     }
   )
   end
