@@ -93,8 +93,8 @@ production:
   primary: &primary_production
     <<: *default
     database: dart_z_production
-    username: dart_z
-    password: <%= ENV["DART_Z_DATABASE_PASSWORD"] %>
+    username: postgres
+    password: <%= ENV["POSTGRES_PASSWORD"] %>
   cache:
     <<: *primary_production
     database: dart_z_production_cache

@@ -1,0 +1,4 @@
+CREATE DATABASE dart_z_production
+CREATE DATABASE dart_z_production_cache
+CREATE DATABASE dart_z_production_queue
+CREATE DATABASE dart_z_production_cable
