@@ -63,32 +63,83 @@ class ThrowsController < ApplicationController
   def render_streams
     presenter = MatchStatePresenter.new(@match)
     current_turn = presenter.finished? ? nil : presenter.current_turn
+    match_player = current_match_player
 
     streams = presenter.players.map do |player|
-      turbo_stream.replace("score-card-#{player.id}",
+      turbo_stream.replace(
+        "score-card-#{player.id}",
         partial: "matches/score_card",
-        locals:  { match: @match, presenter: presenter, player: player })
+        locals: {
+          match: @match,
+          presenter: presenter,
+          player: player
+        }
+      )
     end
 
     if current_turn
-      streams << turbo_stream.update("current-player",
+      streams << turbo_stream.update(
+        "current-player",
         partial: "matches/current_player",
-        locals:  { match: @match, presenter: presenter, turn: current_turn, current_match_player: current_match_player(@match) })
-      streams << turbo_stream.replace("dart-board",
-        partial: "matches/dart_board",
-        locals:  { match: @match, turn: current_turn })
-    elsif presenter.finished?
-      finishing_leg = @match.match_sets.includes(:legs).order(:created_at).last&.legs&.max_by(&:created_at)
+        locals: {
+          match: @match,
+          presenter: presenter,
+          turn: current_turn,
+          current_match_player: match_player
+        }
+      )
 
-      streams << turbo_stream.update("game-over-section",
+      streams << turbo_stream.replace(
+        "dart-board",
+        partial: "matches/dart_board",
+        locals: {
+          match: @match,
+          turn: current_turn
+        }
+      )
+
+    elsif presenter.finished?
+
+      finishing_leg = @match
+        .match_sets
+        .includes(:legs)
+        .order(:created_at)
+        .last
+        &.legs
+        &.max_by(&:created_at)
+
+      streams << turbo_stream.update(
+        "game-over-section",
         partial: "matches/game_over",
-        locals:  { match: @match, presenter: presenter })
-      streams << turbo_stream.replace("finish-popup",
+        locals: {
+          match: @match,
+          presenter: presenter
+        }
+      )
+
+      streams << turbo_stream.replace(
+        "finish-popup",
         partial: "matches/finish_popup",
-        locals:  { player: presenter.winner, leg: finishing_leg })
-      streams << turbo_stream.update("score-cards-section", html: "")
-      streams << turbo_stream.update("keyboard-section",    html: "")
-      streams << turbo_stream.update("header-section",      html: "")
+        locals: {
+          player: presenter.winner,
+          leg: finishing_leg
+        }
+      )
+
+      streams << turbo_stream.update(
+        "score-cards-section",
+        html: ""
+      )
+
+      streams << turbo_stream.update(
+        "keyboard-section",
+        html: ""
+      )
+
+      streams << turbo_stream.update(
+        "header-section",
+        html: ""
+      )
     end
 
     broadcast_match_update!(streams)
@@ -117,9 +168,19 @@ class ThrowsController < ApplicationController
     params.require(:throw).permit(:segment, :multiplier)
   end
 
-  def current_match_player(match)
-    return unless params[:player_id]
+  def current_match_player
+    return nil unless params[:actor_player_id].present?
 
-    match.match_players.find_by(player_id: params[:player_id])
+    @match.match_players.find_by(
+      player_id: params[:actor_player_id]
+    )
+  end
+
+  def current_match_player
+  return nil unless params[:actor_player_id].present?
+
+  @match.match_players.find_by(
+    player_id: params[:actor_player_id]
+  )
   end
 end

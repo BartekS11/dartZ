@@ -28,7 +28,7 @@ class MatchesController < ApplicationController
       return
     end
 
-    @current_match_player = current_match_player(@match)
+    @current_match_player = @match.match_players.find_by(player_id: params[:player_id])
     @presenter = MatchStatePresenter.new(@match)
     @players = @presenter.players
     return if @presenter.finished?
