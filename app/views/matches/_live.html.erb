@@ -1,0 +1,38 @@
+<div id="match-live" class="page-shell match-focus"
+     data-controller="match-view"
+     data-match-view-remote-invite-value="<%= @match.invite_match? %>"
+     data-match-view-my-player-id-value="<%= @current_match_player&.id %>">
+  <div id="game-over-section">
+    <% if @match.finished? %>
+      <%= render "matches/game_over", match: @match, presenter: @presenter %>
+    <% end %>
+  </div>
+
+  <% unless @match.finished? %>
+    <div class="match-focus-bar">
+      <%= link_to "← Matches", matches_path, class: "button is-small theme-btn-outline mono" %>
+      <div class="match-focus-title">
+        <span class="theme-chip is-live">Live</span>
+        <strong><%= @match.players.map(&:display_name).join(" vs ") %></strong>
+      </div>
+    </div>
+
+    <div id="score-cards-section" class="match-score-strip">
+      <% @presenter.players.each do |player| %>
+        <%= render "matches/score_card", match: @match, presenter: @presenter, player: player %>
+      <% end %>
+    </div>
+
+    <div id="keyboard-section" class="match-play-area">
+      <div data-match-view-target="input">
+        <div id="current-player">
+          <%= render "matches/current_player", match: @match, presenter: @presenter, turn: @turn %>
+        </div>
+      </div>
+
+      <div data-match-view-target="pad">
+        <%= render "matches/dart_board", match: @match, turn: @turn %>
+      </div>
+    </div>
+  <% end %>
+</div>

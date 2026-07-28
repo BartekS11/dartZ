@@ -1,6 +1,6 @@
 class Throw < ApplicationRecord
   belongs_to :turn
-
+  after_create_commit :broadcast_match_update
   validate :max_three_throws
 
   validates :segment,
@@ -43,5 +43,16 @@ class Throw < ApplicationRecord
     if turn.throws.size >= Turn::MAX_THROWS
       errors.add(:base, "Maximum of 3 throws per turn")
     end
+  end
+
+  def broadcast_match_update
+    match = turn.leg.match_set.match
+
+    match.broadcast_replace_to(
+      "match_#{match.id}",
+      target: "match-live",
+      partial: "matches/live",
+      locals: { match: match }
+    )
   end
 end
