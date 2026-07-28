@@ -64,9 +64,3 @@ def broadcast_match_update
     }
   )
 end
-
-def current_match_player(match)
-  return unless params[:player_id]
-
-  match.match_players.find_by(player_id: params[:player_id])
-end

@@ -116,4 +116,10 @@ class ThrowsController < ApplicationController
   def throw_params
     params.require(:throw).permit(:segment, :multiplier)
   end
+
+  def current_match_player(match)
+    return unless params[:player_id]
+
+    match.match_players.find_by(player_id: params[:player_id])
+  end
 end
