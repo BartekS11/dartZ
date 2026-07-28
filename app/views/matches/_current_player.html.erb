@@ -1,7 +1,6 @@
 <% presenter ||= MatchStatePresenter.new(match) %>
 <% current_player = presenter.current_player %>
 <% bot_turn = current_player&.bot? %>
-<% current_match_player ||= current_match_player(match) %>
 <div
   class="match-input-panel <%= 'is-disabled bot-turn-disabled' if bot_turn %>"
   data-controller="keyboard"
