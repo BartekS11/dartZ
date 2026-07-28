@@ -2,6 +2,8 @@
 <% current_player = presenter.current_player %>
 <% bot_turn = current_player&.bot? %>
 <% my_turn = current_match_player&.id == current_player&.id %>
+<% current_match_player ||= local_assigns[:current_match_player] %>
+
 <div
   class="match-input-panel <%= 'is-disabled' unless my_turn %>"
   data-controller="keyboard"

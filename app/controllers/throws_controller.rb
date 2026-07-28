@@ -12,7 +12,8 @@ class ThrowsController < ApplicationController
     @match = ThrowSubmission.call(
       turn: @turn,
       total: params[:throw][:total],
-      throw_attributes: throw_params
+      throw_attributes: throw_params,
+      current_match_player: current_match_player(@match)
     )
 
     respond_to do |format|
