@@ -19,7 +19,7 @@ class ThrowSubmission
       @match.reload
     end
 
-    broadcast_match_update if @broadcast
+    # broadcast_match_update if @broadcast
 
     @match
   end
