@@ -2,7 +2,14 @@ import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
   static targets = ["player1", "player2", "greeting", "matchList", "dropdown1", "dropdown2", "savedButton1", "savedButton2"]
-  static values = { signedIn: Boolean, currentUserName: String }
+  static values = {
+    signedIn: Boolean,
+    currentUserName: String,
+    savedNamesLabel: String,
+    savedNamesAria: String,
+    noSavedNamesAria: String,
+    noSavedPlayers: String
+  }
 
   connect() {
     const p1 = localStorage.getItem("dartz_player1")
@@ -53,13 +60,16 @@ export default class extends Controller {
 
   updateSavedButtons() {
     const count = this.getSavedPlayers().length
-    const label = count > 0 ? `Saved names (${count}) ▾` : "Saved names"
+    const savedNamesLabel = this.hasSavedNamesLabelValue ? this.savedNamesLabelValue : "Saved names"
+    const label = count > 0 ? `${savedNamesLabel} (${count}) ▾` : savedNamesLabel
 
     ;[this.savedButton1Target, this.savedButton2Target].forEach((button) => {
       if (!button) return
       button.textContent = label
       button.classList.toggle("has-saved-names", count > 0)
-      button.setAttribute("aria-label", count > 0 ? `${count} saved names. Tap to choose.` : "No saved names")
+      const savedAria = this.hasSavedNamesAriaValue ? this.savedNamesAriaValue.replace("__COUNT__", count) : `${count} saved names. Tap to choose.`
+      const emptyAria = this.hasNoSavedNamesAriaValue ? this.noSavedNamesAriaValue : "No saved names"
+      button.setAttribute("aria-label", count > 0 ? savedAria : emptyAria)
     })
   }
 
@@ -67,7 +77,8 @@ export default class extends Controller {
     const players = this.getSavedPlayers()
 
     if (players.length === 0) {
-      el.innerHTML = `<div class="saved-empty mono">No saved players</div>`
+      const emptyText = this.hasNoSavedPlayersValue ? this.noSavedPlayersValue : "No saved players"
+      el.innerHTML = `<div class="saved-empty mono">${this.escapeHTML(emptyText)}</div>`
       return
     }
 

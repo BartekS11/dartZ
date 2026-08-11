@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   resource :session
   resource :registration, only: %i[new create]
   resource :profile, only: [ :update ]
+  resource :locale, only: [ :update ]
   resource :dart_setup, only: %i[edit update] do
     patch :use_saved
   end

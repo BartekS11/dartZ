@@ -1,29 +1,29 @@
 <div class="page-shell stack-lg">
   <section class="theme-hero p-5 stack-md">
     <div>
-      <div class="theme-section-label">Join match</div>
-      <h1 class="page-title">Join <%= @match.players.first&.display_name || "Player 1" %>'s game</h1>
-      <p class="page-copy mt-2">Enter your player name and start scoring.</p>
+      <div class="theme-section-label"><%= t("invites.join_match") %></div>
+      <h1 class="page-title"><%= t("invites.join_game", player: (@match.players.first&.display_name || t("common.player_1"))) %></h1>
+      <p class="page-copy mt-2"><%= t("invites.join_copy") %></p>
     </div>
 
     <%= form_with url: accept_match_invite_path(@match.invite_token), method: :post, data: { turbo: false }, class: "stack-md" do |f| %>
       <div class="theme-panel p-4">
-        <label class="auth-label">Your name</label>
+        <label class="auth-label"><%= t("common.your_name") %></label>
         <%= f.text_field :player_name,
               value: Current.user&.display_name,
-              placeholder: "Player 2",
+              placeholder: t("common.player_2"),
               maxlength: 20,
               autocomplete: "off",
               class: "input theme-form-input mono" %>
         <% if Current.user %>
-          <p class="help-theme mt-2">You are joining with your signed-in account.</p>
+          <p class="help-theme mt-2"><%= t("invites.signed_in_join") %></p>
         <% else %>
-          <p class="help-theme mt-2">You are joining as a guest.</p>
+          <p class="help-theme mt-2"><%= t("invites.guest_join") %></p>
         <% end %>
       </div>
 
       <div class="buttons is-right">
-        <%= f.submit "Join match", class: "button theme-btn-primary is-medium" %>
+        <%= f.submit t("invites.join_button"), class: "button theme-btn-primary is-medium" %>
       </div>
     <% end %>
   </section>

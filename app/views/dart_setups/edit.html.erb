@@ -3,8 +3,8 @@
     <div class="level is-align-items-flex-start mb-4">
       <div class="level-left">
         <div>
-          <div class="theme-section-label">Premium</div>
-          <h1 class="page-title">Dart setup</h1>
+          <div class="theme-section-label"><%= t("dart_setup.premium") %></div>
+          <h1 class="page-title"><%= t("dart_setup.title") %></h1>
         </div>
       </div>
       <div class="level-right"><span class="theme-chip is-live"><%= Current.user.account_tier.humanize %></span></div>
@@ -12,19 +12,19 @@
 
     <div class="current-dart-setup-card mb-5">
       <div>
-        <div class="theme-section-label">Currently saved</div>
+        <div class="theme-section-label"><%= t("dart_setup.currently_saved") %></div>
         <% if @dart_setup.persisted? %>
           <h2><%= @dart_setup.display_summary %></h2>
-          <p class="page-copy mt-1">New matches will use this exact setup snapshot.</p>
+          <p class="page-copy mt-1"><%= t("dart_setup.snapshot_copy") %></p>
         <% else %>
-          <h2>Default setup ready</h2>
-          <p class="page-copy mt-1">Save once to start tracking setup-based stats.</p>
+          <h2><%= t("dart_setup.default_ready") %></h2>
+          <p class="page-copy mt-1"><%= t("dart_setup.save_to_track") %></p>
         <% end %>
       </div>
       <div class="current-dart-setup-metrics mono">
-        <span><strong><%= @dart_setup.weight_g.to_s.sub(/\.0$/, '') %>g</strong>Weight</span>
-        <span><strong><%= @dart_setup.shaft_length_mm %>mm</strong>Shaft</span>
-        <span><strong><%= @dart_setup.point_length_mm %>mm</strong>Point</span>
+        <span><strong><%= @dart_setup.weight_g.to_s.sub(/\.0$/, '') %>g</strong><%= t("dart_setup.weight") %></span>
+        <span><strong><%= @dart_setup.shaft_length_mm %>mm</strong><%= t("dart_setup.shaft") %></span>
+        <span><strong><%= @dart_setup.point_length_mm %>mm</strong><%= t("dart_setup.point") %></span>
       </div>
     </div>
 
@@ -34,7 +34,7 @@
       <% end %>
 
       <div class="dart-setup-section">
-        <div class="theme-section-label">Manufacturer</div>
+        <div class="theme-section-label"><%= t("dart_setup.manufacturer") %></div>
         <div class="dart-option-grid dart-manufacturer-grid">
           <% DartSetup::MANUFACTURER_LABELS.each do |value, label| %>
             <label class="button theme-btn-outline mono dart-option <%= 'is-selected' if @dart_setup.manufacturer == value %>">
@@ -51,7 +51,7 @@
       <div class="columns is-variable is-4">
         <div class="column">
           <div class="dart-setup-section">
-            <div class="theme-section-label">Weight</div>
+            <div class="theme-section-label"><%= t("dart_setup.weight") %></div>
             <div class="dart-preset-row mb-3">
               <% [21, 22, 23, 24, 25, 26].each do |weight| %>
                 <button type="button"
@@ -67,7 +67,7 @@
 
         <div class="column">
           <div class="dart-setup-section">
-            <div class="theme-section-label">Shaft type</div>
+            <div class="theme-section-label"><%= t("dart_setup.shaft_type") %></div>
             <div class="dart-option-grid dart-shaft-grid">
               <% DartSetup::SHAFT_TYPES.each do |type| %>
                 <label class="button theme-btn-outline mono dart-option <%= 'is-selected' if @dart_setup.shaft_type == type %>">
@@ -86,7 +86,7 @@
       <div class="columns is-variable is-4">
         <div class="column">
           <div class="dart-setup-section">
-            <div class="theme-section-label">Shaft length</div>
+            <div class="theme-section-label"><%= t("dart_setup.shaft_length") %></div>
             <div class="dart-preset-row mb-3">
               <% [34, 36, 40, 42, 45, 48].each do |length| %>
                 <button type="button"
@@ -102,7 +102,7 @@
 
         <div class="column">
           <div class="dart-setup-section">
-            <div class="theme-section-label">Point length</div>
+            <div class="theme-section-label"><%= t("dart_setup.point_length") %></div>
             <div class="dart-preset-row mb-3">
               <% [26, 30, 32, 35, 38, 40].each do |length| %>
                 <button type="button"
@@ -118,7 +118,7 @@
       </div>
 
       <div class="level pt-4" style="border-top:1px solid var(--theme-line)">
-        <div class="level-left"><p class="page-copy">Changing setup does not rewrite old match snapshots.</p></div>
+        <div class="level-left"><p class="page-copy"><%= t("dart_setup.no_rewrite") %></p></div>
         <div class="level-right"><%= f.submit "Save setup", class: "button theme-btn-primary is-medium" %></div>
       </div>
     <% end %>
@@ -137,12 +137,12 @@
             <article class="theme-match-card p-4 dart-setup-stats-card">
               <div class="dart-setup-stats-head">
                 <div>
-                  <div class="auth-label">Saved setup</div>
+                  <div class="auth-label"><%= t("dart_setup.saved_setup") %></div>
                   <h3><%= stats[:setup] %></h3>
                 </div>
                 <div class="dart-setup-stats-actions">
                   <% if @dart_setup.fingerprint == stats[:fingerprint] %>
-                    <span class="theme-chip is-live">Current</span>
+                    <span class="theme-chip is-live"><%= t("common.current") %></span>
                   <% else %>
                     <%= button_to "Use setup",
                           use_saved_dart_setup_path,
@@ -154,19 +154,19 @@
               </div>
 
               <div class="compact-stats-list mono text-sm">
-                <div class="compact-stat"><span>Matches</span><strong><%= stats[:matches] %></strong></div>
-                <div class="compact-stat"><span>Average</span><strong><%= stats[:average_per_turn] %></strong></div>
-                <div class="compact-stat"><span>Highest turn</span><strong><%= stats[:highest_turn] %></strong></div>
-                <div class="compact-stat"><span>Darts thrown</span><strong><%= stats[:darts_thrown] %></strong></div>
-                <div class="compact-stat"><span>Double hits</span><strong><%= stats[:double_hits] %> (<%= stats[:double_hit_share] %>%)</strong></div>
-                <div class="compact-stat"><span>Checkout</span><strong><%= stats[:checkout_rate] %>%</strong></div>
+                <div class="compact-stat"><span><%= t("dart_setup.matches") %></span><strong><%= stats[:matches] %></strong></div>
+                <div class="compact-stat"><span><%= t("dart_setup.average") %></span><strong><%= stats[:average_per_turn] %></strong></div>
+                <div class="compact-stat"><span><%= t("dart_setup.highest_turn") %></span><strong><%= stats[:highest_turn] %></strong></div>
+                <div class="compact-stat"><span><%= t("dart_setup.darts_thrown") %></span><strong><%= stats[:darts_thrown] %></strong></div>
+                <div class="compact-stat"><span><%= t("dart_setup.double_hits") %></span><strong><%= stats[:double_hits] %> (<%= stats[:double_hit_share] %>%)</strong></div>
+                <div class="compact-stat"><span><%= t("live_match.checkout") %></span><strong><%= stats[:checkout_rate] %>%</strong></div>
               </div>
             </article>
           </div>
         <% end %>
       </div>
     <% else %>
-      <div class="flash-theme notice mono">No setup-linked match stats yet. Save a setup, start a match, and stats will appear here.</div>
+      <div class="flash-theme notice mono"><%= t("dart_setup.no_stats") %></div>
     <% end %>
   </section>
 </div>

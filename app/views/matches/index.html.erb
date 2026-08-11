@@ -1,18 +1,22 @@
 <div class="page-shell stack-lg"
      data-controller="lobby"
      data-lobby-signed-in-value="<%= Current.user.present? %>"
-     data-lobby-current-user-name-value="<%= Current.user&.display_name.to_s %>">
+     data-lobby-current-user-name-value="<%= Current.user&.display_name.to_s %>"
+     data-lobby-saved-names-label-value="<%= t("matches.saved_names") %>"
+     data-lobby-saved-names-aria-value="<%= t("matches.saved_names_aria", count: "__COUNT__", default: "__COUNT__ saved names. Tap to choose.") %>"
+     data-lobby-no-saved-names-aria-value="<%= t("matches.no_saved_names", default: "No saved names") %>"
+     data-lobby-no-saved-players-value="<%= t("matches.no_saved_players", default: "No saved players") %>">
   <section class="theme-hero simple-setup p-5">
     <div class="setup-heading mb-4">
       <div class="theme-section-label"></div>
-      <h1 class="page-title">New game</h1>
+      <h1 class="page-title"><%= t("matches.new_game") %></h1>
     </div>
 
     <%= form_with url: matches_path, method: :post, data: { turbo: false, action: "submit->lobby#savePlayers" }, class: "stack-md" do |f| %>
       <div class="simple-step">
         <div class="simple-step-number">1</div>
         <div>
-          <div class="theme-section-label">Players</div>
+          <div class="theme-section-label"><%= t("matches.players") %></div>
         </div>
       </div>
 
@@ -20,11 +24,11 @@
         <div class="column">
           <div class="player-card-shell">
             <div class="is-flex is-justify-content-space-between is-align-items-center mb-2">
-              <label class="auth-label">Player 1</label>
-              <button type="button" data-lobby-target="savedButton1" data-action="click->lobby#toggleDropdown1" class="saved-btn mono">Saved names</button>
+              <label class="auth-label"><%= t("common.player_1") %></label>
+              <button type="button" data-lobby-target="savedButton1" data-action="click->lobby#toggleDropdown1" class="saved-btn mono"><%= t("matches.saved_names") %></button>
             </div>
             <%= f.text_field :player1_name,
-                  placeholder: "Enter name",
+                  placeholder: t("matches.enter_name"),
                   maxlength: 20,
                   autocomplete: "off",
                   data: { lobby_target: "player1", action: "input->lobby#save" },
@@ -40,11 +44,11 @@
         <div class="column">
           <div class="player-card-shell">
             <div class="is-flex is-justify-content-space-between is-align-items-center mb-2">
-              <label class="auth-label">Player 2</label>
-              <button type="button" data-lobby-target="savedButton2" data-action="click->lobby#toggleDropdown2" class="saved-btn mono">Saved names</button>
+              <label class="auth-label"><%= t("common.player_2") %></label>
+              <button type="button" data-lobby-target="savedButton2" data-action="click->lobby#toggleDropdown2" class="saved-btn mono"><%= t("matches.saved_names") %></button>
             </div>
             <%= f.text_field :player2_name,
-                  placeholder: "Enter name",
+                  placeholder: t("matches.enter_name"),
                   maxlength: 20,
                   autocomplete: "off",
                   data: { lobby_target: "player2", action: "input->lobby#save" },
@@ -57,14 +61,14 @@
       <div class="simple-step">
         <div class="simple-step-number">2</div>
         <div>
-          <div class="theme-section-label">Rules</div>
+          <div class="theme-section-label"><%= t("common.rules") %></div>
         </div>
       </div>
 
       <div class="columns is-variable is-3">
         <div class="column">
           <div class="theme-panel p-4">
-            <label class="auth-label">Starting score</label>
+            <label class="auth-label"><%= t("common.starting_score") %></label>
             <div class="buttons are-small mt-2">
               <% Match::X01_STARTING_SCORES.each do |score| %>
                 <button type="button"
@@ -80,7 +84,7 @@
 
         <div class="column">
           <div class="theme-panel p-4">
-            <label class="auth-label">Best of legs</label>
+            <label class="auth-label"><%= t("common.best_of_legs") %></label>
             <div class="buttons are-small mt-2">
               <% [[1, "1"], [3, "Bo3"], [5, "Bo5"]].each do |val, label| %>
                 <button type="button"
@@ -96,7 +100,7 @@
 
         <div class="column">
           <div class="theme-panel p-4">
-            <label class="auth-label">Best of sets</label>
+            <label class="auth-label"><%= t("common.best_of_sets") %></label>
             <div class="buttons are-small mt-2">
               <% [[1, "1"], [3, "Bo3"], [5, "Bo5"]].each do |val, label| %>
                 <button type="button"
@@ -112,41 +116,41 @@
       </div>
 
       <div class="columns is-variable is-3">
-        <div class="column"><label class="panel-choice"><%= hidden_field_tag :double_in, "0" %><%= check_box_tag :double_in, "1", false %> Double in</label></div>
-        <div class="column"><label class="panel-choice"><%= hidden_field_tag :double_out, "0" %><%= check_box_tag :double_out, "1", true %> Double out</label></div>
+        <div class="column"><label class="panel-choice"><%= hidden_field_tag :double_in, "0" %><%= check_box_tag :double_in, "1", false %> <%= t("common.double_in") %></label></div>
+        <div class="column"><label class="panel-choice"><%= hidden_field_tag :double_out, "0" %><%= check_box_tag :double_out, "1", true %> <%= t("common.double_out") %></label></div>
       </div>
 
       <div class="simple-step">
         <div class="simple-step-number">3</div>
         <div>
-          <div class="theme-section-label">Play</div>
+          <div class="theme-section-label"><%= t("matches.play") %></div>
         </div>
       </div>
 
       <div class="setup-submit-row pt-3">
         <div class="help-theme">
           <div id="greeting-wrapper" class="is-hidden">
-            <span class="auth-label">Last players</span>
+            <span class="auth-label"><%= t("matches.last_players") %></span>
             <div data-lobby-target="greeting" class="mt-1"></div>
           </div>
         </div>
         <div class="buttons setup-primary-actions">
           <% if Current.user.present? %>
-            <%= button_tag "Create invite match",
+            <%= button_tag t("matches.create_invite_match"),
                   type: "submit",
                   name: "invite_match",
                   value: "1",
                   class: "button theme-btn-outline is-medium" %>
           <% end %>
-          <%= f.submit "Start game", class: "button theme-btn-primary is-medium" %>
+          <%= f.submit t("matches.start_game"), class: "button theme-btn-primary is-medium" %>
         </div>
       </div>
 
       <details class="setup-utility-actions">
-        <summary class="mono">Reset options</summary>
+        <summary class="mono"><%= t("matches.reset_options") %></summary>
         <div class="buttons are-small mt-3">
-          <button type="button" data-action="click->lobby#clearPlayers" class="button theme-btn-outline mono">Clear names</button>
-          <button type="button" data-action="click->lobby#clearMatches" class="button theme-btn-outline mono">Clear history</button>
+          <button type="button" data-action="click->lobby#clearPlayers" class="button theme-btn-outline mono"><%= t("matches.clear_names") %></button>
+          <button type="button" data-action="click->lobby#clearMatches" class="button theme-btn-outline mono"><%= t("matches.clear_history") %></button>
         </div>
       </details>
     <% end %>
@@ -156,13 +160,13 @@
     <div class="level">
       <div class="level-left">
         <div>
-          <div class="theme-section-label">Recent matches</div>
-          <h2 class="section-title">Keep playing</h2>
+          <div class="theme-section-label"><%= t("matches.recent_matches") %></div>
+          <h2 class="section-title"><%= t("matches.keep_playing") %></h2>
         </div>
       </div>
       <div class="level-right buttons are-small">
-        <%= link_to "Play vs bot", new_bot_match_path, class: "button theme-btn-outline mono" %>
-        <%= link_to "Tournaments", tournaments_path, class: "button theme-btn-outline mono" %>
+        <%= link_to t("matches.play_vs_bot"), new_bot_match_path, class: "button theme-btn-outline mono" %>
+        <%= link_to t("nav.tournaments"), tournaments_path, class: "button theme-btn-outline mono" %>
       </div>
     </div>
 
@@ -178,7 +182,7 @@
                   <div class="auth-label">#<%= i + 1 %> · <%= match.created_at.strftime("%d %b · %H:%M") %></div>
                   <div class="match-identifier"><%= match.ui_identifier %></div>
                 </div>
-                <span class="theme-chip <%= match.finished? ? 'is-finished' : 'is-live' %>"><%= match.finished? ? 'Finished' : 'Live' %></span>
+                <span class="theme-chip <%= match.finished? ? 'is-finished' : 'is-live' %>"><%= match.finished? ? t("matches.finished") : t("matches.live") %></span>
               </div>
 
               <div class="is-flex is-flex-wrap-wrap" style="gap:.45rem">
@@ -197,7 +201,7 @@
                     <div class="player-line mb-2">
                       <span class="name <%= 'is-winner' if is_winner %>"><%= player.display_name %></span>
                       <span class="value <%= 'is-winner' if is_winner %>"><%= score %></span>
-                      <% if avg > 0 %><span class="avg">avg <%= avg %></span><% end %>
+                      <% if avg > 0 %><span class="avg"><%= t("matches.avg") %> <%= avg %></span><% end %>
                     </div>
                     <div class="progress-thin"><span style="width:<%= pct %>%; background:<%= is_winner ? 'var(--theme-success)' : 'var(--theme-border-strong)' %>"></span></div>
                   </div>
@@ -209,7 +213,7 @@
       </div>
     <% else %>
       <div class="theme-blank-slate">
-        <div class="auth-label mb-1">Local sessions</div>
+        <div class="auth-label mb-1"><%= t("matches.local_sessions") %></div>
         <div data-lobby-target="matchList" class="stack-sm"></div>
       </div>
     <% end %>

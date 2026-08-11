@@ -102,7 +102,7 @@ class MatchesController < ApplicationController
 
   def create_invite_match
     unless Current.user
-      redirect_to matches_path, alert: "Sign in to create invite matches."
+      redirect_to matches_path, alert: t("flashes.invite_sign_in")
       return
     end
 
@@ -135,6 +135,6 @@ class MatchesController < ApplicationController
   end
 
   def match_not_found
-    redirect_to matches_path, alert: "Match not found"
+    redirect_to matches_path, alert: t("flashes.match_not_found")
   end
 end

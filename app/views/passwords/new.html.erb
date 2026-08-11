@@ -1,8 +1,8 @@
 <div class="page-shell page-shell-compact" style="min-height:70vh; display:grid; place-items:center">
   <div class="stack-md" style="width:min(32rem,100%)">
     <div class="page-header has-text-centered">
-      <div class="theme-section-label">Account</div>
-      <h1 class="page-title">Forgot password?</h1>
+      <div class="theme-section-label"><%= t("common.account") %></div>
+      <h1 class="page-title"><%= t("auth.forgot_password_title") %></h1>
     </div>
 
     <div class="auth-card p-5">
@@ -10,10 +10,10 @@
 
       <%= form_with url: passwords_path, class: "stack-md" do |form| %>
         <div class="field">
-          <label class="label auth-label">Email address</label>
-          <%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "username", placeholder: "Enter your email address", value: params[:email_address], class: "input auth-input" %>
+          <label class="label auth-label"><%= t("common.email_address") %></label>
+          <%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "username", placeholder: t("auth.email_placeholder"), value: params[:email_address], class: "input auth-input" %>
         </div>
-        <%= form.submit "Send reset instructions", class: "button theme-btn-primary is-fullwidth is-medium" %>
+        <%= form.submit t("auth.send_reset"), class: "button theme-btn-primary is-fullwidth is-medium" %>
       <% end %>
     </div>
   </div>

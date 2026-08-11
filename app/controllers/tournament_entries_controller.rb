@@ -6,7 +6,7 @@ class TournamentEntriesController < ApplicationController
 
   def create
     unless @tournament.join_token == params[:join_token]
-      redirect_to tournament_path(@tournament), alert: "Invalid join link."
+      redirect_to tournament_path(@tournament), alert: t("flashes.invalid_join_link")
       return
     end
 
@@ -17,7 +17,7 @@ class TournamentEntriesController < ApplicationController
     if entry.save
       TournamentGenerator.new(@tournament).call if @tournament.tournament_matches.none? && @tournament.entries.size >= 2
       @tournament.broadcast_live_update!
-      redirect_to tournament_path(@tournament, participant_token: entry.access_token), notice: "Joined tournament."
+      redirect_to tournament_path(@tournament, participant_token: entry.access_token), notice: t("flashes.tournament_joined")
     else
       redirect_to tournament_path(@tournament), alert: entry.errors.full_messages.to_sentence
     end
@@ -25,13 +25,13 @@ class TournamentEntriesController < ApplicationController
 
   def update
     unless @tournament.can_administer?(user: Current.user, admin_token: params[:admin_token])
-      redirect_to tournament_path(@tournament), alert: "Unauthorized"
+      redirect_to tournament_path(@tournament), alert: t("flashes.unauthorized")
       return
     end
 
     if @entry.update(entry_params)
       @tournament.broadcast_live_update!
-      redirect_to tournament_path(@tournament, admin_token: params[:admin_token]), notice: "Player updated."
+      redirect_to tournament_path(@tournament, admin_token: params[:admin_token]), notice: t("flashes.player_updated")
     else
       redirect_to tournament_path(@tournament, admin_token: params[:admin_token]), alert: @entry.errors.full_messages.to_sentence
     end
@@ -39,14 +39,14 @@ class TournamentEntriesController < ApplicationController
 
   def destroy
     unless @tournament.can_administer?(user: Current.user, admin_token: params[:admin_token])
-      redirect_to tournament_path(@tournament), alert: "Unauthorized"
+      redirect_to tournament_path(@tournament), alert: t("flashes.unauthorized")
       return
     end
 
     @entry.destroy!
     TournamentGenerator.new(@tournament).call if @tournament.entries.size >= 2
     @tournament.broadcast_live_update!
-    redirect_to tournament_path(@tournament, admin_token: params[:admin_token]), notice: "Player removed."
+    redirect_to tournament_path(@tournament, admin_token: params[:admin_token]), notice: t("flashes.player_removed")
   end
 
   private

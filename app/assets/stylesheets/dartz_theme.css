@@ -1799,6 +1799,37 @@ body.dartz-body {
 }
 .simple-nav-scroll::-webkit-scrollbar { display: none; }
 
+.app-nav-locale-form {
+  display: inline-flex;
+  flex: 0 0 auto;
+  margin: 0;
+}
+
+.app-nav-locale-select {
+  appearance: none;
+  min-height: 2.75rem;
+  padding: .72rem 1.7rem .72rem .85rem;
+  border: 1px solid var(--theme-line);
+  border-radius: .45rem;
+  background: var(--theme-bg) linear-gradient(45deg, transparent 50%, var(--theme-muted) 50%), linear-gradient(135deg, var(--theme-muted) 50%, transparent 50%);
+  background-position: calc(100% - .9rem) 50%, calc(100% - .62rem) 50%;
+  background-size: .28rem .28rem, .28rem .28rem;
+  background-repeat: no-repeat;
+  color: var(--theme-muted);
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.app-nav-locale-select:hover,
+.app-nav-locale-select:focus {
+  border-color: var(--theme-primary);
+  color: var(--theme-text);
+  outline: none;
+}
+
 .app-nav-link {
   display: inline-flex;
   align-items: center;

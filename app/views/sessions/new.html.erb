@@ -2,8 +2,9 @@
   <div class="columns is-variable is-6 is-vcentered" style="min-height:72vh">
     <section class="column">
       <div class="theme-hero p-6">
-        <div class="theme-section-label">Welcome back</div>
-        <h1 class="page-title">Sign in and keep your matches close.</h1>
+        <div class="theme-section-label"><%= t("auth.sign_in") %></div>
+        <h1 class="page-title"><%= t("auth.sign_in_hero") %></h1>
+        <p class="page-copy mt-3"><%= t("auth.sign_in_copy") %></p>
       </div>
     </section>
 
@@ -13,27 +14,27 @@
         <% if notice = flash[:notice] %><div class="flash-theme notice mono mb-4">⚡ <%= notice %></div><% end %>
 
         <div class="mb-5">
-          <div class="theme-section-label">Account</div>
-          <h2 class="section-title">Sign in</h2>
+          <div class="theme-section-label"><%= t("common.account") %></div>
+          <h2 class="section-title"><%= t("auth.sign_in_title") %></h2>
         </div>
 
         <%= form_with url: session_url, class: "stack-md" do |form| %>
           <div class="field">
-            <label class="label auth-label">Email address</label>
-            <%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "username", placeholder: "Enter your email address", value: params[:email_address], class: "input auth-input" %>
+            <label class="label auth-label"><%= t("common.email_address") %></label>
+            <%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "username", placeholder: t("auth.email_placeholder"), value: params[:email_address], class: "input auth-input" %>
           </div>
 
           <div class="field">
-            <label class="label auth-label">Password</label>
-            <%= form.password_field :password, required: true, autocomplete: "current-password", placeholder: "Enter your password", maxlength: 72, class: "input auth-input" %>
+            <label class="label auth-label"><%= t("common.password") %></label>
+            <%= form.password_field :password, required: true, autocomplete: "current-password", placeholder: t("common.password"), maxlength: 72, class: "input auth-input" %>
           </div>
 
-          <%= form.submit "Sign in", class: "button theme-btn-primary is-fullwidth is-medium" %>
+          <%= form.submit t("auth.sign_in"), class: "button theme-btn-primary is-fullwidth is-medium" %>
 
           <div class="is-flex is-justify-content-space-between is-flex-wrap-wrap pt-3" style="border-top:1px solid var(--theme-line); gap:.75rem">
-            <%= link_to "Forgot password?", new_password_path, class: "footer-link" %>
-            <%= link_to "Register", new_registration_path, class: "footer-link" %>
-            <%= link_to "Play as guest", matches_path, class: "footer-link" %>
+            <%= link_to t("auth.forgot_password"), new_password_path, class: "footer-link" %>
+            <%= link_to t("nav.register"), new_registration_path, class: "footer-link" %>
+            <%= link_to t("auth.play_as_guest"), matches_path, class: "footer-link" %>
           </div>
         <% end %>
       </div>

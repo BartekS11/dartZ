@@ -10,22 +10,24 @@ class DartSetupsController < ApplicationController
     @dart_setup = current_dart_setup
 
     if @dart_setup.update(dart_setup_params)
-      redirect_to edit_dart_setup_path, notice: "Dart setup saved. New matches will track stats against this setup."
+      redirect_to edit_dart_setup_path, notice: t("flashes.dart_setup_saved")
     else
       render :edit, status: :unprocessable_entity
     end
   end
 
   def use_saved
-    saved_setup = DartSetupStats.new(user: Current.user).grouped.find { |group| group[:fingerprint] == params[:fingerprint] }
+    saved_setups = DartSetupStats.new(user: Current.user).grouped
+    saved_setup = saved_setups.find { |group| group[:fingerprint] == params[:fingerprint] }
+    saved_setup ||= saved_setups.first if saved_setups.one?
 
     unless saved_setup
-      redirect_to edit_dart_setup_path, alert: "Saved setup not found."
+      redirect_to edit_dart_setup_path, alert: t("flashes.saved_setup_not_found")
       return
     end
 
     current_dart_setup.update!(setup_attributes_from_snapshot(saved_setup[:snapshot]))
-    redirect_to edit_dart_setup_path, notice: "Saved setup selected for new matches."
+    redirect_to edit_dart_setup_path, notice: t("flashes.saved_setup_selected")
   end
 
   private

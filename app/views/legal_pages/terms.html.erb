@@ -1,45 +1,17 @@
 <div class="page-shell page-shell-narrow">
   <div class="theme-card p-4 md:p-6">
     <div class="page-header mb-6">
-      <div class="theme-section-label mono">Legal</div>
-      <h1 class="section-title bebas">Terms of service</h1>
+      <div class="theme-section-label mono"><%= t("legal.label") %></div>
+      <h1 class="section-title bebas"><%= t("legal.terms_title") %></h1>
     </div>
 
     <div class="theme-copy space-y-5 text-sm leading-7">
-      <section>
-        <h2 class="mb-2 text-lg font-semibold">1. Service</h2>
-        <p><%= theme_app_name %> provides darts scoring, match history, statistics, guest play, registered accounts, and related tournament or invite features.</p>
-      </section>
-
-      <section>
-        <h2 class="mb-2 text-lg font-semibold">2. Accounts</h2>
-        <p>You are responsible for keeping your login details safe and for the information entered under your account. Guest matches may be stored locally or through guest access tokens.</p>
-      </section>
-
-      <section>
-        <h2 class="mb-2 text-lg font-semibold">3. Acceptable use</h2>
-        <p>Do not misuse the app, attack or disrupt the service, attempt unauthorized access, submit malicious content, or use automated scraping in a way that harms the app.</p>
-      </section>
-
-      <section>
-        <h2 class="mb-2 text-lg font-semibold">4. Availability</h2>
-        <p>The app is provided as-is and may change over time. Features may be updated, paused, or removed to improve reliability, security, or usability.</p>
-      </section>
-
-      <section>
-        <h2 class="mb-2 text-lg font-semibold">5. User data</h2>
-        <p>You keep ownership of names, scores, and match data you enter. You allow the app to store and process that data as needed to provide scoring, match history, invites, and statistics.</p>
-      </section>
-
-      <section>
-        <h2 class="mb-2 text-lg font-semibold">6. Paid features</h2>
-        <p>If paid features are enabled, plan details, prices, and billing terms shown at checkout apply. Free accounts remain available with the free-tier feature set.</p>
-      </section>
-
-      <section>
-        <h2 class="mb-2 text-lg font-semibold">7. Liability</h2>
-        <p>The app is intended for scoring and convenience. To the extent allowed by law, it is provided without warranties and liability is limited to direct losses caused by the service.</p>
-      </section>
+      <% %w[service accounts use availability data paid liability].each do |section| %>
+        <section>
+          <h2 class="mb-2 text-lg font-semibold"><%= t("legal.terms.#{section}_title") %></h2>
+          <p><%= t("legal.terms.#{section}_text", app_name: theme_app_name) %></p>
+        </section>
+      <% end %>
     </div>
   </div>
 </div>

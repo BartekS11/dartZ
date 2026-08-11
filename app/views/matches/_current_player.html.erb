@@ -14,7 +14,7 @@
 
   <div class="match-input-head">
     <div>
-      <div class="theme-section-label">Input</div>
+      <div class="theme-section-label"><%= t("live_match.input") %></div>
       <% if bot_turn %>
         <div class="mono text-xs uppercase tracking-[0.14em]" style="color:var(--theme-muted)">
           Bot is throwing — input locked
@@ -57,11 +57,11 @@
   <%= f.hidden_field :multiplier, id: "keyboard-multiplier" %>
   <%= f.hidden_field :total, id: "keyboard-total" %>
  <%= hidden_field_tag :actor_player_id,
-        current_match_player&.id,
+        current_match_player(match)&.id,
         id: "actor-player-id" %>
 <% end %>
 
 <details class="match-stats-toggle">
-  <summary class="mono">Stats</summary>
+  <summary class="mono"><%= t("live_match.stats") %></summary>
   <%= render "matches/stats_panel", match: match, presenter: presenter %>
 </details>

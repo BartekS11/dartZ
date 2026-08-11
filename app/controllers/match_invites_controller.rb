@@ -32,7 +32,7 @@ class MatchInvitesController < ApplicationController
 
   def create_invite
     unless Current.user
-      redirect_to matches_path, alert: "Sign in to create invite matches."
+      redirect_to matches_path, alert: t("flashes.invite_sign_in")
       return
     end
 
@@ -74,11 +74,11 @@ class MatchInvitesController < ApplicationController
     @match.with_lock do
       @match.reload
       if @match.invite_cancelled?
-        redirect_to match_invite_join_path(@match.invite_token), alert: "This invite was cancelled." and return
+        redirect_to match_invite_join_path(@match.invite_token), alert: t("flashes.invite_cancelled") and return
       elsif @match.invite_expired?
-        redirect_to match_invite_join_path(@match.invite_token), alert: "This invite has expired." and return
+        redirect_to match_invite_join_path(@match.invite_token), alert: t("flashes.invite_expired") and return
       elsif @match.invite_full?
-        redirect_to match_invite_join_path(@match.invite_token), alert: "This lobby is full." and return
+        redirect_to match_invite_join_path(@match.invite_token), alert: t("flashes.invite_full") and return
       end
 
       p2_name = params[:player_name].to_s.strip.presence || Current.user&.display_name || "Player 2"
@@ -98,7 +98,7 @@ class MatchInvitesController < ApplicationController
 
   def cancel
     @match.cancel_invite! if @match.invite_pending?
-    redirect_to matches_path, notice: "Invite match cancelled."
+    redirect_to matches_path, notice: t("flashes.invite_cancelled_notice")
   end
 
   private
@@ -120,6 +120,6 @@ class MatchInvitesController < ApplicationController
   end
 
   def invite_not_found
-    redirect_to matches_path, alert: "Invite not found."
+    redirect_to matches_path, alert: t("flashes.invite_not_found")
   end
 end

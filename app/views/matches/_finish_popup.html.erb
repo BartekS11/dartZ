@@ -14,22 +14,22 @@
     <div class="mb-5 text-center">
       <p class="mono mb-2 text-[0.68rem] uppercase tracking-[0.2em]" style="color:<%= accent_color %>">
         <% if match_won %>
-          Match won
+          <%= t("live_match.match_won") %>
         <% elsif set_winner %>
-          Set won
+          <%= t("live_match.set_won") %>
         <% else %>
-          Checkout complete
+          <%= t("live_match.checkout_complete") %>
         <% end %>
       </p>
 
       <p class="bebas text-4xl leading-none"><%= player.display_name %></p>
       <p class="mono mt-2 text-xs uppercase tracking-[0.16em]" style="color:var(--theme-subtle)">
         <% if match_won %>
-          wins the match
+          <%= t("live_match.wins_match") %>
         <% elsif set_winner %>
-          wins the set
+          <%= t("live_match.wins_set") %>
         <% else %>
-          wins the leg
+          <%= t("live_match.wins_leg") %>
         <% end %>
       </p>
     </div>
@@ -41,13 +41,13 @@
 
         <div class="mb-4">
           <p class="mono mb-3 text-center text-[0.68rem] uppercase tracking-[0.16em]" style="color:var(--theme-subtle)">
-            How many darts were needed to finish?
+            <%= t("live_match.darts_needed_question") %>
           </p>
 
           <div class="grid grid-cols-3 gap-3">
             <% [1, 2, 3].each do |n| %>
               <% possible = CheckoutCalculator.possible_checkout_darts?(checkout_score, n, double_out: match.double_out?) %>
-              <label class="checkout-choice <%= 'is-disabled' unless possible %>" title="<%= possible ? '' : "#{checkout_score} cannot be finished in #{n} dart#{'s' unless n == 1}" %>">
+              <label class="checkout-choice <%= 'is-disabled' unless possible %>" title="<%= possible ? '' : t(n == 1 ? 'live_match.cannot_finish' : 'live_match.cannot_finish_plural', score: checkout_score, count: n) %>">
                 <input type="radio"
                        name="checkout_throws"
                        value="<%= n %>"
@@ -61,20 +61,20 @@
           </div>
           <% if minimum_checkout_darts.present? %>
             <p class="mono mt-2 text-center text-[0.62rem] uppercase tracking-[0.12em]" style="color:var(--theme-muted)">
-              <%= checkout_score %> checkout needs at least <%= minimum_checkout_darts %> dart<%= 's' unless minimum_checkout_darts == 1 %>.
+              <%= t(minimum_checkout_darts == 1 ? 'live_match.checkout_needs' : 'live_match.checkout_needs_plural', score: checkout_score, count: minimum_checkout_darts) %>
             </p>
           <% end %>
         </div>
 
         <button type="submit" class="btn theme-btn-primary w-full rounded-pill px-4 py-3 bebas text-xl">
-          <%= match_won ? 'See results →' : 'Next leg →' %>
+          <%= match_won ? t("live_match.see_results") : t("live_match.next_leg") %>
         </button>
       </form>
     <% else %>
       <button type="button"
               onclick="this.closest('#finish-popup-overlay').style.display='none'"
               class="btn theme-btn-primary w-full rounded-pill px-4 py-3 bebas text-xl">
-        <%= match_won ? 'See results →' : 'Continue →' %>
+        <%= match_won ? t("live_match.see_results") : t("live_match.continue") %>
       </button>
     <% end %>
   </div>

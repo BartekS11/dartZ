@@ -3,7 +3,7 @@ class ProfilesController < ApplicationController
 
   def update
     Current.user.update!(profile_params)
-    redirect_back fallback_location: matches_path, notice: "Profile updated"
+    redirect_back fallback_location: matches_path, notice: t("flashes.profile_updated")
   end
 
   private

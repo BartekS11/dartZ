@@ -9,8 +9,8 @@
 <div class="theme-game-over page-shell page-shell-narrow">
   <div class="mx-auto max-w-3xl">
     <div class="page-header mb-6 text-center">
-      <div class="theme-section-label mono">Match complete</div>
-      <h1 class="game-over-title bebas">Nice darts.</h1>
+      <div class="theme-section-label mono"><%= t("live_match.match_complete") %></div>
+      <h1 class="game-over-title bebas"><%= t("live_match.nice_darts") %></h1>
     </div>
 
     <div class="counter-summary-tile mb-6 px-5 py-5" style="border-color:color-mix(in srgb, var(--theme-primary) 18%, transparent); background:color-mix(in srgb, var(--theme-primary) 8%, transparent)">
@@ -34,19 +34,19 @@
           <div class="mb-1 bebas text-4xl leading-none" style="color:<%= is_winner ? 'var(--theme-success)' : 'var(--theme-text)' %>">
             <%= multi_set ? presenter.sets_won_by(player) : presenter.legs_won_by(player) %>
           </div>
-          <div class="auth-label">Legs / sets won</div>
-          <div class="mt-3 text-sm"><span class="bebas mr-2 text-xl align-middle"><%= presenter.three_dart_average(player) %></span>average</div>
+          <div class="auth-label"><%= t("live_match.legs_sets_won") %></div>
+          <div class="mt-3 text-sm"><span class="bebas mr-2 text-xl align-middle"><%= presenter.three_dart_average(player) %></span><%= t("live_match.average") %></div>
         </div>
       <% end %>
     </div>
 
     <div class="mb-6 grid gap-3 md:grid-cols-2">
       <div class="game-over-stat-card counter-list-card">
-        <div class="auth-label mb-2">Finished at</div>
+        <div class="auth-label mb-2"><%= t("live_match.finished_at") %></div>
         <div class="bebas text-3xl leading-none"><%= match.finished_at.strftime("%H:%M") %></div>
       </div>
       <div class="game-over-stat-card counter-list-card">
-        <div class="auth-label mb-2">Duration</div>
+        <div class="auth-label mb-2"><%= t("live_match.duration") %></div>
         <div class="bebas text-3xl leading-none"><%= format("%d:%02d", total_mins, total_secs_rem) %></div>
       </div>
     </div>
@@ -57,11 +57,11 @@
 
     <div class="flex flex-col justify-center gap-3 sm:flex-row">
       <% if tournament_match.present? %>
-        <%= link_to "Back to tournament", live_tournament_path(tournament_match.tournament, share_token: tournament_match.tournament.share_token), class: "btn theme-btn-primary rounded-pill px-4 py-3 bebas text-xl", data: { turbo: false } %>
+        <%= link_to t("live_match.back_to_tournament"), live_tournament_path(tournament_match.tournament, share_token: tournament_match.tournament.share_token), class: "btn theme-btn-primary rounded-pill px-4 py-3 bebas text-xl", data: { turbo: false } %>
       <% else %>
-        <%= link_to "New match", matches_path, class: "btn theme-btn-primary rounded-pill px-4 py-3 bebas text-xl" %>
+        <%= link_to t("live_match.new_match"), matches_path, class: "btn theme-btn-primary rounded-pill px-4 py-3 bebas text-xl" %>
       <% end %>
-      <%= link_to "Back to matches", matches_path, class: "btn theme-btn-outline rounded-pill mono" %>
+      <%= link_to t("invites.back_to_matches"), matches_path, class: "btn theme-btn-outline rounded-pill mono" %>
     </div>
   </div>
 </div>

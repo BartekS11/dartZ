@@ -2,9 +2,9 @@
   <div class="columns is-variable is-6 is-vcentered" style="min-height:72vh">
     <section class="column">
       <div class="theme-hero p-6">
-        <div class="theme-section-label">Create account</div>
-        <h1 class="page-title">Save your matches and invite players.</h1>
-        <p class="page-copy mt-3">Accounts start on the free tier. Upgrade later only if you need premium features.</p>
+        <div class="theme-section-label"><%= t("auth.create_account") %></div>
+        <h1 class="page-title"><%= t("auth.register_hero") %></h1>
+        <p class="page-copy mt-3"><%= t("auth.register_copy") %></p>
       </div>
     </section>
 
@@ -14,8 +14,8 @@
         <% if notice = flash[:notice] %><div class="flash-theme notice mono mb-4">⚡ <%= notice %></div><% end %>
 
         <div class="mb-5">
-          <div class="theme-section-label">Account</div>
-          <h2 class="section-title">Register</h2>
+          <div class="theme-section-label"><%= t("common.account") %></div>
+          <h2 class="section-title"><%= t("auth.register_title") %></h2>
         </div>
 
         <%= form_with model: @user, url: registration_path, class: "stack-md" do |form| %>
@@ -26,49 +26,49 @@
           <% end %>
 
           <div class="field">
-            <label class="label auth-label">Email address</label>
+            <label class="label auth-label"><%= t("common.email_address") %></label>
             <%= form.email_field :email_address,
                   required: true,
                   autofocus: true,
                   autocomplete: "username",
-                  placeholder: "Enter your email address",
+                  placeholder: t("auth.email_placeholder"),
                   class: "input auth-input" %>
           </div>
 
           <div class="field">
-            <label class="label auth-label">Nickname</label>
+            <label class="label auth-label"><%= t("common.nickname") %></label>
             <%= form.text_field :nickname,
                   maxlength: 20,
                   autocomplete: "nickname",
-                  placeholder: "Optional display name",
+                  placeholder: t("auth.nickname_placeholder"),
                   class: "input auth-input" %>
           </div>
 
           <div class="field">
-            <label class="label auth-label">Password</label>
+            <label class="label auth-label"><%= t("common.password") %></label>
             <%= form.password_field :password,
                   required: true,
                   autocomplete: "new-password",
-                  placeholder: "Create a password",
+                  placeholder: t("auth.password_placeholder"),
                   maxlength: 72,
                   class: "input auth-input" %>
           </div>
 
           <div class="field">
-            <label class="label auth-label">Confirm password</label>
+            <label class="label auth-label"><%= t("common.confirm_password") %></label>
             <%= form.password_field :password_confirmation,
                   required: true,
                   autocomplete: "new-password",
-                  placeholder: "Repeat your password",
+                  placeholder: t("auth.repeat_password_placeholder"),
                   maxlength: 72,
                   class: "input auth-input" %>
           </div>
 
-          <%= form.submit "Create account", class: "button theme-btn-primary is-fullwidth is-medium" %>
+          <%= form.submit t("auth.create_account_button"), class: "button theme-btn-primary is-fullwidth is-medium" %>
 
           <div class="is-flex is-justify-content-space-between pt-3" style="border-top:1px solid var(--theme-line)">
-            <%= link_to "Already have account?", new_session_path, class: "footer-link" %>
-            <%= link_to "Play as guest", matches_path, class: "footer-link" %>
+            <%= link_to t("auth.already_have_account"), new_session_path, class: "footer-link" %>
+            <%= link_to t("auth.play_as_guest"), matches_path, class: "footer-link" %>
           </div>
         <% end %>
       </div>

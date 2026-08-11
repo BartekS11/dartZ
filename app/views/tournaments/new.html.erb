@@ -1,13 +1,13 @@
 <div class="page-shell page-shell-narrow">
   <div class="theme-card counter-setup-card p-5 md:p-7">
     <div class="page-header mb-6">
-      <div class="theme-section-label mono">Tournament setup</div>
-      <h1 class="page-title bebas">Create tournament</h1>
+      <div class="theme-section-label mono"><%= t("tournaments.setup") %></div>
+      <h1 class="page-title bebas"><%= t("tournaments.create") %></h1>
     </div>
 
     <% if @tournament.errors.any? %>
       <div class="theme-notification is-danger-light mono mb-4">
-        <strong><%= pluralize(@tournament.errors.count, "error") %> prevented this tournament from being created:</strong>
+        <strong><%= t(@tournament.errors.count == 1 ? "tournaments.errors_prevented_create" : "tournaments.errors_prevented_create_plural", count: @tournament.errors.count) %></strong>
         <ul class="mt-2 list-disc pl-5">
           <% @tournament.errors.full_messages.each do |message| %>
             <li><%= message %></li>
@@ -18,86 +18,86 @@
 
     <%= form_with model: @tournament, class: "grid gap-4" do |f| %>
       <div>
-        <label class="auth-label">Title</label>
-        <%= f.text_field :title, class: "form-control theme-form-input", placeholder: "Friday Night Open" %>
+        <label class="auth-label"><%= t("tournaments.form_title") %></label>
+        <%= f.text_field :title, class: "form-control theme-form-input", placeholder: t("tournaments.placeholder_title") %>
       </div>
 
       <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         <div>
-          <label class="auth-label">Format</label>
+          <label class="auth-label"><%= t("tournaments.format") %></label>
           <%= f.select :format_type, Tournament::FORMATS.map { |v| [v.titleize, v] }, {}, class: "form-select theme-form-input" %>
         </div>
         <div>
-          <label class="auth-label">Best of legs</label>
+          <label class="auth-label"><%= t("common.best_of_legs") %></label>
           <%= f.number_field :best_of_legs, min: 1, class: "form-control theme-form-input" %>
         </div>
         <div>
-          <label class="auth-label">Best of sets</label>
+          <label class="auth-label"><%= t("common.best_of_sets") %></label>
           <%= f.number_field :best_of_sets, min: 1, class: "form-control theme-form-input" %>
         </div>
         <div>
-          <label class="auth-label">Starting score</label>
+          <label class="auth-label"><%= t("common.starting_score") %></label>
           <%= f.select :starting_score, Match::X01_STARTING_SCORES.map { |score| [score, score] }, {}, class: "form-select theme-form-input" %>
         </div>
         <div>
-          <label class="auth-label">Seeding</label>
+          <label class="auth-label"><%= t("tournaments.seeding") %></label>
           <%= f.select :seeding_mode, Tournament::SEEDING_MODES.map { |v| [v.titleize, v] }, {}, class: "form-select theme-form-input" %>
         </div>
         <div>
-          <label class="auth-label">Playoff mode</label>
+          <label class="auth-label"><%= t("tournaments.playoff_mode") %></label>
           <%= f.select :playoff_mode, Tournament::PLAYOFF_MODES.map { |v| [v.humanize, v] }, {}, class: "form-select theme-form-input" %>
         </div>
         <div>
-          <label class="auth-label">Group count</label>
-          <%= f.number_field :group_count, min: 2, class: "form-control theme-form-input", placeholder: "For groups" %>
+          <label class="auth-label"><%= t("tournaments.group_count") %></label>
+          <%= f.number_field :group_count, min: 2, class: "form-control theme-form-input", placeholder: t("tournaments.placeholder_groups") %>
         </div>
         <div>
-          <label class="auth-label">Swiss rounds</label>
-          <%= f.number_field :swiss_round_count, min: 1, class: "form-control theme-form-input", placeholder: "Auto if blank" %>
+          <label class="auth-label"><%= t("tournaments.swiss_rounds") %></label>
+          <%= f.number_field :swiss_round_count, min: 1, class: "form-control theme-form-input", placeholder: t("tournaments.placeholder_auto_blank") %>
         </div>
         <div>
-          <label class="auth-label">Playoff qualifiers</label>
-          <%= f.number_field :playoff_qualifier_count, min: 2, class: "form-control theme-form-input", placeholder: "Optional" %>
+          <label class="auth-label"><%= t("tournaments.playoff_qualifiers") %></label>
+          <%= f.number_field :playoff_qualifier_count, min: 2, class: "form-control theme-form-input", placeholder: t("tournaments.placeholder_optional") %>
         </div>
         <div>
-          <label class="auth-label">Qualifiers per group</label>
-          <%= f.number_field :qualifiers_per_group, min: 1, class: "form-control theme-form-input", placeholder: "Top X" %>
+          <label class="auth-label"><%= t("tournaments.qualifiers_per_group") %></label>
+          <%= f.number_field :qualifiers_per_group, min: 1, class: "form-control theme-form-input", placeholder: t("tournaments.placeholder_top_x") %>
         </div>
         <div>
-          <label class="auth-label">Playoff best of legs</label>
+          <label class="auth-label"><%= t("tournaments.playoff_best_of_legs") %></label>
           <%= f.number_field :playoff_best_of_legs, min: 1, class: "form-control theme-form-input" %>
         </div>
         <div>
-          <label class="auth-label">Playoff best of sets</label>
+          <label class="auth-label"><%= t("tournaments.playoff_best_of_sets") %></label>
           <%= f.number_field :playoff_best_of_sets, min: 1, class: "form-control theme-form-input" %>
         </div>
         <div>
-          <label class="auth-label">Semifinal best of legs</label>
+          <label class="auth-label"><%= t("tournaments.semifinal_best_of_legs") %></label>
           <%= f.select :semifinal_best_of_legs, [["Bo1", 1], ["Bo3", 3], ["Bo5", 5]], {}, class: "form-select theme-form-input" %>
         </div>
         <div>
-          <label class="auth-label">Final best of legs</label>
+          <label class="auth-label"><%= t("tournaments.final_best_of_legs") %></label>
           <%= f.select :final_best_of_legs, [["Bo1", 1], ["Bo3", 3], ["Bo5", 5]], {}, class: "form-select theme-form-input" %>
         </div>
       </div>
 
       <div class="grid gap-3 md:grid-cols-2">
-        <label class="panel-choice text-sm"><%= f.check_box :double_in %> Double in</label>
-        <label class="panel-choice text-sm"><%= f.check_box :double_out %> Double out</label>
-        <label class="panel-choice text-sm"><%= f.check_box :bronze_match %> Bronze match option</label>
-        <label class="panel-choice text-sm"><%= f.check_box :auto_advance %> Auto advance</label>
-        <label class="panel-choice text-sm"><%= f.check_box :manual_advance_allowed %> Manual advance allowed</label>
-        <label class="panel-choice text-sm"><%= f.check_box :allow_wildcards %> Allow wildcard playoff qualification</label>
+        <label class="panel-choice text-sm"><%= f.check_box :double_in %> <%= t("common.double_in") %></label>
+        <label class="panel-choice text-sm"><%= f.check_box :double_out %> <%= t("common.double_out") %></label>
+        <label class="panel-choice text-sm"><%= f.check_box :bronze_match %> <%= t("tournaments.bronze_match") %></label>
+        <label class="panel-choice text-sm"><%= f.check_box :auto_advance %> <%= t("tournaments.auto_advance") %></label>
+        <label class="panel-choice text-sm"><%= f.check_box :manual_advance_allowed %> <%= t("tournaments.manual_advance_allowed") %></label>
+        <label class="panel-choice text-sm"><%= f.check_box :allow_wildcards %> <%= t("tournaments.allow_wildcards") %></label>
       </div>
 
       <div>
-        <label class="auth-label">Players (one per line)</label>
-        <%= text_area_tag "tournament[entry_names]", @entry_names, rows: 10, class: "form-control theme-form-input", placeholder: "Player 1\nPlayer 2\nPlayer 3" %>
+        <label class="auth-label"><%= t("tournaments.players_one_per_line") %></label>
+        <%= text_area_tag "tournament[entry_names]", @entry_names, rows: 10, class: "form-control theme-form-input", placeholder: [t("common.player_1"), t("common.player_2"), t("common.player_3")].join("\n") %>
       </div>
 
       <div class="flex flex-col gap-3 sm:flex-row sm:justify-end">
-        <%= link_to "Cancel", tournaments_path, class: "btn theme-btn-outline rounded-pill mono" %>
-        <%= f.submit "Create tournament", class: "btn theme-btn-primary rounded-pill px-4 py-3 bebas text-xl" %>
+        <%= link_to t("common.cancel"), tournaments_path, class: "btn theme-btn-outline rounded-pill mono" %>
+        <%= f.submit t("tournaments.create"), class: "btn theme-btn-primary rounded-pill px-4 py-3 bebas text-xl" %>
       </div>
     <% end %>
   </div>

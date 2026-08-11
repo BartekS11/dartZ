@@ -3,9 +3,9 @@
 <div class="page-shell stack-lg" data-controller="invite-wait" data-invite-wait-status-url-value="<%= match_invite_status_path(@match) %>">
   <section class="theme-hero p-5 stack-md">
     <div>
-      <div class="theme-section-label">Invite lobby</div>
-      <h1 class="page-title">Waiting for Player 2</h1>
-      <p class="page-copy mt-2">Share this QR code or link. The match starts automatically when the second player joins.</p>
+      <div class="theme-section-label"><%= t("invites.lobby") %></div>
+      <h1 class="page-title"><%= t("invites.waiting_player_2") %></h1>
+      <p class="page-copy mt-2"><%= t("invites.share_qr") %></p>
     </div>
 
     <div class="columns is-variable is-5">
@@ -17,21 +17,21 @@
       <div class="column">
         <div class="theme-panel p-4 stack-sm">
           <div>
-            <label class="auth-label">Invite link</label>
+            <label class="auth-label"><%= t("invites.invite_link") %></label>
             <input class="input theme-form-input mono" readonly value="<%= invite_url %>">
           </div>
           <div class="buttons">
-            <button type="button" class="button theme-btn-primary" data-action="click->invite-wait#copy" data-url="<%= invite_url %>">Copy link</button>
-            <%= button_to "Cancel invite", cancel_match_invite_path(@match), method: :delete, class: "button theme-btn-outline", form: { data: { turbo_confirm: "Cancel this invite match?" } } %>
+            <button type="button" class="button theme-btn-primary" data-action="click->invite-wait#copy" data-url="<%= invite_url %>"><%= t("invites.copy_link") %></button>
+            <%= button_to t("invites.cancel_invite"), cancel_match_invite_path(@match), method: :delete, class: "button theme-btn-outline", form: { data: { turbo_confirm: t("invites.cancel_confirm") } } %>
           </div>
-          <p class="help-theme">Expires <%= time_tag @match.invite_expires_at, @match.invite_expires_at.strftime("%d %b %Y %H:%M") %>.</p>
+          <p class="help-theme"><%= t("invites.expires", time: time_tag(@match.invite_expires_at, @match.invite_expires_at.strftime("%d %b %Y %H:%M"))) %></p>
         </div>
       </div>
     </div>
 
     <div class="theme-panel p-4">
-      <div class="theme-section-label">Match settings</div>
-      <p class="page-copy mb-2"><%= @match.players.first&.display_name || "Player 1" %> vs invited player</p>
+      <div class="theme-section-label"><%= t("invites.match_settings") %></div>
+      <p class="page-copy mb-2"><%= @match.players.first&.display_name || t("common.player_1") %> vs <%= t("invites.invited_player") %></p>
       <div class="is-flex is-flex-wrap-wrap" style="gap:.45rem">
         <% @match.game_mode_labels.each do |label| %><span class="theme-chip"><%= label %></span><% end %>
         <span class="theme-chip">Bo<%= @match.best_of_legs %> legs</span>

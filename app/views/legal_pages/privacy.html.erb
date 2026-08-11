@@ -1,45 +1,17 @@
 <div class="page-shell page-shell-narrow">
   <div class="theme-card p-4 md:p-6">
     <div class="page-header mb-6">
-      <div class="theme-section-label mono">Legal</div>
-      <h1 class="section-title bebas">Privacy policy</h1>
+      <div class="theme-section-label mono"><%= t("legal.label") %></div>
+      <h1 class="section-title bebas"><%= t("legal.privacy_title") %></h1>
     </div>
 
     <div class="theme-copy space-y-5 text-sm leading-7">
-      <section>
-        <h2 class="mb-2 text-lg font-semibold">1. Overview</h2>
-        <p><%= theme_app_name %> is a darts scoring and match tracking app. This page explains what information is used to run the service.</p>
-      </section>
-
-      <section>
-        <h2 class="mb-2 text-lg font-semibold">2. Data we process</h2>
-        <p>We process account details you provide, such as email address and nickname, plus match data, player names, scores, statistics, session cookies, and technical information needed to keep the app secure and working.</p>
-      </section>
-
-      <section>
-        <h2 class="mb-2 text-lg font-semibold">3. Why we use data</h2>
-        <p>Data is used to create accounts, keep you signed in, save matches, show statistics, support invite matches, prevent abuse, troubleshoot bugs, and improve reliability.</p>
-      </section>
-
-      <section>
-        <h2 class="mb-2 text-lg font-semibold">4. Cookies and sessions</h2>
-        <p>We use essential cookies for login sessions, guest match access, and app preferences such as theme mode. These are required for core functionality.</p>
-      </section>
-
-      <section>
-        <h2 class="mb-2 text-lg font-semibold">5. Sharing and retention</h2>
-        <p>Data is not sold. It may be processed by infrastructure providers required to host and operate the app. Account and match data is kept while needed to provide the service or until deletion is requested where applicable.</p>
-      </section>
-
-      <section>
-        <h2 class="mb-2 text-lg font-semibold">6. Your rights</h2>
-        <p>You may request access, correction, or deletion of your account data. Some technical or legal records may need to be retained for security, fraud prevention, or compliance.</p>
-      </section>
-
-      <section>
-        <h2 class="mb-2 text-lg font-semibold">7. Contact</h2>
-        <p>For privacy questions or data requests, use the contact information on the Contact page.</p>
-      </section>
+      <% %w[overview data why cookies sharing rights contact].each do |section| %>
+        <section>
+          <h2 class="mb-2 text-lg font-semibold"><%= t("legal.privacy.#{section}_title") %></h2>
+          <p><%= t("legal.privacy.#{section}_text", app_name: theme_app_name) %></p>
+        </section>
+      <% end %>
     </div>
   </div>
 </div>

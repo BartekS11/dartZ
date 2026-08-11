@@ -3,17 +3,17 @@
     <div class="level is-align-items-flex-end">
       <div class="level-left">
         <div>
-          <div class="theme-section-label">Tournaments</div>
-          <h1 class="page-title">Tournaments</h1>
+          <div class="theme-section-label"><%= t("tournaments.title") %></div>
+          <h1 class="page-title"><%= t("tournaments.title") %></h1>
         </div>
       </div>
-      <div class="level-right"><%= link_to "New tournament", new_tournament_path, class: "button theme-btn-primary is-medium" %></div>
+      <div class="level-right"><%= link_to t("tournaments.new"), new_tournament_path, class: "button theme-btn-primary is-medium" %></div>
     </div>
   </section>
 
   <% if Current.user && @my_tournaments.any? %>
     <section class="stack-md tournament-owned-section">
-      <div><div class="theme-section-label">Your events</div><h2 class="section-title">Signed-in tournaments</h2></div>
+      <div><div class="theme-section-label"><%= t("tournaments.your_events") %></div><h2 class="section-title"><%= t("tournaments.signed_in") %></h2></div>
       <div class="columns is-multiline is-variable is-3">
         <% @my_tournaments.each do |tournament| %>
           <% can_delete = tournament.can_administer?(user: Current.user) %>
@@ -23,21 +23,21 @@
                 <div class="auth-label mb-1"><%= tournament.format_type %></div>
                 <div class="section-title"><%= tournament.title %></div>
                 <div class="is-flex is-flex-wrap-wrap mt-3" style="gap:.45rem">
-                  <span class="theme-chip"><%= tournament.entries.count %> players</span>
+                  <span class="theme-chip"><%= t("tournaments.players", count: tournament.entries.count) %></span>
                   <span class="theme-chip"><%= tournament.status %></span>
                 </div>
               <% end %>
               <% if can_delete %>
                 <div data-controller="confirmation-modal">
-                  <button type="button" class="tournament-index-delete" title="Delete tournament" aria-label="Delete <%= tournament.title %>" data-action="confirmation-modal#open">×</button>
+                  <button type="button" class="tournament-index-delete" title="<%= t("tournaments.delete_title") %>" aria-label="<%= t("tournaments.delete_aria", title: tournament.title) %>" data-action="confirmation-modal#open">×</button>
                   <dialog class="tournament-delete-modal" data-confirmation-modal-target="dialog" data-action="click->confirmation-modal#closeOnBackdrop">
                     <div class="tournament-delete-modal-card">
-                      <div class="theme-section-label mb-2">Confirm delete</div>
-                      <h3 class="section-title mb-3">Delete <%= tournament.title %>?</h3>
-                      <p class="text-sm" style="color:var(--theme-muted)">This removes the tournament, entries, rounds and tournament matches. This cannot be undone.</p>
+                      <div class="theme-section-label mb-2"><%= t("tournaments.confirm_delete") %></div>
+                      <h3 class="section-title mb-3"><%= t("tournaments.delete_question", title: tournament.title) %></h3>
+                      <p class="text-sm" style="color:var(--theme-muted)"><%= t("tournaments.delete_warning") %></p>
                       <div class="mt-5 flex flex-col gap-2 sm:flex-row sm:justify-end">
-                        <button type="button" class="btn theme-btn-outline rounded-pill mono" data-action="confirmation-modal#close">Cancel</button>
-                        <%= button_to "Delete tournament", tournament_path(tournament), method: :delete, form: { data: { turbo: false } }, class: "btn rounded-pill mono tournament-delete-confirm" %>
+                        <button type="button" class="btn theme-btn-outline rounded-pill mono" data-action="confirmation-modal#close"><%= t("common.cancel") %></button>
+                        <%= button_to t("tournaments.delete_title"), tournament_path(tournament), method: :delete, form: { data: { turbo: false } }, class: "btn rounded-pill mono tournament-delete-confirm" %>
                       </div>
                     </div>
                   </dialog>
@@ -51,7 +51,7 @@
   <% end %>
 
   <section class="stack-md tournament-guest-section">
-    <div><div class="theme-section-label">Public events</div><h2 class="section-title">Guest tournaments</h2></div>
+    <div><div class="theme-section-label"><%= t("tournaments.public_events") %></div><h2 class="section-title"><%= t("tournaments.guest") %></h2></div>
     <div class="columns is-multiline is-variable is-3">
       <% @guest_tournaments.each do |tournament| %>
         <% can_delete = tournament.can_administer?(user: Current.user) %>
@@ -61,21 +61,21 @@
               <div class="auth-label mb-1"><%= tournament.format_type %></div>
               <div class="section-title"><%= tournament.title %></div>
               <div class="is-flex is-flex-wrap-wrap mt-3" style="gap:.45rem">
-                <span class="theme-chip"><%= tournament.entries.count %> players</span>
+                <span class="theme-chip"><%= t("tournaments.players", count: tournament.entries.count) %></span>
                 <span class="theme-chip"><%= tournament.status %></span>
               </div>
             <% end %>
             <% if can_delete %>
               <div data-controller="confirmation-modal">
-                <button type="button" class="tournament-index-delete" title="Delete tournament" aria-label="Delete <%= tournament.title %>" data-action="confirmation-modal#open">×</button>
+                <button type="button" class="tournament-index-delete" title="<%= t("tournaments.delete_title") %>" aria-label="<%= t("tournaments.delete_aria", title: tournament.title) %>" data-action="confirmation-modal#open">×</button>
                 <dialog class="tournament-delete-modal" data-confirmation-modal-target="dialog" data-action="click->confirmation-modal#closeOnBackdrop">
                   <div class="tournament-delete-modal-card">
-                    <div class="theme-section-label mb-2">Confirm delete</div>
-                    <h3 class="section-title mb-3">Delete <%= tournament.title %>?</h3>
-                    <p class="text-sm" style="color:var(--theme-muted)">This removes the tournament, entries, rounds and tournament matches. This cannot be undone.</p>
+                    <div class="theme-section-label mb-2"><%= t("tournaments.confirm_delete") %></div>
+                    <h3 class="section-title mb-3"><%= t("tournaments.delete_question", title: tournament.title) %></h3>
+                    <p class="text-sm" style="color:var(--theme-muted)"><%= t("tournaments.delete_warning") %></p>
                     <div class="mt-5 flex flex-col gap-2 sm:flex-row sm:justify-end">
-                      <button type="button" class="btn theme-btn-outline rounded-pill mono" data-action="confirmation-modal#close">Cancel</button>
-                      <%= button_to "Delete tournament", tournament_path(tournament), method: :delete, form: { data: { turbo: false } }, class: "btn rounded-pill mono tournament-delete-confirm" %>
+                      <button type="button" class="btn theme-btn-outline rounded-pill mono" data-action="confirmation-modal#close"><%= t("common.cancel") %></button>
+                      <%= button_to t("tournaments.delete_title"), tournament_path(tournament), method: :delete, form: { data: { turbo: false } }, class: "btn rounded-pill mono tournament-delete-confirm" %>
                     </div>
                   </div>
                 </dialog>

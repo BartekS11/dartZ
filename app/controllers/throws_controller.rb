@@ -67,7 +67,7 @@ class ThrowsController < ApplicationController
 
     respond_to do |format|
       format.turbo_stream { head :conflict }
-      format.html { redirect_to match_path(match), alert: "Waiting for the other player." }
+      format.html { redirect_to match_path(match), alert: t("flashes.waiting_other_player") }
       format.json { render json: { error: "Not your turn" }, status: :conflict }
     end
 

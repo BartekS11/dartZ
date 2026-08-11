@@ -171,7 +171,7 @@
     <div class="player-panel-body">
 
       <% if recent_throws.any? %>
-        <p class="throws-section-label">Recent</p>
+        <p class="throws-section-label"><%= t("live_match.recent") %></p>
         <% recent_throws.each do |throw| %>
           <div class="throw-row">
             <span class="throw-multiplier mult-<%= throw.multiplier %>">
@@ -184,13 +184,13 @@
           </div>
         <% end %>
       <% else %>
-        <p class="throws-section-label" style="color: #2a2a2a;">No throws yet</p>
+        <p class="throws-section-label" style="color: #2a2a2a;"><%= t("live_match.no_throws_yet") %></p>
       <% end %>
 
       <%# Older throws — hidden until "show older" clicked %>
       <% if older_throws.any? %>
         <div data-throws-target="all" class="hidden">
-          <p class="throws-section-label">Older</p>
+          <p class="throws-section-label"><%= t("live_match.older") %></p>
           <% older_throws.each do |throw| %>
             <div class="throw-row throw-row-older">
               <span class="throw-multiplier mult-<%= throw.multiplier %>">
@@ -207,7 +207,7 @@
         <button type="button"
                 data-action="click->throws#toggle"
                 class="btn-show-all">
-          <span data-throws-target="label">▼ SHOW OLDER</span>
+          <span data-throws-target="label"><%= t("live_match.show_older") %></span>
         </button>
       <% end %>
 

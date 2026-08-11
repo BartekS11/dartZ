@@ -2,6 +2,18 @@ ENV["RAILS_ENV"] ||= "test"
 require_relative "../config/environment"
 require "rails/test_help"
 
+module RackTestSignedCookies
+  def signed
+    request = ActionDispatch::Request.empty
+    Rails.application.env_config.each do |key, value|
+      request.env[key] = value if key.to_s.start_with?("action_dispatch.")
+    end
+    ActionDispatch::Cookies::CookieJar.build(request, to_hash).signed
+  end
+end
+
+Rack::Test::CookieJar.include(RackTestSignedCookies) unless Rack::Test::CookieJar.method_defined?(:signed)
+
 module ActiveSupport
   class TestCase
     # Run tests in parallel with specified workers

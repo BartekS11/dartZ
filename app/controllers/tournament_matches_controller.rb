@@ -52,7 +52,7 @@ class TournamentMatchesController < ApplicationController
     end
     @tournament.broadcast_live_update!
 
-    redirect_to tournament_admin_path, notice: "Result saved."
+    redirect_to tournament_admin_path, notice: t("flashes.result_saved")
   end
 
   private

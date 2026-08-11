@@ -2,14 +2,14 @@
   <div class="columns is-variable is-5">
     <section class="column is-4-desktop">
       <div class="theme-hero p-5 h-full">
-        <div class="theme-section-label">Bot challenge</div>
-        <h1 class="page-title">Practice</h1>
-        <p class="page-copy mt-3">Pick a level, then start. Everything else has safe defaults.</p>
+        <div class="theme-section-label"><%= t("bot_matches.challenge") %></div>
+        <h1 class="page-title"><%= t("bot_matches.practice") %></h1>
+        <p class="page-copy mt-3"><%= t("bot_matches.intro") %></p>
         <div class="stack-sm mt-5">
-          <div class="theme-chip">Level 1–5 · beginner rhythm</div>
-          <div class="theme-chip">Level 6–12 · steady scoring</div>
-          <div class="theme-chip">Level 13–17 · strong finishing</div>
-          <div class="theme-chip">Level 18–20 · near-pro pressure</div>
+          <div class="theme-chip"><%= t("bot_matches.beginner_rhythm") %></div>
+          <div class="theme-chip"><%= t("bot_matches.steady_scoring") %></div>
+          <div class="theme-chip"><%= t("bot_matches.strong_finishing") %></div>
+          <div class="theme-chip"><%= t("bot_matches.pro_pressure") %></div>
         </div>
       </div>
     </section>
@@ -17,29 +17,29 @@
     <section class="column">
       <div class="theme-card p-5">
         <div class="level is-align-items-flex-end mb-5">
-          <div class="level-left"><div><div class="theme-section-label">New bot match</div><h2 class="section-title">Setup</h2></div></div>
-          <div class="level-right"><%= link_to "← Back", matches_path, class: "button theme-btn-outline mono" %></div>
+          <div class="level-left"><div><div class="theme-section-label"><%= t("bot_matches.new_bot_match") %></div><h2 class="section-title"><%= t("common.setup") %></h2></div></div>
+          <div class="level-right"><%= link_to t("common.back"), matches_path, class: "button theme-btn-outline mono" %></div>
         </div>
 
         <%= form_with url: bot_match_path, method: :post, data: { turbo: false }, class: "stack-md simple-setup" do |f| %>
-          <div class="simple-step"><div class="simple-step-number">1</div><div><div class="theme-section-label">Names</div><p class="page-copy"></p></div></div>
+          <div class="simple-step"><div class="simple-step-number">1</div><div><div class="theme-section-label"><%= t("common.names") %></div><p class="page-copy"></p></div></div>
           <div class="columns is-variable is-3">
-            <div class="column"><div class="field"><label class="label auth-label">Your name</label><%= f.text_field :player_name, value: Current.user.display_name, placeholder: "Your name", maxlength: 20, autocomplete: "off", class: "input theme-form-input mono" %></div></div>
-            <div class="column"><div class="field"><label class="label auth-label">Bot name</label><%= f.text_field :bot_name, placeholder: "Optional bot name", maxlength: 20, autocomplete: "off", class: "input theme-form-input mono" %></div></div>
+            <div class="column"><div class="field"><label class="label auth-label"><%= t("common.your_name") %></label><%= f.text_field :player_name, value: Current.user.display_name, placeholder: t("common.your_name"), maxlength: 20, autocomplete: "off", class: "input theme-form-input mono" %></div></div>
+            <div class="column"><div class="field"><label class="label auth-label"><%= t("bot_matches.bot_name") %></label><%= f.text_field :bot_name, placeholder: t("bot_matches.bot_name_placeholder"), maxlength: 20, autocomplete: "off", class: "input theme-form-input mono" %></div></div>
           </div>
 
-          <div class="simple-step"><div class="simple-step-number">2</div><div><div class="theme-section-label">Difficulty</div><p class="page-copy"></p></div></div>
+          <div class="simple-step"><div class="simple-step-number">2</div><div><div class="theme-section-label"><%= t("bot_matches.difficulty") %></div><p class="page-copy"></p></div></div>
 
           <div class="theme-panel bot-difficulty-panel p-4 stack-md">
             <div>
-              <label class="auth-label">Bot difficulty</label>
+              <label class="auth-label"><%= t("bot_matches.bot_difficulty") %></label>
             </div>
 
             <% [
-              ["Beginner", "Learning pace", (1..5).to_a],
-              ["Intermediate", "Normal practice", (6..12).to_a],
-              ["Advanced", "High scoring", (13..17).to_a],
-              ["Pro", "Maximum pressure", (18..20).to_a]
+              [t("bot_matches.beginner"), t("bot_matches.learning_pace"), (1..5).to_a],
+              [t("bot_matches.intermediate"), t("bot_matches.normal_practice"), (6..12).to_a],
+              [t("bot_matches.advanced"), t("bot_matches.high_scoring"), (13..17).to_a],
+              [t("bot_matches.pro"), t("bot_matches.maximum_pressure"), (18..20).to_a]
             ].each do |label, description, levels| %>
               <div class="bot-level-group <%= 'is-default-group' if levels.include?(10) %>">
                 <div class="bot-level-group-head">
@@ -59,12 +59,12 @@
             <% end %>
           </div>
 
-          <div class="simple-step"><div class="simple-step-number">3</div><div><div class="theme-section-label">Rules</div><p class="page-copy"></p></div></div>
+          <div class="simple-step"><div class="simple-step-number">3</div><div><div class="theme-section-label"><%= t("common.rules") %></div><p class="page-copy"></p></div></div>
 
           <div class="columns is-variable is-3">
             <div class="column">
               <div class="theme-panel p-4">
-                <div class="auth-label mb-2">Starting score</div>
+                <div class="auth-label mb-2"><%= t("common.starting_score") %></div>
                 <div class="buttons are-small">
                   <% Match::X01_STARTING_SCORES.each do |score| %>
                     <label class="button theme-btn-outline mono bot-choice-radio <%= 'is-selected' if score == 501 %>">
@@ -75,12 +75,12 @@
                 </div>
               </div>
             </div>
-            <div class="column"><label class="panel-choice"><%= hidden_field_tag :double_in, "0" %><%= check_box_tag :double_in, "1", false %> Double in</label><label class="panel-choice mt-3"><%= hidden_field_tag :double_out, "0" %><%= check_box_tag :double_out, "1", true %> Double out</label></div>
+            <div class="column"><label class="panel-choice"><%= hidden_field_tag :double_in, "0" %><%= check_box_tag :double_in, "1", false %> <%= t("common.double_in") %></label><label class="panel-choice mt-3"><%= hidden_field_tag :double_out, "0" %><%= check_box_tag :double_out, "1", true %> <%= t("common.double_out") %></label></div>
           </div>
 
           <div class="columns is-variable is-3">
             <div class="column">
-              <div class="theme-panel p-4"><div class="auth-label mb-2">Best of legs</div><div class="buttons are-small">
+              <div class="theme-panel p-4"><div class="auth-label mb-2"><%= t("common.best_of_legs") %></div><div class="buttons are-small">
                 <% [[1, "1"], [3, "Bo3"], [5, "Bo5"]].each do |val, label| %>
                   <label class="button theme-btn-outline mono bot-choice-radio <%= 'is-selected' if val == 1 %>">
                     <%= radio_button_tag :best_of_legs, val, val == 1, class: "sr-only", onchange: "this.closest('.buttons').querySelectorAll('.bot-choice-radio').forEach(el => el.classList.remove('is-selected')); this.closest('.bot-choice-radio').classList.add('is-selected')" %>
@@ -90,7 +90,7 @@
               </div></div>
             </div>
             <div class="column">
-              <div class="theme-panel p-4"><div class="auth-label mb-2">Best of sets</div><div class="buttons are-small">
+              <div class="theme-panel p-4"><div class="auth-label mb-2"><%= t("common.best_of_sets") %></div><div class="buttons are-small">
                 <% [[1, "1"], [3, "Bo3"], [5, "Bo5"]].each do |val, label| %>
                   <label class="button theme-btn-outline mono bot-choice-radio <%= 'is-selected' if val == 1 %>">
                     <%= radio_button_tag :best_of_sets, val, val == 1, class: "sr-only", onchange: "this.closest('.buttons').querySelectorAll('.bot-choice-radio').forEach(el => el.classList.remove('is-selected')); this.closest('.bot-choice-radio').classList.add('is-selected')" %>
@@ -102,8 +102,8 @@
           </div>
 
           <div class="buttons is-justify-content-flex-end">
-            <%= link_to "Cancel", matches_path, class: "button theme-btn-outline mono" %>
-            <%= f.submit "Start practice", class: "button theme-btn-primary is-medium" %>
+            <%= link_to t("common.cancel"), matches_path, class: "button theme-btn-outline mono" %>
+            <%= f.submit t("bot_matches.start_practice"), class: "button theme-btn-primary is-medium" %>
           </div>
         <% end %>
       </div>

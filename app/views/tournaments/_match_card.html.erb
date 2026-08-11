@@ -4,12 +4,12 @@
       <div class="tournament-match-label flex flex-wrap items-center gap-2">
         <% home_winner = match.status == "complete" && match.winner_entry == match.home_entry %>
         <% away_winner = match.status == "complete" && match.winner_entry == match.away_entry %>
-        <span style="color:<%= home_winner ? 'var(--theme-success)' : 'var(--theme-text)' %>; font-weight:<%= home_winner ? '800' : '600' %>"><%= match.home_entry&.name || "TBD" %></span>
-        <span class="mono text-xs" style="color:var(--theme-muted)">vs</span>
-        <span style="color:<%= away_winner ? 'var(--theme-success)' : 'var(--theme-text)' %>; font-weight:<%= away_winner ? '800' : '600' %>"><%= match.away_entry&.name || "TBD" %></span>
+        <span style="color:<%= home_winner ? 'var(--theme-success)' : 'var(--theme-text)' %>; font-weight:<%= home_winner ? '800' : '600' %>"><%= match.home_entry&.name || t("tournaments.tbd") %></span>
+        <span class="mono text-xs" style="color:var(--theme-muted)"><%= t("tournaments.vs") %></span>
+        <span style="color:<%= away_winner ? 'var(--theme-success)' : 'var(--theme-text)' %>; font-weight:<%= away_winner ? '800' : '600' %>"><%= match.away_entry&.name || t("tournaments.tbd") %></span>
       </div>
       <div class="mt-2 flex flex-wrap items-center gap-2">
-        <span class="tournament-status mono tournament-status-<%= match.status %>"><%= match.status %><%= ' · bye' if match.bye %></span>
+        <span class="tournament-status mono tournament-status-<%= match.status %>"><%= match.status %><%= match.bye ? " · #{t('tournaments.bye')}" : "" %></span>
         <% match.game_mode_labels.each do |label| %>
           <span class="theme-chip mono"><%= label %></span>
         <% end %>
@@ -18,12 +18,12 @@
       <div class="tournament-result-line mt-2">
         <% if match.status == "complete" %>
           <% if match.best_of_sets > 1 %>
-            Sets
+            <%= t("live_match.sets") %>
             <strong style="color:<%= home_winner ? 'var(--theme-success)' : 'var(--theme-muted)' %>"><%= match.home_sets %></strong>-<strong style="color:<%= away_winner ? 'var(--theme-success)' : 'var(--theme-muted)' %>"><%= match.away_sets %></strong>
-            · Legs
+            · <%= t("live_match.legs") %>
             <strong style="color:<%= home_winner ? 'var(--theme-success)' : 'var(--theme-muted)' %>"><%= match.home_legs %></strong>-<strong style="color:<%= away_winner ? 'var(--theme-success)' : 'var(--theme-muted)' %>"><%= match.away_legs %></strong>
           <% else %>
-            Legs
+            <%= t("live_match.legs") %>
             <strong style="color:<%= home_winner ? 'var(--theme-success)' : 'var(--theme-muted)' %>"><%= match.home_legs %></strong>-<strong style="color:<%= away_winner ? 'var(--theme-success)' : 'var(--theme-muted)' %>"><%= match.away_legs %></strong>
           <% end %>
         <% else %>
@@ -37,20 +37,20 @@
 
     <div class="flex flex-wrap gap-2 tournament-match-actions">
       <% if can_admin && match.launchable? %>
-        <%= button_to "Play match", launch_tournament_tournament_match_path(tournament, match, admin_token: admin_token), method: :post, form: { data: { turbo: false } }, class: "btn btn-sm theme-btn-primary rounded-pill mono" %>
+        <%= button_to t("tournaments.play_match"), launch_tournament_tournament_match_path(tournament, match, admin_token: admin_token), method: :post, form: { data: { turbo: false } }, class: "btn btn-sm theme-btn-primary rounded-pill mono" %>
       <% elsif match.linked_match.present? %>
-        <%= link_to "Open live match", match_path(match.linked_match, guest_token: match.linked_match.guest_token), data: { turbo: false }, class: "btn btn-sm theme-btn-outline rounded-pill mono" %>
+        <%= link_to t("tournaments.open_live_match"), match_path(match.linked_match, guest_token: match.linked_match.guest_token), data: { turbo: false }, class: "btn btn-sm theme-btn-outline rounded-pill mono" %>
       <% end %>
     </div>
   </div>
 
   <% if can_admin && !match.bye %>
     <%= form_with url: report_tournament_tournament_match_path(tournament, match, admin_token: admin_token), method: :patch, class: "mt-3 grid gap-2 md:grid-cols-5" do |f| %>
-      <%= number_field_tag :home_sets, match.home_sets, min: 0, class: "form-control theme-form-input", placeholder: "Home sets" %>
-      <%= number_field_tag :away_sets, match.away_sets, min: 0, class: "form-control theme-form-input", placeholder: "Away sets" %>
-      <%= number_field_tag :home_legs, match.home_legs, min: 0, class: "form-control theme-form-input", placeholder: "Home legs" %>
-      <%= number_field_tag :away_legs, match.away_legs, min: 0, class: "form-control theme-form-input", placeholder: "Away legs" %>
-      <%= f.submit "Save", class: "btn theme-btn-outline rounded-pill mono" %>
+      <%= number_field_tag :home_sets, match.home_sets, min: 0, class: "form-control theme-form-input", placeholder: t("tournaments.home_sets") %>
+      <%= number_field_tag :away_sets, match.away_sets, min: 0, class: "form-control theme-form-input", placeholder: t("tournaments.away_sets") %>
+      <%= number_field_tag :home_legs, match.home_legs, min: 0, class: "form-control theme-form-input", placeholder: t("tournaments.home_legs") %>
+      <%= number_field_tag :away_legs, match.away_legs, min: 0, class: "form-control theme-form-input", placeholder: t("tournaments.away_legs") %>
+      <%= f.submit t("common.save"), class: "btn theme-btn-outline rounded-pill mono" %>
     <% end %>
   <% end %>
 </div>

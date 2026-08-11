@@ -1,6 +1,6 @@
 module MatchInvitesHelper
   def qr_code_svg(url)
-    Rails.cache.fetch(["match-invite-qr-svg", url], expires_in: Match::INVITE_TTL) do
+    Rails.cache.fetch([ "match-invite-qr-svg", url ], expires_in: Match::INVITE_TTL) do
       RQRCode::QRCode.new(url).as_svg(
         color: "000",
         shape_rendering: "crispEdges",

@@ -2,11 +2,11 @@
   <section class="theme-card counter-list-card p-4 md:p-5">
     <div class="mb-4 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
       <div>
-        <div class="theme-section-label mono mb-1">Groups</div>
-        <h2 class="bebas text-3xl leading-none">Standings</h2>
+        <div class="theme-section-label mono mb-1"><%= t("tournaments.groups") %></div>
+        <h2 class="bebas text-3xl leading-none"><%= t("tournaments.standings") %></h2>
       </div>
       <% if can_admin %>
-        <%= link_to "Manage tournament", tournament_path(tournament, admin_token: admin_token), class: "btn btn-sm theme-btn-outline rounded-pill mono" %>
+        <%= link_to t("tournaments.manage"), tournament_path(tournament, admin_token: admin_token), class: "btn btn-sm theme-btn-outline rounded-pill mono" %>
       <% end %>
     </div>
 
@@ -15,12 +15,12 @@
         <% tournament.group_names.each do |group_name| %>
           <div class="counter-summary-tile overflow-x-auto">
             <div class="mb-3 flex items-center justify-between gap-3">
-              <h3 class="bebas text-2xl">Group <%= group_name %></h3>
-              <span class="theme-chip mono">Top <%= tournament.qualifiers_per_group_value %> qualify</span>
+              <h3 class="bebas text-2xl"><%= t("tournaments.group", name: group_name) %></h3>
+              <span class="theme-chip mono"><%= t("tournaments.top_qualify", count: tournament.qualifiers_per_group_value) %></span>
             </div>
             <table class="w-full text-sm">
               <thead class="mono text-xs uppercase" style="color:var(--theme-muted)">
-                <tr><th class="text-left py-2">#</th><th class="text-left py-2">Player</th><th>W</th><th>L</th><th>LF</th><th>LA</th><th>+/-</th><th>Pts</th></tr>
+                <tr><th class="text-left py-2">#</th><th class="text-left py-2"><%= t("tournaments.player") %></th><th>W</th><th>L</th><th>LF</th><th>LA</th><th>+/-</th><th>Pts</th></tr>
               </thead>
               <tbody>
                 <% tournament.standings_for_group(group_name).each_with_index do |entry, idx| %>
@@ -41,17 +41,17 @@
         <% end %>
       </div>
     <% else %>
-      <div class="theme-blank-slate text-sm">No groups generated for this tournament.</div>
+      <div class="theme-blank-slate text-sm"><%= t("tournaments.no_groups") %></div>
     <% end %>
   </section>
 
   <section id="player-stats" class="theme-card counter-list-card p-4 md:p-5 scroll-mt-24">
     <div class="mb-4 flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
       <div>
-        <div class="theme-section-label mono mb-1">Player stats</div>
-        <h2 class="bebas text-3xl leading-none">Tournament averages</h2>
+        <div class="theme-section-label mono mb-1"><%= t("tournaments.player_stats") %></div>
+        <h2 class="bebas text-3xl leading-none"><%= t("tournaments.averages") %></h2>
       </div>
-      <span class="theme-chip mono">All linked matches</span>
+      <span class="theme-chip mono"><%= t("tournaments.all_linked_matches") %></span>
     </div>
     <% player_stats = TournamentPlayerStats.new(tournament).call %>
     <% if player_stats.any? %>
@@ -59,12 +59,12 @@
         <table class="w-full text-sm">
           <thead class="mono text-xs uppercase" style="color:var(--theme-muted)">
             <tr>
-              <th class="text-left py-2">Player</th>
+              <th class="text-left py-2"><%= t("tournaments.player") %></th>
               <th class="text-center">M</th>
               <th class="text-center">W</th>
               <th class="text-center">L</th>
-              <th class="text-center">Legs</th>
-              <th class="text-center">Avg</th>
+              <th class="text-center"><%= t("live_match.legs") %></th>
+              <th class="text-center"><%= t("live_match.avg") %></th>
               <th class="text-center">Hi</th>
               <th class="text-center">100+</th>
               <th class="text-center">140+</th>
@@ -90,14 +90,14 @@
         </table>
       </div>
     <% else %>
-      <div class="theme-blank-slate text-sm">Player stats will appear once tournament matches are played.</div>
+      <div class="theme-blank-slate text-sm"><%= t("tournaments.stats_empty") %></div>
     <% end %>
   </section>
 
   <section class="theme-card counter-list-card p-4 md:p-5">
     <div class="mb-4">
-      <div class="theme-section-label mono mb-1">Fixtures</div>
-      <h2 class="bebas text-3xl leading-none">Group matches</h2>
+      <div class="theme-section-label mono mb-1"><%= t("tournaments.fixtures") %></div>
+      <h2 class="bebas text-3xl leading-none"><%= t("tournaments.group_matches") %></h2>
     </div>
     <% group_rounds = tournament.rounds.where(stage_type: "groups").order(:group_name, :number) %>
     <% if group_rounds.any? %>
@@ -112,14 +112,14 @@
         <% end %>
       </div>
     <% else %>
-      <div class="theme-blank-slate text-sm">Group fixtures will appear here once generated.</div>
+      <div class="theme-blank-slate text-sm"><%= t("tournaments.fixtures_empty") %></div>
     <% end %>
   </section>
 
   <section class="theme-card counter-list-card p-4 md:p-5">
     <div class="mb-4">
-      <div class="theme-section-label mono mb-1">Playoff</div>
-      <h2 class="bebas text-3xl leading-none">Ladder</h2>
+      <div class="theme-section-label mono mb-1"><%= t("tournaments.playoff") %></div>
+      <h2 class="bebas text-3xl leading-none"><%= t("tournaments.ladder") %></h2>
     </div>
     <% playoff_rounds = tournament.rounds.where(stage_type: "playoffs").order(:number, :created_at) %>
     <% if playoff_rounds.any? %>
@@ -140,7 +140,7 @@
         </div>
       </div>
     <% else %>
-      <div class="theme-blank-slate text-sm">Playoff ladder will appear automatically after qualifiers are known.</div>
+      <div class="theme-blank-slate text-sm"><%= t("tournaments.ladder_empty") %></div>
     <% end %>
   </section>
 </div>

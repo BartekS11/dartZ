@@ -48,7 +48,7 @@ class TournamentsController < ApplicationController
         @tournament.save!
         TournamentGenerator.new(@tournament).call if @tournament.entries.size >= 2
       end
-      redirect_to tournament_path(@tournament, admin_token: (@tournament.guest_owned? ? @tournament.admin_token : nil)), notice: "Tournament created."
+      redirect_to tournament_path(@tournament, admin_token: (@tournament.guest_owned? ? @tournament.admin_token : nil)), notice: t("flashes.tournament_created")
     else
       render :new, status: :unprocessable_entity
     end
@@ -57,7 +57,7 @@ class TournamentsController < ApplicationController
   def show
     @tournament.sync_from_linked_matches!
     unless @tournament.can_view?(user: Current.user, admin_token: params[:admin_token], participant_token: params[:participant_token], join_token: params[:join_token], share_token: params[:share_token])
-      redirect_to tournaments_path, alert: "You don't have access to that tournament."
+      redirect_to tournaments_path, alert: t("flashes.tournament_no_access")
       return
     end
 
@@ -68,7 +68,7 @@ class TournamentsController < ApplicationController
   def live
     @tournament.sync_from_linked_matches!
     unless @tournament.can_view?(user: Current.user, admin_token: params[:admin_token], participant_token: params[:participant_token], join_token: params[:join_token], share_token: params[:share_token])
-      redirect_to tournaments_path, alert: "You don't have access to that tournament."
+      redirect_to tournaments_path, alert: t("flashes.tournament_no_access")
       return
     end
 
@@ -83,7 +83,7 @@ class TournamentsController < ApplicationController
         TournamentGenerator.new(@tournament).call if @tournament.entries.size >= 2
       end
       @tournament.broadcast_live_update!
-      redirect_to tournament_admin_path, notice: "Tournament updated."
+      redirect_to tournament_admin_path, notice: t("flashes.tournament_updated")
     else
       redirect_to tournament_admin_path, alert: @tournament.errors.full_messages.to_sentence
     end
@@ -93,7 +93,7 @@ class TournamentsController < ApplicationController
     return unless authorize_tournament_admin!
 
     @tournament.destroy!
-    redirect_to tournaments_path, notice: "Tournament deleted."
+    redirect_to tournaments_path, notice: t("flashes.tournament_deleted")
   end
 
   def regenerate
@@ -103,7 +103,7 @@ class TournamentsController < ApplicationController
       TournamentGenerator.new(@tournament).call
     end
     @tournament.broadcast_live_update!
-    redirect_to tournament_admin_path, notice: "Tournament regenerated."
+    redirect_to tournament_admin_path, notice: t("flashes.tournament_regenerated")
   end
 
   def reseed
@@ -116,7 +116,7 @@ class TournamentsController < ApplicationController
       TournamentGenerator.new(@tournament).call if @tournament.entries.size >= 2
     end
     @tournament.broadcast_live_update!
-    redirect_to tournament_admin_path, notice: "Seeds rebuilt."
+    redirect_to tournament_admin_path, notice: t("flashes.seeds_rebuilt")
   end
 
   def advance_round
@@ -135,9 +135,9 @@ class TournamentsController < ApplicationController
 
       if generated
         @tournament.broadcast_live_update!
-        redirect_to tournament_admin_path, notice: "Next swiss round created."
+        redirect_to tournament_admin_path, notice: t("flashes.next_swiss_created")
       else
-        redirect_to tournament_admin_path, alert: "Unable to generate the next swiss round yet."
+        redirect_to tournament_admin_path, alert: t("flashes.next_swiss_unavailable")
       end
     when "playoffs"
       previous_round_count = @tournament.rounds.count
@@ -148,12 +148,12 @@ class TournamentsController < ApplicationController
       @tournament.broadcast_live_update!
 
       if @tournament.rounds.count > previous_round_count || @tournament.reload.status == "complete"
-        redirect_to tournament_admin_path, notice: "Playoff bracket advanced."
+        redirect_to tournament_admin_path, notice: t("flashes.playoff_advanced")
       else
-        redirect_to tournament_admin_path, alert: "Unable to advance the playoff bracket yet."
+        redirect_to tournament_admin_path, alert: t("flashes.playoff_advance_unavailable")
       end
     else
-      redirect_to tournament_admin_path, alert: "Manual round advance is not available for this format."
+      redirect_to tournament_admin_path, alert: t("flashes.manual_advance_unavailable")
     end
   end
 

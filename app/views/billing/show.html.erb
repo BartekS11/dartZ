@@ -3,12 +3,12 @@
     <div class="level is-align-items-flex-start">
       <div class="level-left">
         <div>
-          <div class="theme-section-label">Account</div>
-          <h1 class="page-title">Upgrade</h1>
+          <div class="theme-section-label"><%= t("common.account") %></div>
+          <h1 class="page-title"><%= t("billing.title") %></h1>
         </div>
       </div>
       <div class="level-right">
-        <span class="theme-chip <%= premium_access? ? 'is-live' : '' %>">Current: <%= Current.user.account_tier.humanize %></span>
+        <span class="theme-chip <%= premium_access? ? 'is-live' : '' %>"><%= t("billing.current", tier: Current.user.account_tier.humanize) %></span>
       </div>
     </div>
   </section>
@@ -21,7 +21,7 @@
           <div>
             <div class="is-flex is-justify-content-space-between is-align-items-center">
               <h2 class="section-title"><%= tier[:name] %></h2>
-              <% if current_tier %><span class="theme-chip is-live">Current</span><% end %>
+              <% if current_tier %><span class="theme-chip is-live"><%= t("common.current") %></span><% end %>
             </div>
             <p class="page-copy mt-2"><%= tier[:description] %></p>
           </div>
@@ -36,16 +36,16 @@
           </ul>
 
           <% if current_tier %>
-            <button type="button" class="button theme-btn-outline is-fullwidth mono" disabled>Current plan</button>
+            <button type="button" class="button theme-btn-outline is-fullwidth mono" disabled><%= t("billing.current_plan") %></button>
           <% elsif tier[:key] == "free" %>
-            <button type="button" class="button theme-btn-outline is-fullwidth mono" disabled>Included</button>
+            <button type="button" class="button theme-btn-outline is-fullwidth mono" disabled><%= t("common.included") %></button>
           <% else %>
-            <button type="button" class="button theme-btn-primary is-fullwidth mono" disabled data-stripe-price-placeholder="<%= tier[:key] %>">Upgrade with Stripe soon</button>
+            <button type="button" class="button theme-btn-primary is-fullwidth mono" disabled data-stripe-price-placeholder="<%= tier[:key] %>"><%= t("billing.upgrade_soon") %></button>
           <% end %>
         </article>
       </div>
     <% end %>
   </section>
 
-  <div class="theme-blank-slate mono text-sm">Future Stripe hook: replace disabled upgrade buttons with Checkout session creation for the selected tier.</div>
+  <div class="theme-blank-slate mono text-sm"><%= t("billing.stripe_hook") %></div>
 </div>

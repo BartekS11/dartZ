@@ -4,56 +4,56 @@
   <div class="theme-hero p-5 md:p-6">
     <div class="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
       <div class="space-y-3">
-        <div class="theme-section-label mono"><%= @tournament.format_type %> tournament</div>
+        <div class="theme-section-label mono"><%= t("tournaments.tournament_label", tournament_format: @tournament.format_type) %></div>
         <h1 class="page-title bebas"><%= @tournament.title %></h1>
         <div class="flex flex-wrap gap-2">
-          <%= link_to "Open live board", live_tournament_path(@tournament, admin_token: (params[:admin_token] if @can_admin), share_token: (@tournament.share_token unless @can_admin)), class: "btn btn-sm theme-btn-primary rounded-pill mono" %>
-          <span class="theme-chip mono"><%= @tournament.entries.count %> players</span>
+          <%= link_to t("tournaments.open_live_board"), live_tournament_path(@tournament, admin_token: (params[:admin_token] if @can_admin), share_token: (@tournament.share_token unless @can_admin)), class: "btn btn-sm theme-btn-primary rounded-pill mono" %>
+          <span class="theme-chip mono"><%= t("tournaments.players", count: @tournament.entries.count) %></span>
           <span class="theme-chip mono"><%= @tournament.status %></span>
           <span class="theme-chip mono">Bo<%= @tournament.best_of_legs %> legs</span>
           <% if @tournament.best_of_sets > 1 %><span class="theme-chip mono">Bo<%= @tournament.best_of_sets %> sets</span><% end %>
-          <% if @tournament.format_type == 'swiss' %><span class="theme-chip mono"><%= @tournament.effective_swiss_round_count %> rounds</span><% end %>
+          <% if @tournament.format_type == 'swiss' %><span class="theme-chip mono"><%= t("tournaments.rounds", count: @tournament.effective_swiss_round_count) %></span><% end %>
           <% if @tournament.format_type == 'playoffs' %><span class="theme-chip mono"><%= @tournament.playoff_mode.humanize %></span><% end %>
         </div>
       </div>
 
       <div class="counter-summary-grid tournament-link-panel xl:min-w-[22rem]">
         <%= link_to live_tournament_path(@tournament, admin_token: (params[:admin_token] if @can_admin), share_token: (@tournament.share_token unless @can_admin)), class: "counter-summary-tile block p-4 transition hover:-translate-y-0.5", style: "border-color:color-mix(in srgb, var(--theme-primary) 35%, var(--theme-border)); background:linear-gradient(135deg, color-mix(in srgb, var(--theme-primary) 14%, transparent), color-mix(in srgb, var(--theme-surface) 85%, transparent)); text-decoration:none" do %>
-          <div class="auth-label mb-1">Tournament screen</div>
+          <div class="auth-label mb-1"><%= t("tournaments.tournament_screen") %></div>
           <div class="flex items-center justify-between gap-3">
-            <span class="bebas text-2xl leading-none" style="color:var(--theme-text)">Open live board</span>
-            <span class="theme-chip mono">Go →</span>
+            <span class="bebas text-2xl leading-none" style="color:var(--theme-text)"><%= t("tournaments.open_live_board") %></span>
+            <span class="theme-chip mono"><%= t("tournaments.go") %></span>
           </div>
-          <div class="mt-2 text-xs" style="color:var(--theme-muted)">Groups, fixtures, playoff ladder and live scores.</div>
+          <div class="mt-2 text-xs" style="color:var(--theme-muted)"><%= t("tournaments.screen_copy") %></div>
         <% end %>
 
         <%= link_to live_tournament_path(@tournament, anchor: "player-stats", admin_token: (params[:admin_token] if @can_admin), share_token: (@tournament.share_token unless @can_admin)), class: "counter-summary-tile block p-4", style: "border-color:color-mix(in srgb, var(--theme-success) 35%, var(--theme-border)); background:color-mix(in srgb, var(--theme-success) 9%, transparent); text-decoration:none" do %>
-          <div class="auth-label mb-1">Stats</div>
+          <div class="auth-label mb-1"><%= t("tournaments.stats") %></div>
           <div class="flex items-center justify-between gap-3">
-            <span class="bebas text-2xl leading-none" style="color:var(--theme-text)">Player stats</span>
-            <span class="theme-chip mono">Open →</span>
+            <span class="bebas text-2xl leading-none" style="color:var(--theme-text)"><%= t("tournaments.player_stats") %></span>
+            <span class="theme-chip mono"><%= t("tournaments.open") %></span>
           </div>
-          <div class="mt-2 text-xs" style="color:var(--theme-muted)">Averages, highest turns, 100+, 140+ and 180s.</div>
+          <div class="mt-2 text-xs" style="color:var(--theme-muted)"><%= t("tournaments.stats_copy") %></div>
         <% end %>
 
         <details class="group">
           <summary class="auth-label tournament-summary-toggle flex cursor-pointer list-none items-center justify-between gap-3 rounded-lg px-3 py-2" style="border:1px solid var(--theme-border); background:color-mix(in srgb, var(--theme-surface) 72%, transparent)">
-            <span>Share / admin links</span>
-            <span class="mono text-xs" style="color:var(--theme-muted)">tap to expand ▾</span>
+            <span><%= t("tournaments.share_admin_links") %></span>
+            <span class="mono text-xs" style="color:var(--theme-muted)"><%= t("tournaments.tap_expand") %></span>
           </summary>
           <div class="stack-sm mt-3">
             <% if @can_admin && @tournament.guest_owned? %>
               <div class="counter-summary-tile text-sm">
-                <div class="auth-label mb-1">Admin recovery</div>
+                <div class="auth-label mb-1"><%= t("tournaments.admin_recovery") %></div>
                 <div class="break-all text-xs" style="color:var(--theme-muted)"><%= tournament_url(@tournament, admin_token: @tournament.admin_token) %></div>
               </div>
             <% end %>
             <div class="counter-summary-tile text-sm">
-              <div class="auth-label mb-1">Live board link</div>
+              <div class="auth-label mb-1"><%= t("tournaments.live_board_link") %></div>
               <div class="break-all text-xs" style="color:var(--theme-muted)"><%= live_tournament_url(@tournament, share_token: @tournament.share_token) %></div>
             </div>
             <div class="counter-summary-tile text-sm">
-              <div class="auth-label mb-1">Join link</div>
+              <div class="auth-label mb-1"><%= t("tournaments.join_link") %></div>
               <div class="break-all text-xs" style="color:var(--theme-muted)"><%= tournament_url(@tournament) %>?join_token=<%= @tournament.join_token %></div>
             </div>
           </div>
@@ -63,11 +63,11 @@
 
     <% if params[:join_token].present? %>
       <div class="mt-5 theme-panel counter-list-card p-4">
-        <div class="theme-section-label mono mb-2">Join this tournament</div>
+        <div class="theme-section-label mono mb-2"><%= t("tournaments.join_this") %></div>
         <%= form_with url: tournament_entries_path(@tournament), method: :post, class: "flex flex-col gap-3 md:flex-row" do |f| %>
           <%= hidden_field_tag :join_token, params[:join_token] %>
-          <%= text_field_tag :name, nil, class: "form-control theme-form-input", placeholder: "Your tournament name" %>
-          <%= f.submit "Join", class: "btn theme-btn-primary rounded-pill px-4 py-3 bebas text-xl" %>
+          <%= text_field_tag :name, nil, class: "form-control theme-form-input", placeholder: t("tournaments.your_tournament_name") %>
+          <%= f.submit t("tournaments.join"), class: "btn theme-btn-primary rounded-pill px-4 py-3 bebas text-xl" %>
         <% end %>
       </div>
     <% end %>
@@ -76,80 +76,80 @@
   <% if @can_admin %>
     <div class="theme-card counter-admin-card p-5 md:p-6">
       <div class="counter-section-header mb-4">
-        <div class="theme-section-label mono">Admin</div>
-        <h2 class="section-title bebas">Manage tournament</h2>
+        <div class="theme-section-label mono"><%= t("tournaments.admin") %></div>
+        <h2 class="section-title bebas"><%= t("tournaments.manage") %></h2>
       </div>
 
       <%= form_with model: @tournament, url: tournament_path(@tournament, admin_token: params[:admin_token]), method: :patch, class: "grid gap-4" do |f| %>
         <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           <div>
-            <label class="auth-label">Title</label>
+            <label class="auth-label"><%= t("tournaments.form_title") %></label>
             <%= f.text_field :title, class: "form-control theme-form-input" %>
           </div>
           <div>
-            <label class="auth-label">Best of legs</label>
+            <label class="auth-label"><%= t("common.best_of_legs") %></label>
             <%= f.number_field :best_of_legs, min: 1, class: "form-control theme-form-input" %>
           </div>
           <div>
-            <label class="auth-label">Best of sets</label>
+            <label class="auth-label"><%= t("common.best_of_sets") %></label>
             <%= f.number_field :best_of_sets, min: 1, class: "form-control theme-form-input" %>
           </div>
           <div>
-            <label class="auth-label">Swiss rounds</label>
+            <label class="auth-label"><%= t("tournaments.swiss_rounds") %></label>
             <%= f.number_field :swiss_round_count, min: 1, class: "form-control theme-form-input" %>
           </div>
           <div>
-            <label class="auth-label">Seeding</label>
+            <label class="auth-label"><%= t("tournaments.seeding") %></label>
             <%= f.select :seeding_mode, Tournament::SEEDING_MODES.map { |v| [v.titleize, v] }, {}, class: "form-select theme-form-input" %>
           </div>
           <div>
-            <label class="auth-label">Playoff mode</label>
+            <label class="auth-label"><%= t("tournaments.playoff_mode") %></label>
             <%= f.select :playoff_mode, Tournament::PLAYOFF_MODES.map { |v| [v.humanize, v] }, {}, class: "form-select theme-form-input" %>
           </div>
           <div>
-            <label class="auth-label">Group count</label>
+            <label class="auth-label"><%= t("tournaments.group_count") %></label>
             <%= f.number_field :group_count, min: 2, class: "form-control theme-form-input" %>
           </div>
           <div>
-            <label class="auth-label">Playoff qualifiers</label>
+            <label class="auth-label"><%= t("tournaments.playoff_qualifiers") %></label>
             <%= f.number_field :playoff_qualifier_count, min: 2, class: "form-control theme-form-input" %>
           </div>
           <div>
-            <label class="auth-label">Qualifiers per group</label>
+            <label class="auth-label"><%= t("tournaments.qualifiers_per_group") %></label>
             <%= f.number_field :qualifiers_per_group, min: 1, class: "form-control theme-form-input" %>
           </div>
           <div>
-            <label class="auth-label">Playoff best of legs</label>
+            <label class="auth-label"><%= t("tournaments.playoff_best_of_legs") %></label>
             <%= f.number_field :playoff_best_of_legs, min: 1, class: "form-control theme-form-input" %>
           </div>
           <div>
-            <label class="auth-label">Playoff best of sets</label>
+            <label class="auth-label"><%= t("tournaments.playoff_best_of_sets") %></label>
             <%= f.number_field :playoff_best_of_sets, min: 1, class: "form-control theme-form-input" %>
           </div>
           <div>
-            <label class="auth-label">Semifinal best of legs</label>
+            <label class="auth-label"><%= t("tournaments.semifinal_best_of_legs") %></label>
             <%= f.select :semifinal_best_of_legs, [["Bo1", 1], ["Bo3", 3], ["Bo5", 5]], {}, class: "form-select theme-form-input" %>
           </div>
           <div>
-            <label class="auth-label">Final best of legs</label>
+            <label class="auth-label"><%= t("tournaments.final_best_of_legs") %></label>
             <%= f.select :final_best_of_legs, [["Bo1", 1], ["Bo3", 3], ["Bo5", 5]], {}, class: "form-select theme-form-input" %>
           </div>
         </div>
 
         <div class="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
-          <label class="panel-choice text-sm"><%= f.check_box :bronze_match %> Bronze match</label>
-          <label class="panel-choice text-sm"><%= f.check_box :auto_advance %> Auto advance</label>
-          <label class="panel-choice text-sm"><%= f.check_box :manual_advance_allowed %> Manual advance</label>
-          <label class="panel-choice text-sm"><%= f.check_box :allow_wildcards %> Wildcards</label>
+          <label class="panel-choice text-sm"><%= f.check_box :bronze_match %> <%= t("tournaments.bronze_match") %></label>
+          <label class="panel-choice text-sm"><%= f.check_box :auto_advance %> <%= t("tournaments.auto_advance") %></label>
+          <label class="panel-choice text-sm"><%= f.check_box :manual_advance_allowed %> <%= t("tournaments.manual_advance_allowed") %></label>
+          <label class="panel-choice text-sm"><%= f.check_box :allow_wildcards %> <%= t("tournaments.allow_wildcards") %></label>
         </div>
 
         <div class="flex flex-col gap-3 sm:flex-row sm:justify-end">
-          <%= f.submit "Save changes", class: "btn theme-btn-primary rounded-pill px-4 py-3 bebas text-xl" %>
+          <%= f.submit t("tournaments.save_changes"), class: "btn theme-btn-primary rounded-pill px-4 py-3 bebas text-xl" %>
         </div>
       <% end %>
 
       <div class="mt-4 flex justify-start border-t pt-4" style="border-color:var(--theme-border)">
-        <%= button_to "Delete tournament", tournament_path(@tournament, admin_token: params[:admin_token]), method: :delete, form: { data: { turbo: false, turbo_confirm: "Delete this tournament permanently?" } }, class: "btn theme-btn-outline rounded-pill mono" %>
+        <%= button_to t("tournaments.delete_title"), tournament_path(@tournament, admin_token: params[:admin_token]), method: :delete, form: { data: { turbo: false, turbo_confirm: t("tournaments.delete_confirm") } }, class: "btn theme-btn-outline rounded-pill mono" %>
       </div>
     </div>
   <% end %>

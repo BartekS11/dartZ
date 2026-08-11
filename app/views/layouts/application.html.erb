@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="<%= I18n.locale %>" data-theme="dark">
 <head>
   <title><%= theme_app_name %></title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -43,11 +43,11 @@
         </div>
 
         <div class="simple-nav-scroll">
-          <%= link_to "Match", matches_path, class: "app-nav-link #{'is-active' if current_page?(matches_path)}" %>
-          <%= link_to "Bot", new_bot_match_path, class: "app-nav-link #{'is-active' if current_page?(new_bot_match_path)}" %>
-          <%= link_to "Tournaments", tournaments_path, class: "app-nav-link #{'is-active' if request.path.start_with?(tournaments_path)}" %>
+          <%= link_to t("nav.match"), matches_path, class: "app-nav-link #{'is-active' if current_page?(matches_path)}" %>
+          <%= link_to t("nav.bot"), new_bot_match_path, class: "app-nav-link #{'is-active' if current_page?(new_bot_match_path)}" %>
+          <%= link_to t("nav.tournaments"), tournaments_path, class: "app-nav-link #{'is-active' if request.path.start_with?(tournaments_path)}" %>
           <% if premium_access? %>
-            <%= link_to "Dart setup", edit_dart_setup_path, class: "app-nav-link #{'is-active' if request.path.start_with?(edit_dart_setup_path)}" %>
+            <%= link_to t("nav.dart_setup"), edit_dart_setup_path, class: "app-nav-link #{'is-active' if request.path.start_with?(edit_dart_setup_path)}" %>
           <% end %>
 
           <% if content_for?(:nav_inline_action) %>
@@ -55,53 +55,62 @@
           <% end %>
 
           <% if Current.user %>
-            <%= link_to "Upgrade", billing_path, class: "app-nav-link app-nav-auth-inline #{'is-active' if current_page?(billing_path)}" %>
+            <%= link_to t("nav.upgrade"), billing_path, class: "app-nav-link app-nav-auth-inline #{'is-active' if current_page?(billing_path)}" %>
 
             <button id="profileMenuButton" class="app-nav-link" type="button" data-profile-menu-target="button" data-action="profile-menu#toggle" aria-controls="profileMenu" aria-expanded="false">
-              Account ▾
+              <%= t("nav.account") %> ▾
             </button>
 
-            <%= button_to "Logout", session_path,
+            <%= button_to t("nav.logout"), session_path,
                   method: :delete,
                   class: "app-nav-auth-button is-danger mono",
                   form_class: "app-nav-auth-form",
                   form: { onsubmit: "localStorage.removeItem('dartz_player1');localStorage.removeItem('dartz_player2');localStorage.removeItem('dartz_players');localStorage.removeItem('dartz_matches');" } %>
           <% else %>
-            <%= link_to "Register", new_registration_path, class: "app-nav-auth-button app-nav-auth-inline mono #{'is-active' if current_page?(new_registration_path)}" %>
-            <%= link_to "Login", new_session_path, class: "app-nav-auth-button is-danger mono #{'is-active' if current_page?(new_session_path)}" %>
+            <%= link_to t("nav.register"), new_registration_path, class: "app-nav-auth-button app-nav-auth-inline mono #{'is-active' if current_page?(new_registration_path)}" %>
+            <%= link_to t("nav.login"), new_session_path, class: "app-nav-auth-button is-danger mono #{'is-active' if current_page?(new_session_path)}" %>
+          <% end %>
+
+          <%= form_with url: locale_path, method: :patch, class: "app-nav-locale-form", data: { turbo: false } do %>
+            <%= hidden_field_tag :return_to, request.fullpath %>
+            <%= select_tag :selected_locale,
+                  options_for_select(available_locales.map { |locale| [locale_label(locale), locale] }, I18n.locale.to_s),
+                  class: "app-nav-locale-select mono",
+                  aria: { label: t("nav.language") },
+                  onchange: "this.form.requestSubmit()" %>
           <% end %>
 
           <button type="button"
                   class="app-nav-link app-nav-theme-toggle"
                   data-action="theme-mode#toggle"
                   data-theme-mode-target="button"
-                  aria-label="Switch theme">
+                  aria-label="<%= t("nav.switch_theme") %>">
             <span class="icon" data-theme-mode-target="icon" aria-hidden="true">☀</span>
-            <span data-theme-mode-target="label" class="visually-hidden">Light theme</span>
+            <span data-theme-mode-target="label" class="visually-hidden"><%= t("nav.light_theme") %></span>
           </button>
         </div>
 
         <% if Current.user %>
           <div id="profileMenu" data-profile-menu-target="menu" class="hidden profile-menu-panel">
             <div>
-              <div class="eyebrow">Signed in as</div>
+              <div class="eyebrow"><%= t("profile.signed_in_as") %></div>
               <div class="profile-name"><%= Current.user.display_name %></div>
               <div class="profile-email"><%= Current.user.email_address %></div>
-              <span class="theme-chip <%= premium_access? ? 'is-live' : '' %>">Tier: <%= Current.user.account_tier.humanize %></span>
+              <span class="theme-chip <%= premium_access? ? 'is-live' : '' %>"><%= t("profile.tier", tier: Current.user.account_tier.humanize) %></span>
             </div>
             <hr>
             <%= form_with model: Current.user, url: profile_path, method: :patch, class: "stack-sm" do |f| %>
-              <%= f.label :nickname, "Nickname", class: "auth-label" %>
-              <%= f.text_field :nickname, maxlength: 20, placeholder: "Set your nickname", class: "theme-form-input mono" %>
-              <%= f.submit "Save nickname", class: "button theme-btn-primary mono" %>
+              <%= f.label :nickname, t("profile.nickname"), class: "auth-label" %>
+              <%= f.text_field :nickname, maxlength: 20, placeholder: t("profile.nickname_placeholder"), class: "theme-form-input mono" %>
+              <%= f.submit t("profile.save_nickname"), class: "button theme-btn-primary mono" %>
             <% end %>
             <hr>
             <div class="stack-sm">
               <% if premium_access? %>
-                <%= link_to "Dart setup", edit_dart_setup_path, class: "button theme-btn-primary mono" %>
+                <%= link_to t("nav.dart_setup"), edit_dart_setup_path, class: "button theme-btn-primary mono" %>
               <% end %>
-              <%= link_to "Upgrade", billing_path, class: "button theme-btn-outline mono" %>
-              <%= button_to "Logout", session_path,
+              <%= link_to t("nav.upgrade"), billing_path, class: "button theme-btn-outline mono" %>
+              <%= button_to t("nav.logout"), session_path,
                     method: :delete,
                     class: "button theme-btn-outline mono w-full",
                     form: { onsubmit: "localStorage.removeItem('dartz_player1');localStorage.removeItem('dartz_player2');localStorage.removeItem('dartz_players');localStorage.removeItem('dartz_matches');" } %>
@@ -126,9 +135,9 @@
       <div class="footer-inner">
         <span class="footer-brand"><%= theme_app_name %></span>
         <div class="footer-links">
-          <%= link_to "Privacy", privacy_policy_path %>
-          <%= link_to "Terms", terms_of_service_path %>
-          <%= link_to "Contact", contact_page_path %>
+          <%= link_to t("footer.privacy"), privacy_policy_path %>
+          <%= link_to t("footer.terms"), terms_of_service_path %>
+          <%= link_to t("footer.contact"), contact_page_path %>
         </div>
       </div>
     </footer>
