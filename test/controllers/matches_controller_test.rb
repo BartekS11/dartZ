@@ -55,4 +55,17 @@ class MatchesControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
   end
+
+  test "guest immediate match is not marked as remote invite locked" do
+    delete session_path
+
+    post matches_path, params: { player1_name: "Guest 1", player2_name: "Guest 2" }
+    match = Match.last
+
+    get match_path(match), params: { guest_token: match.guest_token }
+
+    assert_response :success
+    assert_select "#match-live[data-match-view-remote-invite-value='false']"
+    assert_no_match(/data-match-view-my-player-id-value="\d+"/, response.body)
+  end
 end

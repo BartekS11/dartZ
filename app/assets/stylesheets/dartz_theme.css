@@ -1378,6 +1378,16 @@ button.app-nav-link [data-theme-mode-target="icon"] {
   cursor: not-allowed !important;
 }
 
+.is-waiting-for-opponent .match-dart-pad {
+  opacity: .45;
+  filter: grayscale(.65);
+  pointer-events: none;
+}
+
+.is-waiting-for-opponent .match-dart-pad button {
+  cursor: not-allowed !important;
+}
+
 /* Tournament index delete affordance. */
 .tournament-index-card-wrap {
   position: relative;
@@ -2254,8 +2264,11 @@ button.app-nav-link:hover {
 .simple-setup .sets-preset.is-selected,
 .simple-setup .bot-choice-radio.is-selected,
 .simple-setup .bot-choice-radio:has(input:checked) {
-  background: color-mix(in srgb, var(--theme-text) 9%, transparent) !important;
-  color: var(--theme-text) !important;
+  background: var(--theme-primary) !important;
+  color: #fff !important;
+  outline: 2px solid color-mix(in srgb, var(--theme-primary) 55%, #fff) !important;
+  outline-offset: 2px !important;
+  transform: translateY(-1px);
 }
 
 .simple-setup .button.theme-btn-primary,
@@ -2263,6 +2276,34 @@ button.app-nav-link:hover {
 .simple-setup input[type="submit"].theme-btn-primary {
   background: var(--theme-primary) !important;
   color: #fff !important;
+}
+
+.setup-heading {
+  max-width: 38rem;
+}
+
+.setup-submit-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.setup-primary-actions {
+  justify-content: flex-end;
+}
+
+.setup-utility-actions {
+  margin-top: .75rem;
+  color: var(--theme-muted);
+}
+
+.setup-utility-actions summary {
+  cursor: pointer;
+  width: fit-content;
+  font-size: .78rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
 }
 
 .brand-mark {
@@ -2303,20 +2344,65 @@ button.app-nav-link:hover {
 
 @media (max-width: 760px) {
   .app-main {
-    padding-top: 1.25rem !important;
+    padding-top: .75rem !important;
   }
 
   .page-shell,
   .simple-setup,
   .stack-lg {
-    gap: 1.65rem !important;
+    gap: 1.15rem !important;
+  }
+
+  .simple-setup.theme-hero {
+    padding: 1rem !important;
+  }
+
+  .setup-heading {
+    margin-bottom: .5rem !important;
+  }
+
+  .setup-heading .page-title {
+    font-size: clamp(1.6rem, 8vw, 2.15rem) !important;
+    line-height: 1 !important;
+  }
+
+  .setup-heading .page-copy {
+    margin-top: .35rem !important;
   }
 
   .simple-setup .simple-step {
-    padding-top: 1rem !important;
+    padding-top: .55rem !important;
   }
 
   .simple-setup .buttons {
-    gap: .55rem !important;
+    gap: .5rem !important;
+  }
+
+  .simple-setup .button,
+  .simple-setup .btn,
+  .simple-setup .theme-btn-outline,
+  .simple-setup .panel-choice {
+    min-height: 3rem !important;
+  }
+
+  .simple-setup .input,
+  .simple-setup .theme-form-input,
+  .simple-setup input[type="number"],
+  .simple-setup input[type="text"] {
+    min-height: 3.2rem !important;
+  }
+
+  .setup-submit-row {
+    display: block;
+  }
+
+  .setup-primary-actions .button,
+  .setup-primary-actions input[type="submit"] {
+    flex: 1 1 100%;
+    width: 100%;
+  }
+
+  .setup-utility-actions {
+    margin-top: .35rem;
   }
 }

@@ -1,9 +1,9 @@
 <% presenter ||= MatchStatePresenter.new(match) %>
-<% current_match_player ||= nil %>
+<% viewer_player = local_assigns[:current_match_player] || current_match_player(match) %>
 <div id="match-live" class="page-shell match-focus"
      data-controller="match-view"
      data-match-view-remote-invite-value="<%= match.invite_match? %>"
-     data-match-view-my-player-id-value="<%= current_match_player(match)&.id %>">
+     data-match-view-my-player-id-value="<%= viewer_player&.id %>">
 
   <div id="game-over-section">
     <% if match.finished? %>
@@ -40,7 +40,7 @@
            match: match,
            presenter: presenter,
            turn: presenter.current_turn,
-           current_match_player: current_match_player(match) %>
+           current_match_player: viewer_player %>
         </div>
       </div>
 

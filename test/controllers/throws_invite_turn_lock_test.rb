@@ -43,4 +43,27 @@ class ThrowsInviteTurnLockTest < ActionDispatch::IntegrationTest
     assert_equal 501, @match.score_for(@player1)
     assert_equal 0, Turn.find(@turn.id).total_score
   end
+
+  test "invite opponent cannot click through throw pad before afk timeout" do
+    post turn_throws_path(@turn),
+         params: { guest_token: @match.guest_token, actor_player_id: @player2.id, throw: { segment: 20, multiplier: "triple" } },
+         headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+    assert_response :conflict
+    @match.reload
+    assert_equal @turn.id, @match.current_leg.current_turn.id
+    assert_equal 501, @match.score_for(@player1)
+    assert_equal 0, @turn.throws.count
+  end
+
+  test "invite current player can submit from throw pad" do
+    post turn_throws_path(@turn),
+         params: { guest_token: @match.guest_token, actor_player_id: @player1.id, throw: { segment: 20, multiplier: "triple" } },
+         headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+    assert_response :success
+    @match.reload
+    assert_equal 441, @match.score_for(@player1)
+    assert_equal 1, @turn.reload.throws.count
+  end
 end

@@ -3,18 +3,10 @@
      data-lobby-signed-in-value="<%= Current.user.present? %>"
      data-lobby-current-user-name-value="<%= Current.user&.display_name.to_s %>">
   <section class="theme-hero simple-setup p-5">
-    <div class="level is-align-items-flex-start mb-4">
-      <div class="level-left">
-        <div>
-          <div class="theme-section-label">Start here</div>
-          <h1 class="page-title">New game</h1>
-          <p class="page-copy mt-2">Add two names. Leave the rules alone unless you need to change them.</p>
-        </div>
-      </div>
-      <div class="level-right buttons are-small">
-        <button type="button" data-action="click->lobby#clearPlayers" class="button theme-btn-outline mono">Clear names</button>
-        <button type="button" data-action="click->lobby#clearMatches" class="button theme-btn-outline mono">Clear history</button>
-      </div>
+    <div class="setup-heading mb-4">
+      <div class="theme-section-label">Start here</div>
+      <h1 class="page-title">New game</h1>
+      <p class="page-copy mt-2">Add players, confirm rules, then start scoring.</p>
     </div>
 
     <%= form_with url: matches_path, method: :post, data: { turbo: false, action: "submit->lobby#savePlayers" }, class: "stack-md" do |f| %>
@@ -135,16 +127,14 @@
         </div>
       </div>
 
-      <div class="level pt-3" style="border-top:1px solid var(--theme-line)">
-        <div class="level-left">
-          <div class="help-theme">
-            <div id="greeting-wrapper" class="is-hidden">
-              <span class="auth-label">Last players</span>
-              <div data-lobby-target="greeting" class="mt-1"></div>
-            </div>
+      <div class="setup-submit-row pt-3">
+        <div class="help-theme">
+          <div id="greeting-wrapper" class="is-hidden">
+            <span class="auth-label">Last players</span>
+            <div data-lobby-target="greeting" class="mt-1"></div>
           </div>
         </div>
-        <div class="level-right buttons">
+        <div class="buttons setup-primary-actions">
           <%= button_tag "Create invite match",
                 type: "submit",
                 name: "invite_match",
@@ -153,6 +143,14 @@
           <%= f.submit "Start game", class: "button theme-btn-primary is-medium" %>
         </div>
       </div>
+
+      <details class="setup-utility-actions">
+        <summary class="mono">Reset options</summary>
+        <div class="buttons are-small mt-3">
+          <button type="button" data-action="click->lobby#clearPlayers" class="button theme-btn-outline mono">Clear names</button>
+          <button type="button" data-action="click->lobby#clearMatches" class="button theme-btn-outline mono">Clear history</button>
+        </div>
+      </details>
     <% end %>
   </section>
 

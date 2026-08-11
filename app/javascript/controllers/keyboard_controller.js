@@ -58,7 +58,20 @@ export default class extends Controller {
     const matchView = document.getElementById("match-live")
     if (!matchView || !this.hasInputTarget) return
 
+    const remoteInvite = matchView.dataset.matchViewRemoteInviteValue === "true"
+    if (!remoteInvite) {
+      this.element.classList.remove("is-disabled")
+      this.inputTarget.disabled = false
+      this.inputTarget.placeholder = "Enter score"
+      const undo = this.element.querySelector(".btn-undo")
+      if (undo) undo.disabled = false
+      if (this.hasSkipButtonTarget) this.skipButtonTarget.classList.add("hidden")
+      return
+    }
+
     const myPlayerId = Number(matchView.dataset.matchViewMyPlayerIdValue || 0)
+    if (!myPlayerId) return
+
     const myTurn = myPlayerId === this.currentPlayerIdValue
     const canSkip = !myTurn && this.afkExpired()
 
