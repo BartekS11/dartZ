@@ -46,9 +46,6 @@
           <%= link_to "Match", matches_path, class: "app-nav-link #{'is-active' if current_page?(matches_path)}" %>
           <%= link_to "Bot", new_bot_match_path, class: "app-nav-link #{'is-active' if current_page?(new_bot_match_path)}" %>
           <%= link_to "Tournaments", tournaments_path, class: "app-nav-link #{'is-active' if request.path.start_with?(tournaments_path)}" %>
-          <% if Current.user %>
-            <%= link_to "Upgrade", billing_path, class: "app-nav-link #{'is-active' if current_page?(billing_path)}" %>
-          <% end %>
           <% if premium_access? %>
             <%= link_to "Dart setup", edit_dart_setup_path, class: "app-nav-link #{'is-active' if request.path.start_with?(edit_dart_setup_path)}" %>
           <% end %>
@@ -58,16 +55,16 @@
           <% end %>
 
           <% if Current.user %>
+            <%= link_to "Upgrade", billing_path, class: "app-nav-link app-nav-auth-inline #{'is-active' if current_page?(billing_path)}" %>
+
             <button id="profileMenuButton" class="app-nav-link" type="button" data-profile-menu-target="button" data-action="profile-menu#toggle" aria-controls="profileMenu" aria-expanded="false">
               Account ▾
             </button>
-          <% end %>
 
-          <% if Current.user %>
             <%= button_to "Logout", session_path,
                   method: :delete,
                   class: "app-nav-auth-button is-danger mono",
-                  form_class: "app-nav-auth-form app-nav-auth-inline",
+                  form_class: "app-nav-auth-form",
                   form: { onsubmit: "localStorage.removeItem('dartz_player1');localStorage.removeItem('dartz_player2');localStorage.removeItem('dartz_players');localStorage.removeItem('dartz_matches');" } %>
           <% else %>
             <%= link_to "Register", new_registration_path, class: "app-nav-auth-button app-nav-auth-inline mono #{'is-active' if current_page?(new_registration_path)}" %>

@@ -22,20 +22,32 @@
         </div>
 
         <%= form_with url: bot_match_path, method: :post, data: { turbo: false }, class: "stack-md simple-setup" do |f| %>
-          <div class="simple-step"><div class="simple-step-number">1</div><div><div class="theme-section-label">Names</div><p class="page-copy">Use your name and optionally rename the bot.</p></div></div>
+          <div class="simple-step"><div class="simple-step-number">1</div><div><div class="theme-section-label">Names</div><p class="page-copy"></p></div></div>
           <div class="columns is-variable is-3">
             <div class="column"><div class="field"><label class="label auth-label">Your name</label><%= f.text_field :player_name, value: Current.user.display_name, placeholder: "Your name", maxlength: 20, autocomplete: "off", class: "input theme-form-input mono" %></div></div>
             <div class="column"><div class="field"><label class="label auth-label">Bot name</label><%= f.text_field :bot_name, placeholder: "Optional bot name", maxlength: 20, autocomplete: "off", class: "input theme-form-input mono" %></div></div>
           </div>
 
-          <div class="simple-step"><div class="simple-step-number">2</div><div><div class="theme-section-label">Difficulty</div><p class="page-copy">10 is a good normal practice bot.</p></div></div>
+          <div class="simple-step"><div class="simple-step-number">2</div><div><div class="theme-section-label">Difficulty</div><p class="page-copy"></p></div></div>
 
-          <div class="theme-panel p-4 stack-md">
-            <label class="auth-label">Bot difficulty</label>
-            <% [["Beginner", (1..5).to_a], ["Intermediate", (6..12).to_a], ["Advanced", (13..17).to_a], ["Pro", (18..20).to_a]].each do |label, levels| %>
-              <div>
-                <div class="auth-label mb-2"><%= label %></div>
-                <div class="buttons are-small">
+          <div class="theme-panel bot-difficulty-panel p-4 stack-md">
+            <div>
+              <label class="auth-label">Bot difficulty</label>
+            </div>
+
+            <% [
+              ["Beginner", "Learning pace", (1..5).to_a],
+              ["Intermediate", "Normal practice", (6..12).to_a],
+              ["Advanced", "High scoring", (13..17).to_a],
+              ["Pro", "Maximum pressure", (18..20).to_a]
+            ].each do |label, description, levels| %>
+              <div class="bot-level-group <%= 'is-default-group' if levels.include?(10) %>">
+                <div class="bot-level-group-head">
+                  <div class="auth-label"><%= label %></div>
+                  <div class="bot-level-description mono"><%= description %></div>
+                </div>
+
+                <div class="buttons are-small bot-level-buttons">
                   <% levels.each do |lvl| %>
                     <label class="button theme-btn-outline mono bot-choice-radio <%= 'is-selected' if lvl == 10 %>">
                       <%= radio_button_tag :bot_level, lvl, lvl == 10, class: "sr-only", onchange: "this.closest('.theme-panel').querySelectorAll('.bot-choice-radio').forEach(el => el.classList.remove('is-selected')); this.closest('.bot-choice-radio').classList.add('is-selected')" %>
@@ -47,7 +59,7 @@
             <% end %>
           </div>
 
-          <div class="simple-step"><div class="simple-step-number">3</div><div><div class="theme-section-label">Rules</div><p class="page-copy">Default is regular 501 double-out.</p></div></div>
+          <div class="simple-step"><div class="simple-step-number">3</div><div><div class="theme-section-label">Rules</div><p class="page-copy"></p></div></div>
 
           <div class="columns is-variable is-3">
             <div class="column">

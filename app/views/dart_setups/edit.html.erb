@@ -1,5 +1,5 @@
 <div class="page-shell stack-md">
-  <section class="theme-hero p-5">
+  <section class="theme-hero p-5 dart-setup-page">
     <div class="level is-align-items-flex-start mb-4">
       <div class="level-left">
         <div>
@@ -10,21 +10,115 @@
       <div class="level-right"><span class="theme-chip is-live"><%= Current.user.account_tier.humanize %></span></div>
     </div>
 
+    <div class="current-dart-setup-card mb-5">
+      <div>
+        <div class="theme-section-label">Currently saved</div>
+        <% if @dart_setup.persisted? %>
+          <h2><%= @dart_setup.display_summary %></h2>
+          <p class="page-copy mt-1">New matches will use this exact setup snapshot.</p>
+        <% else %>
+          <h2>Default setup ready</h2>
+          <p class="page-copy mt-1">Save once to start tracking setup-based stats.</p>
+        <% end %>
+      </div>
+      <div class="current-dart-setup-metrics mono">
+        <span><strong><%= @dart_setup.weight_g.to_s.sub(/\.0$/, '') %>g</strong>Weight</span>
+        <span><strong><%= @dart_setup.shaft_length_mm %>mm</strong>Shaft</span>
+        <span><strong><%= @dart_setup.point_length_mm %>mm</strong>Point</span>
+      </div>
+    </div>
+
     <%= form_with model: @dart_setup, url: dart_setup_path, method: :patch, class: "stack-md" do |f| %>
       <% if @dart_setup.errors.any? %>
         <div class="flash-theme alert mono"><%= pluralize(@dart_setup.errors.count, "error") %> prevented this setup from being saved.</div>
       <% end %>
 
-      <div class="columns is-multiline is-variable is-3">
-        <div class="column is-6"><div class="field"><%= f.label :manufacturer, "Manufacturer", class: "label auth-label" %><div class="select is-fullwidth"><%= f.select :manufacturer, DartSetup::MANUFACTURER_LABELS.map { |value, label| [label, value] }, {}, class: "theme-form-input mono" %></div></div></div>
-        <div class="column is-6"><div class="field"><%= f.label :weight_g, "Weight (g)", class: "label auth-label" %><%= f.number_field :weight_g, min: 10, max: 60, step: 0.1, class: "input theme-form-input mono" %></div></div>
-        <div class="column is-6"><div class="field"><%= f.label :shaft_type, "Shaft type", class: "label auth-label" %><div class="select is-fullwidth"><%= f.select :shaft_type, DartSetup::SHAFT_TYPES.map { |type| [type.humanize, type] }, {}, class: "theme-form-input mono" %></div></div></div>
-        <div class="column is-6"><div class="field"><%= f.label :shaft_length_mm, "Shaft length (mm)", class: "label auth-label" %><%= f.number_field :shaft_length_mm, min: 20, max: 70, step: 1, class: "input theme-form-input mono" %></div></div>
-        <div class="column is-6"><div class="field"><%= f.label :point_length_mm, "Point length (mm)", class: "label auth-label" %><%= f.number_field :point_length_mm, min: 20, max: 60, step: 1, class: "input theme-form-input mono" %></div></div>
+      <div class="dart-setup-section">
+        <div class="theme-section-label">Manufacturer</div>
+        <div class="dart-option-grid dart-manufacturer-grid">
+          <% DartSetup::MANUFACTURER_LABELS.each do |value, label| %>
+            <label class="button theme-btn-outline mono dart-option <%= 'is-selected' if @dart_setup.manufacturer == value %>">
+              <%= f.radio_button :manufacturer,
+                    value,
+                    class: "sr-only",
+                    onchange: "this.closest('.dart-option-grid').querySelectorAll('.dart-option').forEach(el => el.classList.remove('is-selected')); this.closest('.dart-option').classList.add('is-selected')" %>
+              <span><%= label %></span>
+            </label>
+          <% end %>
+        </div>
+      </div>
+
+      <div class="columns is-variable is-4">
+        <div class="column">
+          <div class="dart-setup-section">
+            <div class="theme-section-label">Weight</div>
+            <div class="dart-preset-row mb-3">
+              <% [21, 22, 23, 24, 25, 26].each do |weight| %>
+                <button type="button"
+                        class="button theme-btn-outline mono dart-preset-btn <%= 'is-selected' if @dart_setup.weight_g.to_f == weight.to_f %>"
+                        onclick="document.getElementById('dart_setup_weight_g').value = <%= weight %>; this.closest('.dart-setup-section').querySelectorAll('.dart-preset-btn').forEach(b => b.classList.remove('is-selected')); this.classList.add('is-selected')">
+                  <%= weight %>g
+                </button>
+              <% end %>
+            </div>
+            <%= f.number_field :weight_g, min: 10, max: 60, step: 0.1, class: "input theme-form-input mono", id: "dart_setup_weight_g" %>
+          </div>
+        </div>
+
+        <div class="column">
+          <div class="dart-setup-section">
+            <div class="theme-section-label">Shaft type</div>
+            <div class="dart-option-grid dart-shaft-grid">
+              <% DartSetup::SHAFT_TYPES.each do |type| %>
+                <label class="button theme-btn-outline mono dart-option <%= 'is-selected' if @dart_setup.shaft_type == type %>">
+                  <%= f.radio_button :shaft_type,
+                        type,
+                        class: "sr-only",
+                        onchange: "this.closest('.dart-option-grid').querySelectorAll('.dart-option').forEach(el => el.classList.remove('is-selected')); this.closest('.dart-option').classList.add('is-selected')" %>
+                  <span><%= type.humanize %></span>
+                </label>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="columns is-variable is-4">
+        <div class="column">
+          <div class="dart-setup-section">
+            <div class="theme-section-label">Shaft length</div>
+            <div class="dart-preset-row mb-3">
+              <% [34, 36, 40, 42, 45, 48].each do |length| %>
+                <button type="button"
+                        class="button theme-btn-outline mono dart-preset-btn <%= 'is-selected' if @dart_setup.shaft_length_mm.to_i == length %>"
+                        onclick="document.getElementById('dart_setup_shaft_length_mm').value = <%= length %>; this.closest('.dart-setup-section').querySelectorAll('.dart-preset-btn').forEach(b => b.classList.remove('is-selected')); this.classList.add('is-selected')">
+                  <%= length %>mm
+                </button>
+              <% end %>
+            </div>
+            <%= f.number_field :shaft_length_mm, min: 20, max: 70, step: 1, class: "input theme-form-input mono", id: "dart_setup_shaft_length_mm" %>
+          </div>
+        </div>
+
+        <div class="column">
+          <div class="dart-setup-section">
+            <div class="theme-section-label">Point length</div>
+            <div class="dart-preset-row mb-3">
+              <% [26, 30, 32, 35, 38, 40].each do |length| %>
+                <button type="button"
+                        class="button theme-btn-outline mono dart-preset-btn <%= 'is-selected' if @dart_setup.point_length_mm.to_i == length %>"
+                        onclick="document.getElementById('dart_setup_point_length_mm').value = <%= length %>; this.closest('.dart-setup-section').querySelectorAll('.dart-preset-btn').forEach(b => b.classList.remove('is-selected')); this.classList.add('is-selected')">
+                  <%= length %>mm
+                </button>
+              <% end %>
+            </div>
+            <%= f.number_field :point_length_mm, min: 20, max: 60, step: 1, class: "input theme-form-input mono", id: "dart_setup_point_length_mm" %>
+          </div>
+        </div>
       </div>
 
       <div class="level pt-4" style="border-top:1px solid var(--theme-line)">
-        <div class="level-left"></div>
+        <div class="level-left"><p class="page-copy">Changing setup does not rewrite old match snapshots.</p></div>
         <div class="level-right"><%= f.submit "Save setup", class: "button theme-btn-primary is-medium" %></div>
       </div>
     <% end %>
@@ -32,16 +126,33 @@
 
   <section class="theme-card p-5">
     <div class="mb-4">
-      <div class="theme-section-label">Premium stats</div>
-      <h2 class="section-title">Stats by dart setup</h2>
+      <%# <div class="theme-section-label">Premium stats</div> %>
+      <%# <h2 class="section-title">Stats by dart setup</h2> %>
     </div>
 
     <% if @setup_stats.any? %>
       <div class="columns is-multiline is-variable is-3">
         <% @setup_stats.each do |stats| %>
           <div class="column is-6-desktop">
-            <article class="theme-match-card p-4">
-              <div class="mb-3"><div class="auth-label">Setup</div><h3 class="section-title"><%= stats[:setup] %></h3></div>
+            <article class="theme-match-card p-4 dart-setup-stats-card">
+              <div class="dart-setup-stats-head">
+                <div>
+                  <div class="auth-label">Saved setup</div>
+                  <h3><%= stats[:setup] %></h3>
+                </div>
+                <div class="dart-setup-stats-actions">
+                  <% if @dart_setup.fingerprint == stats[:fingerprint] %>
+                    <span class="theme-chip is-live">Current</span>
+                  <% else %>
+                    <%= button_to "Use setup",
+                          use_saved_dart_setup_path,
+                          method: :patch,
+                          params: { fingerprint: stats[:fingerprint] },
+                          class: "button theme-btn-outline is-small mono" %>
+                  <% end %>
+                </div>
+              </div>
+
               <div class="compact-stats-list mono text-sm">
                 <div class="compact-stat"><span>Matches</span><strong><%= stats[:matches] %></strong></div>
                 <div class="compact-stat"><span>Average</span><strong><%= stats[:average_per_turn] %></strong></div>

@@ -4,7 +4,9 @@ Rails.application.routes.draw do
   resource :session
   resource :registration, only: %i[new create]
   resource :profile, only: [ :update ]
-  resource :dart_setup, only: %i[edit update]
+  resource :dart_setup, only: %i[edit update] do
+    patch :use_saved
+  end
   resource :billing, only: :show, controller: "billing"
   resources :passwords, param: :token
   resource :bot_match, only: [ :new, :create ]

@@ -111,4 +111,27 @@ class DartSetupsControllerTest < ActionDispatch::IntegrationTest
     assert_equal 42, setup.shaft_length_mm
     assert_equal 35, setup.point_length_mm
   end
+
+  test "premium user can select a previously saved setup snapshot" do
+    user = create_user("select-saved-dart-setup@example.com")
+    user.update!(account_tier: "premium")
+    saved_setup = user.create_dart_setup!(manufacturer: "target", weight_g: 24.0, shaft_type: "carbon", shaft_length_mm: 42, point_length_mm: 35)
+    match = Match.create!
+    player = match.players.create!(name: "Setup Player", user: user)
+    match.players.create!(name: "Opponent")
+    player.assign_dart_setup_snapshot!(saved_setup)
+    player.save!
+    user.dart_setup.update!(manufacturer: "winmau", weight_g: 23.0, shaft_type: "nylon", shaft_length_mm: 40, point_length_mm: 32)
+    login_as(user)
+
+    patch use_saved_dart_setup_path, params: { fingerprint: saved_setup.fingerprint }
+
+    assert_redirected_to edit_dart_setup_path
+    setup = user.reload.dart_setup
+    assert_equal "target", setup.manufacturer
+    assert_equal BigDecimal("24.0"), setup.weight_g
+    assert_equal "carbon", setup.shaft_type
+    assert_equal 42, setup.shaft_length_mm
+    assert_equal 35, setup.point_length_mm
+  end
 end

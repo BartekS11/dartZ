@@ -16,6 +16,18 @@ class DartSetupsController < ApplicationController
     end
   end
 
+  def use_saved
+    saved_setup = DartSetupStats.new(user: Current.user).grouped.find { |group| group[:fingerprint] == params[:fingerprint] }
+
+    unless saved_setup
+      redirect_to edit_dart_setup_path, alert: "Saved setup not found."
+      return
+    end
+
+    current_dart_setup.update!(setup_attributes_from_snapshot(saved_setup[:snapshot]))
+    redirect_to edit_dart_setup_path, notice: "Saved setup selected for new matches."
+  end
+
   private
 
   def current_dart_setup
@@ -34,5 +46,15 @@ class DartSetupsController < ApplicationController
 
   def dart_setup_params
     params.require(:dart_setup).permit(:manufacturer, :weight_g, :shaft_type, :shaft_length_mm, :point_length_mm)
+  end
+
+  def setup_attributes_from_snapshot(snapshot)
+    {
+      manufacturer: snapshot.fetch("manufacturer"),
+      weight_g: snapshot.fetch("weight_g"),
+      shaft_type: snapshot.fetch("shaft_type"),
+      shaft_length_mm: snapshot.fetch("shaft_length_mm"),
+      point_length_mm: snapshot.fetch("point_length_mm")
+    }
   end
 end

@@ -1325,18 +1325,191 @@ button.app-nav-link [data-theme-mode-target="icon"] {
   display: inline-flex;
 }
 
-/* Bot setup selectable pills: make chosen option obvious and reliable. */
+.current-dart-setup-card {
+  align-items: center;
+  border: 1px solid color-mix(in srgb, var(--theme-primary) 38%, var(--theme-line));
+  border-radius: 1rem;
+  background: color-mix(in srgb, var(--theme-primary) 8%, transparent);
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.current-dart-setup-card h2 {
+  color: var(--theme-text);
+  font-size: clamp(1.15rem, 3vw, 1.65rem);
+  font-weight: 700;
+  line-height: 1.1;
+  margin: .2rem 0 0;
+}
+
+.current-dart-setup-metrics {
+  display: flex;
+  gap: .65rem;
+  flex: 0 0 auto;
+}
+
+.current-dart-setup-metrics span {
+  border-left: 1px solid var(--theme-line);
+  color: var(--theme-muted);
+  display: grid;
+  gap: .15rem;
+  min-width: 4rem;
+  padding-left: .65rem;
+  text-transform: uppercase;
+  font-size: .62rem;
+  letter-spacing: .1em;
+}
+
+.current-dart-setup-metrics strong {
+  color: var(--theme-primary-soft);
+  font-family: "Oswald", "Manrope", system-ui, sans-serif;
+  font-size: 1.6rem;
+  line-height: 1;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.dart-setup-section {
+  border-top: 1px solid var(--theme-line);
+  padding-top: .9rem;
+}
+
+.dart-option-grid,
+.dart-preset-row {
+  display: grid;
+  gap: .55rem;
+  margin-top: .65rem;
+}
+
+.dart-manufacturer-grid {
+  grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr));
+}
+
+.dart-shaft-grid {
+  grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr));
+}
+
+.dart-preset-row {
+  grid-template-columns: repeat(auto-fit, minmax(5.25rem, 1fr));
+}
+
+.dart-option,
+.dart-preset-btn {
+  height: auto;
+  line-height: 1.15;
+  min-height: 3.1rem;
+  overflow: hidden;
+  text-align: center;
+  white-space: normal !important;
+  width: 100%;
+}
+
+.dart-option span,
+.dart-preset-btn span {
+  display: block;
+  max-width: 100%;
+  hyphens: none;
+  overflow-wrap: normal;
+  word-break: keep-all;
+}
+
+.dart-option.is-selected,
+.dart-preset-btn.is-selected {
+  background: var(--theme-primary) !important;
+  border-color: var(--theme-primary) !important;
+  color: #fff !important;
+  outline: 2px solid color-mix(in srgb, var(--theme-primary) 55%, #fff) !important;
+  outline-offset: 2px !important;
+}
+
+.dart-setup-stats-card {
+  display: grid;
+  gap: 1rem;
+}
+
+.dart-setup-stats-head {
+  align-items: flex-start;
+  border-bottom: 1px solid var(--theme-line);
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: .9rem;
+}
+
+.dart-setup-stats-head h3 {
+  color: var(--theme-text);
+  font-size: clamp(1rem, 2.4vw, 1.25rem);
+  font-weight: 700;
+  line-height: 1.25;
+  margin: .2rem 0 0;
+}
+
+.dart-setup-stats-actions {
+  align-items: flex-end;
+  display: grid;
+  gap: .45rem;
+  justify-items: end;
+  flex: 0 0 auto;
+}
+
+.dart-setup-stats-actions form {
+  margin: 0;
+}
+
+.dart-setup-stats-head .theme-chip {
+  flex: 0 0 auto;
+}
+
+.bot-difficulty-panel {
+  gap: .8rem !important;
+}
+
+.bot-level-group {
+  border-top: 1px solid var(--theme-line);
+  padding-top: .85rem;
+}
+
+.bot-level-group-head {
+  align-items: baseline;
+  display: flex;
+  justify-content: space-between;
+  gap: .75rem;
+  margin-bottom: .6rem;
+}
+
+.bot-level-description {
+  color: var(--theme-muted);
+  font-size: .68rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.bot-level-buttons {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(2.75rem, 1fr));
+  gap: .5rem !important;
+}
+
+.bot-level-buttons .bot-choice-radio {
+  width: 100%;
+}
+
+/* Bot setup selectable pills use the same selected state as the default match setup. */
 .dartz-body .button.bot-choice-radio {
   position: relative;
-  transition: transform .12s ease, box-shadow .12s ease, background .12s ease, border-color .12s ease, color .12s ease;
+  transition: transform .12s ease, background .12s ease, border-color .12s ease, color .12s ease;
 }
 
 .dartz-body .button.bot-choice-radio.is-selected,
 .dartz-body .button.bot-choice-radio:has(input:checked) {
-  background: linear-gradient(135deg, color-mix(in srgb, var(--theme-primary) 34%, var(--theme-surface-alt)), color-mix(in srgb, var(--theme-primary) 14%, var(--theme-surface))) !important;
+  background: var(--theme-primary) !important;
   border-color: var(--theme-primary) !important;
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--theme-primary) 28%, transparent), 0 10px 24px color-mix(in srgb, var(--theme-primary) 16%, transparent) !important;
-  color: var(--theme-text) !important;
+  box-shadow: none !important;
+  color: #fff !important;
+  outline: 2px solid color-mix(in srgb, var(--theme-primary) 55%, #fff) !important;
+  outline-offset: 2px !important;
   transform: translateY(-1px);
 }
 
@@ -2393,6 +2566,11 @@ button.app-nav-link:hover {
   gap: .6rem !important;
 }
 
+.simple-setup #best_of_legs,
+.simple-setup #best_of_sets {
+  margin-top: .65rem;
+}
+
 .simple-setup .button.is-selected,
 .simple-setup .score-preset.is-selected,
 .simple-setup .legs-preset.is-selected,
@@ -2503,6 +2681,42 @@ button.app-nav-link:hover {
 
   .setup-heading .page-copy {
     margin-top: .35rem !important;
+  }
+
+  .current-dart-setup-card {
+    align-items: flex-start;
+    display: grid;
+  }
+
+  .current-dart-setup-metrics {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    width: 100%;
+  }
+
+  .current-dart-setup-metrics span {
+    min-width: 0;
+  }
+
+  .dart-setup-stats-head {
+    display: grid;
+  }
+
+  .dart-setup-stats-actions {
+    align-items: start;
+    display: flex;
+    flex-wrap: wrap;
+    justify-items: start;
+    justify-content: flex-start;
+  }
+
+  .dart-manufacturer-grid,
+  .dart-shaft-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dart-preset-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .simple-setup .columns.is-vcentered {
