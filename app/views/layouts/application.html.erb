@@ -52,6 +52,11 @@
           <% if premium_access? %>
             <%= link_to "Dart setup", edit_dart_setup_path, class: "app-nav-link #{'is-active' if request.path.start_with?(edit_dart_setup_path)}" %>
           <% end %>
+
+          <% if content_for?(:nav_inline_action) %>
+            <%= yield :nav_inline_action %>
+          <% end %>
+
           <% if Current.user %>
             <button id="profileMenuButton" class="app-nav-link" type="button" data-profile-menu-target="button" data-action="profile-menu#toggle" aria-controls="profileMenu" aria-expanded="false">
               Account ▾

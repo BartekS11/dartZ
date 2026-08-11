@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["player1", "player2", "greeting", "matchList", "dropdown1", "dropdown2"]
+  static targets = ["player1", "player2", "greeting", "matchList", "dropdown1", "dropdown2", "savedButton1", "savedButton2"]
   static values = { signedIn: Boolean, currentUserName: String }
 
   connect() {
@@ -17,6 +17,7 @@ export default class extends Controller {
     if (p2) this.player2Target.value = p2
 
     this.renderDropdowns()
+    this.updateSavedButtons()
     this.updateGreeting()
     this.renderMatchList()
   }
@@ -47,6 +48,19 @@ export default class extends Controller {
   renderDropdowns() {
     if (this.hasDropdown1Target) this.renderDropdown(this.dropdown1Target, 1)
     if (this.hasDropdown2Target) this.renderDropdown(this.dropdown2Target, 2)
+    this.updateSavedButtons()
+  }
+
+  updateSavedButtons() {
+    const count = this.getSavedPlayers().length
+    const label = count > 0 ? `Saved names (${count}) ▾` : "Saved names"
+
+    ;[this.savedButton1Target, this.savedButton2Target].forEach((button) => {
+      if (!button) return
+      button.textContent = label
+      button.classList.toggle("has-saved-names", count > 0)
+      button.setAttribute("aria-label", count > 0 ? `${count} saved names. Tap to choose.` : "No saved names")
+    })
   }
 
   renderDropdown(el, slot) {

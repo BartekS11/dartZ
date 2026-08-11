@@ -4,9 +4,8 @@
      data-lobby-current-user-name-value="<%= Current.user&.display_name.to_s %>">
   <section class="theme-hero simple-setup p-5">
     <div class="setup-heading mb-4">
-      <div class="theme-section-label">Start here</div>
+      <div class="theme-section-label"></div>
       <h1 class="page-title">New game</h1>
-      <%# <p class="page-copy mt-2">Add players, confirm rules, then start scoring.</p> %>
     </div>
 
     <%= form_with url: matches_path, method: :post, data: { turbo: false, action: "submit->lobby#savePlayers" }, class: "stack-md" do |f| %>
@@ -14,7 +13,6 @@
         <div class="simple-step-number">1</div>
         <div>
           <div class="theme-section-label">Players</div>
-          <%# <p class="page-copy">Who is playing?</p> %>
         </div>
       </div>
 
@@ -23,7 +21,7 @@
           <div class="player-card-shell">
             <div class="is-flex is-justify-content-space-between is-align-items-center mb-2">
               <label class="auth-label">Player 1</label>
-              <button type="button" data-action="click->lobby#toggleDropdown1" class="saved-btn mono">Saved names</button>
+              <button type="button" data-lobby-target="savedButton1" data-action="click->lobby#toggleDropdown1" class="saved-btn mono">Saved names</button>
             </div>
             <%= f.text_field :player1_name,
                   placeholder: "Enter name",
@@ -43,7 +41,7 @@
           <div class="player-card-shell">
             <div class="is-flex is-justify-content-space-between is-align-items-center mb-2">
               <label class="auth-label">Player 2</label>
-              <button type="button" data-action="click->lobby#toggleDropdown2" class="saved-btn mono">Saved names</button>
+              <button type="button" data-lobby-target="savedButton2" data-action="click->lobby#toggleDropdown2" class="saved-btn mono">Saved names</button>
             </div>
             <%= f.text_field :player2_name,
                   placeholder: "Enter name",
@@ -60,7 +58,6 @@
         <div class="simple-step-number">2</div>
         <div>
           <div class="theme-section-label">Rules</div>
-          <%# <p class="page-copy">Default is regular 501 double-out.</p> %>
         </div>
       </div>
 
@@ -123,7 +120,6 @@
         <div class="simple-step-number">3</div>
         <div>
           <div class="theme-section-label">Play</div>
-          <%# <p class="page-copy">Start scoring. The app handles turns, busts, and finishes.</p> %>
         </div>
       </div>
 

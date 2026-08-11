@@ -1,7 +1,3 @@
-<% content_for :mobile_header_action do %>
-  <%= link_to "← Back", matches_path, class: "button is-small theme-btn-outline mono" %>
-<% end %>
-
 <%= turbo_stream_from "match_#{@match.id}" %>
 
 <script>

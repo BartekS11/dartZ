@@ -373,8 +373,10 @@ a.counter-tournament-card:hover { border-color: var(--theme-primary); color: var
 .counter-summary-grid { display: grid; gap: 0.75rem; }
 .counter-summary-tile { padding: 0.75rem 0; border-top: 1px solid var(--theme-line); }
 .player-card-shell { border-top: 1px solid var(--theme-line); padding: 1rem 0 0; position: relative; }
-.saved-btn { border: 0; background: transparent; color: var(--theme-subtle); cursor: pointer; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; }
+.saved-btn { border: 0; border-radius: 999px; background: transparent; color: var(--theme-subtle); cursor: pointer; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; padding: .25rem .45rem; text-transform: uppercase; }
 .saved-btn:hover { color: var(--theme-text); }
+.saved-btn.has-saved-names { background: color-mix(in srgb, var(--theme-primary) 14%, transparent) !important; color: var(--theme-primary-soft) !important; }
+.saved-btn.has-saved-names:hover { background: color-mix(in srgb, var(--theme-primary) 22%, transparent) !important; color: #fff !important; }
 .saved-dropdown {
   display: none;
   position: absolute;
@@ -467,7 +469,9 @@ a.counter-tournament-card:hover { border-color: var(--theme-primary); color: var
 .match-focus-bar { display: flex; align-items: center; justify-content: space-between; gap: 0.8rem; border-bottom: 1px solid var(--theme-line); padding-bottom: 0.65rem; }
 .match-focus-title { min-width: 0; display: flex; align-items: center; justify-content: flex-end; gap: 0.65rem; color: var(--theme-muted); }
 .match-focus-title strong { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.match-focus-bar-mobile { display: none; }
 .match-score-strip { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 2rem; row-gap: 0.8rem; }
+.match-score-header { grid-column: 1 / -1; }
 .match-score-card { min-width: 0; border-top: 1px solid var(--theme-line); padding-top: 0.75rem; padding-inline: 0.25rem; }
 .match-score-card.is-active { border-color: var(--theme-primary); }
 .match-score-name-row { display: flex; align-items: center; gap: 0.5rem; min-height: 1.35rem; min-width: 0; }
@@ -552,6 +556,9 @@ a.counter-tournament-card:hover { border-color: var(--theme-primary); color: var
   .score-display { font-size: clamp(4.2rem, 25vw, 5.7rem); }
   .theme-chip { white-space: normal; }
   .profile-menu-panel { right: -0.25rem; }
+  .match-nav-back { display: none; }
+  .match-focus-bar-mobile { display: flex; }
+  .match-focus-bar-desktop { display: none; }
   .match-focus-bar { align-items: flex-start; }
   .match-focus-title { justify-content: flex-start; flex-wrap: wrap; }
   .match-score-strip,
@@ -1817,12 +1824,30 @@ button.app-nav-link:hover {
 }
 
 .match-focus-bar {
-  position: sticky;
-  top: 6.6rem;
-  z-index: 20;
   background: var(--theme-bg);
   border-bottom: 2px solid var(--theme-line);
   padding: .25rem 0 .45rem;
+}
+
+.match-focus-bar-mobile {
+  position: sticky;
+  top: 6.6rem;
+  z-index: 20;
+}
+
+.match-score-header {
+  align-items: center;
+  border-bottom: 1px solid var(--theme-line);
+  display: flex;
+  gap: .6rem;
+  justify-content: flex-end;
+  margin-bottom: 0;
+  padding: .22rem 0;
+}
+
+.match-score-header .button {
+  min-height: 2rem;
+  padding: .35rem .6rem !important;
 }
 
 .match-score-strip {
@@ -2016,6 +2041,10 @@ button.app-nav-link:hover {
   clip: rect(0, 0, 0, 0) !important;
   white-space: nowrap !important;
   border: 0 !important;
+}
+
+.match-nav-back {
+  margin-left: .5rem;
 }
 
 .app-nav-theme-toggle {
@@ -2474,6 +2503,32 @@ button.app-nav-link:hover {
 
   .setup-heading .page-copy {
     margin-top: .35rem !important;
+  }
+
+  .simple-setup .columns.is-vcentered {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .simple-setup .columns.is-vcentered > .column:nth-child(2) {
+    order: 3;
+    width: 100%;
+    text-align: right !important;
+    margin-top: -.5rem;
+  }
+
+  .simple-setup .columns.is-vcentered .swap-badge {
+    width: auto;
+    min-width: 7rem;
+    height: 2.6rem;
+    padding-inline: .9rem !important;
+  }
+
+  .simple-setup .columns.is-vcentered .swap-badge::after {
+    content: " Swap";
+    font-size: .72rem;
+    letter-spacing: .08em;
+    text-transform: uppercase;
   }
 
   .simple-setup .simple-step {
