@@ -490,7 +490,10 @@ a.counter-tournament-card:hover { border-color: var(--theme-primary); color: var
 .match-input-head,
 .match-pad-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 0.8rem; margin-bottom: 0.75rem; }
 .match-input-head h2 { font-size: clamp(1.35rem, 3.3vw, 2rem); font-weight: 600; line-height: 1; margin: 0.15rem 0 0; }
+.match-score-entry-row { display: flex; gap: 0.6rem; align-items: stretch; }
+.match-score-entry-row .match-score-input { flex: 1 1 auto; min-width: 0; }
 .match-score-input { min-height: 2.45rem; font-size: clamp(1rem, 3vw, 1.3rem) !important; font-weight: 600; }
+.match-score-submit { flex: 0 0 auto; min-height: 2.45rem; padding-left: 1rem; padding-right: 1rem; }
 .match-stats-toggle { margin-top: 1rem; border-top: 1px solid var(--theme-line); padding-top: 0.8rem; }
 .match-stats-toggle summary { color: var(--theme-subtle); cursor: pointer; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; }
 .match-stats-toggle[open] > summary { border-bottom: 1px solid var(--theme-line); margin-bottom: .8rem; padding-bottom: .8rem; }

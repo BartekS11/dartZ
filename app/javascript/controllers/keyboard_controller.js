@@ -186,6 +186,11 @@ export default class extends Controller {
     if (e.key !== "Enter") return
 
     e.preventDefault()
+    this.submitInput()
+  }
+
+  submitInput() {
+    if (this.inputTarget.disabled) return
 
     const raw = this.inputTarget.value.trim()
     if (!raw) return

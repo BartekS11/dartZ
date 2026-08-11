@@ -30,14 +30,24 @@
     </button>
   </div>
 
-  <input
-    type="text"
-    inputmode="numeric"
-    pattern="[0-9]*"
-    data-keyboard-target="input"
-    data-action="input->keyboard#preview keydown->keyboard#handle"
-    class="input throw-input match-score-input mono has-text-centered"
-    autocomplete="off">
+  <div class="match-score-entry-row">
+    <input
+      type="text"
+      inputmode="numeric"
+      enterkeyhint="done"
+      pattern="[0-9]*"
+      data-keyboard-target="input"
+      data-action="input->keyboard#preview keydown->keyboard#handle"
+      class="input throw-input match-score-input mono has-text-centered"
+      autocomplete="off">
+
+    <button
+      type="button"
+      class="button theme-btn-primary match-score-submit mono"
+      data-action="click->keyboard#submitInput">
+      <%= t("common.submit", default: "Submit") %>
+    </button>
+  </div>
 
   <button
     type="button"
