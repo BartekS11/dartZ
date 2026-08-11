@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   root "matches#index"
 
   resource :session
+  resource :registration, only: %i[new create]
   resource :profile, only: [ :update ]
   resource :dart_setup, only: %i[edit update]
   resource :billing, only: :show, controller: "billing"

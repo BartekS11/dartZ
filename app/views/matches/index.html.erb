@@ -6,7 +6,7 @@
     <div class="setup-heading mb-4">
       <div class="theme-section-label">Start here</div>
       <h1 class="page-title">New game</h1>
-      <p class="page-copy mt-2">Add players, confirm rules, then start scoring.</p>
+      <%# <p class="page-copy mt-2">Add players, confirm rules, then start scoring.</p> %>
     </div>
 
     <%= form_with url: matches_path, method: :post, data: { turbo: false, action: "submit->lobby#savePlayers" }, class: "stack-md" do |f| %>
@@ -14,7 +14,7 @@
         <div class="simple-step-number">1</div>
         <div>
           <div class="theme-section-label">Players</div>
-          <p class="page-copy">Who is playing?</p>
+          <%# <p class="page-copy">Who is playing?</p> %>
         </div>
       </div>
 
@@ -60,7 +60,7 @@
         <div class="simple-step-number">2</div>
         <div>
           <div class="theme-section-label">Rules</div>
-          <p class="page-copy">Default is regular 501 double-out.</p>
+          <%# <p class="page-copy">Default is regular 501 double-out.</p> %>
         </div>
       </div>
 
@@ -123,7 +123,7 @@
         <div class="simple-step-number">3</div>
         <div>
           <div class="theme-section-label">Play</div>
-          <p class="page-copy">Start scoring. The app handles turns, busts, and finishes.</p>
+          <%# <p class="page-copy">Start scoring. The app handles turns, busts, and finishes.</p> %>
         </div>
       </div>
 
@@ -135,11 +135,13 @@
           </div>
         </div>
         <div class="buttons setup-primary-actions">
-          <%= button_tag "Create invite match",
-                type: "submit",
-                name: "invite_match",
-                value: "1",
-                class: "button theme-btn-outline is-medium" %>
+          <% if Current.user.present? %>
+            <%= button_tag "Create invite match",
+                  type: "submit",
+                  name: "invite_match",
+                  value: "1",
+                  class: "button theme-btn-outline is-medium" %>
+          <% end %>
           <%= f.submit "Start game", class: "button theme-btn-primary is-medium" %>
         </div>
       </div>

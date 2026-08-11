@@ -9,6 +9,7 @@ class User < ApplicationRecord
   normalizes :email_address, with: ->(e) { e.strip.downcase }
   normalizes :nickname, with: ->(n) { n.to_s.strip.presence }
 
+  validates :email_address, presence: true, uniqueness: { case_sensitive: false }
   validates :nickname, length: { maximum: 20 }, allow_blank: true
   validates :account_tier, presence: true, inclusion: { in: ACCOUNT_TIERS }
 

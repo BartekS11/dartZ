@@ -1,0 +1,77 @@
+<div class="page-shell page-shell-compact">
+  <div class="columns is-variable is-6 is-vcentered" style="min-height:72vh">
+    <section class="column">
+      <div class="theme-hero p-6">
+        <div class="theme-section-label">Create account</div>
+        <h1 class="page-title">Save your matches and invite players.</h1>
+        <p class="page-copy mt-3">Accounts start on the free tier. Upgrade later only if you need premium features.</p>
+      </div>
+    </section>
+
+    <section class="column is-5-desktop">
+      <div class="auth-card p-5">
+        <% if alert = flash[:alert] %><div class="flash-theme alert mono mb-4">⚠ <%= alert %></div><% end %>
+        <% if notice = flash[:notice] %><div class="flash-theme notice mono mb-4">⚡ <%= notice %></div><% end %>
+
+        <div class="mb-5">
+          <div class="theme-section-label">Account</div>
+          <h2 class="section-title">Register</h2>
+        </div>
+
+        <%= form_with model: @user, url: registration_path, class: "stack-md" do |form| %>
+          <% if @user.errors.any? %>
+            <div class="flash-theme alert mono mb-4">
+              <%= @user.errors.full_messages.to_sentence %>
+            </div>
+          <% end %>
+
+          <div class="field">
+            <label class="label auth-label">Email address</label>
+            <%= form.email_field :email_address,
+                  required: true,
+                  autofocus: true,
+                  autocomplete: "username",
+                  placeholder: "Enter your email address",
+                  class: "input auth-input" %>
+          </div>
+
+          <div class="field">
+            <label class="label auth-label">Nickname</label>
+            <%= form.text_field :nickname,
+                  maxlength: 20,
+                  autocomplete: "nickname",
+                  placeholder: "Optional display name",
+                  class: "input auth-input" %>
+          </div>
+
+          <div class="field">
+            <label class="label auth-label">Password</label>
+            <%= form.password_field :password,
+                  required: true,
+                  autocomplete: "new-password",
+                  placeholder: "Create a password",
+                  maxlength: 72,
+                  class: "input auth-input" %>
+          </div>
+
+          <div class="field">
+            <label class="label auth-label">Confirm password</label>
+            <%= form.password_field :password_confirmation,
+                  required: true,
+                  autocomplete: "new-password",
+                  placeholder: "Repeat your password",
+                  maxlength: 72,
+                  class: "input auth-input" %>
+          </div>
+
+          <%= form.submit "Create account", class: "button theme-btn-primary is-fullwidth is-medium" %>
+
+          <div class="is-flex is-justify-content-space-between pt-3" style="border-top:1px solid var(--theme-line)">
+            <%= link_to "Already have account?", new_session_path, class: "footer-link" %>
+            <%= link_to "Play as guest", matches_path, class: "footer-link" %>
+          </div>
+        <% end %>
+      </div>
+    </section>
+  </div>
+</div>

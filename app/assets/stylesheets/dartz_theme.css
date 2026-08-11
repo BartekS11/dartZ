@@ -438,7 +438,7 @@ a.counter-tournament-card:hover { border-color: var(--theme-primary); color: var
 .score-mini-value { font-size: 1.35rem; line-height: 1; }
 .counter-score-grid { display: grid; gap: 0.7rem; grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .counter-score-metric { border-top: 1px solid var(--theme-line); padding: 0.8rem 0 0; }
-.throwing-indicator { display: inline-flex; border-radius: 0.35rem; background: var(--theme-primary); color: #fff; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em; padding: 0.35rem 0.6rem; text-transform: uppercase; }
+.throwing-indicator { display: inline-flex; flex-shrink: 0; border-radius: 0.35rem; background: var(--theme-primary); color: #fff; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em; line-height: 1; padding: 0.35rem 0.6rem; text-transform: uppercase; white-space: nowrap; }
 .checkout-pill,
 .throw-pill { border-radius: 0.35rem; border: 1px solid var(--theme-line); padding: 0.35rem 0.55rem; font-size: 0.72rem; color: var(--theme-muted); }
 .checkout-pill.double,
@@ -470,7 +470,7 @@ a.counter-tournament-card:hover { border-color: var(--theme-primary); color: var
 .match-score-strip { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 2rem; row-gap: 0.8rem; }
 .match-score-card { min-width: 0; border-top: 1px solid var(--theme-line); padding-top: 0.75rem; padding-inline: 0.25rem; }
 .match-score-card.is-active { border-color: var(--theme-primary); }
-.match-score-name-row { display: flex; align-items: center; gap: 0.5rem; min-width: 0; }
+.match-score-name-row { display: flex; align-items: center; gap: 0.5rem; min-height: 1.35rem; min-width: 0; }
 .match-score-name { color: var(--theme-muted); font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 0.74rem; font-weight: 600; letter-spacing: 0.12em; min-width: 0; overflow: hidden; text-overflow: ellipsis; text-transform: uppercase; white-space: nowrap; }
 .match-score-main-row { align-items: center; display: flex; gap: 0.75rem; justify-content: space-between; min-width: 0; }
 .match-score-number { font-size: clamp(4.2rem, 14.5vw, 8rem); font-weight: 600; letter-spacing: -0.03em; line-height: 0.9; margin-top: 0.25rem; }
@@ -482,12 +482,15 @@ a.counter-tournament-card:hover { border-color: var(--theme-primary); color: var
 .match-play-area { display: grid; grid-template-columns: minmax(16rem, 0.62fr) minmax(0, 1.38fr); gap: 1rem; align-items: start; }
 .match-input-panel,
 .match-dart-pad { border-top: 1px solid var(--theme-line); padding-top: 0.8rem; }
+.match-dart-pad-summary { display: none; }
 .match-input-head,
 .match-pad-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 0.8rem; margin-bottom: 0.75rem; }
 .match-input-head h2 { font-size: clamp(1.35rem, 3.3vw, 2rem); font-weight: 600; line-height: 1; margin: 0.15rem 0 0; }
 .match-score-input { min-height: 2.45rem; font-size: clamp(1rem, 3vw, 1.3rem) !important; font-weight: 600; }
 .match-stats-toggle { margin-top: 1rem; border-top: 1px solid var(--theme-line); padding-top: 0.8rem; }
 .match-stats-toggle summary { color: var(--theme-subtle); cursor: pointer; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; }
+.match-stats-toggle[open] > summary { border-bottom: 1px solid var(--theme-line); margin-bottom: .8rem; padding-bottom: .8rem; }
+.match-stats-panel { margin-top: 0; padding-top: 0; }
 
 .stats-details { border-top: 1px solid var(--theme-line); overflow: hidden; }
 .stats-summary { cursor: pointer; list-style: none; padding: 1rem 0; }
@@ -556,8 +559,32 @@ a.counter-tournament-card:hover { border-color: var(--theme-primary); color: var
   .match-score-strip { row-gap: 1rem; }
   .match-score-card { padding-inline: 0; }
   .match-score-number { font-size: clamp(3.7rem, 24vw, 5.3rem); }
-  .match-pad-head,
-  .match-input-head { display: grid; }
+  .match-pad-head { display: grid; }
+  .match-input-head {
+    align-items: flex-start;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .match-input-head > div {
+    min-width: 0;
+  }
+
+  .match-input-head .btn-undo {
+    flex: 0 0 auto;
+  }
+
+  .match-dart-pad-summary {
+    color: var(--theme-subtle);
+    cursor: pointer;
+    display: list-item;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    padding-bottom: 0.8rem;
+    text-transform: uppercase;
+    user-select: none;
+  }
 }
 
 /* Flowbite rebuild layer: replaces the flat Bulma-era chrome with a glassy, card-based console. */
@@ -2404,5 +2431,54 @@ button.app-nav-link:hover {
 
   .setup-utility-actions {
     margin-top: .35rem;
+  }
+}
+
+@media (max-width: 760px) {
+  .match-score-card {
+    padding-inline: 0 !important;
+  }
+
+  .match-score-main-row {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: .7rem;
+  }
+
+  .match-score-number {
+    flex: 1 1 auto;
+    min-width: 0;
+    font-size: clamp(3.35rem, 21vw, 5.15rem);
+  }
+
+  .match-last-throw-pill {
+    flex: 0 0 auto;
+    border: 0 !important;
+    background: transparent !important;
+    border-radius: 0;
+    margin: 0 0 .42rem auto;
+    padding: 0;
+    box-sizing: border-box;
+    font-size: .48rem;
+    letter-spacing: .035em;
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  .match-last-throw-pill strong {
+    display: block;
+    font-size: 1.18rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .match-last-throw-pill span {
+    display: none;
+  }
+
+  .match-last-throw-pill {
+    min-width: 2.7rem;
+    padding: .32rem .4rem;
   }
 }

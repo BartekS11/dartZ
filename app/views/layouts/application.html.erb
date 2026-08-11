@@ -52,14 +52,21 @@
           <% if premium_access? %>
             <%= link_to "Dart setup", edit_dart_setup_path, class: "app-nav-link #{'is-active' if request.path.start_with?(edit_dart_setup_path)}" %>
           <% end %>
-          <% unless Current.user %>
-            <%= link_to "Login", new_session_path, class: "app-nav-link #{'is-active' if current_page?(new_session_path)}" %>
-          <% end %>
-
           <% if Current.user %>
             <button id="profileMenuButton" class="app-nav-link" type="button" data-profile-menu-target="button" data-action="profile-menu#toggle" aria-controls="profileMenu" aria-expanded="false">
               Account ▾
             </button>
+          <% end %>
+
+          <% if Current.user %>
+            <%= button_to "Logout", session_path,
+                  method: :delete,
+                  class: "app-nav-auth-button is-danger mono",
+                  form_class: "app-nav-auth-form app-nav-auth-inline",
+                  form: { onsubmit: "localStorage.removeItem('dartz_player1');localStorage.removeItem('dartz_player2');localStorage.removeItem('dartz_players');localStorage.removeItem('dartz_matches');" } %>
+          <% else %>
+            <%= link_to "Register", new_registration_path, class: "app-nav-auth-button app-nav-auth-inline mono #{'is-active' if current_page?(new_registration_path)}" %>
+            <%= link_to "Login", new_session_path, class: "app-nav-auth-button is-danger mono #{'is-active' if current_page?(new_session_path)}" %>
           <% end %>
 
           <button type="button"
@@ -67,8 +74,8 @@
                   data-action="theme-mode#toggle"
                   data-theme-mode-target="button"
                   aria-label="Switch theme">
-            <span data-theme-mode-target="icon">◐</span>
-            <span data-theme-mode-target="label">Light theme</span>
+            <span class="icon" data-theme-mode-target="icon" aria-hidden="true">☀</span>
+            <span data-theme-mode-target="label" class="visually-hidden">Light theme</span>
           </button>
         </div>
 

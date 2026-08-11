@@ -30,8 +30,9 @@
 
           <%= form.submit "Sign in", class: "button theme-btn-primary is-fullwidth is-medium" %>
 
-          <div class="is-flex is-justify-content-space-between pt-3" style="border-top:1px solid var(--theme-line)">
+          <div class="is-flex is-justify-content-space-between is-flex-wrap-wrap pt-3" style="border-top:1px solid var(--theme-line); gap:.75rem">
             <%= link_to "Forgot password?", new_password_path, class: "footer-link" %>
+            <%= link_to "Register", new_registration_path, class: "footer-link" %>
             <%= link_to "Play as guest", matches_path, class: "footer-link" %>
           </div>
         <% end %>

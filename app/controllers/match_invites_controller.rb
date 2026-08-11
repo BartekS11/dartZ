@@ -31,6 +31,11 @@ class MatchInvitesController < ApplicationController
   end
 
   def create_invite
+    unless Current.user
+      redirect_to matches_path, alert: "Sign in to create invite matches."
+      return
+    end
+
     p1_name = params[:player1_name].to_s.strip.presence || Current.user&.display_name || "Player 1"
 
     @match = Match.new(MatchSettings.from_params(params).to_h)
