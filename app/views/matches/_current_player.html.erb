@@ -1,49 +1,63 @@
 <% presenter ||= MatchStatePresenter.new(match) %>
 <% current_player = presenter.current_player %>
 <% bot_turn = current_player&.bot? %>
-<% my_turn = current_match_player&.id == current_player&.id %>
-<% current_match_player ||= local_assigns[:current_match_player] %>
 
 <div
-  class="match-input-panel <%= 'is-disabled' unless my_turn %>"
+  class="match-input-panel"
   data-controller="keyboard"
   data-keyboard-url-value="<%= turn_throws_path(turn) %>"
   data-keyboard-score-value="<%= presenter.score_for(current_player) %>"
-  data-keyboard-player-id-value="<%= current_player.id %>">
+  data-keyboard-player-id-value="<%= current_player.id %>"
+  data-keyboard-current-player-id-value="<%= current_player.id %>"
+  data-keyboard-turn-activity-at-value="<%= ([turn.updated_at, turn.throws.maximum(:created_at)].compact.max || turn.created_at).iso8601 %>"
+  data-keyboard-afk-timeout-seconds-value="120">
 
   <div class="match-input-head">
     <div>
       <div class="theme-section-label">Current turn</div>
       <h2><%= current_player.display_name %></h2>
       <% if bot_turn %>
-        <div class="mono mt-2 text-xs uppercase tracking-[0.14em]" style="color:var(--theme-muted)">Bot is throwing — input locked</div>
+        <div class="mono mt-2 text-xs uppercase tracking-[0.14em]" style="color:var(--theme-muted)">
+          Bot is throwing — input locked
+        </div>
       <% end %>
     </div>
-    <button type="button"
-        data-action="click->keyboard#undoLastThrow"
-        class="button is-small btn-undo mono"
-        <%= 'disabled' unless my_turn %>>
-  ↩ Undo
-</button>
+
+    <button
+      type="button"
+      class="button is-small btn-undo mono"
+      data-action="click->keyboard#undoLastThrow">
+      ↩ Undo
+    </button>
   </div>
 
-<input type="text"
-       data-keyboard-target="input"
-       data-action="input->keyboard#preview keydown->keyboard#handle"
-       placeholder="<%= my_turn ? 'Enter score' : 'Waiting for opponent…' %>"
-       class="input throw-input match-score-input mono has-text-centered"
-       autocomplete="off"
-       <%= 'disabled' unless my_turn %>>
+  <input
+    type="text"
+    data-keyboard-target="input"
+    data-action="input->keyboard#preview keydown->keyboard#handle"
+    class="input throw-input match-score-input mono has-text-centered"
+    autocomplete="off">
+
+  <button
+    type="button"
+    class="button is-small theme-btn-outline mono mt-3 hidden turn-skip-button"
+    data-keyboard-target="skipButton"
+    data-action="click->keyboard#skipAfkTurn">
+    Skip stale turn (0)
+  </button>
 </div>
 
 <%= form_with url: turn_throws_path(turn),
               method: :post,
               data: { turbo_stream: true, throws_count: turn.throws.size },
               html: { id: "keyboard-form" } do |f| %>
-  <%= f.hidden_field :segment,    name: "throw[segment]",    id: "keyboard-segment" %>
-  <%= f.hidden_field :multiplier, name: "throw[multiplier]", id: "keyboard-multiplier" %>
-  <%= f.hidden_field :total,      name: "throw[total]",      id: "keyboard-total" %>
-  <%= hidden_field_tag :actor_player_id, current_match_player&.id %>
+
+  <%= f.hidden_field :segment, id: "keyboard-segment" %>
+  <%= f.hidden_field :multiplier, id: "keyboard-multiplier" %>
+  <%= f.hidden_field :total, id: "keyboard-total" %>
+ <%= hidden_field_tag :actor_player_id,
+        current_match_player&.id,
+        id: "actor-player-id" %>
 <% end %>
 
 <details class="match-stats-toggle">

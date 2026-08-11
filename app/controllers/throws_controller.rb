@@ -1,4 +1,6 @@
 class ThrowsController < ApplicationController
+  AFK_TURN_TIMEOUT = 2.minutes
+
   allow_unauthenticated_access
   before_action :resume_session_optional
 
@@ -11,7 +13,7 @@ class ThrowsController < ApplicationController
 
     @match = ThrowSubmission.call(
       turn: @turn,
-      total: params[:throw][:total],
+      total: submitted_total,
       throw_attributes: throw_params,
       current_match_player: current_match_player(@match)
     )
@@ -58,6 +60,11 @@ class ThrowsController < ApplicationController
 
     return true if actor_player&.id == player.id
 
+    if afk_skip_allowed?(@turn, actor_player)
+      params[:total] = "0"
+      return true
+    end
+
     respond_to do |format|
       format.turbo_stream { head :conflict }
       format.html { redirect_to match_path(match), alert: "Waiting for the other player." }
@@ -67,10 +74,26 @@ class ThrowsController < ApplicationController
     false
   end
 
+  def afk_skip_allowed?(turn, actor_player)
+    return false unless actor_player
+    return false unless skip_submission?
+
+    last_activity_at = [ turn.updated_at, turn.throws.maximum(:created_at) ].compact.max || turn.created_at
+    last_activity_at <= AFK_TURN_TIMEOUT.ago
+  end
+
+  def skip_submission?
+    submitted_total.to_s == "0" &&
+      params.dig(:throw, :segment).blank? &&
+      params.dig(:throw, :multiplier).blank? &&
+      params[:segment].blank? &&
+      params[:multiplier].blank?
+  end
+
   def render_streams
     presenter = MatchStatePresenter.new(@match)
     current_turn = presenter.finished? ? nil : presenter.current_turn
-    match_player = current_match_player(@match)
+    # match_player = current_match_player(@match)
 
     streams = presenter.players.map do |player|
       turbo_stream.replace(
@@ -88,12 +111,12 @@ class ThrowsController < ApplicationController
       streams << turbo_stream.update(
         "current-player",
         partial: "matches/current_player",
-locals: {
-    match: @match,
-    presenter: presenter,
-    turn: current_turn,
-    current_match_player: match_player
-  }
+        locals: {
+          match: @match,
+          presenter: presenter,
+          turn: current_turn,
+          current_match_player: current_match_player
+        }
       )
 
       streams << turbo_stream.replace(
@@ -171,8 +194,13 @@ locals: {
     tournament.broadcast_live_update!
   end
 
+  def submitted_total
+    params.dig(:throw, :total).presence || params[:total].presence
+  end
+
   def throw_params
-    params.require(:throw).permit(:segment, :multiplier)
+    source = params[:throw].presence || params.permit(:segment, :multiplier)
+    source.permit(:segment, :multiplier)
   end
 
   def current_match_player(match = @match)

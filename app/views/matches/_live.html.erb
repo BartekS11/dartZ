@@ -3,7 +3,7 @@
 <div id="match-live" class="page-shell match-focus"
      data-controller="match-view"
      data-match-view-remote-invite-value="<%= match.invite_match? %>"
-     data-match-view-my-player-id-value="<%= current_match_player&.id %>">
+     data-match-view-my-player-id-value="<%= current_match_player(match)&.id %>">
 
   <div id="game-over-section">
     <% if match.finished? %>

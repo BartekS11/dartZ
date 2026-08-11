@@ -13,12 +13,12 @@ class ApplicationController < ActionController::Base
 
   private
 
-def current_match_player(match)
-  return nil unless match
+# def current_match_player(match)
+#   return nil unless match
 
-  player_id = session[:match_player_ids]&.[](match.id.to_s)
-  match.players.find_by(id: player_id)
-end
+#   player_id = session[:match_player_ids]&.[](match.id.to_s)
+#   match.players.find_by(id: player_id)
+# end
 def premium_access?
   Current.user&.premium_access?
 end

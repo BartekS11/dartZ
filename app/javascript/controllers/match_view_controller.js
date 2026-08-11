@@ -10,6 +10,8 @@ export default class extends Controller {
     this.boundSyncTurnLock = () => window.requestAnimationFrame(() => this.syncTurnLock())
     document.addEventListener("turbo:before-stream-render", this.boundSyncTurnLock)
     document.addEventListener("turbo:render", this.boundSyncTurnLock)
+    this.turnLockObserver = new MutationObserver(this.boundSyncTurnLock)
+    this.turnLockObserver.observe(this.element, { childList: true, subtree: true })
     this.syncTurnLock()
   }
 
@@ -17,6 +19,7 @@ export default class extends Controller {
     this.element.removeEventListener("submit", this.attachActorPlayerId, true)
     document.removeEventListener("turbo:before-stream-render", this.boundSyncTurnLock)
     document.removeEventListener("turbo:render", this.boundSyncTurnLock)
+    this.turnLockObserver?.disconnect()
   }
 
   showPad() {
@@ -83,6 +86,7 @@ export default class extends Controller {
     const controls = this.element.querySelectorAll("#keyboard-section input, #keyboard-section button")
     controls.forEach((control) => {
       if (control.closest(".bot-turn-disabled")) return
+      if (control.classList.contains("turn-skip-button")) return
       control.disabled = locked
     })
 
