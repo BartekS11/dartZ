@@ -6,7 +6,8 @@ Turn.destroy_all
 
 user = User.create!(
   email_address: "test@example.com",
-  password: "password"
+  password: "password",
+  account_tier: "premium"
 )
 
 match = Match.create!
