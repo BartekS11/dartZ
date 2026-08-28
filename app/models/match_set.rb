@@ -45,14 +45,24 @@ class MatchSet < ApplicationRecord
   end
 
   def start_first_leg!
-    leg = legs.create!(match: match)
-    leg.start_first_turn!
-    leg
+    start_leg!
   end
 
   def start_next_leg!
+    start_leg!
+  end
+
+  private
+
+  def start_leg!
+    starter = next_leg_starter
     leg = legs.create!(match: match)
-    leg.start_first_turn!
+    leg.start_first_turn!(starter)
     leg
+  end
+
+  def next_leg_starter
+    ordered_players = match.players.order(:created_at).to_a
+    ordered_players[match.legs.count % ordered_players.size]
   end
 end

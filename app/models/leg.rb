@@ -16,8 +16,8 @@ class Leg < ApplicationRecord
     start_next_turn!
   end
 
-  def start_first_turn!
-    turns.create!(player: first_player)
+  def start_first_turn!(player = first_player)
+    turns.create!(player: player)
   end
 
   def active_player
@@ -57,15 +57,19 @@ class Leg < ApplicationRecord
   end
 
   def first_player
-    leg_players.order(:created_at).first.player
+    ordered_players.first || leg_players.order(:created_at).first.player
   end
 
   def start_next_turn!
-    players = match.players.to_a
+    players = ordered_players
     current = current_turn.player
     next_player = players[(players.index(current) + 1) % players.size]
 
     turns.create!(player: next_player)
+  end
+
+  def ordered_players
+    match.players.order(:created_at).to_a
   end
 
   private
