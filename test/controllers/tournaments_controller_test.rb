@@ -18,6 +18,70 @@ class TournamentsControllerTest < ActionDispatch::IntegrationTest
     tournament = Tournament.order(:created_at).last
     assert_redirected_to tournament_path(tournament, admin_token: tournament.admin_token)
     assert_equal "public_guest", tournament.visibility
+    assert_equal "draft", tournament.status
+    assert_equal 0, tournament.tournament_matches.count
+  end
+
+  test "guest admin can start draft tournament" do
+    post tournaments_path, params: {
+      tournament: {
+        title: "Start Me",
+        format_type: "groups",
+        best_of_legs: 3,
+        best_of_sets: 1,
+        group_count: 2,
+        entry_names: "Alice\nBob\nCara\nDan"
+      }
+    }
+
+    tournament = Tournament.order(:created_at).last
+
+    assert_difference("TournamentMatch.count", 2) do
+      post start_tournament_path(tournament, admin_token: tournament.admin_token)
+    end
+
+    assert_redirected_to tournament_path(tournament, admin_token: tournament.admin_token)
+    assert_equal "active", tournament.reload.status
+  end
+
+  test "guest admin can edit player group before start" do
+    post tournaments_path, params: {
+      tournament: {
+        title: "Groups",
+        format_type: "groups",
+        best_of_legs: 3,
+        best_of_sets: 1,
+        group_count: 2,
+        entry_names: "Alice\nBob"
+      }
+    }
+
+    tournament = Tournament.order(:created_at).last
+    entry = tournament.entries.find_by!(name: "Alice")
+
+    patch tournament_entry_path(tournament, entry, admin_token: tournament.admin_token), params: {
+      tournament_entry: { group_name: "B" }
+    }
+
+    assert_redirected_to tournament_path(tournament, admin_token: tournament.admin_token)
+    assert_equal "B", entry.reload.group_name
+  end
+
+  test "guest cannot create tournament with fewer than two players" do
+    assert_no_difference("Tournament.count") do
+      post tournaments_path, params: {
+        tournament: {
+          title: "Too Small",
+          format_type: "groups",
+          best_of_legs: 3,
+          best_of_sets: 1,
+          entry_names: "Alice"
+        }
+      }
+    end
+
+    assert_response :unprocessable_entity
+    assert_select ".theme-notification", /Add at least two players/
   end
 
   test "logged in owner can view participant only tournament and outsider cannot" do

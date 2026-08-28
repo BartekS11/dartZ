@@ -26,15 +26,18 @@ class TournamentGenerator
 
   def generate_groups
     entries = ordered_entries
-    group_count = [ @tournament.group_count.to_i, 2 ].max
-    groups = Array.new(group_count) { [] }
-
-    entries.each_with_index do |entry, idx|
-      groups[idx % group_count] << entry
+    groups_by_name = if @tournament.seeding_mode == "manual" && entries.any? { |entry| entry.group_name.present? }
+      entries.group_by { |entry| entry.group_name.presence || "A" }.sort.to_h
+    else
+      group_count = @tournament.effective_group_count(entries_count: entries.size)
+      groups = Array.new(group_count) { [] }
+      entries.each_with_index { |entry, idx| groups[idx % group_count] << entry }
+      groups.each_with_index.to_h { |group_entries, idx| [ TournamentGroupNaming.label(idx), group_entries ] }
     end
 
-    groups.each_with_index do |group_entries, idx|
-      group_name = ("A".ord + idx).chr
+    groups_by_name.each_with_index do |(group_name, group_entries), idx|
+      next if group_entries.blank?
+
       group_entries.each { |entry| entry.update!(group_name:) }
       round = @tournament.rounds.create!(number: idx + 1, name: "Group #{group_name}", stage_type: "groups", group_name:, status: "active")
       round_robin_pairs(group_entries).each_with_index do |(home, away), pos|

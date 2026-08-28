@@ -133,6 +133,22 @@ class MatchTest < ActiveSupport::TestCase
     assert_includes duplicate.errors[:match_identifier], "has already been taken"
   end
 
+  test "starter alternates each leg in best of legs match" do
+    match = Match.create!(best_of_legs: 3, best_of_sets: 1)
+    player1 = match.players.create!(name: "Player 1")
+    player2 = match.players.create!(name: "Player 2")
+
+    match.start_first_set!
+    first_leg = match.current_leg
+    assert_equal player1, first_leg.current_turn.player
+
+    first_leg.leg_players.find_by!(player: player1).update!(score: 0)
+    first_leg.finish!
+
+    second_leg = match.reload.current_leg
+    assert_equal player2, second_leg.current_turn.player
+  end
+
   private
 
   def create_user(email)

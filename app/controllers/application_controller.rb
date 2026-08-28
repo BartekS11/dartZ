@@ -8,7 +8,9 @@ class ApplicationController < ActionController::Base
   # Changes to the importmap will invalidate the etag for HTML responses
   stale_when_importmap_changes
 
-  before_action :set_locale
+  # Authentication redirects use route helpers, so initialize the locale before
+  # `require_authentication` can generate a redirect URL.
+  prepend_before_action :set_locale
 
   helper_method :premium_access?
   helper_method :current_match_player

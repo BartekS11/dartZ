@@ -1,0 +1,147 @@
+<div class="page-shell">
+  <div class="theme-hero p-5 mb-5">
+    <div class="theme-section-label"><%= t("training.premium_label") %></div>
+    <h1 class="page-title"><%= t("training.title") %></h1>
+    <p class="page-copy mt-3"><%= t("training.intro") %></p>
+  </div>
+
+  <div class="training-clean-layout">
+    <section class="training-clean-section">
+      <div class="training-clean-header">
+        <div>
+          <div class="theme-section-label"><%= t("training.new_session") %></div>
+          <h2 class="section-title"><%= t("training.choose_mode") %></h2>
+        </div>
+      </div>
+
+      <div class="training-mode-simple-list">
+        <% TrainingSession::MODES.each do |mode| %>
+          <div class="training-mode-simple-row">
+            <div>
+              <h3><%= t("training.modes.#{mode}.name") %></h3>
+            </div>
+            <%= button_to t("training.start"), training_sessions_path,
+                  params: { training_session: { mode: mode } },
+                  class: "button theme-btn-primary mono" %>
+          </div>
+        <% end %>
+      </div>
+    </section>
+
+    <section class="training-clean-section">
+      <div class="training-clean-header">
+        <div>
+          <div class="theme-section-label"><%= t("training.statistics") %></div>
+          <h2 class="section-title"><%= t("training.your_progress") %></h2>
+        </div>
+      </div>
+
+      <div class="training-stats-list mb-5">
+        <% @training_stats.each do |stat| %>
+          <div class="training-stats-row">
+            <div>
+              <strong><%= t("training.modes.#{stat[:mode]}.name") %></strong>
+              <span class="mono"><%= t("training.completed_count", count: stat[:completed_count]) %></span>
+            </div>
+            <div>
+              <span><%= t("training.best_darts") %></span>
+              <strong class="mono"><%= stat[:best_darts] || "–" %></strong>
+            </div>
+            <div>
+              <span><%= t("training.recent_avg") %></span>
+              <strong class="mono"><%= stat[:recent_average] || "–" %></strong>
+            </div>
+            <div class="training-trend is-<%= stat[:trend] %>">
+              <% if stat[:delta] %>
+                <span><%= t("training.trend") %></span>
+                <strong class="mono"><%= stat[:delta].negative? ? "▼" : "▲" %> <%= stat[:delta].abs %></strong>
+                <small><%= t("training.trends.#{stat[:trend]}") %></small>
+              <% else %>
+                <span><%= t("training.trend") %></span>
+                <strong class="mono">–</strong>
+                <small><%= t("training.trends.neutral") %></small>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+
+      <% if @active_sessions.any? %>
+        <div class="training-clean-header">
+          <div class="theme-section-label"><%= t("training.active_sessions") %></div>
+        </div>
+        <div class="training-clean-list mb-5">
+          <% @active_sessions.each do |session| %>
+            <div class="training-clean-row is-active-session">
+              <div class="training-clean-row-main">
+                <h3><%= t("training.modes.#{session.mode}.name") %></h3>
+                <p class="mono">
+                  <% if session.checkout_randomizer_mode? %>
+                    <%= t("training.checkout_score") %> · <%= session.current_target&.fetch("label") %> · <%= session.current_target&.fetch("suggestion") %>
+                  <% else %>
+                    <%= t("training.progress", current: session.current_target_index + 1, total: session.targets.length) %> · <%= session.current_target&.fetch("label") %>
+                  <% end %>
+                </p>
+              </div>
+              <%= link_to t("training.resume"), training_session_path(session), class: "button theme-btn-primary mono" %>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+
+      <div class="training-clean-header training-history-header">
+        <div>
+          <div class="theme-section-label"><%= t("training.history") %></div>
+          <h2 class="section-title"><%= t("training.recent_sessions") %></h2>
+        </div>
+
+        <%= form_with url: training_sessions_path, method: :get, class: "training-history-filter", data: { turbo: false } do %>
+          <label>
+            <span><%= t("training.mode") %></span>
+            <%= select_tag :training_mode,
+                  options_for_select([[t("training.all_modes"), "all"]] + TrainingSession::MODES.map { |mode| [t("training.modes.#{mode}.name"), mode] }, @training_history_mode),
+                  class: "theme-form-input mono" %>
+          </label>
+          <label>
+            <span><%= t("training.show_latest") %></span>
+            <%= select_tag :limit,
+                  options_for_select([5, 10, 25, 50].map { |count| [count, count] }, @training_history_limit),
+                  class: "theme-form-input mono" %>
+          </label>
+          <%= submit_tag t("training.apply"), class: "button theme-btn-outline mono" %>
+        <% end %>
+      </div>
+
+      <% if @training_sessions.any? %>
+        <div class="table-container training-clean-table-wrap">
+          <table class="table is-fullwidth training-clean-table">
+            <thead>
+              <tr>
+                <th><%= t("training.mode") %></th>
+                <th><%= t("training.status") %></th>
+                <th><%= t("training.darts") %></th>
+                <th><%= t("training.misses") %></th>
+                <th><%= t("training.duration") %></th>
+                <th><%= t("training.date") %></th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @training_sessions.each do |session| %>
+                <tr>
+                  <td><%= t("training.modes.#{session.mode}.name") %></td>
+                  <td><span class="theme-chip mono <%= 'is-live' if session.completed? %>"><%= t("training.statuses.#{session.status}") %></span></td>
+                  <td class="mono"><%= session.total_darts %></td>
+                  <td class="mono"><%= session.misses %></td>
+                  <td class="mono"><%= "#{session.duration_seconds / 60}m #{session.duration_seconds % 60}s" %></td>
+                  <td class="mono"><%= l(session.created_at, format: :short) %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      <% else %>
+        <p class="page-copy"><%= t("training.no_history") %></p>
+      <% end %>
+    </section>
+  </div>
+</div>

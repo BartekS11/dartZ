@@ -18,6 +18,14 @@ class TournamentTest < ActiveSupport::TestCase
     assert_equal "participant_only", tournament.visibility
   end
 
+  test "effective group count keeps every generated group playable" do
+    tournament = Tournament.create!(title: "Small Groups", format_type: "groups", best_of_legs: 1, best_of_sets: 1, group_count: 256)
+
+    assert_equal 1, tournament.effective_group_count(entries_count: 2)
+    assert_equal 2, tournament.effective_group_count(entries_count: 5)
+    assert_equal 26, tournament.effective_group_count(entries_count: 52)
+  end
+
   test "participant only tournament can be viewed by owner participant and join token holder" do
     owner = create_user("owner2@example.com")
     participant = create_user("participant@example.com")

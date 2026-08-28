@@ -40,12 +40,23 @@
           <% elsif tier[:key] == "free" %>
             <button type="button" class="button theme-btn-outline is-fullwidth mono" disabled><%= t("common.included") %></button>
           <% else %>
-            <button type="button" class="button theme-btn-primary is-fullwidth mono" disabled data-stripe-price-placeholder="<%= tier[:key] %>"><%= t("billing.upgrade_soon") %></button>
+            <%= button_to t("billing.upgrade"), checkout_billing_path(tier: tier[:key]), method: :post, class: "button theme-btn-primary is-fullwidth mono" %>
           <% end %>
         </article>
       </div>
     <% end %>
   </section>
 
-  <div class="theme-blank-slate mono text-sm"><%= t("billing.stripe_hook") %></div>
+  <section class="theme-card p-5 stack-sm">
+    <h2 class="section-title"><%= t("billing.manage_title") %></h2>
+    <p class="page-copy"><%= t("billing.currency_note", currency: @billing_currency.upcase) %></p>
+    <% if Current.user.premium_access_expires_at.present? %>
+      <p class="mono text-sm"><%= t("billing.access_until", date: l(Current.user.premium_access_expires_at.to_date)) %></p>
+    <% end %>
+    <% if Current.user.stripe_customer_id.present? %>
+      <%= button_to t("billing.manage_subscription"), portal_billing_path, method: :post, class: "button theme-btn-outline mono" %>
+    <% else %>
+      <p class="help-theme"><%= t("billing.no_subscription_help") %></p>
+    <% end %>
+  </section>
 </div>

@@ -8,16 +8,26 @@ Rails.application.routes.draw do
   resource :dart_setup, only: %i[edit update] do
     patch :use_saved
   end
-  resource :billing, only: :show, controller: "billing"
+  resource :billing, only: :show, controller: "billing" do
+    post :checkout
+    post :portal
+  end
   resources :passwords, param: :token
   resource :bot_match, only: [ :new, :create ]
+  resources :training_sessions, path: "training", only: %i[index create show] do
+    patch :record, on: :member
+    patch :complete, on: :member
+    patch :abandon, on: :member
+  end
 
   get "privacy", to: "legal_pages#privacy", as: :privacy_policy
   get "terms", to: "legal_pages#terms", as: :terms_of_service
   get "contact", to: "legal_pages#contact", as: :contact_page
+  post "stripe/webhooks", to: "stripe_webhooks#create"
 
   resources :tournaments, only: %i[index show new create update destroy] do
     get :live, on: :member
+    post :start, on: :member
     post :regenerate, on: :member
     post :reseed, on: :member
     post :advance_round, on: :member

@@ -2,6 +2,8 @@ class TournamentMatch < ApplicationRecord
   STATUSES = %w[pending live complete].freeze
   SOURCES = %w[generated manual].freeze
 
+  include X01GameSettings
+
   belongs_to :tournament
   belongs_to :tournament_round
   belongs_to :home_entry, class_name: "TournamentEntry", optional: true
@@ -16,19 +18,12 @@ class TournamentMatch < ApplicationRecord
   validates :double_in, :double_out, inclusion: { in: [ true, false ] }
   validates :home_sets, :away_sets, :home_legs, :away_legs, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
-  def game_mode_labels
-    labels = [ starting_score.to_s ]
-    labels << "Double in" if double_in?
-    labels << "Double out" if double_out?
-    labels
-  end
-
   def label
     [ home_entry&.name || "TBD", away_entry&.name || "TBD" ].join(" vs ")
   end
 
   def launchable?
-    home_entry.present? && away_entry.present? && linked_match.blank?
+    status == "pending" && home_entry.present? && away_entry.present? && linked_match.blank?
   end
 
   def sync_from_linked_match!

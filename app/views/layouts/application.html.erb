@@ -47,6 +47,7 @@
           <%= link_to t("nav.bot"), new_bot_match_path, class: "app-nav-link #{'is-active' if current_page?(new_bot_match_path)}" %>
           <%= link_to t("nav.tournaments"), tournaments_path, class: "app-nav-link #{'is-active' if request.path.start_with?(tournaments_path)}" %>
           <% if premium_access? %>
+            <%= link_to t("nav.training"), training_sessions_path, class: "app-nav-link #{'is-active' if request.path.start_with?(training_sessions_path)}" %>
             <%= link_to t("nav.dart_setup"), edit_dart_setup_path, class: "app-nav-link #{'is-active' if request.path.start_with?(edit_dart_setup_path)}" %>
           <% end %>
 

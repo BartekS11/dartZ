@@ -1,0 +1,80 @@
+<div class="page-shell" data-controller="training-session">
+  <div class="level mb-5">
+    <div class="level-left"><div>
+      <div class="theme-section-label"><%= t("training.modes.#{@training_session.mode}.name") %></div>
+      <h1 class="page-title"><%= t("training.play_title") %></h1>
+    </div></div>
+    <div class="level-right"><%= link_to t("common.back"), training_sessions_path, class: "button theme-btn-outline mono" %></div>
+  </div>
+
+  <% if @training_session.active? %>
+    <div class="training-play-grid">
+      <section class="theme-card p-5 training-focus-card">
+        <div class="training-target-header">
+          <div>
+            <div class="theme-section-label"><%= t("training.current_target") %></div>
+            <div class="training-target mono"><%= @training_session.current_target.fetch("label") %></div>
+          </div>
+          <div class="training-progress-badge mono">
+            <% if @training_session.checkout_randomizer_mode? %>
+              <%= t("training.checkout_score") %>
+            <% else %>
+              <%= @training_session.current_target_index + 1 %>/<%= @training_session.targets.length %>
+            <% end %>
+          </div>
+        </div>
+
+        <% if @training_session.checkout_randomizer_mode? %>
+          <div class="training-checkout-suggestion">
+            <span><%= t("training.suggested_route") %></span>
+            <strong class="mono"><%= @training_session.current_target.fetch("suggestion") %></strong>
+          </div>
+        <% else %>
+          <div class="training-progress-track" aria-label="<%= t("training.progress_label") %>">
+            <div class="training-progress-fill" style="width: <%= @training_session.progress_percent %>%"></div>
+          </div>
+
+          <div class="training-target-rail" aria-label="<%= t("training.progress_label") %>">
+            <% @training_session.targets.each_with_index do |target, index| %>
+              <span class="training-target-pill mono <%= 'is-done' if index < @training_session.current_target_index %> <%= 'is-current' if index == @training_session.current_target_index %>"><%= target.fetch("label") %></span>
+            <% end %>
+          </div>
+        <% end %>
+
+        <%= form_with url: record_training_session_path(@training_session), method: :patch, data: { turbo: false, training_session_target: "form" }, class: "training-throw-form" do %>
+          <label class="training-input-label" for="misses"><%= t("training.misses_input") %></label>
+          <div class="training-action-row">
+            <%= number_field_tag :misses, 0, min: 0, max: 99, autofocus: true, inputmode: "numeric", class: "input theme-form-input mono training-misses-input", data: { training_session_target: "misses" } %>
+            <button type="submit" name="result" value="hit" class="button theme-btn-primary mono training-action-button" data-training-session-target="hitButton"><%= t("training.hit") %> <span class="training-key">Space</span></button>
+            <button type="submit" name="result" value="no_hit" class="button theme-btn-outline mono training-action-button"><%= t("training.no_hit") %></button>
+          </div>
+          <p class="training-keyboard-hint"><%= t("training.space_hint") %></p>
+        <% end %>
+      </section>
+
+      <aside class="training-side-panel stack-sm">
+        <div class="theme-panel p-4 training-stat-card"><div class="theme-section-label"><%= t("training.darts") %></div><strong class="mono"><%= @training_session.total_darts %></strong></div>
+        <div class="theme-panel p-4 training-stat-card"><div class="theme-section-label"><%= t("training.misses") %></div><strong class="mono"><%= @training_session.misses %></strong></div>
+        <div class="theme-panel p-4 training-stat-card"><div class="theme-section-label"><%= t("training.hits") %></div><strong class="mono"><%= @training_session.hits %></strong></div>
+      </aside>
+
+      <div class="training-abandon-row">
+        <% if @training_session.checkout_randomizer_mode? %>
+          <%= button_to t("training.finish_session"), complete_training_session_path(@training_session), method: :patch, class: "button theme-btn-primary mono" %>
+        <% end %>
+        <%= button_to t("training.abandon"), abandon_training_session_path(@training_session), method: :patch, class: "button theme-btn-outline mono", form: { data: { turbo_confirm: t("training.confirm_abandon") } } %>
+      </div>
+    </div>
+  <% else %>
+    <div class="theme-card p-5 stack-md has-text-centered">
+      <div class="theme-section-label"><%= t("training.statuses.#{@training_session.status}") %></div>
+      <h2 class="section-title"><%= @training_session.completed? ? t("training.completed_title") : t("training.abandoned_title") %></h2>
+      <div class="columns is-variable is-3">
+        <div class="column"><div class="theme-panel p-4"><div class="theme-section-label"><%= t("training.darts") %></div><strong class="mono"><%= @training_session.total_darts %></strong></div></div>
+        <div class="column"><div class="theme-panel p-4"><div class="theme-section-label"><%= t("training.misses") %></div><strong class="mono"><%= @training_session.misses %></strong></div></div>
+        <div class="column"><div class="theme-panel p-4"><div class="theme-section-label"><%= t("training.duration") %></div><strong class="mono"><%= "#{@training_session.duration_seconds / 60}m #{@training_session.duration_seconds % 60}s" %></strong></div></div>
+      </div>
+      <%= link_to t("training.back_to_center"), training_sessions_path, class: "button theme-btn-primary mono" %>
+    </div>
+  <% end %>
+</div>

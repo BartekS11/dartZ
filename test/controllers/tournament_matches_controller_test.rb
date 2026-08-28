@@ -17,6 +17,34 @@ class TournamentMatchesControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "completed matches cannot be launched again" do
+    tournament = Tournament.create!(title: "Finished Cup", format_type: "playoffs", best_of_legs: 1, best_of_sets: 1)
+    home = tournament.entries.create!(name: "Alpha", seed: 1)
+    away = tournament.entries.create!(name: "Bravo", seed: 2)
+    round = tournament.rounds.create!(number: 1, name: "Round 1", stage_type: "playoffs", bracket: "upper", status: "complete")
+    tournament_match = round.tournament_matches.create!(tournament: tournament, home_entry: home, away_entry: away, winner_entry: home, position: 1, best_of_legs: 1, best_of_sets: 1, status: "complete", completed_at: Time.current)
+
+    assert_no_difference("Match.count") do
+      post launch_tournament_tournament_match_path(tournament, tournament_match, admin_token: tournament.admin_token)
+    end
+
+    assert_redirected_to tournament_path(tournament, admin_token: tournament.admin_token)
+    assert_equal "complete", tournament_match.reload.status
+  end
+
+  test "report rejects a tied result" do
+    tournament = Tournament.create!(title: "Report Cup", format_type: "playoffs", best_of_legs: 1, best_of_sets: 1)
+    home = tournament.entries.create!(name: "Alpha", seed: 1)
+    away = tournament.entries.create!(name: "Bravo", seed: 2)
+    round = tournament.rounds.create!(number: 1, name: "Round 1", stage_type: "playoffs", bracket: "upper", status: "active")
+    tournament_match = round.tournament_matches.create!(tournament: tournament, home_entry: home, away_entry: away, position: 1, best_of_legs: 1, best_of_sets: 1)
+
+    patch report_tournament_tournament_match_path(tournament, tournament_match, admin_token: tournament.admin_token), params: { home_sets: 0, away_sets: 0, home_legs: 1, away_legs: 1 }
+
+    assert_redirected_to tournament_path(tournament, admin_token: tournament.admin_token)
+    assert_equal "pending", tournament_match.reload.status
+  end
+
   test "launch creates a playable live match" do
     tournament = Tournament.create!(title: "Launch Cup", format_type: "playoffs", best_of_legs: 3, best_of_sets: 1)
     home = tournament.entries.create!(name: "Alpha", seed: 1)

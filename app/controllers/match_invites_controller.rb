@@ -1,5 +1,6 @@
 class MatchInvitesController < ApplicationController
   allow_unauthenticated_access
+
   rescue_from ActiveRecord::RecordNotFound, with: :invite_not_found
   before_action :resume_session_optional
   before_action :set_match_by_id, only: %i[show status cancel]

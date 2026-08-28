@@ -20,18 +20,29 @@ class TournamentMatchesController < ApplicationController
     @tournament.with_lock do
       ApplicationRecord.transaction do
         @tournament_match.reload
-        match = MatchCreator.call(
-          settings: MatchSettings.from_tournament_match(@tournament_match),
-          players: [
-            { name: @tournament_match.home_entry.name },
-            { name: @tournament_match.away_entry.name }
-          ],
-          guest_match: true
-        )
+        if @tournament_match.linked_match.present?
+          match = @tournament_match.linked_match
+        elsif @tournament_match.launchable?
+          match = MatchCreator.call(
+            settings: MatchSettings.from_tournament_match(@tournament_match),
+            players: [
+              { name: @tournament_match.home_entry.name },
+              { name: @tournament_match.away_entry.name }
+            ],
+            guest_match: true
+          )
 
-        @tournament_match.update!(linked_match: match, status: "live")
+          @tournament_match.update!(linked_match: match, status: "live")
+        end
       end
     end
+
+    unless match
+      redirect_to tournament_admin_path, alert: t("flashes.match_unavailable")
+      return
+    end
+
+    match.ensure_guest_token!
     @tournament.broadcast_live_update!
     remember_guest_match!(match, match.guest_token)
     redirect_to match_path(match, guest_token: match.guest_token)
@@ -44,9 +55,20 @@ class TournamentMatchesController < ApplicationController
     away_sets = params[:away_sets].to_i
     home_legs = params[:home_legs].to_i
     away_legs = params[:away_legs].to_i
+    if @tournament_match.status == "complete" || (home_sets == away_sets && home_legs == away_legs)
+      redirect_to tournament_admin_path, alert: t("flashes.invalid_match_result")
+      return
+    end
+
     winner = home_sets > away_sets || (home_sets == away_sets && home_legs > away_legs) ? @tournament_match.home_entry : @tournament_match.away_entry
 
     @tournament.with_lock do
+      @tournament_match.reload
+      if @tournament_match.status == "complete"
+        redirect_to tournament_admin_path, alert: t("flashes.invalid_match_result")
+        return
+      end
+
       @tournament_match.update!(home_sets:, away_sets:, home_legs:, away_legs:, winner_entry: winner, status: "complete", completed_at: Time.current)
       TournamentProgressor.new(@tournament).call
     end

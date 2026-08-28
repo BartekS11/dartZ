@@ -14,8 +14,10 @@ class TournamentFlowTest < ActionDispatch::IntegrationTest
     }
 
     tournament = Tournament.order(:created_at).last
-    match = tournament.tournament_matches.first
 
+    post start_tournament_path(tournament, admin_token: tournament.admin_token)
+
+    match = tournament.tournament_matches.first
     patch report_tournament_tournament_match_path(tournament, match, admin_token: tournament.admin_token), params: {
       home_sets: 0,
       away_sets: 0,

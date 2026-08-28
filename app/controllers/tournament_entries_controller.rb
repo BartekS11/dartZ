@@ -11,11 +11,13 @@ class TournamentEntriesController < ApplicationController
     end
 
     name = params[:name].to_s.strip
-    entry = @tournament.entries.build(name:)
+    next_seed = @tournament.entries.maximum(:seed).to_i + 1
+    group_count = @tournament.effective_group_count(entries_count: next_seed)
+    group_name = @tournament.group_stage_enabled? ? TournamentGroupNaming.label((next_seed - 1) % group_count) : nil
+    entry = @tournament.entries.build(name:, seed: next_seed, group_name: group_name)
     entry.user = Current.user if Current.user
 
     if entry.save
-      TournamentGenerator.new(@tournament).call if @tournament.tournament_matches.none? && @tournament.entries.size >= 2
       @tournament.broadcast_live_update!
       redirect_to tournament_path(@tournament, participant_token: entry.access_token), notice: t("flashes.tournament_joined")
     else
@@ -44,7 +46,7 @@ class TournamentEntriesController < ApplicationController
     end
 
     @entry.destroy!
-    TournamentGenerator.new(@tournament).call if @tournament.entries.size >= 2
+    TournamentGenerator.new(@tournament).call if @tournament.status == "active" && @tournament.entries.size >= 2
     @tournament.broadcast_live_update!
     redirect_to tournament_path(@tournament, admin_token: params[:admin_token]), notice: t("flashes.player_removed")
   end
@@ -60,6 +62,6 @@ class TournamentEntriesController < ApplicationController
   end
 
   def entry_params
-    params.require(:tournament_entry).permit(:name, :seed)
+    params.require(:tournament_entry).permit(:name, :seed, :group_name)
   end
 end

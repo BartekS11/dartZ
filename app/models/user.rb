@@ -3,8 +3,11 @@ class User < ApplicationRecord
   ACCOUNT_TIERS = %w[free premium pro].freeze
   LOCALES = %w[en pl].freeze
 
+  include BillableUser
+
   has_many :sessions, dependent: :destroy
   has_many :players, dependent: :destroy
+  has_many :training_sessions, dependent: :destroy
   has_one :dart_setup, dependent: :destroy
 
   normalizes :email_address, with: ->(e) { e.strip.downcase }
@@ -18,12 +21,5 @@ class User < ApplicationRecord
 
   def display_name
     nickname.presence || email_address
-  end
-
-  def premium_access?
-    return false if account_tier == "free"
-    return true if premium_access_expires_at.blank?
-
-    premium_access_expires_at.future?
   end
 end

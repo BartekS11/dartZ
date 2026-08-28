@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_11_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_11_122000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -234,6 +234,25 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_11_120000) do
     t.index ["share_token"], name: "index_tournaments_on_share_token", unique: true
   end
 
+  create_table "training_sessions", force: :cascade do |t|
+    t.datetime "abandoned_at"
+    t.datetime "completed_at"
+    t.datetime "created_at", null: false
+    t.integer "current_target_index", default: 0, null: false
+    t.integer "hits", default: 0, null: false
+    t.integer "misses", default: 0, null: false
+    t.string "mode", null: false
+    t.datetime "started_at", null: false
+    t.string "status", default: "active", null: false
+    t.jsonb "target_stats", default: [], null: false
+    t.integer "total_darts", default: 0, null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id", "created_at"], name: "index_training_sessions_on_user_id_and_created_at"
+    t.index ["user_id", "status"], name: "index_training_sessions_on_user_id_and_status"
+    t.index ["user_id"], name: "index_training_sessions_on_user_id"
+  end
+
   create_table "turns", force: :cascade do |t|
     t.datetime "completed_at"
     t.datetime "created_at", null: false
@@ -254,7 +273,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_11_120000) do
     t.string "password_digest", null: false
     t.datetime "premium_access_expires_at"
     t.string "stripe_customer_id"
+    t.string "stripe_price_id"
     t.string "stripe_subscription_id"
+    t.string "stripe_subscription_status"
+    t.string "subscription_currency"
     t.datetime "updated_at", null: false
     t.index ["account_tier"], name: "index_users_on_account_tier"
     t.index ["email_address"], name: "index_users_on_email_address", unique: true
@@ -283,6 +305,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_11_120000) do
   add_foreign_key "tournament_matches", "tournaments"
   add_foreign_key "tournament_rounds", "tournaments"
   add_foreign_key "tournaments", "users", column: "owner_user_id"
+  add_foreign_key "training_sessions", "users"
   add_foreign_key "turns", "legs"
   add_foreign_key "turns", "players"
 end
