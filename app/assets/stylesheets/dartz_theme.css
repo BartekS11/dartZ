@@ -426,6 +426,54 @@ a.counter-tournament-card:hover { border-color: var(--theme-primary); color: var
 .saved-player-remove:hover { color: var(--theme-primary-soft); }
 .saved-empty { padding: 0.75rem; color: var(--theme-subtle); font-size: 0.72rem; letter-spacing: 0.1em; text-align: center; text-transform: uppercase; }
 .swap-badge { width: 2.7rem; height: 2.7rem; padding: 0 !important; }
+.invite-starter-panel {
+  padding: clamp(1rem, 3.5vw, 2rem) !important;
+}
+.invite-starter-panel .columns {
+  align-items: stretch !important;
+  gap: clamp(.75rem, 2vw, 1rem) !important;
+  margin: .75rem 0 0 !important;
+}
+.invite-starter-panel .column {
+  display: flex;
+  align-items: stretch;
+}
+.invite-starter-panel .column.is-narrow {
+  align-items: center;
+  justify-content: center;
+}
+.invite-starter-panel .player-card-shell {
+  width: 100%;
+  border: 0 !important;
+  border-radius: 1rem;
+  padding: .85rem !important;
+  background: color-mix(in srgb, var(--theme-text) 3%, transparent);
+}
+.invite-starter-panel .theme-form-input[aria-readonly="true"] {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 3.65rem;
+  padding: .85rem 1rem !important;
+  background: color-mix(in srgb, var(--theme-text) 4%, transparent) !important;
+}
+.invite-starter-panel .player-card-shell.is-selected {
+  background: color-mix(in srgb, var(--theme-primary) 9%, transparent);
+}
+.invite-starter-panel .player-card-shell.is-selected .theme-form-input {
+  outline: 2px solid color-mix(in srgb, var(--theme-primary) 46%, transparent);
+  background: color-mix(in srgb, var(--theme-primary) 14%, transparent) !important;
+}
+.invite-starter-panel .button_to,
+.invite-starter-swap-form {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+}
+.invite-starter-panel .swap-badge {
+  flex: 0 0 auto;
+}
 .match-identifier { font-size: 1.55rem; line-height: 1; }
 .player-line { display: grid; grid-template-columns: minmax(0,1fr) auto auto; gap: 0.65rem; align-items: baseline; }
 .player-line .name { color: var(--theme-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -1404,6 +1452,9 @@ button.app-nav-link [data-theme-mode-target="icon"] {
   display: grid;
   gap: .55rem;
   margin-top: .65rem;
+  /* Selected buttons use an outside outline; give it room so the
+     first/left item is not clipped by the card/container edge. */
+  padding: 3px;
 }
 
 .dart-manufacturer-grid {
@@ -1445,6 +1496,8 @@ button.app-nav-link [data-theme-mode-target="icon"] {
   color: #fff !important;
   outline: 2px solid color-mix(in srgb, var(--theme-primary) 55%, #fff) !important;
   outline-offset: 2px !important;
+  position: relative;
+  z-index: 1;
 }
 
 .dart-setup-stats-card {
@@ -2176,6 +2229,16 @@ button.app-nav-link:hover {
   .swap-badge {
     width: 100% !important;
     height: 3rem !important;
+  }
+
+  .invite-starter-panel .column.is-narrow,
+  .invite-starter-panel .button_to,
+  .invite-starter-swap-form {
+    width: 100%;
+  }
+
+  .invite-starter-panel .columns {
+    gap: .75rem !important;
   }
 
   .match-focus-bar {

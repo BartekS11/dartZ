@@ -29,6 +29,49 @@
       </div>
     </div>
 
+    <% creator_name = @match.players.first&.display_name || t("common.player_1") %>
+    <% invitee_name = t("invites.invited_player") %>
+    <% invitee_starts = @match.starting_player_position == 2 %>
+    <% left_player = invitee_starts ? { label: t("common.player_2"), name: invitee_name } : { label: t("common.player_1"), name: creator_name } %>
+    <% right_player = invitee_starts ? { label: t("common.player_1"), name: creator_name } : { label: t("common.player_2"), name: invitee_name } %>
+    <% next_starter = invitee_starts ? "creator" : "invitee" %>
+
+    <div class="theme-panel invite-starter-panel">
+      <div class="theme-section-label"><%= t("invites.starter") %></div>
+      <div class="columns is-variable is-3 is-vcentered mt-2">
+        <div class="column">
+          <div class="player-card-shell is-selected">
+            <div class="is-flex is-justify-content-space-between is-align-items-center mb-2">
+              <label class="auth-label"><%= left_player[:label] %></label>
+              <span class="theme-chip"><%= t("invites.throws_first_badge") %></span>
+            </div>
+            <div class="input theme-form-input mono has-text-centered" aria-readonly="true"><%= left_player[:name] %></div>
+          </div>
+        </div>
+
+        <div class="column is-narrow has-text-centered">
+          <%= button_to "⇄",
+                match_invite_starter_path(@match),
+                method: :patch,
+                params: { invite_starter: next_starter },
+                form: { data: { turbo: false }, class: "invite-starter-swap-form" },
+                class: "button theme-btn-outline swap-badge",
+                title: t("invites.swap_starter"),
+                aria: { label: t("invites.swap_starter") } %>
+        </div>
+
+        <div class="column">
+          <div class="player-card-shell">
+            <div class="is-flex is-justify-content-space-between is-align-items-center mb-2">
+              <label class="auth-label"><%= right_player[:label] %></label>
+            </div>
+            <div class="input theme-form-input mono has-text-centered" aria-readonly="true"><%= right_player[:name] %></div>
+          </div>
+        </div>
+      </div>
+      <p class="help-theme mt-2"><%= t("invites.first_to_throw", player: left_player[:name]) %></p>
+    </div>
+
     <div class="theme-panel p-4">
       <div class="theme-section-label"><%= t("invites.match_settings") %></div>
       <p class="page-copy mb-2"><%= @match.players.first&.display_name || t("common.player_1") %> vs <%= t("invites.invited_player") %></p>

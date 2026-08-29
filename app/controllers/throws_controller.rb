@@ -5,7 +5,7 @@ class ThrowsController < ApplicationController
   before_action :resume_session_optional
 
   def create
-    @turn  = Turn.find(params[:turn_id])
+    @turn  = Turn.find_by_public_id!(params[:turn_id])
     @match = @turn.leg.match
     authorize_match!(@match)
     return if performed?
@@ -25,7 +25,7 @@ class ThrowsController < ApplicationController
   end
 
   def undo
-    @turn  = Turn.find(params[:turn_id])
+    @turn  = Turn.find_by_public_id!(params[:turn_id])
     @match = @turn.leg.match
     authorize_match!(@match)
     return if performed?
@@ -56,7 +56,7 @@ class ThrowsController < ApplicationController
       request.headers["X-Actor-Player-Id"].presence
 
     actor_player =
-      actor_player_id.present? ? match.players.find_by(id: actor_player_id) : nil
+      actor_player_id.present? ? find_actor_player(match, actor_player_id) : nil
 
     return true if actor_player&.id == player.id
 
@@ -204,8 +204,14 @@ class ThrowsController < ApplicationController
   end
 
   def current_match_player(match = @match)
-    return nil unless params[:actor_player_id].present?
+    actor_player_id = params[:actor_player_id].presence || request.headers["X-Actor-Player-Id"].presence
+    return nil unless actor_player_id.present?
 
-    match.players.find_by(id: params[:actor_player_id])
+    find_actor_player(match, actor_player_id)
+  end
+
+  def find_actor_player(match, actor_player_id)
+    match.players.find_by(public_id: actor_player_id) ||
+      (actor_player_id.to_s.match?(/\A\d+\z/) ? match.players.find_by(id: actor_player_id) : nil)
   end
 end

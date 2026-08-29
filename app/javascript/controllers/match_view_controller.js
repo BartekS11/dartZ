@@ -2,17 +2,21 @@ import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
   static targets = ["pad", "input", "padButton", "inputButton"]
-  static values = { remoteInvite: Boolean, myPlayerId: Number }
+  static values = { remoteInvite: Boolean, myPlayerId: Number, myPlayerPublicId: String }
 
   connect() {
     this.show(this.defaultView())
     this.element.addEventListener("submit", this.attachActorPlayerId, true)
-    this.boundSyncTurnLock = () => window.requestAnimationFrame(() => this.syncTurnLock())
+    this.boundSyncTurnLock = () => window.requestAnimationFrame(() => {
+      this.syncTurnLock()
+      this.syncFinishPopup()
+    })
     document.addEventListener("turbo:before-stream-render", this.boundSyncTurnLock)
     document.addEventListener("turbo:render", this.boundSyncTurnLock)
     this.turnLockObserver = new MutationObserver(this.boundSyncTurnLock)
     this.turnLockObserver.observe(this.element, { childList: true, subtree: true })
     this.syncTurnLock()
+    this.syncFinishPopup()
   }
 
   disconnect() {
@@ -56,7 +60,8 @@ export default class extends Controller {
   }
 
   attachActorPlayerId = (event) => {
-    if (!this.myPlayerIdValue) return
+    const actorPlayerId = this.myPlayerPublicIdValue
+    if (!actorPlayerId) return
 
     const form = event.target
     if (!(form instanceof HTMLFormElement)) return
@@ -69,7 +74,7 @@ export default class extends Controller {
       input.name = "actor_player_id"
       form.appendChild(input)
     }
-    input.value = this.myPlayerIdValue
+    input.value = actorPlayerId
   }
 
   syncTurnLock() {
@@ -91,6 +96,18 @@ export default class extends Controller {
     })
 
     this.renderTurnLockMessage(locked)
+  }
+
+  syncFinishPopup() {
+    if (!this.remoteInviteValue || !this.myPlayerIdValue) return
+
+    const popup = document.getElementById("finish-popup-overlay")
+    if (!popup) return
+
+    const winnerPlayerId = Number(popup.dataset.winnerPlayerId || 0)
+    if (winnerPlayerId && winnerPlayerId !== this.myPlayerIdValue) {
+      popup.remove()
+    }
   }
 
   renderTurnLockMessage(locked) {

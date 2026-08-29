@@ -45,7 +45,7 @@ module Api
       private
 
       def find_match
-        match = Match.includes(players: :user, match_sets: [ { legs: [ { turns: :throws }, { leg_players: :player } ] } ]).find(params[:id])
+        match = Match.includes(players: :user, match_sets: [ { legs: [ { turns: :throws }, { leg_players: :player } ] } ]).find_by_public_id!(params[:id])
         authorize_api_match!(match)
         match
       end

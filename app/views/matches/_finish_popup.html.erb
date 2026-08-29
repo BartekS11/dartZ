@@ -9,7 +9,7 @@
 <% checkout_score = checkout_turn&.throws&.sum(&:points).to_i %>
 <% minimum_checkout_darts = CheckoutCalculator.darts_needed(checkout_score, double_out: match.double_out?) %>
 
-<div id="finish-popup-overlay" class="finish-popup-overlay">
+<div id="finish-popup-overlay" class="finish-popup-overlay" data-winner-player-id="<%= player.id %>">
   <div class="finish-popup-card <%= popup_class %>">
     <div class="mb-5 text-center">
       <p class="mono mb-2 text-[0.68rem] uppercase tracking-[0.2em]" style="color:<%= accent_color %>">
@@ -35,7 +35,7 @@
     </div>
 
     <% unless leg.checkout_throws.present? %>
-      <form action="<%= leg_checkout_path(leg) %>" method="post" id="checkout-form" data-turbo="false">
+      <form action="<%= leg_checkout_path(leg) %>" method="post" id="checkout-form" data-turbo="false" onsubmit="this.querySelector('input[name=authenticity_token]').value = document.querySelector('meta[name=csrf-token]')?.content || this.querySelector('input[name=authenticity_token]').value">
         <input type="hidden" name="_method" value="patch">
         <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
 

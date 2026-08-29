@@ -249,11 +249,11 @@ export default class extends Controller {
     if (this.inputTarget.disabled) return
 
     const form = document.getElementById("keyboard-form")
-    const turnId = form?.action.match(/turns\/(\d+)/)?.[1]
+    const turnId = form?.action.match(/turns\/([^/]+)/)?.[1]
     if (!turnId) return
 
     const matchView = document.querySelector("[data-match-view-my-player-id-value]")
-    const actorPlayerId = matchView?.dataset?.matchViewMyPlayerIdValue
+    const actorPlayerId = matchView?.dataset?.matchViewMyPlayerPublicIdValue
 
     const response = await fetch(`/turns/${turnId}/throws/last`, {
       method: "DELETE",

@@ -1,6 +1,9 @@
 class TournamentEntry < ApplicationRecord
   STATUSES = %w[active eliminated withdrawn].freeze
 
+  include HasPublicId
+  public_id_prefix "te_"
+
   belongs_to :tournament
   belongs_to :user, optional: true
 

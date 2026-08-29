@@ -191,7 +191,7 @@ class TournamentsController < ApplicationController
   private
 
   def set_tournament
-    @tournament = Tournament.find(params[:id])
+    @tournament = Tournament.find_by_public_id!(params[:id])
   end
 
   def tournament_params

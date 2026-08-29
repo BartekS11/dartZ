@@ -5,6 +5,9 @@ class Tournament < ApplicationRecord
   SEEDING_MODES = %w[auto manual].freeze
   PLAYOFF_MODES = %w[single_elimination double_elimination].freeze
 
+  include HasPublicId
+  public_id_prefix "t_"
+
   include X01GameSettings
   include TournamentInitialization
   include TournamentGameSettings

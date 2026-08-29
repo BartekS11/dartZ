@@ -18,7 +18,7 @@ class MatchesController < ApplicationController
   end
 
   def show
-    @match = Match.includes(players: :user, match_sets: [ { legs: [ { turns: :throws }, { leg_players: :player } ] } ]).find(params[:id])
+    @match = Match.includes(players: :user, match_sets: [ { legs: [ { turns: :throws }, { leg_players: :player } ] } ]).find_by_public_id!(params[:id])
     authorize_match!(@match)
     return if performed?
 
@@ -28,7 +28,7 @@ class MatchesController < ApplicationController
       return
     end
 
-    @current_match_player = @match.players.find_by(id: params[:player_id])
+    @current_match_player = @match.players.find_by(public_id: params[:player_id])
     @presenter = MatchStatePresenter.new(@match)
     @players = @presenter.players
     return if @presenter.finished?
@@ -61,7 +61,7 @@ class MatchesController < ApplicationController
   end
 
   def summary
-    match = Match.includes(players: :user, match_sets: [ { legs: [ { turns: :throws }, { leg_players: :player } ] } ]).find(params[:id])
+    match = Match.includes(players: :user, match_sets: [ { legs: [ { turns: :throws }, { leg_players: :player } ] } ]).find_by_public_id!(params[:id])
     authorize_match!(match)
     return if performed?
 
@@ -69,11 +69,11 @@ class MatchesController < ApplicationController
   end
 
   def checkout
-    match  = Match.find(params[:id])
+    match  = Match.find_by_public_id!(params[:id])
     authorize_match!(match)
     return if performed?
 
-    player = match.players.find(params[:player_id])
+    player = match.players.find_by!(public_id: params[:player_id])
     score  = match.score_for(player)
 
     suggestion = match.double_out? ? CheckoutCalculator.suggest(score) : []
@@ -135,6 +135,6 @@ class MatchesController < ApplicationController
   end
 
   def match_not_found
-    redirect_to matches_path, alert: t("flashes.match_not_found")
+    head :not_found
   end
 end

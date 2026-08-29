@@ -3,6 +3,9 @@ class Match < ApplicationRecord
 
   before_destroy :destroy_direct_legs
 
+  include HasPublicId
+  public_id_prefix "m_"
+
   include X01GameSettings
   include MatchLifecycle
   include MatchInvitable
@@ -23,6 +26,7 @@ class Match < ApplicationRecord
   validates :starting_score, inclusion: { in: X01_STARTING_SCORES }
   validates :double_in, :double_out, inclusion: { in: [ true, false ] }
   validates :invite_token, uniqueness: true, allow_blank: true
+  validates :starting_player_position, inclusion: { in: [ 1, 2 ] }
 
   private
 

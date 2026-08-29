@@ -80,10 +80,10 @@ class TournamentMatchesController < ApplicationController
   private
 
   def set_tournament
-    @tournament = Tournament.find(params[:tournament_id])
+    @tournament = Tournament.find_by_public_id!(params[:tournament_id])
   end
 
   def set_tournament_match
-    @tournament_match = @tournament.tournament_matches.find(params[:id])
+    @tournament_match = @tournament.tournament_matches.find_by!(public_id: params[:id])
   end
 end

@@ -85,7 +85,7 @@ class ApplicationController < ActionController::Base
     return nil if match.blank?
 
     if params[:player_id].present?
-      param_player = match.players.find_by(id: params[:player_id])
+      param_player = match.players.find_by(public_id: params[:player_id])
       if param_player
         remember_match_player!(match, param_player)
         return param_player

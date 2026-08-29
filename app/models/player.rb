@@ -1,4 +1,7 @@
 class Player < ApplicationRecord
+  include HasPublicId
+  public_id_prefix "p_"
+
   has_many :leg_players, dependent: :destroy
   has_many :turns, dependent: :destroy
   has_many :legs, through: :leg_players

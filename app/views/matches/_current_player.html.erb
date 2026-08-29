@@ -67,7 +67,7 @@
   <%= f.hidden_field :multiplier, id: "keyboard-multiplier" %>
   <%= f.hidden_field :total, id: "keyboard-total" %>
  <%= hidden_field_tag :actor_player_id,
-        current_match_player(match)&.id,
+        current_match_player(match)&.public_id,
         id: "actor-player-id" %>
 <% end %>
 

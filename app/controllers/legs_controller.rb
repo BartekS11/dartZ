@@ -3,7 +3,7 @@ class LegsController < ApplicationController
   before_action :resume_session_optional
 
   def checkout
-    @leg   = Leg.find(params[:id])
+    @leg   = Leg.find_by_public_id!(params[:id])
     @match = @leg.match
     authorize_match!(@match)
     return if performed?

@@ -32,8 +32,8 @@ class MatchSet < ApplicationRecord
   def current_leg
     legs.where(finished_at: nil).order(:created_at).last
   end
-  def start_first_leg!
-    start_leg!
+  def start_first_leg!(starter = nil)
+    start_leg!(starter)
   end
 
   def start_next_leg!
@@ -42,8 +42,8 @@ class MatchSet < ApplicationRecord
 
   private
 
-  def start_leg!
-    starter = next_leg_starter
+  def start_leg!(starter = nil)
+    starter ||= next_leg_starter
     leg = legs.create!(match: match)
     leg.start_first_turn!(starter)
     leg
@@ -51,6 +51,9 @@ class MatchSet < ApplicationRecord
 
   def next_leg_starter
     ordered_players = match.players.order(:created_at).to_a
-    ordered_players[match.legs.count % ordered_players.size]
+    return nil if ordered_players.empty?
+
+    first_starter_index = (match.starting_player_position.to_i - 1).clamp(0, ordered_players.size - 1)
+    ordered_players[(first_starter_index + match.legs.count) % ordered_players.size]
   end
 end

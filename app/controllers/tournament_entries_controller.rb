@@ -54,11 +54,11 @@ class TournamentEntriesController < ApplicationController
   private
 
   def set_tournament
-    @tournament = Tournament.find(params[:tournament_id])
+    @tournament = Tournament.find_by_public_id!(params[:tournament_id])
   end
 
   def set_entry
-    @entry = @tournament.entries.find(params[:id])
+    @entry = @tournament.entries.find_by!(public_id: params[:id])
   end
 
   def entry_params

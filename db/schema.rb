@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_11_122000) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_29_123000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -46,11 +46,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_11_122000) do
     t.datetime "finished_at"
     t.bigint "match_id", null: false
     t.bigint "match_set_id"
+    t.string "public_id", null: false
     t.integer "starting_score"
     t.datetime "updated_at", null: false
     t.integer "winner_id"
     t.index ["match_id"], name: "index_legs_on_match_id"
     t.index ["match_set_id"], name: "index_legs_on_match_set_id"
+    t.index ["public_id"], name: "index_legs_on_public_id", unique: true
   end
 
   create_table "match_sets", force: :cascade do |t|
@@ -77,6 +79,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_11_122000) do
     t.datetime "invite_joined_at"
     t.string "invite_token"
     t.string "match_identifier"
+    t.string "public_id", null: false
+    t.integer "starting_player_position", default: 1, null: false
     t.integer "starting_score", default: 501, null: false
     t.datetime "updated_at", null: false
     t.integer "winner_id"
@@ -84,6 +88,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_11_122000) do
     t.index ["guest_token"], name: "index_matches_on_guest_token", unique: true
     t.index ["invite_expires_at"], name: "index_matches_on_invite_expires_at"
     t.index ["invite_token"], name: "index_matches_on_invite_token", unique: true
+    t.index ["public_id"], name: "index_matches_on_public_id", unique: true
   end
 
   create_table "players", force: :cascade do |t|
@@ -95,10 +100,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_11_122000) do
     t.jsonb "dart_setup_snapshot", default: {}, null: false
     t.bigint "match_id"
     t.string "name"
+    t.string "public_id", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id"
     t.index ["dart_setup_id"], name: "index_players_on_dart_setup_id"
     t.index ["match_id"], name: "index_players_on_match_id"
+    t.index ["public_id"], name: "index_players_on_public_id", unique: true
     t.index ["user_id", "dart_setup_fingerprint"], name: "index_players_on_user_id_and_dart_setup_fingerprint"
     t.index ["user_id"], name: "index_players_on_user_id"
   end
@@ -132,6 +139,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_11_122000) do
     t.integer "losses", default: 0, null: false
     t.string "name", null: false
     t.integer "points", default: 0, null: false
+    t.string "public_id", null: false
     t.integer "seed"
     t.string "status", default: "active", null: false
     t.bigint "tournament_id", null: false
@@ -139,6 +147,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_11_122000) do
     t.bigint "user_id"
     t.integer "wins", default: 0, null: false
     t.index ["access_token"], name: "index_tournament_entries_on_access_token", unique: true
+    t.index ["public_id"], name: "index_tournament_entries_on_public_id", unique: true
     t.index ["tournament_id", "name"], name: "index_tournament_entries_on_tournament_id_and_name", unique: true
     t.index ["tournament_id"], name: "index_tournament_entries_on_tournament_id"
     t.index ["user_id"], name: "index_tournament_entries_on_user_id"
@@ -161,6 +170,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_11_122000) do
     t.integer "home_sets", default: 0, null: false
     t.bigint "linked_match_id"
     t.integer "position"
+    t.string "public_id", null: false
     t.jsonb "settings", default: {}, null: false
     t.string "source", default: "generated", null: false
     t.integer "starting_score", default: 501, null: false
@@ -172,6 +182,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_11_122000) do
     t.index ["away_entry_id"], name: "index_tournament_matches_on_away_entry_id"
     t.index ["home_entry_id"], name: "index_tournament_matches_on_home_entry_id"
     t.index ["linked_match_id"], name: "index_tournament_matches_on_linked_match_id"
+    t.index ["public_id"], name: "index_tournament_matches_on_public_id", unique: true
     t.index ["tournament_id"], name: "index_tournament_matches_on_tournament_id"
     t.index ["tournament_round_id", "position"], name: "index_tournament_matches_on_tournament_round_id_and_position", unique: true
     t.index ["tournament_round_id"], name: "index_tournament_matches_on_tournament_round_id"
@@ -216,6 +227,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_11_122000) do
     t.string "playoff_mode", default: "single_elimination", null: false
     t.integer "playoff_qualifier_count"
     t.integer "playoff_starting_score"
+    t.string "public_id", null: false
     t.datetime "published_at"
     t.integer "qualifiers_per_group"
     t.string "seeding_mode", default: "auto", null: false
@@ -231,6 +243,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_11_122000) do
     t.index ["admin_token"], name: "index_tournaments_on_admin_token", unique: true
     t.index ["join_token"], name: "index_tournaments_on_join_token", unique: true
     t.index ["owner_user_id"], name: "index_tournaments_on_owner_user_id"
+    t.index ["public_id"], name: "index_tournaments_on_public_id", unique: true
     t.index ["share_token"], name: "index_tournaments_on_share_token", unique: true
   end
 
@@ -242,12 +255,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_11_122000) do
     t.integer "hits", default: 0, null: false
     t.integer "misses", default: 0, null: false
     t.string "mode", null: false
+    t.string "public_id", null: false
     t.datetime "started_at", null: false
     t.string "status", default: "active", null: false
     t.jsonb "target_stats", default: [], null: false
     t.integer "total_darts", default: 0, null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
+    t.index ["public_id"], name: "index_training_sessions_on_public_id", unique: true
     t.index ["user_id", "created_at"], name: "index_training_sessions_on_user_id_and_created_at"
     t.index ["user_id", "status"], name: "index_training_sessions_on_user_id_and_status"
     t.index ["user_id"], name: "index_training_sessions_on_user_id"
@@ -258,10 +273,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_11_122000) do
     t.datetime "created_at", null: false
     t.bigint "leg_id", null: false
     t.bigint "player_id", null: false
+    t.string "public_id", null: false
     t.integer "total_score"
     t.datetime "updated_at", null: false
     t.index ["leg_id"], name: "index_turns_on_leg_id"
     t.index ["player_id"], name: "index_turns_on_player_id"
+    t.index ["public_id"], name: "index_turns_on_public_id", unique: true
   end
 
   create_table "users", force: :cascade do |t|

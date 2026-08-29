@@ -3,8 +3,8 @@ class MatchInvitesController < ApplicationController
 
   rescue_from ActiveRecord::RecordNotFound, with: :invite_not_found
   before_action :resume_session_optional
-  before_action :set_match_by_id, only: %i[show status cancel]
-  before_action :authorize_waiting_match!, only: %i[show status cancel]
+  before_action :set_match_by_id, only: %i[show status update_starter cancel]
+  before_action :authorize_waiting_match!, only: %i[show status update_starter cancel]
   before_action :set_match_by_token, only: %i[join create]
 
   def show
@@ -23,7 +23,7 @@ class MatchInvitesController < ApplicationController
 
     render json: {
       joined: joined,
-      match_url: joined ? match_path(@match, player_id: player&.id) : nil
+      match_url: joined ? match_path(@match, player_id: player&.public_id) : nil
     }
   end
 
@@ -39,7 +39,7 @@ class MatchInvitesController < ApplicationController
 
     p1_name = params[:player1_name].to_s.strip.presence || Current.user&.display_name || "Player 1"
 
-    @match = Match.new(MatchSettings.from_params(params).to_h)
+    @match = Match.new(MatchSettings.from_params(params).to_h.merge(starting_player_position: invite_starting_player_position))
 
     ApplicationRecord.transaction do
       @match.ensure_guest_token! if Current.user.nil?
@@ -94,7 +94,12 @@ class MatchInvitesController < ApplicationController
 
     remember_guest_match!(@match, @match.guest_token) unless Current.user
     joined_player = @match.players.order(:created_at).last
-    redirect_to match_path(@match, player_id: joined_player.id)
+    redirect_to match_path(@match, player_id: joined_player.public_id)
+  end
+
+  def update_starter
+    @match.update!(starting_player_position: invite_starting_player_position) if @match.invite_pending?
+    redirect_to match_invite_path(@match)
   end
 
   def cancel
@@ -105,7 +110,7 @@ class MatchInvitesController < ApplicationController
   private
 
   def set_match_by_id
-    @match = Match.find(params[:id])
+    @match = Match.find_by_public_id!(params[:id])
   end
 
   def set_match_by_token
@@ -116,11 +121,15 @@ class MatchInvitesController < ApplicationController
     authorize_match!(@match)
   end
 
+  def invite_starting_player_position
+    params[:invite_starter].to_s == "invitee" ? 2 : 1
+  end
+
   def current_dart_setup_snapshot
     Current.user&.premium_access? ? Current.user.dart_setup : nil
   end
 
   def invite_not_found
-    redirect_to matches_path, alert: t("flashes.invite_not_found")
+    head :not_found
   end
 end

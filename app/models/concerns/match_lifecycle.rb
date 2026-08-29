@@ -21,9 +21,9 @@ module MatchLifecycle
     end
   end
 
-  def start_first_set!
+  def start_first_set!(starter = nil)
     set = match_sets.create!
-    set.start_first_leg!
+    set.start_first_leg!(starter)
     set
   end
 

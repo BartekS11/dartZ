@@ -24,7 +24,10 @@ class MatchesControllerTest < ActionDispatch::IntegrationTest
       post matches_path
     end
 
-    assert_redirected_to match_path(Match.last)
+    match = Match.last
+    assert_redirected_to match_path(match)
+    assert_includes @response.redirect_url, match.public_id
+    assert_not_includes @response.redirect_url, "/matches/#{match.id}"
   end
 
   test "premium user match player stores dart setup snapshot" do
@@ -54,6 +57,33 @@ class MatchesControllerTest < ActionDispatch::IntegrationTest
     get match_path(match)
 
     assert_response :success
+  end
+
+  test "numeric match URL returns 404" do
+    match = Match.create!
+    match.players.create!(name: "You", user: @user)
+
+    get "/matches/#{match.id}"
+
+    assert_response :not_found
+  end
+
+  test "invite lobby can let invited player start" do
+    post matches_path, params: { invite_match: "1", player1_name: "Alice" }
+    match = Match.last
+
+    assert_equal 1, match.starting_player_position
+
+    patch match_invite_starter_path(match), params: { invite_starter: "invitee" }
+    assert_redirected_to match_invite_path(match)
+    assert_equal 2, match.reload.starting_player_position
+
+    delete session_path
+    post accept_match_invite_path(match.invite_token), params: { player_name: "Bob" }
+
+    match.reload
+    bob = match.players.find_by!(name: "Bob")
+    assert_equal bob, match.current_leg.current_turn.player
   end
 
   test "guest immediate match is not marked as remote invite locked" do

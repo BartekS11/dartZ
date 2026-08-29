@@ -51,7 +51,7 @@ class TrainingSessionsController < ApplicationController
   end
 
   def set_training_session
-    @training_session = Current.user.training_sessions.find(params[:id])
+    @training_session = Current.user.training_sessions.find_by!(public_id: params[:id])
   end
 
   def training_session_params

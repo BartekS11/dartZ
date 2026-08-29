@@ -47,6 +47,7 @@ Rails.application.routes.draw do
   post "match_invites", to: "match_invites#create_invite", as: :match_invites
   get "match_invites/:id", to: "match_invites#show", as: :match_invite
   get "match_invites/:id/status", to: "match_invites#status", as: :match_invite_status
+  patch "match_invites/:id/starter", to: "match_invites#update_starter", as: :match_invite_starter
   delete "match_invites/:id", to: "match_invites#cancel", as: :cancel_match_invite
   get "join/:token", to: "match_invites#join", as: :match_invite_join
   post "join/:token", to: "match_invites#create", as: :accept_match_invite

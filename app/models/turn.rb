@@ -1,4 +1,7 @@
 class Turn < ApplicationRecord
+  include HasPublicId
+  public_id_prefix "tu_"
+
   include TurnFlow
   include ScoringRules
   include TurnScoring

@@ -3,6 +3,9 @@ class TrainingSession < ApplicationRecord
   STATUSES = %w[active completed abandoned].freeze
   ABANDON_AFTER = 15.days
 
+  include HasPublicId
+  public_id_prefix "tr_"
+
   include TrainingSessionTargets
   include TrainingSessionLifecycle
   include TrainingSessionRecording

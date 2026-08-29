@@ -1,4 +1,7 @@
 class Leg < ApplicationRecord
+  include HasPublicId
+  public_id_prefix "l_"
+
   include LegFlow
   include HasDurationDisplay
 

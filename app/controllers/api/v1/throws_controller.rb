@@ -2,7 +2,7 @@ module Api
   module V1
     class ThrowsController < BaseController
       def create
-        @turn  = Turn.find(params[:match_id] ? find_current_turn : params[:turn_id])
+        @turn  = params[:match_id] ? find_current_turn : Turn.find_by_public_id!(params[:turn_id])
         @match = @turn.leg.match
         authorize_api_match!(@match)
 
@@ -19,7 +19,7 @@ module Api
       end
 
       def undo
-        @turn  = Turn.find(params[:match_id] ? find_current_turn : params[:turn_id])
+        @turn  = params[:match_id] ? find_current_turn : Turn.find_by_public_id!(params[:turn_id])
         @match = @turn.leg.match
         authorize_api_match!(@match)
 
@@ -46,9 +46,9 @@ module Api
       end
 
       def find_current_turn
-        match = Match.find(params[:match_id])
+        match = Match.find_by_public_id!(params[:match_id])
         authorize_api_match!(match)
-        match.current_leg&.current_turn&.id or
+        match.current_leg&.current_turn or
           raise ActiveRecord::RecordNotFound, "No active turn"
       end
     end

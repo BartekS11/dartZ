@@ -3,7 +3,7 @@
 <script>
   (function() {
     const matches = JSON.parse(localStorage.getItem("dartz_matches") || "[]")
-    const id = <%= @match.id.to_json %>
+    const id = <%= @match.public_id.to_json %>
     const exists = matches.find(m => m.id === id)
     const guestToken = <%= (Current.user ? nil : @match.guest_token).to_json.html_safe %>
     if (!exists) {
@@ -26,7 +26,7 @@
   <% if @match.finished? %>
     <% finishing_leg = @match.match_sets.flat_map(&:legs).max_by(&:created_at) %>
     <% finishing_player = finishing_leg&.winner %>
-    <% if finishing_player && finishing_leg.checkout_throws.blank? %>
+    <% if finishing_player && finishing_leg.checkout_throws.blank? && (!@match.invite_match? || @current_match_player == finishing_player) %>
       <%= render "matches/finish_popup", player: finishing_player, leg: finishing_leg %>
     <% end %>
   <% end %>

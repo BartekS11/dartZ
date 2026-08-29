@@ -2,6 +2,9 @@ class TournamentMatch < ApplicationRecord
   STATUSES = %w[pending live complete].freeze
   SOURCES = %w[generated manual].freeze
 
+  include HasPublicId
+  public_id_prefix "tm_"
+
   include X01GameSettings
 
   belongs_to :tournament

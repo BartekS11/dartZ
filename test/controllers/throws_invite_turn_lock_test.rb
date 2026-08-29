@@ -21,7 +21,7 @@ class ThrowsInviteTurnLockTest < ActionDispatch::IntegrationTest
     assert_equal @player1, @turn.player
 
     post turn_throws_path(@turn),
-         params: { guest_token: @match.guest_token, actor_player_id: @player2.id, throw: { total: 0 } },
+         params: { guest_token: @match.guest_token, actor_player_id: @player2.public_id, throw: { total: 0 } },
          headers: { "Accept" => "text/vnd.turbo-stream.html" }
 
     assert_response :conflict
@@ -34,7 +34,7 @@ class ThrowsInviteTurnLockTest < ActionDispatch::IntegrationTest
     @turn.update!(updated_at: 3.minutes.ago)
 
     post turn_throws_path(@turn),
-         params: { guest_token: @match.guest_token, actor_player_id: @player2.id, throw: { total: 0 } },
+         params: { guest_token: @match.guest_token, actor_player_id: @player2.public_id, throw: { total: 0 } },
          headers: { "Accept" => "text/vnd.turbo-stream.html" }
 
     assert_response :success
@@ -46,7 +46,7 @@ class ThrowsInviteTurnLockTest < ActionDispatch::IntegrationTest
 
   test "invite opponent cannot click through throw pad before afk timeout" do
     post turn_throws_path(@turn),
-         params: { guest_token: @match.guest_token, actor_player_id: @player2.id, throw: { segment: 20, multiplier: "triple" } },
+         params: { guest_token: @match.guest_token, actor_player_id: @player2.public_id, throw: { segment: 20, multiplier: "triple" } },
          headers: { "Accept" => "text/vnd.turbo-stream.html" }
 
     assert_response :conflict
@@ -58,7 +58,7 @@ class ThrowsInviteTurnLockTest < ActionDispatch::IntegrationTest
 
   test "invite current player can submit from throw pad" do
     post turn_throws_path(@turn),
-         params: { guest_token: @match.guest_token, actor_player_id: @player1.id, throw: { segment: 20, multiplier: "triple" } },
+         params: { guest_token: @match.guest_token, actor_player_id: @player1.public_id, throw: { segment: 20, multiplier: "triple" } },
          headers: { "Accept" => "text/vnd.turbo-stream.html" }
 
     assert_response :success

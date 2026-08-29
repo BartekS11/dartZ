@@ -89,7 +89,7 @@ class MatchStatePresenter
 
   def summary_payload
     {
-      id: match.id,
+      id: match.public_id,
       match_identifier: match.match_identifier,
       ui_identifier: match.ui_identifier,
       finished: finished?,
@@ -101,7 +101,7 @@ class MatchStatePresenter
 
   def state_payload
     {
-      id: match.id,
+      id: match.public_id,
       match_identifier: match.match_identifier,
       ui_identifier: match.ui_identifier,
       finished: finished?,
@@ -112,7 +112,7 @@ class MatchStatePresenter
       double_out: match.double_out?,
       winner: winner&.display_name,
       current_player: current_player&.display_name,
-      current_turn_id: current_turn&.id,
+      current_turn_id: current_turn&.public_id,
       players: players.map { |player| state_player_payload(player) }
     }
   end
@@ -249,7 +249,7 @@ class MatchStatePresenter
 
   def summary_player_payload(player)
     {
-      id: player.id,
+      id: player.public_id,
       name: player.display_name,
       score: score_for(player),
       avg: three_dart_average(player),
@@ -259,7 +259,7 @@ class MatchStatePresenter
 
   def state_player_payload(player)
     {
-      id: player.id,
+      id: player.public_id,
       name: player.display_name,
       score: score_for(player),
       avg: three_dart_average(player),
