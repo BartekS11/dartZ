@@ -1,8 +1,10 @@
-User.destroy_all
+# Destroy records in dependency order so foreign keys do not block reseeding.
+Tournament.destroy_all if defined?(Tournament)
 Match.destroy_all
-Player.destroy_all
-Leg.destroy_all
-Turn.destroy_all
+DartSetup.destroy_all if defined?(DartSetup)
+TrainingSession.destroy_all if defined?(TrainingSession)
+Session.destroy_all if defined?(Session)
+User.destroy_all
 
 user = User.create!(
   email_address: "test@example.com",
@@ -24,7 +26,8 @@ guest = Player.create!(
   name: "Guest"
 )
 
-leg = match.legs.create!
+match_set = match.match_sets.create!
+leg = match_set.legs.create!(match: match)
 
 leg.turns.create!(
   player: player
