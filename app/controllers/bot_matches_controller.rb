@@ -6,7 +6,7 @@ class BotMatchesController < ApplicationController
 
   def create
     human_name = params[:player_name].to_s.strip.presence || Current.user.display_name
-    bot_level  = params[:bot_level].to_i.clamp(1, 20)
+    bot_level  = BotService.normalize_level(params[:bot_level].presence || BotService::DEFAULT_LEVEL)
     bot_name   = params[:bot_name].to_s.strip.presence || "Bot (Level #{bot_level})"
 
     @match = MatchCreator.call(

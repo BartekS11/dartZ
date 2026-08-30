@@ -2,7 +2,7 @@ module HasPublicId
   extend ActiveSupport::Concern
 
   PUBLIC_ID_RANDOM_LENGTH = 16
-  PUBLIC_ID_RANDOM_ALPHABET = [*"0".."9", *"A".."Z", *"a".."z"].freeze
+  PUBLIC_ID_RANDOM_ALPHABET = [ *"0".."9", *"A".."Z", *"a".."z" ].freeze
 
   included do
     before_validation :ensure_public_id, on: :create

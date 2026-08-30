@@ -20,7 +20,6 @@ gem "stripe"
 
 # Support for JWT token based auth for client apps (mobile)
 gem "jwt"
-gem "mocha"
 # Allow CORS support
 gem "rack-cors"
 
@@ -58,4 +57,11 @@ end
 group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"
+end
+
+group :test do
+  gem "capybara", "~> 3.40"
+  gem "mocha"
+  gem "selenium-webdriver", "~> 4.48"
+  gem "testcontainers-postgres", "~> 0.2.0"
 end

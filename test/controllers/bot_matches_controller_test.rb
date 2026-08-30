@@ -8,7 +8,7 @@ class BotMatchesControllerTest < ActionDispatch::IntegrationTest
     post bot_match_path, params: {
       player_name: "Human",
       bot_name: "Practice Bot",
-      bot_level: "17",
+      bot_level: "12",
       starting_score: "501",
       best_of_legs: "1",
       best_of_sets: "1",
@@ -17,6 +17,6 @@ class BotMatchesControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to match_path(Match.last)
     bot = Match.last.players.find_by!(bot: true)
-    assert_equal 17, bot.bot_level
+    assert_equal 10, bot.bot_level
   end
 end

@@ -15,7 +15,7 @@ class BotTurnJob < ApplicationJob
     leg_player = turn.leg.leg_players.find_by!(player: player)
 
     Rails.logger.info "BOT TURN: score=#{score} level=#{level}"
-    sleep 1.5
+    sleep bot_initial_delay
 
     throws = BotService.play_turn(
       score: score,
@@ -40,9 +40,19 @@ class BotTurnJob < ApplicationJob
         turn.apply_throw!(throw_record, broadcast: true)
       end
 
-      sleep 0.8 unless i == throws.size - 1
+      sleep bot_throw_delay unless i == throws.size - 1
     end
   rescue ActiveRecord::RecordNotFound
     # Turn or match was deleted — ignore
+  end
+
+  private
+
+  def bot_initial_delay
+    ENV.fetch("BOT_TURN_INITIAL_DELAY", Rails.env.test? ? "0" : "0.4").to_f
+  end
+
+  def bot_throw_delay
+    ENV.fetch("BOT_TURN_THROW_DELAY", Rails.env.test? ? "0" : "0.25").to_f
   end
 end
