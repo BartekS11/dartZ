@@ -125,6 +125,11 @@ E2EPostgres.start! if E2E_ENABLED
 
 require_relative "test_helper"
 
+if E2E_ENABLED
+  ActiveRecord::Migration.verbose = false
+  ActiveRecord::Tasks::DatabaseTasks.migrate
+end
+
 module E2ETestHelpers
   def unique_email(prefix)
     "#{prefix}-#{SecureRandom.hex(6)}@example.test"

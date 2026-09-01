@@ -1,0 +1,31 @@
+<div class="page-shell stack-lg">
+  <section class="theme-hero p-5">
+    <div class="theme-section-label"><%= t("practice_plans.label") %></div>
+    <h1 class="page-title"><%= @practice_plan.title %></h1>
+    <p class="page-copy mt-3"><%= @practice_plan.description %></p>
+    <div class="progress-thin mt-4"><span style="width:<%= @practice_plan.progress_percent %>%"></span></div>
+    <p class="mono mt-2"><%= @practice_plan.progress_percent %>%</p>
+  </section>
+
+  <section class="theme-card p-5 stack-md">
+    <% @practice_plan.tasks.each do |task| %>
+      <div class="theme-panel p-4">
+        <div class="is-flex is-justify-content-space-between is-align-items-center">
+          <div>
+            <div class="theme-section-label"><%= t("training.modes.#{task.training_mode}.name") %></div>
+            <h2 class="section-title"><%= task.title %></h2>
+            <p class="page-copy"><%= task.progress_count %>/<%= task.target_count %></p>
+          </div>
+          <% if task.completed? %>
+            <span class="theme-chip is-live"><%= t("practice_plans.completed") %></span>
+          <% else %>
+            <%= button_to t("practice_plans.mark_done"), practice_plan_complete_task_path(@practice_plan, task), method: :patch, class: "button theme-btn-outline mono" if task.manual_completion_allowed? %>
+          <% end %>
+        </div>
+        <div class="progress-thin mt-3"><span style="width:<%= ((task.progress_count.to_f / task.target_count) * 100).round %>%"></span></div>
+      </div>
+    <% end %>
+  </section>
+
+  <%= link_to t("common.back"), practice_plans_path, class: "button theme-btn-outline mono" %>
+</div>

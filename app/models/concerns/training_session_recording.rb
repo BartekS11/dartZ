@@ -22,7 +22,9 @@ module TrainingSessionRecording
       attrs[:completed_at] = Time.current
     end
 
-    update!(attrs)
+    update!(attrs).tap do |saved|
+      TrainingSessionPracticePlanProgressor.call(self) if saved && completed?
+    end
   end
 
   def record_no_hit!(misses_count: 1)

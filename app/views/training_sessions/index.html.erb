@@ -1,8 +1,11 @@
-<div class="page-shell">
-  <div class="theme-hero p-5 mb-5">
+<div class="page-shell stack-lg unified-tool-page">
+  <div class="theme-hero p-5">
     <div class="theme-section-label"><%= t("training.premium_label") %></div>
     <h1 class="page-title"><%= t("training.title") %></h1>
     <p class="page-copy mt-3"><%= t("training.intro") %></p>
+    <div class="buttons mt-4">
+      <%= link_to t("nav.practice_plans"), practice_plans_path, class: "button theme-btn-primary mono" %>
+    </div>
   </div>
 
   <div class="training-clean-layout">

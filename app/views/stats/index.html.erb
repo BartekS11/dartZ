@@ -1,0 +1,64 @@
+<div class="page-shell stack-lg unified-tool-page">
+  <section class="theme-hero p-5">
+    <div class="theme-section-label"><%= t("stats.label") %></div>
+    <h1 class="page-title"><%= t("stats.title") %></h1>
+    <p class="page-copy mt-3"><%= t("stats.intro") %></p>
+  </section>
+
+  <section class="theme-card stats-filter-card p-5">
+    <%= form_with url: stats_path, method: :get, data: { turbo: false }, class: "stats-filter-grid" do %>
+      <label><span class="auth-label"><%= t("stats.from") %></span><%= date_field_tag :from, params[:from], class: "input theme-form-input mono" %></label>
+      <label><span class="auth-label"><%= t("stats.to") %></span><%= date_field_tag :to, params[:to], class: "input theme-form-input mono" %></label>
+      <label><span class="auth-label"><%= t("common.starting_score") %></span><%= select_tag :starting_score, options_for_select([[t("stats.any"), ""]] + Match::X01_STARTING_SCORES.map { |score| [score, score] }, params[:starting_score]), class: "select theme-form-input mono" %></label>
+      <label><span class="auth-label"><%= t("stats.opponent") %></span><%= select_tag :opponent, options_for_select([[t("stats.any"), ""]] + @opponents.map { |name| [name, name] }, params[:opponent]), class: "select theme-form-input mono" %></label>
+      <label><span class="auth-label"><%= t("stats.opponent_type") %></span><%= select_tag :opponent_type, options_for_select([[t("stats.any"), ""], [t("stats.bot"), "bot"], [t("stats.human"), "human"]], params[:opponent_type]), class: "select theme-form-input mono" %></label>
+      <label><span class="auth-label"><%= t("stats.source") %></span><%= select_tag :match_source, options_for_select([[t("stats.any"), ""], [t("stats.casual"), "casual"], [t("stats.tournament"), "tournament"]], params[:match_source]), class: "select theme-form-input mono" %></label>
+      <label><span class="auth-label"><%= t("nav.dart_setup") %></span><%= select_tag :dart_setup, options_for_select([[t("stats.any"), ""]] + @dart_setups, params[:dart_setup]), class: "select theme-form-input mono" %></label>
+      <div class="is-flex is-align-items-flex-end"><%= submit_tag t("training.apply"), class: "button theme-btn-primary mono" %></div>
+    <% end %>
+  </section>
+
+  <% if @summary[:matches_played].zero? %>
+    <section class="theme-blank-slate"><p class="page-copy"><%= t("stats.empty") %></p></section>
+  <% else %>
+    <section class="stats-summary-grid">
+      <% [
+        [t("stats.matches_played"), @summary[:matches_played]], [t("stats.wins"), @summary[:wins]], [t("stats.losses"), @summary[:losses]],
+        [t("stats.three_dart_average"), @summary[:three_dart_average]], [t("stats.first_9_average"), @summary[:first_9_average]], [t("stats.highest_turn"), @summary[:highest_turn]],
+        ["100+", @summary[:ton_plus]], ["140+", @summary[:ton_40_plus]], ["180", @summary[:max_180s]],
+        [t("stats.checkout_rate"), "#{@summary[:checkout_rate]}%"], [t("stats.double_hit_share"), "#{@summary[:double_hit_share]}%"], [t("stats.bust_count"), @summary[:bust_count]]
+      ].each do |label, value| %>
+        <article class="stats-metric-card">
+          <div class="stats-metric-label"><%= label %></div>
+          <strong class="stats-metric-value mono"><%= value %></strong>
+        </article>
+      <% end %>
+    </section>
+
+    <section class="theme-card stats-charts-card p-5 stack-md">
+      <h2 class="section-title"><%= t("stats.charts") %></h2>
+      <div class="stats-chart-grid">
+        <div class="stats-chart-panel">
+          <h3 class="stats-chart-title"><%= t("stats.average_over_time") %></h3>
+          <% @chart_data[:average_over_time].each do |date, average| %>
+            <div class="stats-chart-row"><span><%= date %></span><strong class="mono"><%= average %></strong></div>
+            <div class="progress-thin stats-progress"><span style="width:<%= [average, 100].min %>%"></span></div>
+          <% end %>
+        </div>
+        <div class="stats-chart-panel">
+          <h3 class="stats-chart-title"><%= t("stats.high_turns") %></h3>
+          <% @chart_data[:high_turns].each do |label, count| %>
+            <div class="stats-chart-row"><span><%= label %></span><strong class="mono"><%= count %></strong></div>
+            <div class="progress-thin stats-progress"><span style="width:<%= [count * 10, 100].min %>%"></span></div>
+          <% end %>
+        </div>
+        <div class="stats-chart-panel">
+          <h3 class="stats-chart-title"><%= t("stats.win_loss") %></h3>
+          <div class="stats-chart-row"><span><%= t("stats.wins") %></span><strong class="mono"><%= @chart_data[:win_loss][:wins] %></strong></div>
+          <div class="stats-chart-row"><span><%= t("stats.losses") %></span><strong class="mono"><%= @chart_data[:win_loss][:losses] %></strong></div>
+          <div class="stats-chart-row"><span><%= t("stats.checkout_rate") %></span><strong class="mono"><%= @chart_data[:checkout_rate] %>%</strong></div>
+        </div>
+      </div>
+    </section>
+  <% end %>
+</div>

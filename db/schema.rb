@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_29_123000) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_30_181014) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -108,6 +108,53 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_29_123000) do
     t.index ["public_id"], name: "index_players_on_public_id", unique: true
     t.index ["user_id", "dart_setup_fingerprint"], name: "index_players_on_user_id_and_dart_setup_fingerprint"
     t.index ["user_id"], name: "index_players_on_user_id"
+  end
+
+  create_table "practice_plan_task_events", force: :cascade do |t|
+    t.integer "count", default: 1, null: false
+    t.datetime "created_at", null: false
+    t.bigint "practice_plan_task_id", null: false
+    t.string "source", null: false
+    t.bigint "training_session_id"
+    t.datetime "updated_at", null: false
+    t.index ["practice_plan_task_id", "training_session_id"], name: "idx_practice_task_events_unique_training_session", unique: true
+    t.index ["practice_plan_task_id"], name: "index_practice_plan_task_events_on_practice_plan_task_id"
+    t.index ["training_session_id"], name: "index_practice_plan_task_events_on_training_session_id"
+  end
+
+  create_table "practice_plan_tasks", force: :cascade do |t|
+    t.datetime "completed_at"
+    t.datetime "created_at", null: false
+    t.text "description"
+    t.boolean "manual_completion_allowed", default: true, null: false
+    t.integer "position", default: 1, null: false
+    t.bigint "practice_plan_id", null: false
+    t.integer "progress_count", default: 0, null: false
+    t.integer "target_count", default: 1, null: false
+    t.string "title", null: false
+    t.string "training_mode", null: false
+    t.datetime "updated_at", null: false
+    t.index ["practice_plan_id", "position"], name: "index_practice_plan_tasks_on_practice_plan_id_and_position"
+    t.index ["practice_plan_id"], name: "index_practice_plan_tasks_on_practice_plan_id"
+    t.index ["training_mode"], name: "index_practice_plan_tasks_on_training_mode"
+  end
+
+  create_table "practice_plans", force: :cascade do |t|
+    t.datetime "completed_at"
+    t.datetime "created_at", null: false
+    t.text "description"
+    t.string "plan_type", null: false
+    t.string "public_id", null: false
+    t.jsonb "recommendation_metadata", default: {}, null: false
+    t.datetime "started_at", null: false
+    t.string "status", default: "active", null: false
+    t.string "title", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["plan_type"], name: "index_practice_plans_on_plan_type"
+    t.index ["public_id"], name: "index_practice_plans_on_public_id", unique: true
+    t.index ["user_id", "status"], name: "index_practice_plans_on_user_id_and_status"
+    t.index ["user_id"], name: "index_practice_plans_on_user_id"
   end
 
   create_table "sessions", force: :cascade do |t|
@@ -310,6 +357,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_29_123000) do
   add_foreign_key "players", "dart_setups"
   add_foreign_key "players", "matches"
   add_foreign_key "players", "users"
+  add_foreign_key "practice_plan_task_events", "practice_plan_tasks"
+  add_foreign_key "practice_plan_task_events", "training_sessions"
+  add_foreign_key "practice_plan_tasks", "practice_plans"
+  add_foreign_key "practice_plans", "users"
   add_foreign_key "sessions", "users"
   add_foreign_key "throws", "turns"
   add_foreign_key "tournament_entries", "tournaments"

@@ -1,0 +1,52 @@
+<div class="page-shell stack-lg">
+  <section class="theme-hero p-5">
+    <div class="theme-section-label"><%= t("practice_plans.label") %></div>
+    <h1 class="page-title"><%= t("practice_plans.title") %></h1>
+    <p class="page-copy mt-3"><%= t("practice_plans.intro") %></p>
+  </section>
+
+  <section class="theme-card p-5 stack-md">
+    <div class="is-flex is-justify-content-space-between is-align-items-center">
+      <h2 class="section-title"><%= t("practice_plans.recommended") %></h2>
+      <%= button_to t("practice_plans.generate"), practice_plans_path, params: { generated: "1" }, class: "button theme-btn-primary mono" %>
+    </div>
+  </section>
+
+  <% if @active_plans.any? %>
+    <section class="theme-card p-5 stack-md">
+      <h2 class="section-title"><%= t("practice_plans.active") %></h2>
+      <% @active_plans.each do |plan| %>
+        <%= link_to practice_plan_path(plan), class: "theme-match-card p-4" do %>
+          <div class="is-flex is-justify-content-space-between"><strong><%= plan.title %></strong><span class="mono"><%= plan.progress_percent %>%</span></div>
+          <div class="progress-thin mt-2"><span style="width:<%= plan.progress_percent %>%"></span></div>
+        <% end %>
+      <% end %>
+    </section>
+  <% end %>
+
+  <section class="columns is-multiline is-variable is-3">
+    <% @templates.each do |template| %>
+      <div class="column is-6-desktop">
+        <article class="theme-card p-5 stack-sm h-full">
+          <h2 class="section-title"><%= template.title %></h2>
+          <p class="page-copy"><%= template.description %></p>
+          <%= button_to t("practice_plans.start"), practice_plans_path, params: { template_key: template.key }, class: "button theme-btn-primary mono" %>
+        </article>
+      </div>
+    <% end %>
+  </section>
+
+  <section class="theme-card p-5 stack-md">
+    <h2 class="section-title"><%= t("practice_plans.custom_plan") %></h2>
+    <%= form_with url: practice_plans_path, method: :post, data: { turbo: false }, class: "stack-md" do %>
+      <label><span class="auth-label"><%= t("practice_plans.custom_title") %></span><%= text_field_tag :title, nil, class: "input theme-form-input mono" %></label>
+      <% 3.times do |index| %>
+        <div class="columns is-variable is-3">
+          <div class="column"><%= select_tag "tasks[#{index}][training_mode]", options_for_select(TrainingSession::MODES.map { |mode| [t("training.modes.#{mode}.name"), mode] }), class: "select theme-form-input mono" %></div>
+          <div class="column"><%= number_field_tag "tasks[#{index}][target_count]", 1, min: 1, max: 20, class: "input theme-form-input mono" %></div>
+        </div>
+      <% end %>
+      <%= submit_tag t("practice_plans.create_custom"), class: "button theme-btn-primary mono" %>
+    <% end %>
+  </section>
+</div>

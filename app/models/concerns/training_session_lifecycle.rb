@@ -51,7 +51,9 @@ module TrainingSessionLifecycle
   def complete!
     return false unless active?
 
-    update!(status: "completed", completed_at: Time.current)
+    update!(status: "completed", completed_at: Time.current).tap do |completed|
+      TrainingSessionPracticePlanProgressor.call(self) if completed
+    end
   end
 
   def abandon!

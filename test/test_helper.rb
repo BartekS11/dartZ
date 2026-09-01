@@ -1,5 +1,6 @@
 ENV["RAILS_ENV"] ||= "test"
 require_relative "../config/environment"
+ActiveRecord.maintain_test_schema = false if ENV["RUN_E2E"] == "true"
 require "rails/test_help"
 require "mocha/minitest"
 
