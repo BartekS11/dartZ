@@ -2,6 +2,8 @@ en:
   locales:
     en: "EN"
     pl: "PL"
+  meta:
+    description: "DartZ is a modern darts scoring app for tracking 501 matches, bot practice, tournaments, training sessions, throws, averages, and checkout finishes."
   nav:
     match: "Match"
     bot: "Bot"

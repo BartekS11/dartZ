@@ -2,6 +2,8 @@ pl:
   locales:
     en: "EN"
     pl: "PL"
+  meta:
+    description: "DartZ to nowoczesna aplikacja do punktowania darta: mecze 501, gra z botem, turnieje, treningi, rzuty, średnie i checkouty."
   nav:
     match: "Mecz"
     bot: "Bot"
