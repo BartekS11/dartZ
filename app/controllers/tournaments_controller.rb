@@ -41,7 +41,7 @@ class TournamentsController < ApplicationController
 
     entry_names = extract_entry_names
     @entry_names = params[:tournament][:entry_names].to_s
-    build_entries(@tournament, entry_names)
+    @tournament.build_seeded_entries(entry_names)
 
     if entry_names.size < 2
       @tournament.errors.add(:base, t("tournaments.errors_min_players"))
@@ -86,7 +86,7 @@ class TournamentsController < ApplicationController
     if @tournament.update(tournament_params)
       @tournament.with_lock do
         if @tournament.status == "draft"
-          auto_assign_preview_groups!
+          @tournament.assign_preview_groups
         elsif @tournament.entries.size >= 2
           TournamentGenerator.new(@tournament).call
         end
@@ -125,7 +125,7 @@ class TournamentsController < ApplicationController
 
     @tournament.with_lock do
       if @tournament.status == "draft"
-        auto_assign_preview_groups!
+        @tournament.assign_preview_groups
       else
         TournamentGenerator.new(@tournament).call
       end
@@ -139,9 +139,9 @@ class TournamentsController < ApplicationController
 
     @tournament.with_lock do
       @tournament.update!(seeding_mode: "manual")
-      reseed_entries!
+      @tournament.reseed_entries
       if @tournament.status == "draft"
-        auto_assign_preview_groups!
+        @tournament.assign_preview_groups
       else
         TournamentGenerator.new(@tournament).call if @tournament.entries.size >= 2
       end
@@ -200,29 +200,5 @@ class TournamentsController < ApplicationController
 
   def extract_entry_names
     params[:tournament][:entry_names].to_s.lines.map(&:strip).reject(&:blank?).uniq
-  end
-
-  def build_entries(tournament, names)
-    group_count = tournament.effective_group_count(entries_count: names.size)
-    names.each_with_index do |name, idx|
-      group_name = tournament.group_stage_enabled? ? TournamentGroupNaming.label(idx % group_count) : nil
-      tournament.entries.build(name:, seed: idx + 1, group_name: group_name)
-    end
-  end
-
-  def reseed_entries!
-    @tournament.entries.order(:created_at).each_with_index do |entry, idx|
-      entry.update!(seed: idx + 1)
-    end
-  end
-
-  def auto_assign_preview_groups!
-    return unless @tournament.group_stage_enabled?
-
-    entries = @tournament.entries.order(Arel.sql("COALESCE(seed, 999999), lower(name)"))
-    group_count = @tournament.effective_group_count
-    entries.each_with_index do |entry, idx|
-      entry.update!(group_name: TournamentGroupNaming.label(idx % group_count))
-    end
   end
 end

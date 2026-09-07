@@ -1,0 +1,40 @@
+<% if player_display_swap_allowed?(match) %>
+  <div class="player-order-swap-control" data-controller="confirmation-modal">
+    <button type="button"
+            class="button is-small theme-btn-outline mono player-display-swap"
+            title="<%= t('live_match.swap_players') %>"
+            aria-label="<%= t('live_match.swap_players') %>"
+            data-action="confirmation-modal#open">
+      <span aria-hidden="true">⇄</span>
+    </button>
+
+    <dialog class="player-swap-modal"
+            aria-labelledby="player-swap-title"
+            data-confirmation-modal-target="dialog"
+            data-action="click->confirmation-modal#closeOnBackdrop">
+      <div class="player-swap-modal-card">
+        <div class="player-swap-modal-icon" aria-hidden="true">⇄</div>
+        <div>
+          <div class="theme-section-label"><%= t("live_match.display_order") %></div>
+          <h2 id="player-swap-title" class="player-swap-modal-title"><%= t("live_match.swap_players") %></h2>
+          <p class="player-swap-modal-copy"><%= t("live_match.swap_players_confirm") %></p>
+        </div>
+
+        <div class="player-swap-preview" aria-hidden="true">
+          <span><%= presenter.players.first.display_name %></span>
+          <strong>⇄</strong>
+          <span><%= presenter.players.second.display_name %></span>
+        </div>
+
+        <div class="player-swap-modal-actions">
+          <button type="button" class="button theme-btn-outline mono player-display-swap" data-action="confirmation-modal#close"><%= t("common.cancel") %></button>
+          <%= button_to t("live_match.confirm_swap"),
+                match_player_order_path(match),
+                method: :patch,
+                class: "button theme-btn-primary mono player-display-swap",
+                form: { class: "player-order-swap-form", data: { turbo: false } } %>
+        </div>
+      </div>
+    </dialog>
+  </div>
+<% end %>

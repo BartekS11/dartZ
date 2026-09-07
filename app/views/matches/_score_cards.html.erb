@@ -1,0 +1,9 @@
+<% presenter ||= MatchStatePresenter.new(match) %>
+<div id="score-cards-section" class="match-score-strip">
+  <% presenter.players.each do |player| %>
+    <%= render "matches/score_card",
+          match: match,
+          presenter: presenter,
+          player: player %>
+  <% end %>
+</div>

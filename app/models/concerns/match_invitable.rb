@@ -27,6 +27,10 @@ module MatchInvitable
     invite_pending? && !invite_full?
   end
 
+  def invite_host?(user)
+    user.present? && players.reorder(:created_at, :id).first&.user_id == user.id
+  end
+
   def ensure_invite_token!
     return invite_token if invite_token.present?
 

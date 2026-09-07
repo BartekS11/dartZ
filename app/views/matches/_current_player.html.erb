@@ -23,12 +23,16 @@
       <% end %>
     </div>
 
-    <button
-      type="button"
-      class="button is-small btn-undo mono"
-      data-action="click->keyboard#undoLastThrow">
-      ↩ Undo
-    </button>
+    <div class="match-input-actions">
+      <%= render "matches/player_order_control", match: match, presenter: presenter %>
+
+      <button
+        type="button"
+        class="button is-small btn-undo mono"
+        data-action="click->keyboard#undoLastThrow">
+        ↩ Undo
+      </button>
+    </div>
   </div>
 
   <div class="match-score-entry-row">

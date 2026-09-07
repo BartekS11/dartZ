@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_30_181014) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_07_191129) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -79,6 +79,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_30_181014) do
     t.datetime "invite_joined_at"
     t.string "invite_token"
     t.string "match_identifier"
+    t.boolean "player_display_reversed", default: false, null: false
     t.string "public_id", null: false
     t.integer "starting_player_position", default: 1, null: false
     t.integer "starting_score", default: 501, null: false

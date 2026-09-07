@@ -4,7 +4,11 @@
      data-controller="match-view"
      data-match-view-remote-invite-value="<%= match.invite_match? %>"
      data-match-view-my-player-id-value="<%= viewer_player&.id %>"
-     data-match-view-my-player-public-id-value="<%= viewer_player&.public_id %>">
+     data-match-view-my-player-public-id-value="<%= viewer_player&.public_id %>"
+     data-match-view-match-public-id-value="<%= match.public_id %>"
+     data-match-view-player-names-value="<%= presenter.players.map(&:display_name).to_json %>"
+     data-match-view-guest-token-value="<%= Current.user ? nil : match.guest_token %>"
+     data-match-view-created-at-value="<%= match.created_at.iso8601 %>">
 
   <div id="game-over-section">
     <% if match.finished? %>
@@ -13,14 +17,7 @@
   </div>
 
   <% unless match.finished? %>
-    <div id="score-cards-section" class="match-score-strip">
-      <% presenter.players.each do |player| %>
-        <%= render "matches/score_card",
-              match: match,
-              presenter: presenter,
-              player: player %>
-      <% end %>
-    </div>
+    <%= render "matches/score_cards", match: match, presenter: presenter %>
 
     <div id="keyboard-section" class="match-play-area">
 

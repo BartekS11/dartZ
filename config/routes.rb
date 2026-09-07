@@ -43,6 +43,8 @@ Rails.application.routes.draw do
   end
 
   resources :matches, only: %i[index show create] do
+    resource :player_order, only: :update, controller: "match_player_orders"
+
     collection do
       delete :clear
     end

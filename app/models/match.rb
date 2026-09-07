@@ -11,6 +11,7 @@ class Match < ApplicationRecord
   include MatchInvitable
   include MatchIdentifiable
   include MatchLegManagement
+  include MatchPlayerOrdering
   include HasThrowHistory
   include HasUndoSupport
 

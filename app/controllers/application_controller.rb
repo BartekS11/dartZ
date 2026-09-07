@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::Base
   include Authentication
+  include Localization
 
   MAX_GUEST_MATCH_TOKENS = 20
   # Only allow modern browsers supporting webp images, web push, badges, import maps, CSS nesting, and CSS :has.
@@ -8,44 +9,10 @@ class ApplicationController < ActionController::Base
   # Changes to the importmap will invalidate the etag for HTML responses
   stale_when_importmap_changes
 
-  # Authentication redirects use route helpers, so initialize the locale before
-  # `require_authentication` can generate a redirect URL.
-  prepend_before_action :set_locale
-
   helper_method :premium_access?
   helper_method :current_match_player
-  helper_method :available_locales
-  helper_method :available_locale?
-
-  def default_url_options
-    I18n.locale == I18n.default_locale ? {} : { locale: I18n.locale }
-  end
 
   private
-
-  def set_locale
-    resume_session_optional
-
-    locale = params[:locale].presence || Current.user&.locale.presence || cookies[:locale].presence || I18n.default_locale.to_s
-    locale = I18n.default_locale.to_s unless available_locale?(locale)
-
-    I18n.locale = locale
-    cookies.permanent[:locale] = { value: locale, httponly: true, same_site: :lax } if cookies[:locale] != locale
-    Current.user&.update(locale: locale) if params[:locale].present? && Current.user&.locale != locale
-  end
-
-  def available_locales
-    I18n.available_locales.map(&:to_s)
-  end
-
-  def available_locale?(locale)
-    available_locales.include?(locale.to_s)
-  end
-
-  def locale_label(locale)
-    I18n.t("locales.#{locale}", locale: locale, default: locale.to_s.upcase)
-  end
-  helper_method :locale_label
 
   # def current_match_player(match)
   #   return nil unless match

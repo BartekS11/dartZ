@@ -12,6 +12,7 @@ class Tournament < ApplicationRecord
   include TournamentInitialization
   include TournamentGameSettings
   include TournamentStages
+  include TournamentSeeding
   include TournamentAccessPolicy
   include TournamentStandings
   include TournamentLiveUpdates

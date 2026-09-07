@@ -2,10 +2,19 @@ import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
   static targets = ["pad", "input", "padButton", "inputButton"]
-  static values = { remoteInvite: Boolean, myPlayerId: Number, myPlayerPublicId: String }
+  static values = {
+    remoteInvite: Boolean,
+    myPlayerId: Number,
+    myPlayerPublicId: String,
+    matchPublicId: String,
+    playerNames: Array,
+    guestToken: String,
+    createdAt: String
+  }
 
   connect() {
     this.show(this.defaultView())
+    this.syncLocalMatch()
     this.element.addEventListener("submit", this.attachActorPlayerId, true)
     this.boundSyncTurnLock = () => window.requestAnimationFrame(() => {
       this.syncTurnLock()
@@ -24,6 +33,29 @@ export default class extends Controller {
     document.removeEventListener("turbo:before-stream-render", this.boundSyncTurnLock)
     document.removeEventListener("turbo:render", this.boundSyncTurnLock)
     this.turnLockObserver?.disconnect()
+  }
+
+  syncLocalMatch() {
+    if (!this.matchPublicIdValue || this.playerNamesValue.length !== 2) return
+
+    const matches = JSON.parse(localStorage.getItem("dartz_matches") || "[]")
+    const existing = matches.find((match) => match.id === this.matchPublicIdValue)
+    const attributes = {
+      id: this.matchPublicIdValue,
+      player1: this.playerNamesValue[0],
+      player2: this.playerNamesValue[1],
+      createdAt: this.createdAtValue
+    }
+
+    if (existing) {
+      Object.assign(existing, attributes)
+      if (this.guestTokenValue) existing.guestToken = this.guestTokenValue
+    } else {
+      if (this.guestTokenValue) attributes.guestToken = this.guestTokenValue
+      matches.unshift(attributes)
+    }
+
+    localStorage.setItem("dartz_matches", JSON.stringify(matches.slice(0, 10)))
   }
 
   showPad() {
@@ -91,6 +123,7 @@ export default class extends Controller {
     const controls = this.element.querySelectorAll("#keyboard-section input, #keyboard-section button")
     controls.forEach((control) => {
       if (control.closest(".bot-turn-disabled")) return
+      if (control.closest(".player-order-swap-control")) return
       if (control.classList.contains("turn-skip-button")) return
       control.disabled = locked
     })

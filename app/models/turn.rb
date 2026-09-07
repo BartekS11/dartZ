@@ -3,6 +3,7 @@ class Turn < ApplicationRecord
   public_id_prefix "tu_"
 
   include TurnFlow
+  include TurnBotPlay
   include ScoringRules
   include TurnScoring
 

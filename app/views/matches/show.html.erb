@@ -1,27 +1,5 @@
 <%= turbo_stream_from "match_#{@match.id}" %>
 
-<script>
-  (function() {
-    const matches = JSON.parse(localStorage.getItem("dartz_matches") || "[]")
-    const id = <%= @match.public_id.to_json %>
-    const exists = matches.find(m => m.id === id)
-    const guestToken = <%= (Current.user ? nil : @match.guest_token).to_json.html_safe %>
-    if (!exists) {
-      matches.unshift({
-        id: id,
-        player1: <%= @match.players.first&.display_name.to_json.html_safe %>,
-        player2: <%= @match.players.second&.display_name.to_json.html_safe %>,
-        guestToken: guestToken,
-        createdAt: <%= @match.created_at.iso8601.to_json.html_safe %>
-      })
-      localStorage.setItem("dartz_matches", JSON.stringify(matches.slice(0, 10)))
-    } else if (guestToken && !exists.guestToken) {
-      exists.guestToken = guestToken
-      localStorage.setItem("dartz_matches", JSON.stringify(matches.slice(0, 10)))
-    }
-  })()
-</script>
-
 <div id="finish-popup">
   <% if @match.finished? %>
     <% finishing_leg = @match.match_sets.flat_map(&:legs).max_by(&:created_at) %>

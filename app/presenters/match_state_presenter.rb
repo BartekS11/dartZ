@@ -120,7 +120,7 @@ class MatchStatePresenter
   private
 
   def preload!
-    @players = match.players.includes(:user).order(:created_at).to_a
+    @players = match.players_in_display_order.includes(:user).to_a
     @players_by_id = @players.index_by(&:id)
 
     @match_sets = match.match_sets.includes(legs: [ { turns: :throws }, { leg_players: :player } ]).order(:created_at).to_a
