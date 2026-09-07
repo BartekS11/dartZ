@@ -18,6 +18,7 @@ class TrainingSessionsSystemTest < ApplicationSystemTestCase
 
     fill_in "misses", with: "2"
     click_button I18n.t("training.hit")
+    assert_selector ".training-target", exact_text: "2"
 
     training_session = TrainingSession.order(:created_at).last
     assert_equal 1, training_session.reload.current_target_index

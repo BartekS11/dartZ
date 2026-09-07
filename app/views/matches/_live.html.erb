@@ -1,6 +1,6 @@
 <% presenter ||= MatchStatePresenter.new(match) %>
 <% viewer_player = local_assigns[:current_match_player] || current_match_player(match) %>
-<div id="match-live" class="page-shell match-focus"
+<div id="match-live" class="page-shell match-focus <%= 'match-scoring' unless match.finished? %>"
      data-controller="match-view"
      data-match-view-remote-invite-value="<%= match.invite_match? %>"
      data-match-view-my-player-id-value="<%= viewer_player&.id %>"

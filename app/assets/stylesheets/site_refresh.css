@@ -1,0 +1,262 @@
+/* Shared extension of the approved live-match design. Theme colors remain in
+   dartz_theme.css. The body hook keeps emails out of scope; scoring descendants
+   are excluded so live_match.css retains its approved component presentation.
+   Legacy forced borders/backgrounds/radii require targeted !important overrides. */
+.site-refresh {
+  --site-radius: 1rem;
+  --site-control-radius: .5rem;
+  --site-space: clamp(1rem, 2.5vw, 1.75rem);
+}
+
+/* Shell: separate navigation from account tools instead of one clipped strip. */
+.site-refresh .app-header { position: relative; }
+.site-refresh .simple-nav {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-areas: "brand tools" "links links";
+  gap: .65rem 1rem;
+  padding-block: 1rem .65rem;
+}
+.site-refresh .simple-nav-top { grid-area: brand; min-width: 0; }
+.site-refresh .simple-nav-scroll {
+  grid-area: links;
+  display: flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  overflow: visible;
+  padding: 0;
+}
+.site-refresh .nav-utilities {
+  grid-area: tools;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: .4rem;
+  min-width: 0;
+}
+.site-refresh :is(.app-nav-link, .app-nav-auth-button, .app-nav-locale-select) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.75rem;
+  min-width: 2.75rem;
+  padding: .65rem .8rem !important;
+  border: 0 !important;
+  border-radius: var(--site-control-radius) !important;
+  font-size: .75rem;
+  font-weight: 600;
+  letter-spacing: .035em;
+  line-height: 1.2;
+  margin: 0;
+}
+.site-refresh .app-nav-link.is-active,
+.site-refresh .app-nav-link:hover {
+  background: color-mix(in srgb, var(--theme-primary) 9%, transparent) !important;
+  color: var(--theme-primary-soft) !important;
+}
+.site-refresh .app-nav-auth-button {
+  background: color-mix(in srgb, var(--theme-text) 5%, transparent) !important;
+  color: var(--theme-text) !important;
+}
+.site-refresh .app-nav-auth-button.is-danger {
+  background: var(--theme-cta) !important;
+  color: #fff !important;
+}
+.site-refresh .app-nav-auth-form,
+.site-refresh .app-nav-auth-inline { margin-left: 0; }
+.site-refresh .brand-mark { border-radius: .6rem !important; }
+.site-refresh #profileMenu {
+  border: 1px solid var(--theme-line) !important;
+  border-radius: var(--site-radius);
+  padding: 1.25rem;
+  max-height: calc(100dvh - 6rem);
+  overflow-y: auto;
+}
+.site-refresh .profile-email { overflow-wrap: anywhere; }
+.site-refresh .app-main { padding-top: 1.5rem !important; padding-bottom: 3rem; }
+.site-refresh .page-shell:not(.match-scoring) {
+  max-width: 72rem;
+  margin-inline: auto;
+  gap: 1.5rem !important;
+}
+.site-refresh .page-shell-narrow { max-width: 52rem !important; }
+.site-refresh .app-footer { padding-block: 1rem; }
+.site-refresh .footer-inner { gap: .5rem 1.5rem; }
+.site-refresh .footer-links { gap: .25rem 1.25rem; }
+.site-refresh .footer-links a { display: inline-flex; align-items: center; min-height: 2.75rem; }
+
+/* Quiet surfaces, not heavy outlines or gradients. */
+.site-refresh :is(.theme-hero, .theme-card, .auth-card, .theme-panel,
+  .counter-list-card, .counter-tournament-card, .theme-match-card,
+  .theme-legal-card, .counter-admin-card, .theme-blank-slate,
+  .counter-summary-tile, .training-clean-section, .stats-metric-card,
+  .stats-chart-panel, .current-dart-setup-card, .bracket-round-card):not(.match-scoring *) {
+  padding: var(--site-space) !important;
+  border: 0 !important;
+  border-radius: var(--site-radius) !important;
+  background: var(--theme-surface-muted) !important;
+  box-shadow: none;
+  min-width: 0;
+}
+.site-refresh .theme-hero:not(.match-scoring *) {
+  background: color-mix(in srgb, var(--theme-primary) 4%, var(--theme-surface-muted)) !important;
+}
+.site-refresh :is(.theme-panel, .counter-summary-tile, .stats-chart-panel):not(.match-scoring *) {
+  background: color-mix(in srgb, var(--theme-text) 4%, transparent) !important;
+}
+.site-refresh .theme-panel.has-background-white { background: white !important; }
+.site-refresh .theme-panel.has-background-white svg { display: block; max-width: 100%; height: auto; }
+.site-refresh :is(a.theme-match-card, a.counter-tournament-card):hover {
+  background: color-mix(in srgb, var(--theme-primary) 7%, var(--theme-surface-muted)) !important;
+  transform: none;
+}
+.site-refresh :is(.page-title, .section-title, .game-over-title):not(.match-scoring *) {
+  line-height: 1.12;
+  letter-spacing: -.02em;
+  overflow-wrap: anywhere;
+}
+.site-refresh .page-title:not(.match-scoring *) { font-size: clamp(2rem, 4.5vw, 3.25rem) !important; }
+.site-refresh .section-title:not(.match-scoring *) { font-size: clamp(1.3rem, 2.4vw, 1.8rem); }
+.site-refresh :is(.theme-section-label, .auth-label, .eyebrow):not(.match-scoring *) {
+  color: var(--theme-muted);
+  font-size: .75rem;
+  letter-spacing: .06em;
+  line-height: 1.5;
+}
+.site-refresh :is(.page-copy, .theme-copy):not(.match-scoring *) { line-height: 1.7; }
+.site-refresh .theme-copy { max-width: 68ch; }
+.site-refresh .theme-copy a { overflow-wrap: anywhere; }
+.site-refresh .theme-copy h2 { color: var(--theme-text); }
+
+/* Common actions and fields. Preserve primary, selected and disabled meaning. */
+.site-refresh :is(.button, .btn, .saved-btn, .panel-choice):not(.match-scoring *) {
+  min-height: 2.75rem !important;
+  border-radius: var(--site-control-radius) !important;
+  font-weight: 600;
+  letter-spacing: .025em;
+}
+.site-refresh :is(.button, .btn):not(.match-scoring *) {
+  height: auto;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  line-height: 1.4;
+  padding: .7rem 1rem;
+  max-width: 100%;
+}
+.site-refresh :is(.theme-btn-outline, .panel-choice):not(.match-scoring *) {
+  background: color-mix(in srgb, var(--theme-text) 5%, transparent) !important;
+}
+.site-refresh :is(.input, .textarea, .theme-form-input, .auth-input, .select select):not(.match-scoring *) {
+  min-height: 3rem !important;
+  border: 1px solid var(--theme-line) !important;
+  border-radius: var(--site-control-radius) !important;
+  background: color-mix(in srgb, var(--theme-text) 4%, transparent) !important;
+  padding: .75rem .9rem !important;
+  font-size: 1rem;
+  max-width: 100%;
+  min-width: 0;
+}
+.site-refresh :is(select.theme-form-input, .select select) { padding-right: 2rem !important; }
+.site-refresh :is(.theme-chip, .tag.theme-chip):not(.match-scoring *) {
+  border-radius: .4rem !important;
+  font-size: .7rem;
+  letter-spacing: .035em;
+  max-width: 100%;
+  white-space: normal;
+}
+.site-refresh :is(.button.is-selected, .btn.is-selected, .bot-choice-radio:has(input:checked),
+  .panel-choice:has(input:checked), .dart-option:has(input:checked)):not(.match-scoring *) {
+  background: color-mix(in srgb, var(--theme-primary) 14%, var(--theme-surface-muted)) !important;
+  color: var(--theme-primary-soft) !important;
+  outline: 2px solid var(--theme-primary) !important;
+  outline-offset: -2px !important;
+  transform: none;
+}
+.site-refresh :is(button, a, input, select, textarea, summary):focus-visible:not(.match-scoring *),
+.site-refresh .dart-option:has(input:focus-visible) {
+  outline: 2px solid var(--theme-primary-soft) !important;
+  outline-offset: 3px !important;
+}
+.site-refresh :is(button, input, select):disabled:not(.match-scoring *) { cursor: not-allowed; opacity: .5; }
+.site-refresh summary:not(.match-scoring *) { cursor: pointer; min-height: 2.75rem; padding-block: .75rem; }
+
+/* Setup and page-specific arrangements use the same visual vocabulary. */
+.site-refresh .simple-setup .simple-step { padding: .35rem 0 !important; margin: 0; align-items: center; }
+.site-refresh .simple-step-number {
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: .5rem;
+  background: color-mix(in srgb, var(--theme-primary) 10%, transparent) !important;
+  font-size: .8rem;
+}
+.site-refresh .simple-setup .player-card-shell { padding: .5rem 0 !important; }
+.site-refresh .simple-setup .theme-panel { height: 100%; padding: 1rem !important; }
+.site-refresh .simple-setup .columns { margin-block: 0 !important; }
+.site-refresh .simple-setup .stack-md { gap: 1rem !important; }
+.site-refresh .simple-setup .theme-panel .buttons {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: .5rem !important;
+}
+.site-refresh .simple-setup .theme-panel .buttons:has(.score-preset) { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.site-refresh .simple-setup .theme-panel .buttons .button { width: 100%; min-width: 0; margin: 0; padding-inline: .35rem; }
+.site-refresh .simple-setup .swap-badge { min-width: 2.75rem; }
+.site-refresh .simple-setup .swap-badge::after { content: none !important; }
+.site-refresh .simple-setup .simple-step-number { width: 1.75rem; height: 1.75rem; }
+.site-refresh .simple-setup .setup-submit-row { border-top: 1px solid var(--theme-line); }
+.site-refresh .simple-setup .setup-utility-actions { margin-top: 0; }
+.site-refresh .training-clean-layout { gap: 1.5rem; }
+.site-refresh :is(.training-mode-simple-list, .training-stats-list) { border-top: 0; }
+.site-refresh .training-mode-simple-row { padding: 1rem 0; gap: 1rem; }
+.site-refresh .training-mode-simple-row:last-child { border-bottom: 0; }
+.site-refresh .training-clean-row.is-active-session {
+  padding: 1rem;
+  border-radius: .6rem;
+  background: color-mix(in srgb, var(--theme-primary) 7%, transparent);
+}
+.site-refresh :is(.current-dart-setup-card, .training-focus-card, .theme-game-over > div > .counter-summary-tile) {
+  border-top: 3px solid var(--theme-primary) !important;
+}
+.site-refresh .stats-metric-value {
+  font-size: clamp(1.6rem, 3vw, 2.5rem);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+}
+.site-refresh .page-action-row { flex-wrap: wrap; gap: 1rem; }
+.site-refresh .page-action-row > div { min-width: 0; }
+.site-refresh .table-container { max-width: 100%; overflow-x: auto; }
+.site-refresh :is(.table, .counter-table) th { font-size: .75rem; letter-spacing: .035em; }
+.site-refresh .tournament-match-team { border-radius: .5rem; }
+.site-refresh .tournament-index-delete { min-width: 2.75rem; min-height: 2.75rem; }
+.site-refresh .tournament-delete-modal-card { border-radius: var(--site-radius); }
+.site-refresh .theme-game-over .counter-summary-tile { overflow-wrap: anywhere; }
+
+@media (max-width: 760px) {
+  .site-refresh .simple-nav { gap: .5rem; padding-block: .75rem .5rem; }
+  .site-refresh .brand-mark { display: none; }
+  .site-refresh .simple-nav-scroll { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .site-refresh .simple-nav-scroll .app-nav-link { white-space: normal; text-align: center; }
+  .site-refresh :is(.app-nav-link, .app-nav-auth-button, .app-nav-locale-select) { padding-inline: .45rem !important; font-size: .7rem; }
+  .site-refresh .nav-utilities { gap: .2rem; }
+  .site-refresh .nav-utilities.has-account > :is(.app-nav-auth-inline, .app-nav-auth-form) { display: none; }
+  .site-refresh #profileMenu { top: 3.75rem; right: 0; }
+  .site-refresh .app-main { padding-top: 1rem !important; }
+  .site-refresh .page-shell:not(.match-scoring) { gap: 1rem !important; }
+  .site-refresh .footer-inner { padding-inline: 0; }
+  .site-refresh .simple-setup .columns.is-vcentered > .column:nth-child(2) { order: 0; margin: 0; text-align: center !important; padding-block: 0; }
+  .site-refresh .simple-setup .columns.is-vcentered .swap-badge { width: 2.75rem !important; min-width: 2.75rem; }
+  .site-refresh .setup-submit-row { padding-top: 1rem; }
+  .site-refresh .setup-primary-actions { gap: .5rem; }
+  .site-refresh .training-clean-section { padding: 1rem !important; }
+  .site-refresh .training-history-filter { width: 100%; flex-wrap: wrap; }
+  .site-refresh .training-history-filter label { min-width: 0; flex: 1 1 7rem; }
+  .site-refresh .training-history-filter select { max-width: 100%; }
+  .site-refresh .theme-hero .level-right { margin-top: .5rem; }
+  .site-refresh .page-action-row { flex-direction: column; align-items: stretch !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-refresh :is(.button, .btn, .theme-match-card, .counter-tournament-card) { transition: none; }
+}

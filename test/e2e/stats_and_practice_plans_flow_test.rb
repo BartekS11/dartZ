@@ -20,8 +20,8 @@ class StatsAndPracticePlansFlowTest < E2EIntegrationTest
 
     assert_response :success
     assert_select "h1", I18n.t("stats.title")
-    assert_select ".theme-section-label", text: I18n.t("stats.matches_played")
-    assert_select ".theme-section-label", text: I18n.t("stats.checkout_rate")
+    assert_select ".stats-metric-label", text: I18n.t("stats.matches_played")
+    assert_select ".stats-metric-label", text: I18n.t("stats.checkout_rate")
     assert_select "h2", text: I18n.t("stats.charts")
     assert_includes response.body, I18n.t("stats.average_over_time")
   end

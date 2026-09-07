@@ -10,7 +10,7 @@
   <section class="theme-card p-5 stack-md">
     <% @practice_plan.tasks.each do |task| %>
       <div class="theme-panel p-4">
-        <div class="is-flex is-justify-content-space-between is-align-items-center">
+        <div class="is-flex is-justify-content-space-between is-align-items-center page-action-row">
           <div>
             <div class="theme-section-label"><%= t("training.modes.#{task.training_mode}.name") %></div>
             <h2 class="section-title"><%= task.title %></h2>

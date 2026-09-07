@@ -21,11 +21,11 @@
   <%= stylesheet_link_tag "https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=Oswald:wght@400;500;600;700&display=swap", crossorigin: "anonymous" %>
   <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
   <%= stylesheet_link_tag "bulma_bridge", "data-turbo-track": "reload" %>
-  <%= stylesheet_link_tag "dartz_theme", "data-turbo-track": "reload" %>
+  <%= stylesheet_link_tag "dartz_theme", "site_refresh", "live_match", "data-turbo-track": "reload" %>
   <meta name="turbo-cache-control" content="no-store">
 </head>
 
-<body class="dartz-body" data-controller="theme-mode">
+<body class="dartz-body site-refresh" data-controller="theme-mode">
   <div class="app-shell">
     <header class="app-header">
       <nav class="simple-nav" aria-label="Primary navigation" data-controller="profile-menu">
@@ -59,6 +59,9 @@
             <%= yield :nav_inline_action %>
           <% end %>
 
+        </div>
+
+        <div class="nav-utilities <%= 'has-account' if Current.user %>">
           <% if Current.user %>
             <%= link_to t("nav.upgrade"), billing_path, class: "app-nav-link app-nav-auth-inline #{'is-active' if current_page?(billing_path)}" %>
 

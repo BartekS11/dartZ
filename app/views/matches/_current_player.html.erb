@@ -15,7 +15,7 @@
 
   <div class="match-input-head">
     <div>
-      <div class="theme-section-label"><%= t("live_match.input") %></div>
+      <label for="match-score-input" class="theme-section-label"><%= t("live_match.input") %></label>
       <% if bot_turn %>
         <div class="mono text-xs uppercase tracking-[0.14em]" style="color:var(--theme-muted)">
           Bot is throwing — input locked
@@ -33,6 +33,7 @@
 
   <div class="match-score-entry-row">
     <input
+      id="match-score-input"
       type="text"
       inputmode="numeric"
       enterkeyhint="done"

@@ -26,6 +26,7 @@ class StatsAndPracticePlansSystemTest < ApplicationSystemTestCase
     assert_text I18n.t("practice_plans.title")
 
     click_button I18n.t("practice_plans.generate")
+    assert_current_path %r{/practice_plans/[^/?]+}, ignore_query: true
 
     plan = PracticePlan.order(:created_at).last
     assert_current_path practice_plan_path(plan), ignore_query: true

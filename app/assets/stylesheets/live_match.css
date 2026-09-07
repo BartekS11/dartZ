@@ -1,0 +1,218 @@
+/* First-pass live scoring layout. Keep theme tokens and scope every rule so
+   setup, results and shared match-adjacent components remain unchanged.
+   !important is limited to properties already forced by the legacy theme. */
+.match-scoring.page-shell {
+  gap: 1.5rem !important;
+  max-width: 72rem;
+  margin-inline: auto;
+}
+
+.match-scoring #game-over-section:empty { display: none; }
+
+.match-scoring .match-score-strip {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0;
+  margin: 0;
+  overflow: hidden;
+  border-radius: 1rem !important;
+  background: var(--theme-surface-muted);
+}
+
+.match-scoring .match-score-card {
+  position: relative;
+  padding: 1.5rem !important;
+  background: transparent;
+}
+
+.match-scoring .match-score-card + .match-score-card {
+  border-left: 1px solid var(--theme-line);
+}
+
+.match-scoring .match-score-card.is-active {
+  background: color-mix(in srgb, var(--theme-primary) 7%, transparent);
+}
+
+.match-scoring .match-score-card.is-active::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 3px;
+  background: var(--theme-primary);
+}
+
+.match-scoring .match-score-name-row {
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: .35rem .6rem;
+  min-height: 2.75rem;
+}
+
+.match-scoring .match-score-name {
+  color: var(--theme-text);
+  font-size: .8rem;
+  letter-spacing: .045em;
+  max-width: 100%;
+}
+
+.match-scoring .throwing-indicator {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  color: var(--theme-primary-soft);
+  font-size: .65rem;
+  letter-spacing: .04em;
+}
+
+.match-scoring .match-score-number {
+  margin: .5rem 0 1rem;
+  font-size: clamp(5rem, 10vw, 8rem);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.match-scoring .match-score-quick-stats {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  max-width: 22rem;
+  margin: 0;
+}
+
+.match-scoring .match-score-stat {
+  display: flex;
+  flex-direction: column;
+  gap: .25rem;
+}
+
+.match-scoring .match-score-stat dt {
+  font-size: .75rem;
+  line-height: 1.5;
+}
+
+.match-scoring .match-score-stat dd {
+  font-size: 1rem;
+  color: var(--theme-text);
+}
+
+.match-scoring .match-score-meta {
+  gap: .5rem;
+  align-items: center;
+  margin-top: .85rem;
+}
+
+.match-scoring .match-score-meta:not(:has(.match-progress-pill)):has(.is-empty) {
+  display: none;
+}
+
+.match-scoring .match-progress-pill {
+  min-height: 0;
+  padding: .25rem .5rem;
+  border: 0;
+  border-radius: .35rem;
+  background: color-mix(in srgb, var(--theme-text) 5%, transparent);
+  font-size: .75rem;
+}
+
+.match-scoring .match-play-area {
+  grid-template-columns: minmax(15rem, .8fr) minmax(0, 1.6fr);
+  gap: 1.75rem;
+}
+
+.match-scoring .match-play-area > div { min-width: 0; }
+
+.match-scoring :is(.match-input-panel, .match-dart-pad) {
+  border: 0;
+  padding: 0;
+}
+
+.match-scoring .match-input-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .5rem;
+  margin-bottom: .75rem;
+}
+
+.match-scoring .match-input-head > div { flex: 1; }
+.match-scoring .match-input-head .btn-undo { min-height: 2.75rem !important; }
+
+.match-scoring .match-input-head .theme-section-label {
+  color: var(--theme-muted);
+  font-size: .75rem;
+  letter-spacing: .06em;
+}
+
+.match-scoring .match-score-input {
+  min-height: 3.5rem;
+  font-size: 1.75rem !important;
+  border-radius: .5rem;
+}
+
+.match-scoring .match-score-submit {
+  min-height: 3.5rem;
+  border-radius: .5rem;
+}
+
+.match-scoring .match-dart-pad-summary,
+.match-scoring .match-stats-toggle summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .75rem;
+  min-height: 2.75rem;
+  color: var(--theme-muted);
+  font-size: .75rem;
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  list-style: none;
+  padding-bottom: 0;
+}
+
+.match-scoring summary::-webkit-details-marker { display: none; }
+.match-scoring :is(.match-dart-pad, .match-stats-toggle) > summary::after { content: "+"; font-size: 1.1rem; }
+.match-scoring :is(.match-dart-pad, .match-stats-toggle)[open] > summary::after { content: "−"; }
+.match-scoring .match-dart-pad-body { padding-top: .75rem; }
+
+.match-scoring .dart-grid { grid-template-columns: repeat(10, minmax(0, 1fr)); }
+.match-scoring :is(.dart-grid, .dart-footer-actions) { gap: .4rem !important; }
+.match-scoring .dart-column { gap: .4rem; }
+
+.match-scoring .dart-btn {
+  min-height: 2.75rem;
+  border: 0 !important;
+  border-radius: .4rem !important;
+  font-size: .8rem;
+  background: color-mix(in srgb, var(--theme-text) 5%, transparent);
+}
+
+.match-scoring .dart-btn:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--theme-text) 11%, transparent);
+}
+
+.match-scoring .match-stats-toggle {
+  margin-top: 1.25rem;
+  padding-top: .5rem;
+}
+
+.match-scoring :is(button, input, summary):focus-visible {
+  outline: 2px solid var(--theme-primary-soft) !important;
+  outline-offset: 3px;
+}
+
+@media (max-width: 1000px) {
+  .match-scoring .match-play-area { grid-template-columns: 1fr; gap: 1rem; }
+  .match-scoring .match-input-head { margin-bottom: .5rem; }
+}
+
+@media (max-width: 600px) {
+  .match-scoring.page-shell { gap: 1rem !important; }
+  .match-scoring .match-score-card { padding: 1rem .75rem !important; }
+  .match-scoring .match-score-name { font-size: .75rem; }
+  .match-scoring .match-score-number { font-size: clamp(3.5rem, 17vw, 5.5rem); margin-block: .35rem .85rem; }
+  .match-scoring .match-score-quick-stats { grid-template-columns: 1fr; gap: .35rem; }
+  .match-scoring .match-score-stat { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: baseline; gap: .35rem; }
+  .match-scoring .match-score-stat dd { font-size: .85rem; }
+  .match-scoring .dart-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .match-scoring .dart-btn { min-height: 3rem; }
+}
