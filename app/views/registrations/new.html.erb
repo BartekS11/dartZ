@@ -44,24 +44,38 @@
                   class: "input auth-input" %>
           </div>
 
-          <div class="field">
+          <div class="field" data-controller="password-length-notice">
             <label class="label auth-label"><%= t("common.password") %></label>
             <%= form.password_field :password,
                   required: true,
                   autocomplete: "new-password",
                   placeholder: t("auth.password_placeholder"),
                   maxlength: 72,
-                  class: "input auth-input" %>
+                  class: "input auth-input",
+                  data: {
+                    password_length_notice_target: "input",
+                    action: "paste->password-length-notice#warnIfPasteTooLong input->password-length-notice#hideWhenBelowLimit"
+                  } %>
+            <p class="help is-warning mono is-hidden" data-password-length-notice-target="message" aria-live="polite">
+              <%= t("auth.password_trimmed_notice", count: 72) %>
+            </p>
           </div>
 
-          <div class="field">
+          <div class="field" data-controller="password-length-notice">
             <label class="label auth-label"><%= t("common.confirm_password") %></label>
             <%= form.password_field :password_confirmation,
                   required: true,
                   autocomplete: "new-password",
                   placeholder: t("auth.repeat_password_placeholder"),
                   maxlength: 72,
-                  class: "input auth-input" %>
+                  class: "input auth-input",
+                  data: {
+                    password_length_notice_target: "input",
+                    action: "paste->password-length-notice#warnIfPasteTooLong input->password-length-notice#hideWhenBelowLimit"
+                  } %>
+            <p class="help is-warning mono is-hidden" data-password-length-notice-target="message" aria-live="polite">
+              <%= t("auth.password_trimmed_notice", count: 72) %>
+            </p>
           </div>
 
           <%= form.submit t("auth.create_account_button"), class: "button theme-btn-primary is-fullwidth is-medium" %>

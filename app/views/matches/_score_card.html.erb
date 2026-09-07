@@ -7,7 +7,9 @@
 <% multi_leg    = match.best_of_legs > 1 %>
 <% darts_thrown = is_active ? presenter.current_turn&.throws&.size.to_i : 0 %>
 <% suggestion   = match.double_out? ? CheckoutCalculator.suggest(score, darts_remaining: 3 - darts_thrown) : [] %>
+<% checkout_text = suggestion.present? ? suggestion.first(3).join(" · ") : "" %>
 <% last_throw_total = presenter.last_turn_total_for(player) %>
+<% avg = presenter.three_dart_average(player) %>
 
 <div id="score-card-<%= player.id %>" class="match-score-card <%= 'is-active' if is_active %>">
   <div class="match-score-name-row">
@@ -18,13 +20,18 @@
 
   <div class="match-score-main-row">
     <div id="player-<%= player.id %>-score" class="match-score-number <%= 'is-active' if is_active %>"><%= score %></div>
-    <% if last_throw_total.present? %>
-      <div class="match-last-throw-pill">
-        <span><%= t("live_match.last_throw") %></span>
-        <strong><%= last_throw_total %></strong>
-      </div>
-    <% end %>
   </div>
+
+  <dl class="match-score-quick-stats">
+    <div class="match-score-stat">
+      <dt><%= t("live_match.last_throw") %></dt>
+      <dd><%= last_throw_total.nil? ? "—" : last_throw_total %></dd>
+    </div>
+    <div class="match-score-stat match-score-average">
+      <dt><%= t("stats.three_dart_average") %></dt>
+      <dd><%= avg %></dd>
+    </div>
+  </dl>
 
   <div class="match-score-meta <%= 'has-leg-set-score' if multi_set || multi_leg %>">
     <% if multi_set %>
@@ -33,8 +40,8 @@
     <% if multi_leg %>
       <span class="match-progress-pill"><%= t("live_match.legs") %> <strong><%= legs_won %></strong></span>
     <% end %>
-    <% if suggestion.present? %>
-      <span class="match-checkout-line"><%= suggestion.first(3).join(" · ") %></span>
-    <% end %>
+    <span id="player-<%= player.id %>-checkout"
+          class="match-checkout-line <%= 'is-empty' if checkout_text.blank? %>"
+          data-original-checkout="<%= checkout_text %>"><%= checkout_text %></span>
   </div>
 </div>

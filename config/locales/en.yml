@@ -575,6 +575,7 @@ en:
     nickname_placeholder: "Optional display name"
     password_placeholder: "Create a password"
     repeat_password_placeholder: "Repeat your password"
+    password_trimmed_notice: "Your pasted password was trimmed to the %{count}-character maximum. The full password is too large."
     create_account_button: "Create account"
     already_have_account: "Already have account?"
     play_as_guest: "Play as guest"

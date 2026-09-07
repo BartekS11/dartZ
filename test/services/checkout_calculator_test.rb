@@ -13,6 +13,10 @@ class CheckoutCalculatorTest < ActiveSupport::TestCase
     assert CheckoutCalculator.possible_checkout_darts?(40, 3)
   end
 
+  test "78 checkout prefers tops route" do
+    assert_equal [ "T20", "D9" ], CheckoutCalculator.suggest(78, darts_remaining: 2)
+  end
+
   test "impossible checkout score has no possible dart count" do
     [ 1, 169, 171 ].each do |score|
       refute CheckoutCalculator.possible_checkout_darts?(score, 1)

@@ -7,6 +7,7 @@
   data-controller="keyboard"
   data-keyboard-url-value="<%= turn_throws_path(turn) %>"
   data-keyboard-score-value="<%= presenter.score_for(current_player) %>"
+  data-keyboard-double-out-value="<%= match.double_out? %>"
   data-keyboard-player-id-value="<%= current_player.id %>"
   data-keyboard-current-player-id-value="<%= current_player.id %>"
   data-keyboard-turn-activity-at-value="<%= ([turn.updated_at, turn.throws.maximum(:created_at)].compact.max || turn.created_at).iso8601 %>"

@@ -561,6 +561,7 @@ pl:
     nickname_placeholder: "Opcjonalna nazwa wyświetlana"
     password_placeholder: "Utwórz hasło"
     repeat_password_placeholder: "Powtórz hasło"
+    password_trimmed_notice: "Wklejone hasło zostało skrócone do maksymalnej długości %{count} znaków. Pełne hasło jest za długie."
     create_account_button: "Utwórz konto"
     already_have_account: "Masz już konto?"
     play_as_guest: "Graj jako gość"

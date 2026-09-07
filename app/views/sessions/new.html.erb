@@ -24,9 +24,21 @@
             <%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "username", placeholder: t("auth.email_placeholder"), value: params[:email_address], class: "input auth-input" %>
           </div>
 
-          <div class="field">
+          <div class="field" data-controller="password-length-notice">
             <label class="label auth-label"><%= t("common.password") %></label>
-            <%= form.password_field :password, required: true, autocomplete: "current-password", placeholder: t("common.password"), maxlength: 72, class: "input auth-input" %>
+            <%= form.password_field :password,
+                  required: true,
+                  autocomplete: "current-password",
+                  placeholder: t("common.password"),
+                  maxlength: 72,
+                  class: "input auth-input",
+                  data: {
+                    password_length_notice_target: "input",
+                    action: "paste->password-length-notice#warnIfPasteTooLong input->password-length-notice#hideWhenBelowLimit"
+                  } %>
+            <p class="help is-warning mono is-hidden" data-password-length-notice-target="message" aria-live="polite">
+              <%= t("auth.password_trimmed_notice", count: 72) %>
+            </p>
           </div>
 
           <%= form.submit t("auth.sign_in"), class: "button theme-btn-primary is-fullwidth is-medium" %>

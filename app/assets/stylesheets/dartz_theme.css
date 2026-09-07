@@ -534,8 +534,12 @@ a.counter-tournament-card:hover { border-color: var(--theme-primary); color: var
 .match-score-main-row { align-items: center; display: flex; gap: 0.75rem; justify-content: space-between; min-width: 0; }
 .match-score-number { font-size: clamp(4.2rem, 14.5vw, 8rem); font-weight: 600; letter-spacing: -0.03em; line-height: 0.9; margin-top: 0.25rem; }
 .match-score-number.is-active { color: var(--theme-primary-soft); }
-.match-last-throw-pill { align-items: center; border: 1px solid var(--theme-line); border-radius: 999px; color: var(--theme-muted); display: inline-flex; flex-shrink: 0; flex-direction: column; font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 0.62rem; gap: 0.05rem; letter-spacing: 0.08em; line-height: 1; padding: 0.45rem 0.65rem; text-transform: uppercase; }
-.match-last-throw-pill strong { color: var(--theme-text); font-family: "Oswald", "Manrope", system-ui, sans-serif; font-size: 1.4rem; letter-spacing: -0.02em; line-height: 1; }
+.match-score-quick-stats { display: grid; gap: 0.2rem; margin: 0.65rem 0 0.45rem; max-width: 18rem; }
+.match-score-stat { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: baseline; column-gap: 0.5rem; }
+.match-score-stat dt { color: var(--theme-muted); font-size: 0.75rem; line-height: 1.35; overflow-wrap: anywhere; }
+.match-score-stat dd { margin: 0; color: var(--theme-text); font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 0.9rem; font-weight: 600; font-variant-numeric: tabular-nums; line-height: 1.35; }
+.match-score-average dd { color: var(--theme-primary-soft); }
+.match-checkout-line.is-empty { display: none; }
 .match-score-meta { display: flex; flex-wrap: wrap; gap: 0.7rem; color: var(--theme-subtle); font-size: 0.8rem; margin-top: 0.25rem; }
 .match-checkout-line { color: var(--theme-success); }
 .match-play-area { display: grid; grid-template-columns: minmax(16rem, 0.62fr) minmax(0, 1.38fr); gap: 1rem; align-items: start; }
@@ -2927,36 +2931,6 @@ button.app-nav-link:hover {
     flex: 1 1 auto;
     min-width: 0;
     font-size: clamp(3.35rem, 21vw, 5.15rem);
-  }
-
-  .match-last-throw-pill {
-    flex: 0 0 auto;
-    border: 0 !important;
-    background: transparent !important;
-    border-radius: 0;
-    margin: 0 0 .42rem auto;
-    padding: 0;
-    box-sizing: border-box;
-    font-size: .48rem;
-    letter-spacing: .035em;
-    text-align: right;
-    white-space: nowrap;
-  }
-
-  .match-last-throw-pill strong {
-    display: block;
-    font-size: 1.18rem;
-  }
-}
-
-@media (max-width: 380px) {
-  .match-last-throw-pill span {
-    display: none;
-  }
-
-  .match-last-throw-pill {
-    min-width: 2.7rem;
-    padding: .32rem .4rem;
   }
 }
 
