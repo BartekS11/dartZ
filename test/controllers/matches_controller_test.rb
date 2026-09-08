@@ -57,6 +57,7 @@ class MatchesControllerTest < ActionDispatch::IntegrationTest
     get match_path(match)
 
     assert_response :success
+    assert_select "#voice-announcements", count: 1
   end
 
   test "numeric match URL returns 404" do
@@ -96,6 +97,7 @@ class MatchesControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select "#match-live[data-match-view-remote-invite-value='false']"
+    assert_select "#voice-announcements", count: 0
     assert_no_match(/data-match-view-my-player-id-value="\d+"/, response.body)
   end
 end

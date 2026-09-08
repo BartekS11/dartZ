@@ -8,6 +8,7 @@ class TurnScoringTest < ActiveSupport::TestCase
     match.start_first_set!
 
     turn = match.current_leg.current_turn
+    VoiceAnnouncement.expects(:broadcast_for).with(turn: turn, total: 180)
     turn.distribute_total!(180)
 
     assert_equal 321, match.reload.score_for(player_one)
@@ -23,6 +24,7 @@ class TurnScoringTest < ActiveSupport::TestCase
 
     turn = match.current_leg.current_turn
     turn.leg.leg_players.find_by!(player: player_one).update!(score: 40)
+    VoiceAnnouncement.expects(:broadcast_for).never
     turn.distribute_total!(45)
 
     assert_equal 40, match.reload.score_for(player_one)

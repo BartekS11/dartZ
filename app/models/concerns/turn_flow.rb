@@ -1,8 +1,14 @@
 module TurnFlow
   extend ActiveSupport::Concern
 
-  def complete_turn!(broadcast: true)
+  included do
+    attr_accessor :voice_announcement_total
+    after_update_commit :broadcast_voice_announcement
+  end
+
+  def complete_turn!(broadcast: true, voice_total: nil)
     return if completed?
+    self.voice_announcement_total = voice_total
     update!(completed_at: Time.current)
     leg.start_next_turn! unless leg.finished?
     broadcast_turn_change! if broadcast
@@ -14,6 +20,13 @@ module TurnFlow
   end
 
   private
+
+  def broadcast_voice_announcement
+    return if voice_announcement_total.nil?
+
+    VoiceAnnouncement.broadcast_for(turn: self, total: voice_announcement_total)
+    self.voice_announcement_total = nil
+  end
 
   def enqueue_bot_turn_if_needed
     return if leg.finished?

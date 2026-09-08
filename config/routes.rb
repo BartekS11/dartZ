@@ -14,6 +14,7 @@ Rails.application.routes.draw do
   end
   resources :passwords, param: :token
   resource :bot_match, only: [ :new, :create ]
+  get "voice-announcements/:id", to: "voice_announcements#show", as: :voice_announcement
   get "stats", to: "stats#index", as: :stats
   resources :practice_plans, only: %i[index show create] do
     patch "tasks/:task_id/complete", to: "practice_plans#complete_task", as: :complete_task

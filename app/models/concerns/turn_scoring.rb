@@ -12,7 +12,7 @@ module TurnScoring
       throw_record = active_turn.throws.create!(segment: 0, multiplier: :miss)
       active_turn.apply_throw!(throw_record, broadcast: false, skip_checkout_rule: skip_checkout_rule)
       active_turn.reload
-      active_turn.complete_turn!(broadcast: false) unless active_turn.completed?
+      active_turn.complete_turn!(broadcast: false, voice_total: effective_turn_total) unless active_turn.completed?
       return
     end
 
@@ -40,7 +40,7 @@ module TurnScoring
     if current_leg
       active_turn = current_leg.current_turn
       if active_turn && active_turn == self && !active_turn.completed?
-        active_turn.complete_turn!(broadcast: false)
+        active_turn.complete_turn!(broadcast: false, voice_total: effective_turn_total)
       end
     end
   end

@@ -10,6 +10,10 @@
      data-match-view-guest-token-value="<%= Current.user ? nil : match.guest_token %>"
      data-match-view-created-at-value="<%= match.created_at.iso8601 %>">
 
+  <% if VoiceAnnouncement.authorized_user?(Current.user) %>
+    <div id="voice-announcements" hidden></div>
+  <% end %>
+
   <div id="game-over-section">
     <% if match.finished? %>
       <%= render "matches/game_over", match: match, presenter: presenter %>
