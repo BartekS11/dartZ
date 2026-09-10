@@ -44,6 +44,15 @@ module DartZ
       ENV.fetch("API_V1_ENABLED", true)
     )
 
+    configured_admin_path = ENV["ADMIN_PATH"].to_s.strip.presence
+    raise "ADMIN_PATH is required in production" if Rails.env.production? && configured_admin_path.blank?
+
+    admin_path = configured_admin_path || "ops-console-local"
+    unless admin_path.match?(/\A[a-zA-Z0-9][a-zA-Z0-9_-]{11,}\z/)
+      raise "ADMIN_PATH must be one URL-safe path segment with at least 12 characters"
+    end
+    config.x.admin_path = admin_path
+
     # Don't generate system test files.
     config.generators.system_tests = nil
   end

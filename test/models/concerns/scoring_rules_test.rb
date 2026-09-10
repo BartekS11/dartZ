@@ -30,6 +30,7 @@ module Stubs
   def self.leg(double_out: true)
     match = Object.new
     match.define_singleton_method(:double_out?) { double_out }
+    match.define_singleton_method(:double_in?) { false }
 
     obj = Object.new
     obj.define_singleton_method(:match) { match }
@@ -54,9 +55,10 @@ module Stubs
     obj.define_singleton_method(:throws) do
       inner = Object.new
       inner.define_singleton_method(:count) { count }
+      inner.define_singleton_method(:order) { |*_columns| [] }
       inner
     end
-    obj.define_singleton_method(:complete_turn!) { |broadcast: true| @completed = true }
+    obj.define_singleton_method(:complete_turn!) { |broadcast: true, voice_total: nil| @completed = true }
     obj.define_singleton_method(:completed?)     { !!@completed }
     obj.define_singleton_method(:leg_player_stub) { lp }
     obj.define_singleton_method(:leg_stub)        { leg_obj }

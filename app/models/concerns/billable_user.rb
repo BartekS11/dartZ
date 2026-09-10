@@ -1,7 +1,16 @@
 module BillableUser
   extend ActiveSupport::Concern
 
+  def effective_account_tier
+    manual_tier_override.presence || account_tier
+  end
+
+  def tier_overridden?
+    manual_tier_override.present?
+  end
+
   def premium_access?
+    return manual_tier_override != "free" if tier_overridden?
     return false if account_tier == "free"
     return true if premium_access_expires_at.blank?
 

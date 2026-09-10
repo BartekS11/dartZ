@@ -39,19 +39,16 @@ class DartSetupStats
   end
 
   def add_player_stats!(group, player)
-    completed_turns = player.turns.select { |turn| turn.completed_at.present? }
-    throws = player.turns.flat_map { |turn| turn.throws.to_a }
-    presenter_stats = MatchStatePresenter.new(player.match).stats_for(player)
-    checkout = presenter_stats[:checkout]
+    stats = DartSetupStatistics::PlayerMatchStats.new(player).aggregate
 
     group[:matches] += 1
-    group[:completed_turns] += completed_turns.size
-    group[:darts_thrown] += throws.size
-    group[:total_score] += completed_turns.sum { |turn| turn.total_score.presence || turn.throws.to_a.sum(&:points) }
-    group[:highest_turn] = [ group[:highest_turn], completed_turns.map { |turn| turn.total_score.presence || turn.throws.to_a.sum(&:points) }.max.to_i ].max
-    group[:double_hits] += throws.count { |throw| throw.multiplier == "double" }
-    group[:checkout_chances] += checkout[:chances].to_i
-    group[:checkout_hits] += checkout[:hits].to_i
+    group[:completed_turns] += stats[:completed_turns]
+    group[:darts_thrown] += stats[:darts_thrown]
+    group[:total_score] += stats[:total_score]
+    group[:highest_turn] = [ group[:highest_turn], stats[:highest_turn] ].max
+    group[:double_hits] += stats[:double_hits]
+    group[:checkout_chances] += stats[:checkout_chances]
+    group[:checkout_hits] += stats[:checkout_hits]
   end
 
   def finalize(group)

@@ -8,14 +8,14 @@
         </div>
       </div>
       <div class="level-right">
-        <span class="theme-chip <%= premium_access? ? 'is-live' : '' %>"><%= t("billing.current", tier: Current.user.account_tier.humanize) %></span>
+        <span class="theme-chip <%= premium_access? ? 'is-live' : '' %>"><%= t("billing.current", tier: Current.user.effective_account_tier.humanize) %></span>
       </div>
     </div>
   </section>
 
   <section class="columns is-multiline is-variable is-3">
     <% @tiers.each do |tier| %>
-      <% current_tier = Current.user.account_tier == tier[:key] %>
+      <% current_tier = Current.user.effective_account_tier == tier[:key] %>
       <div class="column is-12-tablet is-4-desktop">
         <article class="theme-card p-5 h-full stack-md" style="<%= current_tier ? 'border-color:var(--theme-primary); box-shadow:0 0 0 1px var(--theme-primary);' : '' %>">
           <div>

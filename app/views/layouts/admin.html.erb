@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <title>DartZ Operations</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
+  <%= stylesheet_link_tag "application", "bulma_bridge", "dartz_theme", "site_refresh", "data-turbo-track": "reload" %>
+  <%= javascript_importmap_tags %>
+</head>
+<body class="dartz-body site-refresh">
+  <div class="app-shell">
+    <% if current_admin_user %>
+      <header class="app-header">
+        <nav class="simple-nav" aria-label="Operations navigation">
+          <%= link_to "DartZ Operations", admin_root_path, class: "brand-lockup" %>
+          <div class="simple-nav-scroll">
+            <%= link_to "Overview", admin_root_path, class: "app-nav-link" %>
+            <%= link_to "Users", admin_users_path, class: "app-nav-link" %>
+          </div>
+          <div class="nav-utilities">
+            <span class="mono text-sm"><%= current_admin_user.email_address %></span>
+            <%= button_to "Sign out", admin_logout_path, method: :delete, class: "button theme-btn-outline mono" %>
+          </div>
+        </nav>
+      </header>
+    <% end %>
+    <main class="app-main">
+      <% if notice %><div class="theme-notification is-success-light mono mb-4"><%= notice %></div><% end %>
+      <% if alert %><div class="theme-notification is-danger-light mono mb-4"><%= alert %></div><% end %>
+      <%= yield %>
+    </main>
+  </div>
+</body>
+</html>

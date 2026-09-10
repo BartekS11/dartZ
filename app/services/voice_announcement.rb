@@ -8,6 +8,7 @@ class VoiceAnnouncement
     180 => "180"
   }.freeze
   SOUND_KEYS = SOUNDS_BY_TOTAL.values.freeze
+  FILES_BY_SOUND = SOUND_KEYS.index_with { |sound| "#{sound}.mp3" }.freeze
 
   class << self
     def authorized_user?(user)
@@ -27,9 +28,10 @@ class VoiceAnnouncement
     end
 
     def path_for(sound)
-      return unless SOUND_KEYS.include?(sound)
+      filename = FILES_BY_SOUND[sound]
+      return unless filename
 
-      Rails.root.join("private", "voice_announcements", "#{sound}.mp3")
+      Rails.root.join("private", "voice_announcements", filename)
     end
 
     private

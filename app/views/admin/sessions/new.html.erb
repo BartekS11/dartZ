@@ -1,0 +1,19 @@
+<div class="page-shell" style="max-width:32rem">
+  <section class="theme-card p-6 stack-md">
+    <div>
+      <div class="theme-section-label">Restricted access</div>
+      <h1 class="page-title">Operations sign in</h1>
+    </div>
+    <%= form_with url: admin_login_path, class: "stack-md" do %>
+      <div>
+        <%= label_tag :email_address, "Email", class: "auth-label" %>
+        <%= email_field_tag :email_address, nil, required: true, autocomplete: "username", class: "input theme-form-input mono" %>
+      </div>
+      <div>
+        <%= label_tag :password, "Password", class: "auth-label" %>
+        <%= password_field_tag :password, nil, required: true, autocomplete: "current-password", class: "input theme-form-input mono" %>
+      </div>
+      <%= submit_tag "Sign in", class: "button theme-btn-primary is-fullwidth mono" %>
+    <% end %>
+  </section>
+</div>

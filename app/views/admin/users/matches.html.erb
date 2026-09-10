@@ -1,0 +1,43 @@
+<div class="page-shell stack-lg">
+  <section class="theme-hero p-5">
+    <div class="theme-section-label"><%= @user.email_address %></div>
+    <h1 class="page-title">Matches</h1>
+    <div class="buttons mt-4">
+      <% %w[all casual invitation tournament bot].each do |filter| %>
+        <%= link_to filter.humanize, matches_admin_user_path(@user, filter: filter), class: "button #{filter == @filter ? 'theme-btn-primary' : 'theme-btn-outline'} mono" %>
+      <% end %>
+      <%= link_to "User details", admin_user_path(@user), class: "button theme-btn-outline mono" %>
+    </div>
+  </section>
+
+  <section class="stack-md">
+    <% @matches.each do |match| %>
+      <% user_player_ids = match.players.select { |player| player.user_id == @user.id }.map(&:id) %>
+      <% result = if match.finished_at.nil? then "In progress" elsif user_player_ids.include?(match.winner_id) then "Won" else "Lost" end %>
+      <article class="theme-card p-4 stack-sm">
+        <div class="is-flex is-justify-content-space-between is-align-items-flex-start">
+          <div><strong class="mono"><%= match.ui_identifier %></strong><div class="help-theme"><%= match.created_at %><% if match.finished_at %> · completed <%= match.finished_at %><% end %></div></div>
+          <span class="theme-chip"><%= result %></span>
+        </div>
+        <div class="mono"><%= match.players.map(&:display_name).join(" vs ") %></div>
+        <div class="is-flex is-flex-wrap-wrap gap-2">
+          <% match.game_mode_labels.each do |label| %><span class="theme-chip"><%= label %></span><% end %>
+          <span class="theme-chip">Bo<%= match.best_of_legs %> legs</span><span class="theme-chip">Bo<%= match.best_of_sets %> sets</span>
+          <% if match.invite_created_at %><span class="theme-chip">Invitation</span><% end %>
+          <% if (tournament_match = @tournaments_by_match_id[match.id]) %><span class="theme-chip">Tournament: <%= tournament_match.tournament.title %></span><% end %>
+          <% if match.players.any?(&:bot?) %><span class="theme-chip">Bot</span><% end %>
+          <% if match.invite_created_at.nil? && tournament_match.nil? %><span class="theme-chip">Casual</span><% end %>
+        </div>
+      </article>
+    <% end %>
+    <% if @matches.empty? %><div class="theme-blank-slate">No matches in this category.</div><% end %>
+  </section>
+
+  <nav class="is-flex is-justify-content-space-between is-align-items-center mono">
+    <span><%= @total_matches %> matches · Page <%= @page %> of <%= @total_pages %></span>
+    <div class="buttons">
+      <% if @page > 1 %><%= link_to "Previous", matches_admin_user_path(@user, filter: @filter, page: @page - 1), class: "button theme-btn-outline" %><% end %>
+      <% if @page < @total_pages %><%= link_to "Next", matches_admin_user_path(@user, filter: @filter, page: @page + 1), class: "button theme-btn-outline" %><% end %>
+    </div>
+  </nav>
+</div>

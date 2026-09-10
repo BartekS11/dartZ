@@ -1,6 +1,17 @@
 Rails.application.routes.draw do
   root "matches#index"
 
+  scope path: Rails.configuration.x.admin_path, module: :admin, as: :admin do
+    get "login", to: "sessions#new", as: :login
+    post "login", to: "sessions#create"
+    delete "logout", to: "sessions#destroy", as: :logout
+    root "dashboard#show"
+    resources :users, only: %i[index show] do
+      get :matches, on: :member
+      patch :tier, on: :member
+    end
+  end
+
   resource :session
   resource :registration, only: %i[new create]
   resource :profile, only: [ :update ]

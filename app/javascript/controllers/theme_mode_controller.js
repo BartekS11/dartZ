@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["button", "icon", "label"]
+  static targets = ["button", "label"]
 
   connect() {
     this.apply(this.currentTheme())
@@ -24,7 +24,6 @@ export default class extends Controller {
     const nextThemeLabel = `${nextTheme.charAt(0).toUpperCase()}${nextTheme.slice(1)} theme`
 
     if (this.hasLabelTarget) this.labelTarget.textContent = nextThemeLabel
-    if (this.hasIconTarget) this.iconTarget.textContent = theme === "dark" ? "☀" : "☾"
     if (this.hasButtonTarget) {
       this.buttonTarget.setAttribute("aria-pressed", theme === "light")
       this.buttonTarget.setAttribute("aria-label", `Switch to ${nextTheme} theme`)

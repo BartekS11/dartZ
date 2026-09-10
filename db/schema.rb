@@ -10,9 +10,45 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_07_191129) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_08_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "admin_sessions", force: :cascade do |t|
+    t.bigint "admin_user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "expires_at", null: false
+    t.string "ip_address"
+    t.datetime "updated_at", null: false
+    t.string "user_agent"
+    t.index ["admin_user_id"], name: "index_admin_sessions_on_admin_user_id"
+    t.index ["expires_at"], name: "index_admin_sessions_on_expires_at"
+  end
+
+  create_table "admin_tier_changes", force: :cascade do |t|
+    t.string "action", null: false
+    t.bigint "admin_user_id", null: false
+    t.datetime "created_at", null: false
+    t.string "managed_tier", null: false
+    t.string "new_effective_tier", null: false
+    t.string "new_override"
+    t.string "previous_effective_tier", null: false
+    t.string "previous_override"
+    t.text "reason"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["admin_user_id"], name: "index_admin_tier_changes_on_admin_user_id"
+    t.index ["user_id", "created_at"], name: "index_admin_tier_changes_on_user_id_and_created_at"
+    t.index ["user_id"], name: "index_admin_tier_changes_on_user_id"
+  end
+
+  create_table "admin_users", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "email_address", null: false
+    t.string "password_digest", null: false
+    t.datetime "updated_at", null: false
+    t.index ["email_address"], name: "index_admin_users_on_email_address", unique: true
+  end
 
   create_table "dart_setups", force: :cascade do |t|
     t.datetime "created_at", null: false
@@ -334,6 +370,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_07_191129) do
     t.datetime "created_at", null: false
     t.string "email_address", null: false
     t.string "locale", default: "en", null: false
+    t.string "manual_tier_override"
     t.string "nickname"
     t.string "password_digest", null: false
     t.datetime "premium_access_expires_at"
@@ -347,8 +384,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_07_191129) do
     t.index ["email_address"], name: "index_users_on_email_address", unique: true
     t.index ["stripe_customer_id"], name: "index_users_on_stripe_customer_id", unique: true
     t.index ["stripe_subscription_id"], name: "index_users_on_stripe_subscription_id", unique: true
+    t.check_constraint "manual_tier_override IS NULL OR (manual_tier_override::text = ANY (ARRAY['free'::character varying, 'premium'::character varying, 'pro'::character varying]::text[]))", name: "users_manual_tier_override_valid"
   end
 
+  add_foreign_key "admin_sessions", "admin_users"
+  add_foreign_key "admin_tier_changes", "admin_users"
+  add_foreign_key "admin_tier_changes", "users"
   add_foreign_key "dart_setups", "users"
   add_foreign_key "leg_players", "legs"
   add_foreign_key "leg_players", "players"

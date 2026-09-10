@@ -1,0 +1,23 @@
+<div class="page-shell stack-lg">
+  <section class="theme-hero p-5">
+    <div class="theme-section-label">Private operations</div>
+    <h1 class="page-title">Overview</h1>
+  </section>
+
+  <section class="columns is-multiline is-variable is-3">
+    <div class="column is-6-tablet is-3-desktop"><div class="theme-card p-5"><div class="auth-label">Users</div><div class="bebas text-5xl"><%= @user_count %></div></div></div>
+    <div class="column is-6-tablet is-3-desktop"><div class="theme-card p-5"><div class="auth-label">Matches</div><div class="bebas text-5xl"><%= @match_count %></div></div></div>
+    <div class="column is-6-tablet is-3-desktop"><div class="theme-card p-5"><div class="auth-label">Completed</div><div class="bebas text-5xl"><%= @completed_match_count %></div></div></div>
+    <div class="column is-6-tablet is-3-desktop"><div class="theme-card p-5"><div class="auth-label">Active</div><div class="bebas text-5xl"><%= @match_count - @completed_match_count %></div></div></div>
+  </section>
+
+  <section class="theme-card p-5 stack-md">
+    <h2 class="section-title">Effective tiers</h2>
+    <div class="is-flex is-flex-wrap-wrap gap-3">
+      <% User::ACCOUNT_TIERS.each do |tier| %>
+        <span class="theme-chip"><%= tier.humanize %>: <%= @tier_counts.fetch(tier, 0) %></span>
+      <% end %>
+    </div>
+    <%= link_to "Inspect users", admin_users_path, class: "button theme-btn-primary mono" %>
+  </section>
+</div>

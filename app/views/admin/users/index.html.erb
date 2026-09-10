@@ -1,0 +1,41 @@
+<div class="page-shell stack-lg">
+  <section class="theme-hero p-5">
+    <div class="theme-section-label">Accounts</div>
+    <h1 class="page-title">Users</h1>
+    <%= form_with url: admin_users_path, method: :get, class: "is-flex gap-2 mt-4" do %>
+      <%= search_field_tag :query, params[:query], placeholder: "Search email or nickname", class: "input theme-form-input mono" %>
+      <%= submit_tag "Search", class: "button theme-btn-primary mono" %>
+    <% end %>
+  </section>
+
+  <section class="theme-card p-4" style="overflow-x:auto">
+    <table class="table is-fullwidth mono text-sm">
+      <thead><tr><th>User</th><th>Tier</th><th>Joined</th><th>Last match</th><th>Matches</th><th>W/L</th><th>Bot</th><th>Invited</th><th>Tournament</th></tr></thead>
+      <tbody>
+        <% @users.each do |user| %>
+          <% metrics = @metrics.fetch(user, Admin::UserMetrics::EMPTY) %>
+          <tr>
+            <td><%= link_to user.display_name, admin_user_path(user) %><br><span class="help-theme"><%= user.email_address %></span></td>
+            <td><%= user.effective_account_tier.humanize %><% if user.tier_overridden? %><br><span class="theme-chip">Override</span><% end %></td>
+            <td><%= user.created_at.to_date %></td>
+            <td><%= metrics[:last_match_at]&.to_date || "—" %></td>
+            <td><%= metrics[:matches] %> (<%= metrics[:completed] %> complete)</td>
+            <td><%= metrics[:wins] %> / <%= metrics[:losses] %></td>
+            <td><%= metrics[:bots] %></td>
+            <td><%= metrics[:invitations] %></td>
+            <td><%= metrics[:tournaments] %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+    <% if @users.empty? %><div class="theme-blank-slate">No users found.</div><% end %>
+  </section>
+
+  <nav class="is-flex is-justify-content-space-between is-align-items-center mono">
+    <span><%= @total_users %> users · Page <%= @page %> of <%= @total_pages %></span>
+    <div class="buttons">
+      <% if @page > 1 %><%= link_to "Previous", admin_users_path(query: params[:query], page: @page - 1), class: "button theme-btn-outline" %><% end %>
+      <% if @page < @total_pages %><%= link_to "Next", admin_users_path(query: params[:query], page: @page + 1), class: "button theme-btn-outline" %><% end %>
+    </div>
+  </nav>
+</div>
