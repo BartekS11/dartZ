@@ -45,10 +45,9 @@ RUN bundle install && \
 # Copy application code
 COPY . .
 
-# Precompiling assets for production without requiring secret RAILS_MASTER_KEY
-RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
-
-
+# Precompile without runtime-only secrets/configuration. ADMIN_PATH is validated
+# while Rails boots but is not embedded in the compiled assets.
+RUN SECRET_KEY_BASE_DUMMY=1 ADMIN_PATH=assets-precompile-placeholder ./bin/rails assets:precompile
 
 
 # Final stage for app image
