@@ -4038,6 +4038,24 @@ button.app-nav-link:hover {
   background: linear-gradient(90deg, var(--theme-primary), var(--theme-primary-soft));
 }
 
+.advanced-stats-list {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.advanced-stats-list > div {
+  align-items: center;
+  border-bottom: 1px solid var(--theme-line);
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  padding-bottom: 0.65rem;
+}
+
+.advanced-stats-list dt { color: var(--theme-subtle); }
+.advanced-stats-list dd { margin: 0; text-align: right; }
+.stats-accessible-table { margin-top: 1rem; }
+
 @media (max-width: 640px) {
   .stats-summary-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -4106,7 +4124,21 @@ button.app-nav-link:hover {
   border-color: var(--theme-line) !important;
 }
 
+.training-mode-config {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  justify-content: flex-end;
+}
+
+.training-mode-config .input { max-width: 9rem; }
+
 @media (max-width: 640px) {
+  .training-mode-simple-row { align-items: stretch; flex-direction: column; }
+  .training-mode-config { justify-content: stretch; }
+  .training-mode-config .input, .training-mode-config .button { max-width: none; width: 100%; }
+
   .unified-tool-page .stats-summary-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }

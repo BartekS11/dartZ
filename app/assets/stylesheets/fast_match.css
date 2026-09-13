@@ -1,0 +1,25 @@
+.fast-score-panel { display: grid; align-items: center; gap: .5rem; }
+.fast-score-panel .buttons { margin-bottom: 0; }
+.fast-match-submit { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-top: .25rem; }
+.fast-start-button { min-width: min(100%, 14rem); min-height: 3.4rem; margin-left: auto; }
+.fast-match-options { padding: 0; overflow: visible; }
+.fast-match-options > summary { display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 4rem; padding: 1rem 1.15rem; cursor: pointer; list-style: none; }
+.fast-match-options > summary::-webkit-details-marker { display: none; }
+.fast-match-options > summary span:first-child { display: grid; gap: .15rem; }
+.fast-match-options > summary strong { color: var(--theme-text); }
+.fast-match-options > summary small { color: var(--theme-subtle); font-size: .75rem; }
+.fast-options-indicator { color: var(--theme-primary-soft); font-family: "IBM Plex Mono", monospace; font-size: 1.5rem; transition: transform .18s ease; }
+.fast-match-options[open] .fast-options-indicator { transform: rotate(45deg); }
+.fast-options-body { padding: 0 1.15rem 1.15rem; border-top: 1px solid var(--theme-line); }
+.fast-options-body > :first-child { margin-top: 1.15rem; }
+.fast-invite-option { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1rem; border: 1px solid var(--theme-line); border-radius: .75rem; background: var(--theme-surface-alt); }
+.fast-invite-option p { margin: .25rem 0 0; }
+.fast-saved-names .column { position: relative; }
+.fast-saved-names .saved-btn { width: 100%; min-height: 2.75rem; border: 1px solid var(--theme-line); border-radius: .5rem; }
+.fast-saved-names .saved-dropdown { left: 0; right: 0; top: calc(100% - .2rem); }
+@media (max-width: 600px) {
+  .fast-match-submit, .fast-invite-option { align-items: stretch; flex-direction: column; }
+  .fast-start-button, .fast-invite-option .button { width: 100%; }
+  .fast-match-options > summary small { max-width: 25ch; }
+}
+@media (prefers-reduced-motion: reduce) { .fast-options-indicator { transition: none; } }

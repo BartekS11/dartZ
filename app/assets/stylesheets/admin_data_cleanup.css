@@ -1,0 +1,16 @@
+.admin-cleanup-dialog,
+dialog[data-admin-data-cleanup-target="dialog"] {
+  width: min(36rem, calc(100vw - 2rem));
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
+  border: 1px solid var(--theme-line);
+  color: var(--theme-text);
+}
+
+dialog[data-admin-data-cleanup-target="dialog"]::backdrop {
+  background: rgb(0 0 0 / 72%);
+}
+
+dialog[data-admin-data-cleanup-target="dialog"] [hidden] {
+  display: none !important;
+}
