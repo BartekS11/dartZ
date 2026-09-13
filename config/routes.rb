@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  root "matches#index"
+  root "home#show"
 
   scope path: Rails.configuration.x.admin_path, module: :admin, as: :admin do
     get "login", to: "sessions#new", as: :login
@@ -9,6 +9,10 @@ Rails.application.routes.draw do
     resources :users, only: %i[index show] do
       get :matches, on: :member
       patch :tier, on: :member
+      resources :data_cleanups, only: :create, controller: "data_cleanups" do
+        patch :restore, on: :member
+        delete :purge, on: :member
+      end
     end
   end
 
@@ -27,6 +31,7 @@ Rails.application.routes.draw do
   resource :bot_match, only: [ :new, :create ]
   get "voice-announcements/:id", to: "voice_announcements#show", as: :voice_announcement
   get "stats", to: "stats#index", as: :stats
+  get "stats/advanced", to: "stats#advanced", as: :advanced_stats
   resources :practice_plans, only: %i[index show create] do
     patch "tasks/:task_id/complete", to: "practice_plans#complete_task", as: :complete_task
   end
@@ -88,6 +93,25 @@ Rails.application.routes.draw do
     post "auth/register", to: "auth#register"
     post "auth/login",    to: "auth#login"
     post "auth/guest",    to: "auth#guest"
+
+    # Advanced statistics
+    scope :statistics, controller: :statistics do
+      get :summary
+      get :trends
+      get :distribution
+      get :checkouts
+      get :head_to_head
+    end
+
+    # Expanded training
+    scope :training do
+      get :modes, to: "training_sessions#modes"
+      resources :sessions, controller: "training_sessions", only: %i[index create show] do
+        post :attempts, action: :create_attempt, on: :member
+        post :complete, on: :member
+        post :abandon, on: :member
+      end
+    end
 
     # Matches
     resources :matches, only: [ :index, :create, :show ] do

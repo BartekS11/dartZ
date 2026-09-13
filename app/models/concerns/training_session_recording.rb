@@ -3,6 +3,7 @@ module TrainingSessionRecording
 
   def record_hit!(misses_before_hit: 0)
     return false unless active?
+    raise Training::InvalidAttempt, "use mode-specific attempt recording" if expanded_mode?
 
     return record_checkout_attempt!(hit: true, misses_count: misses_before_hit) if checkout_randomizer_mode?
 
@@ -29,6 +30,7 @@ module TrainingSessionRecording
 
   def record_no_hit!(misses_count: 1)
     return false unless active?
+    raise Training::InvalidAttempt, "use mode-specific attempt recording" if expanded_mode?
 
     return record_checkout_attempt!(hit: false, misses_count: misses_count) if checkout_randomizer_mode?
 

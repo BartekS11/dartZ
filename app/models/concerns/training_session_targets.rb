@@ -2,6 +2,7 @@ module TrainingSessionTargets
   extend ActiveSupport::Concern
 
   def targets
+    return mode_definition.targets if expanded_mode?
     return [] if checkout_randomizer_mode?
 
     numeric_targets = (1..20).map do |number|
@@ -20,6 +21,7 @@ module TrainingSessionTargets
   end
 
   def current_target
+    return mode_definition.current_target(self) if expanded_mode?
     return checkout_target if checkout_randomizer_mode?
 
     targets[current_target_index]

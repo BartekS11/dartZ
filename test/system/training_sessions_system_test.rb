@@ -49,6 +49,25 @@ class TrainingSessionsSystemTest < ApplicationSystemTestCase
     assert_equal "completed", TrainingSession.order(:created_at).last.status
   end
 
+  test "premium user configures and completes a custom target drill with keyboard-friendly controls" do
+    FeatureAccess.stubs(:enabled?).with(:expanded_training).returns(true)
+    login_premium_user("training-custom-browser")
+
+    visit training_sessions_path(locale: :pl)
+    row = find(".training-mode-simple-row", text: I18n.t("training.modes.custom_targets.name", locale: :pl))
+    row.find("input[name='training_session[name]']").set("Bulle")
+    row.find("input[name='training_session[targets]']").set("IB")
+    row.click_button I18n.t("training.start", locale: :pl)
+
+    assert_current_path %r{/training/}, ignore_query: true
+    assert_selector ".training-target", exact_text: "IB"
+    fill_in I18n.t("training.hits_this_target", locale: :pl), with: "1"
+    click_button I18n.t("training.record_attempt", locale: :pl)
+
+    assert_text I18n.t("training.completed_title", locale: :pl)
+    assert_equal "completed", TrainingSession.order(:created_at).last.status
+  end
+
   private
 
   def login_premium_user(prefix)

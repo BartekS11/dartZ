@@ -6,6 +6,7 @@ class TournamentEntry < ApplicationRecord
 
   belongs_to :tournament
   belongs_to :user, optional: true
+  belongs_to :admin_data_cleanup, optional: true
 
   has_many :home_matches, class_name: "TournamentMatch", foreign_key: :home_entry_id, dependent: :nullify
   has_many :away_matches, class_name: "TournamentMatch", foreign_key: :away_entry_id, dependent: :nullify

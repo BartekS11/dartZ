@@ -54,6 +54,73 @@
   </section>
 
   <section class="theme-card p-5 stack-md">
+    <div>
+      <div class="theme-section-label">Danger zone</div>
+      <h2 class="section-title">Data management</h2>
+      <p class="help-theme">Clear eligible account history or configuration without deleting this account, its sessions, billing state, tier overrides, or audit records. Shared matches and tournaments are detached and preserved.</p>
+    </div>
+
+    <%= render "data_cleanup_confirmation",
+      user: @user,
+      form_url: admin_user_data_cleanups_path(@user),
+      form_method: :post,
+      action_label: "Clear account data",
+      final_label: "Yes, clear selected data",
+      warning: "Selected data will be hidden from this account and its statistics. Active activity is not affected.",
+      second_warning: "This creates one restorable cleanup batch. Continue only if the selected scope is correct.",
+      categories: true,
+      purge: false %>
+
+    <h3 class="section-title">Cleanup batches</h3>
+    <% if @data_cleanups.any? %>
+      <div class="stack-md">
+        <% @data_cleanups.each do |cleanup| %>
+          <article class="theme-panel p-4 stack-sm">
+            <div class="is-flex is-justify-content-space-between is-align-items-flex-start">
+              <div><strong class="mono"><%= cleanup.public_id %></strong><div class="help-theme"><%= cleanup.created_at %></div></div>
+              <span class="theme-chip"><%= cleanup.status.humanize %></span>
+            </div>
+            <div class="is-flex is-flex-wrap-wrap gap-2">
+              <% cleanup.categories.each do |category| %><span class="theme-chip"><%= category.humanize %>: <%= cleanup.counts.fetch(category, 0) %></span><% end %>
+            </div>
+            <div class="stack-sm">
+              <% cleanup.events.each do |event| %>
+                <div class="mono text-sm"><strong><%= event.action.humanize %></strong> · <%= event.admin_user.email_address %> · <%= event.created_at %><br><span class="help-theme"><%= event.reason %></span></div>
+              <% end %>
+            </div>
+            <% if cleanup.cleared? %>
+              <div class="buttons">
+                <%= render "data_cleanup_confirmation",
+                  user: @user,
+                  form_url: restore_admin_user_data_cleanup_path(@user, cleanup),
+                  form_method: :patch,
+                  action_label: "Restore batch",
+                  final_label: "Yes, restore entire batch",
+                  warning: "Every record and association in this batch will be restored together.",
+                  second_warning: "Newer dart setup or drill conflicts will reject the entire restore; nothing will be overwritten.",
+                  categories: false,
+                  purge: false %>
+                <%= render "data_cleanup_confirmation",
+                  user: @user,
+                  form_url: purge_admin_user_data_cleanup_path(@user, cleanup),
+                  form_method: :delete,
+                  action_label: "Permanently purge",
+                  final_label: "Permanently purge entire batch",
+                  warning: "This permanently deletes retained account-owned records and makes detached shared-data links unrecoverable.",
+                  second_warning: "This action is irreversible. The audit batch and events will remain permanently.",
+                  categories: false,
+                  purge: true %>
+              </div>
+            <% end %>
+          </article>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="theme-blank-slate">No account data has been cleared by an administrator.</div>
+    <% end %>
+  </section>
+
+  <section class="theme-card p-5 stack-md">
     <h2 class="section-title">Tier audit history</h2>
     <% if @tier_changes.any? %>
       <div style="overflow-x:auto"><table class="table is-fullwidth mono text-sm">

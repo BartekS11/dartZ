@@ -24,7 +24,7 @@ The interface is mobile-friendly, available in English and Polish, and uses Hotw
 - Bot opponents with 10 skill levels and checkout-aware targeting
 - Group, Swiss, playoff, group-to-playoff, and Swiss-to-playoff tournaments
 - Single- and double-elimination playoffs, seeding, standings, live boards, and linked scored matches
-- Around the Clock, Around the Clock Doubles, and Checkout Randomizer training modes
+- Around the Clock, Around the Clock Doubles, Checkout Randomizer, Bob's 27, doubles practice, 99-dart scoring, Checkout 121, and custom target training modes
 - Template, custom, and stats-generated practice plans
 - Player dashboard with averages, checkout rate, high scores, wins/losses, and filters
 - Saved dart setup profiles with setup-specific statistics
@@ -135,7 +135,23 @@ POST   /api/v1/matches
 GET    /api/v1/matches/:id
 POST   /api/v1/matches/:match_id/throws
 DELETE /api/v1/matches/:match_id/throws/last
+GET    /api/v1/statistics/summary
+GET    /api/v1/statistics/trends
+GET    /api/v1/statistics/distribution
+GET    /api/v1/statistics/checkouts
+GET    /api/v1/statistics/head_to_head
+GET    /api/v1/training/modes
+GET    /api/v1/training/sessions
+POST   /api/v1/training/sessions
+GET    /api/v1/training/sessions/:id
+POST   /api/v1/training/sessions/:id/attempts
+POST   /api/v1/training/sessions/:id/complete
+POST   /api/v1/training/sessions/:id/abandon
 ```
+
+Expanded training endpoints require a registered Premium or Pro user and `EXPANDED_TRAINING_ENABLED=true`. Attempts use client UUID idempotency keys. See [`docs/training-modes.md`](docs/training-modes.md) for scoring rules and payloads.
+
+Advanced statistics endpoints require a registered Premium or Pro user and `ADVANCED_STATS_ENABLED=true`. They support strict `from`/`to` date filters plus opponent, match-source, game-rule, starting-score, and dart-setup filters. Collection endpoints return `data` and `pagination`; existing match endpoint response shapes are unchanged.
 
 Pass a token on protected requests:
 
@@ -172,6 +188,8 @@ erDiagram
     USER ||--o{ PLAYER : controls
     USER ||--o| DART_SETUP : saves
     USER ||--o{ TRAINING_SESSION : completes
+    USER ||--o{ TRAINING_DRILL : defines
+    TRAINING_SESSION ||--o{ TRAINING_ATTEMPT : records
     USER ||--o{ PRACTICE_PLAN : follows
     USER ||--o{ TOURNAMENT : owns
 
@@ -217,6 +235,10 @@ admin.admin_sessions.delete_all
 Normal seeds are non-destructive. Development demo data is rebuilt only when explicitly requested with `SEED_DEMO_DATA=true`; never use that option for data you need to retain.
 
 Manual tier overrides are audited and leave Stripe-managed account and subscription fields unchanged. Overrides remain active until cleared, and every effective downgrade requires a reason.
+
+The user detail screen also has admin-only account data management. A cleanup selects matches, training history, practice plans, custom drills, tournaments, and/or dart setup and creates an indefinitely retained soft-cleared batch. Only finished/historical activity is eligible; active activity is never included. Shared matches and tournaments are detached from the account rather than deleted. A whole batch can later be restored, or permanently purged only while it remains cleared. Every action requires the exact account email, a second confirmation, and a reason, and leaves a permanent audit event. Cleanup never changes login sessions, Stripe fields, tier overrides, or tier audit history. Restores fail atomically rather than overwriting newer conflicting drill/setup data.
+
+Run migrations and operational Rails commands through the `rails-app` devcontainer, not a host Ruby or PostgreSQL installation. Permanent purge is irreversible even though its audit batch and events remain.
 
 ## Deployment
 

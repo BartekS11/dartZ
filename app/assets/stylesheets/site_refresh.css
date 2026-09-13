@@ -14,10 +14,12 @@
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   grid-template-areas: "brand tools" "links links";
+  align-items: center;
   gap: .65rem 1rem;
   padding-block: 1rem .65rem;
 }
-.site-refresh .simple-nav-top { grid-area: brand; min-width: 0; }
+.site-refresh .simple-nav-top { grid-area: brand; min-width: 0; align-self: center; }
+.site-refresh .brand-lockup { min-height: 2.75rem; align-items: center; }
 .site-refresh .simple-nav-scroll {
   grid-area: links;
   display: flex;
@@ -31,10 +33,12 @@
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: .4rem;
   min-width: 0;
 }
+.site-refresh .nav-utilities > *,
+.site-refresh .app-nav-auth-form { align-self: center; }
 .site-refresh :is(.app-nav-link, .app-nav-auth-button, .app-nav-locale-select) {
   display: inline-flex;
   align-items: center;

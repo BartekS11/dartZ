@@ -1,0 +1,26 @@
+<div class="page-shell landing-page">
+  <section class="landing-hero">
+    <div class="landing-copy">
+      <% landing_title = t("home.title") %>
+      <h1 class="landing-title"><%= landing_title.delete_suffix("Z") %><span class="landing-title-accent">Z</span></h1>
+
+      <div class="landing-primary-actions">
+        <%= link_to t("home.play_now"), matches_path, class: "button landing-play-button" %>
+        <% if Current.user %>
+          <%= link_to t("home.your_matches"), matches_path(anchor: "recent-matches"), class: "button theme-btn-outline mono" %>
+        <% else %>
+          <%= link_to t("home.create_account"), new_registration_path, class: "button theme-btn-outline mono" %>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="landing-visual" aria-hidden="true">
+      <div class="landing-scoreboard">
+        <div><span><%= t("home.player_label") %></span><strong>501</strong></div>
+        <div><span><%= t("home.opponent_label") %></span><strong>501</strong></div>
+        <div class="landing-scoreboard-status"><i></i><%= t("home.ready") %></div>
+      </div>
+      <div class="landing-dartboard"><span></span></div>
+    </div>
+  </section>
+</div>

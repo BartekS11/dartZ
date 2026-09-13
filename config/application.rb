@@ -40,9 +40,15 @@ module DartZ
 
     config.active_job.queue_adapter = :async
 
-    config.x.api_v1_enabled = ActiveModel::Type::Boolean.new.cast(
-      ENV.fetch("API_V1_ENABLED", true)
-    )
+    boolean_type = ActiveModel::Type::Boolean.new
+    config.x.api_v1_enabled = boolean_type.cast(ENV.fetch("API_V1_ENABLED", true))
+    config.x.roadmap_features = {
+      advanced_stats: boolean_type.cast(ENV.fetch("ADVANCED_STATS_ENABLED", false)),
+      expanded_training: boolean_type.cast(ENV.fetch("EXPANDED_TRAINING_ENABLED", false)),
+      friends: boolean_type.cast(ENV.fetch("FRIENDS_ENABLED", false)),
+      web_push: boolean_type.cast(ENV.fetch("WEB_PUSH_ENABLED", false)),
+      offline_scoring: boolean_type.cast(ENV.fetch("OFFLINE_SCORING_ENABLED", false))
+    }.freeze
 
     configured_admin_path = ENV["ADMIN_PATH"].to_s.strip.presence
     raise "ADMIN_PATH is required in production" if Rails.env.production? && configured_admin_path.blank?

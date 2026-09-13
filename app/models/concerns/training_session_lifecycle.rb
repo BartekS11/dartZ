@@ -36,6 +36,7 @@ module TrainingSessionLifecycle
   end
 
   def progress_percent
+    return mode_definition.progress(self).fetch(:percent) if expanded_mode?
     return 0 if checkout_randomizer_mode? || targets.empty?
 
     ((current_target_index.to_f / targets.length) * 100).round

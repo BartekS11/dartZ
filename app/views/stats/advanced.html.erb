@@ -1,0 +1,140 @@
+<div class="page-shell stack-lg unified-tool-page">
+  <section class="theme-hero p-5">
+    <div class="theme-section-label"><%= t("stats.advanced.premium_label") %></div>
+    <h1 class="page-title"><%= t("stats.advanced.title") %></h1>
+    <p class="page-copy mt-3"><%= t("stats.advanced.intro") %></p>
+    <div class="mt-4"><%= link_to t("stats.advanced.basic_stats"), stats_path, class: "button theme-btn-secondary mono" %></div>
+  </section>
+
+  <section class="theme-card stats-filter-card p-5">
+    <%= form_with url: advanced_stats_path, method: :get, data: { turbo: false }, class: "stats-filter-grid" do %>
+      <label><span class="auth-label"><%= t("stats.from") %></span><%= date_field_tag :from, params[:from], class: "input theme-form-input mono" %></label>
+      <label><span class="auth-label"><%= t("stats.to") %></span><%= date_field_tag :to, params[:to], class: "input theme-form-input mono" %></label>
+      <label><span class="auth-label"><%= t("common.starting_score") %></span><%= select_tag :starting_score, options_for_select([[t("stats.any"), ""]] + Match::X01_STARTING_SCORES.map { |score| [score, score] }, params[:starting_score]), class: "select theme-form-input mono" %></label>
+      <label><span class="auth-label"><%= t("stats.opponent") %></span><%= select_tag :opponent_id, options_for_select([[t("stats.any"), ""]] + @opponents.map { |opponent| [opponent.display_name, opponent.public_id] }, params[:opponent_id]), class: "select theme-form-input mono" %></label>
+      <label><span class="auth-label"><%= t("stats.source") %></span><%= select_tag :match_source, options_for_select([[t("stats.any"), ""], [t("stats.casual"), "casual"], [t("stats.tournament"), "tournament"]], params[:match_source]), class: "select theme-form-input mono" %></label>
+      <label><span class="auth-label"><%= t("nav.dart_setup") %></span><%= select_tag :dart_setup_id, options_for_select([[t("stats.any"), ""]] + @dart_setups.map { |setup| [setup[:label], setup[:id]] }, params[:dart_setup_id]), class: "select theme-form-input mono" %></label>
+      <label><span class="auth-label"><%= t("common.double_in") %></span><%= select_tag :double_in, options_for_select([[t("stats.any"), ""], [t("stats.advanced.enabled"), "true"], [t("stats.advanced.disabled"), "false"]], params[:double_in]), class: "select theme-form-input mono" %></label>
+      <label><span class="auth-label"><%= t("common.double_out") %></span><%= select_tag :double_out, options_for_select([[t("stats.any"), ""], [t("stats.advanced.enabled"), "true"], [t("stats.advanced.disabled"), "false"]], params[:double_out]), class: "select theme-form-input mono" %></label>
+      <div class="is-flex is-align-items-flex-end"><%= submit_tag t("training.apply"), class: "button theme-btn-primary mono" %></div>
+    <% end %>
+  </section>
+
+  <% if @summary[:matches_played].zero? %>
+    <section class="theme-blank-slate"><p class="page-copy"><%= t("stats.empty") %></p></section>
+  <% else %>
+    <section class="stats-summary-grid" aria-label="<%= t("stats.advanced.summary") %>">
+      <% [
+        [t("stats.matches_played"), @summary[:matches_played]],
+        [t("stats.wins"), @summary[:wins]],
+        [t("stats.legs_won"), @summary[:legs_won]],
+        [t("stats.sets_won"), @summary[:sets_won]],
+        [t("stats.three_dart_average"), @summary[:three_dart_average]],
+        [t("stats.first_9_average"), @summary[:first_9_average]],
+        [t("stats.advanced.consistency"), @summary[:consistency]],
+        [t("stats.advanced.best_match_average"), @summary[:best_match_average]],
+        [t("stats.checkout_rate"), "#{@checkouts[:percentage]}%"],
+        [t("stats.advanced.highest_checkout"), @checkouts[:highest]],
+        [t("stats.advanced.average_darts_won_leg"), @summary[:average_darts_per_won_leg]]
+      ].each do |label, value| %>
+        <article class="stats-metric-card">
+          <div class="stats-metric-label"><%= label %></div>
+          <strong class="stats-metric-value mono"><%= value %></strong>
+        </article>
+      <% end %>
+    </section>
+
+    <section class="theme-card stats-charts-card p-5 stack-md">
+      <h2 class="section-title"><%= t("stats.advanced.scoring_distribution") %></h2>
+      <div class="stats-chart-panel">
+        <% maximum = [@distribution.map { |entry| entry[:count] }.max.to_i, 1].max %>
+        <% @distribution.each do |entry| %>
+          <div class="stats-chart-row"><span><%= entry[:band] %></span><strong class="mono"><%= entry[:count] %></strong></div>
+          <div class="progress-thin stats-progress" role="img" aria-label="<%= t("stats.advanced.band_count", band: entry[:band], count: entry[:count]) %>"><span style="width:<%= (entry[:count].to_f / maximum * 100).round %>%"></span></div>
+        <% end %>
+      </div>
+      <table class="theme-table stats-accessible-table">
+        <caption><%= t("stats.advanced.distribution_table") %></caption>
+        <thead><tr><th scope="col"><%= t("stats.advanced.score_band") %></th><th scope="col"><%= t("stats.advanced.visits") %></th></tr></thead>
+        <tbody><% @distribution.each do |entry| %><tr><td><%= entry[:band] %></td><td class="mono"><%= entry[:count] %></td></tr><% end %></tbody>
+      </table>
+    </section>
+
+    <section class="stats-chart-grid">
+      <article class="theme-card stats-chart-panel">
+        <h2 class="stats-chart-title"><%= t("stats.advanced.checkout_breakdown") %></h2>
+        <dl class="advanced-stats-list">
+          <div><dt><%= t("stats.advanced.checkout_opportunities") %></dt><dd class="mono"><%= @checkouts[:opportunities] %></dd></div>
+          <div><dt><%= t("stats.advanced.checkouts_completed") %></dt><dd class="mono"><%= @checkouts[:completed] %></dd></div>
+          <div><dt><%= t("stats.advanced.highest_checkout") %></dt><dd class="mono"><%= @checkouts[:highest] %></dd></div>
+          <div><dt><%= t("stats.advanced.average_checkout_darts") %></dt><dd class="mono"><%= @checkouts[:average_checkout_darts] %></dd></div>
+          <div><dt><%= t("stats.advanced.doubles_accuracy") %></dt><dd><%= t("stats.advanced.unavailable_intent") %></dd></div>
+        </dl>
+        <% if @checkouts[:routes].any? %>
+          <h3 class="stats-chart-title mt-4"><%= t("stats.advanced.checkout_routes") %></h3>
+          <% @checkouts[:routes].first(10).each do |entry| %><div class="stats-chart-row"><span class="mono"><%= entry[:route] %></span><strong><%= entry[:count] %></strong></div><% end %>
+        <% end %>
+      </article>
+
+      <article class="theme-card stats-chart-panel">
+        <h2 class="stats-chart-title"><%= t("stats.average_over_time") %></h2>
+        <% @trends.each do |entry| %>
+          <div class="stats-chart-row"><span><%= l(Date.iso8601(entry[:period_from])) %></span><strong class="mono"><%= entry[:average] %></strong></div>
+          <div class="progress-thin stats-progress"><span style="width:<%= [entry[:average], 100].min %>%"></span></div>
+        <% end %>
+      </article>
+    </section>
+
+    <section class="theme-card stats-charts-card p-5 stack-md">
+      <h2 class="section-title"><%= t("stats.advanced.head_to_head") %></h2>
+      <div class="table-container">
+        <table class="theme-table">
+          <thead><tr><th scope="col"><%= t("stats.opponent") %></th><th scope="col"><%= t("stats.matches_played") %></th><th scope="col"><%= t("stats.wins") %></th><th scope="col"><%= t("stats.losses") %></th><th scope="col"><%= t("stats.three_dart_average") %></th></tr></thead>
+          <tbody>
+            <% @head_to_head.each do |entry| %><tr><td><%= entry[:opponent_name] %></td><td><%= entry[:matches] %></td><td><%= entry[:wins] %></td><td><%= entry[:losses] %></td><td class="mono"><%= entry[:average] %></td></tr><% end %>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="theme-card stats-charts-card p-5 stack-md">
+      <h2 class="section-title"><%= t("stats.advanced.recent_legs") %></h2>
+      <div class="table-container">
+        <table class="theme-table">
+          <thead><tr><th scope="col"><%= t("training.date") %></th><th scope="col"><%= t("stats.three_dart_average") %></th><th scope="col"><%= t("training.darts") %></th><th scope="col"><%= t("stats.advanced.result") %></th><th scope="col"><%= t("stats.advanced.checkout") %></th></tr></thead>
+          <tbody>
+            <% @leg_performance.each do |entry| %><tr><td><%= l(Time.zone.parse(entry[:played_at]).to_date) %></td><td class="mono"><%= entry[:average] %></td><td><%= entry[:darts] %></td><td><%= t(entry[:completed] ? (entry[:won] ? "stats.wins" : "stats.losses") : "stats.advanced.in_progress") %></td><td><%= entry[:checkout] ? t("stats.advanced.yes") : t("stats.advanced.no") %></td></tr><% end %>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="theme-card stats-charts-card p-5 stack-md">
+      <h2 class="section-title"><%= t("stats.advanced.recent_sets") %></h2>
+      <div class="table-container">
+        <table class="theme-table">
+          <thead><tr><th scope="col"><%= t("training.date") %></th><th scope="col"><%= t("stats.three_dart_average") %></th><th scope="col"><%= t("stats.legs_won") %></th><th scope="col"><%= t("stats.advanced.legs_lost") %></th><th scope="col"><%= t("stats.advanced.result") %></th></tr></thead>
+          <tbody>
+            <% @set_performance.each do |entry| %><tr><td><%= l(Time.zone.parse(entry[:played_at]).to_date) %></td><td class="mono"><%= entry[:average] %></td><td><%= entry[:legs_won] %></td><td><%= entry[:legs_lost] %></td><td><%= t(entry[:completed] ? (entry[:won] ? "stats.wins" : "stats.losses") : "stats.advanced.in_progress") %></td></tr><% end %>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <% if Rails.configuration.x.roadmap_features[:expanded_training] %>
+      <section class="theme-card stats-charts-card p-5 stack-md">
+        <h2 class="section-title"><%= t("stats.advanced.training_performance") %></h2>
+        <div class="table-container"><table class="theme-table">
+          <thead><tr><th><%= t("training.mode") %></th><th><%= t("training.completed_count", count: "#") %></th><th><%= t("training.best_darts") %></th><th><%= t("training.recent_avg") %></th></tr></thead>
+          <tbody><% @training_stats.each do |stat| %><tr><td><%= t("training.modes.#{stat[:mode]}.name") %></td><td><%= stat[:completed_count] %></td><td><%= stat[:best_darts] || "–" %></td><td><%= stat[:recent_average] || "–" %></td></tr><% end %></tbody>
+        </table></div>
+      </section>
+    <% end %>
+
+    <section class="theme-card p-5">
+      <h2 class="section-title"><%= t("stats.advanced.data_coverage") %></h2>
+      <p class="page-copy"><%= t("stats.advanced.coverage_description", detailed: @coverage[:detailed_percentage], detailed_turns: @coverage[:detailed_turns], total: @coverage[:turns]) %></p>
+      <p class="page-copy mt-2"><%= t("stats.advanced.doubles_explanation") %></p>
+    </section>
+  <% end %>
+</div>

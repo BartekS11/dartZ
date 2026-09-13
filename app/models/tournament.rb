@@ -18,6 +18,7 @@ class Tournament < ApplicationRecord
   include TournamentLiveUpdates
 
   belongs_to :owner_user, class_name: "User", optional: true
+  belongs_to :owner_admin_data_cleanup, class_name: "AdminDataCleanup", optional: true
 
   has_many :entries, class_name: "TournamentEntry", dependent: :destroy
   has_many :rounds, class_name: "TournamentRound", dependent: :destroy

@@ -14,6 +14,20 @@ class StatsAndPracticePlansSystemTest < ApplicationSystemTestCase
     assert_text I18n.t("stats.empty")
   end
 
+  test "premium user opens the advanced statistics dashboard" do
+    user = create_user(unique_email("stats-system-premium"))
+    user.update!(account_tier: "premium")
+    FeatureAccess.stubs(:enabled?).with(:advanced_stats).returns(true)
+    login_user(user)
+
+    click_link I18n.t("nav.stats")
+    click_link I18n.t("stats.advanced.open")
+
+    assert_current_path advanced_stats_path, ignore_query: true
+    assert_text I18n.t("stats.advanced.title")
+    assert_text I18n.t("stats.empty")
+  end
+
   test "premium user starts practice plan and manually completes first task" do
     user = create_user(unique_email("plans-system-premium"))
     user.update!(account_tier: "premium")

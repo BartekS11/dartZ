@@ -36,17 +36,33 @@
 
           <div class="training-target-rail" aria-label="<%= t("training.progress_label") %>">
             <% @training_session.targets.each_with_index do |target, index| %>
-              <span class="training-target-pill mono <%= 'is-done' if index < @training_session.current_target_index %> <%= 'is-current' if index == @training_session.current_target_index %>"><%= target.fetch("label") %></span>
+              <span class="training-target-pill mono <%= 'is-done' if index < @training_session.current_target_index %> <%= 'is-current' if index == @training_session.current_target_index %>"><%= target.respond_to?(:fetch) ? target.fetch("label") : target %></span>
             <% end %>
           </div>
         <% end %>
 
         <%= form_with url: record_training_session_path(@training_session), method: :patch, data: { turbo: false, training_session_target: "form" }, class: "training-throw-form" do %>
-          <label class="training-input-label" for="misses"><%= t("training.misses_input") %></label>
+          <%= hidden_field_tag :idempotency_key, SecureRandom.uuid %>
           <div class="training-action-row">
-            <%= number_field_tag :misses, 0, min: 0, max: 99, autofocus: true, inputmode: "numeric", class: "input theme-form-input mono training-misses-input", data: { training_session_target: "misses" } %>
-            <button type="submit" name="result" value="hit" class="button theme-btn-primary mono training-action-button" data-training-session-target="hitButton"><%= t("training.hit") %> <span class="training-key">Space</span></button>
-            <button type="submit" name="result" value="no_hit" class="button theme-btn-outline mono training-action-button"><%= t("training.no_hit") %></button>
+            <% if @training_session.mode == "scoring_99" %>
+              <%= label_tag :score, t("training.visit_score"), class: "training-input-label" %>
+              <%= number_field_tag :score, nil, min: 0, max: 180, required: true, autofocus: true, inputmode: "numeric", class: "input theme-form-input mono training-misses-input", data: { training_session_target: "misses" } %>
+              <%= number_field_tag :darts, 3, min: 1, max: 3, required: true, aria: { label: t("training.darts") }, class: "input theme-form-input mono" %>
+              <button type="submit" class="button theme-btn-primary mono training-action-button" data-training-session-target="hitButton"><%= t("training.record_attempt") %> <span class="training-key">Space</span></button>
+            <% elsif @training_session.mode == "checkout_121" %>
+              <%= number_field_tag :darts, 3, min: 1, max: 3, required: true, aria: { label: t("training.darts") }, autofocus: true, class: "input theme-form-input mono", data: { training_session_target: "misses" } %>
+              <button type="submit" name="result" value="hit" class="button theme-btn-primary mono training-action-button" data-training-session-target="hitButton"><%= t("training.checkout_hit") %> <span class="training-key">Space</span></button>
+              <button type="submit" name="result" value="no_hit" class="button theme-btn-outline mono training-action-button"><%= t("training.no_hit") %></button>
+            <% elsif @training_session.expanded_mode? %>
+              <%= label_tag :hits, t("training.hits_this_target"), class: "training-input-label" %>
+              <%= number_field_tag :hits, 0, min: 0, max: @training_session.configuration.fetch("darts_per_target", 3), required: true, autofocus: true, inputmode: "numeric", class: "input theme-form-input mono training-misses-input", data: { training_session_target: "misses" } %>
+              <button type="submit" class="button theme-btn-primary mono training-action-button" data-training-session-target="hitButton"><%= t("training.record_attempt") %> <span class="training-key">Space</span></button>
+            <% else %>
+              <label class="training-input-label" for="misses"><%= t("training.misses_input") %></label>
+              <%= number_field_tag :misses, 0, min: 0, max: 99, autofocus: true, inputmode: "numeric", class: "input theme-form-input mono training-misses-input", data: { training_session_target: "misses" } %>
+              <button type="submit" name="result" value="hit" class="button theme-btn-primary mono training-action-button" data-training-session-target="hitButton"><%= t("training.hit") %> <span class="training-key">Space</span></button>
+              <button type="submit" name="result" value="no_hit" class="button theme-btn-outline mono training-action-button"><%= t("training.no_hit") %></button>
+            <% end %>
           </div>
           <p class="training-keyboard-hint"><%= t("training.space_hint") %></p>
         <% end %>
@@ -56,10 +72,11 @@
         <div class="theme-panel p-4 training-stat-card"><div class="theme-section-label"><%= t("training.darts") %></div><strong class="mono"><%= @training_session.total_darts %></strong></div>
         <div class="theme-panel p-4 training-stat-card"><div class="theme-section-label"><%= t("training.misses") %></div><strong class="mono"><%= @training_session.misses %></strong></div>
         <div class="theme-panel p-4 training-stat-card"><div class="theme-section-label"><%= t("training.hits") %></div><strong class="mono"><%= @training_session.hits %></strong></div>
+        <% if @training_session.score %><div class="theme-panel p-4 training-stat-card"><div class="theme-section-label"><%= t("training.score") %></div><strong class="mono"><%= @training_session.score %></strong></div><% end %>
       </aside>
 
       <div class="training-abandon-row">
-        <% if @training_session.checkout_randomizer_mode? %>
+        <% if @training_session.checkout_randomizer_mode? || (@training_session.expanded_mode? && @training_session.mode_definition.manually_completable?) %>
           <%= button_to t("training.finish_session"), complete_training_session_path(@training_session), method: :patch, class: "button theme-btn-primary mono" %>
         <% end %>
         <%= button_to t("training.abandon"), abandon_training_session_path(@training_session), method: :patch, class: "button theme-btn-outline mono", form: { data: { turbo_confirm: t("training.confirm_abandon") } } %>

@@ -23,6 +23,7 @@ module Admin
     def show
       @metrics = Admin::UserMetrics.for([ @user ]).fetch(@user, Admin::UserMetrics::EMPTY)
       @tier_changes = @user.admin_tier_changes.includes(:admin_user).order(created_at: :desc)
+      @data_cleanups = @user.admin_data_cleanups.includes(events: :admin_user).order(created_at: :desc)
     end
 
     def matches

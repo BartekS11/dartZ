@@ -24,6 +24,8 @@ module ActiveSupport
     # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
     # fixtures :all
 
+    teardown { I18n.locale = I18n.default_locale }
+
     def create_user(email, password: "password")
       User.create!(
         email_address: email,

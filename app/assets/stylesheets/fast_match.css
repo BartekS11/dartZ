@@ -14,6 +14,9 @@
 .fast-options-body > :first-child { margin-top: 1.15rem; }
 .fast-invite-option { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1rem; border: 1px solid var(--theme-line); border-radius: .75rem; background: var(--theme-surface-alt); }
 .fast-invite-option p { margin: .25rem 0 0; }
+.fast-invite-featured { padding: 1.25rem; border-color: color-mix(in srgb, var(--theme-primary) 55%, var(--theme-line)); background: color-mix(in srgb, var(--theme-primary) 8%, var(--theme-surface-alt)); }
+.fast-invite-featured strong { color: var(--theme-text); font-size: 1.05rem; }
+.fast-invite-button { flex: 0 0 auto; min-height: 3.5rem !important; border-color: var(--theme-primary) !important; color: var(--theme-primary-soft) !important; }
 .fast-saved-names .column { position: relative; }
 .fast-saved-names .saved-btn { width: 100%; min-height: 2.75rem; border: 1px solid var(--theme-line); border-radius: .5rem; }
 .fast-saved-names .saved-dropdown { left: 0; right: 0; top: calc(100% - .2rem); }

@@ -10,9 +10,49 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_08_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_14_113000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "admin_data_cleanup_events", force: :cascade do |t|
+    t.string "action", null: false
+    t.bigint "admin_data_cleanup_id", null: false
+    t.bigint "admin_user_id", null: false
+    t.jsonb "categories", default: [], null: false
+    t.jsonb "counts", default: {}, null: false
+    t.datetime "created_at", null: false
+    t.text "reason", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["admin_data_cleanup_id", "created_at"], name: "index_admin_data_cleanup_events_on_cleanup_and_created_at"
+    t.index ["admin_data_cleanup_id"], name: "index_admin_data_cleanup_events_on_admin_data_cleanup_id"
+    t.index ["admin_user_id"], name: "index_admin_data_cleanup_events_on_admin_user_id"
+    t.index ["user_id"], name: "index_admin_data_cleanup_events_on_user_id"
+    t.check_constraint "action::text = ANY (ARRAY['clear'::character varying, 'restore'::character varying, 'purge'::character varying]::text[])", name: "admin_data_cleanup_events_valid_action"
+    t.check_constraint "jsonb_typeof(categories) = 'array'::text", name: "admin_data_cleanup_events_categories_array"
+    t.check_constraint "jsonb_typeof(counts) = 'object'::text", name: "admin_data_cleanup_events_counts_object"
+    t.check_constraint "length(TRIM(BOTH FROM reason)) > 0", name: "admin_data_cleanup_events_reason_present"
+  end
+
+  create_table "admin_data_cleanups", force: :cascade do |t|
+    t.jsonb "categories", default: [], null: false
+    t.datetime "cleared_at", null: false
+    t.jsonb "counts", default: {}, null: false
+    t.datetime "created_at", null: false
+    t.string "public_id", null: false
+    t.datetime "purged_at"
+    t.datetime "restored_at"
+    t.string "status", default: "cleared", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["public_id"], name: "index_admin_data_cleanups_on_public_id", unique: true
+    t.index ["user_id", "created_at"], name: "index_admin_data_cleanups_on_user_id_and_created_at"
+    t.index ["user_id"], name: "index_admin_data_cleanups_on_user_id"
+    t.check_constraint "jsonb_array_length(categories) > 0", name: "admin_data_cleanups_categories_present"
+    t.check_constraint "jsonb_typeof(categories) = 'array'::text", name: "admin_data_cleanups_categories_array"
+    t.check_constraint "jsonb_typeof(counts) = 'object'::text", name: "admin_data_cleanups_counts_object"
+    t.check_constraint "status::text = ANY (ARRAY['cleared'::character varying, 'restored'::character varying, 'purged'::character varying]::text[])", name: "admin_data_cleanups_valid_status"
+  end
 
   create_table "admin_sessions", force: :cascade do |t|
     t.bigint "admin_user_id", null: false
@@ -51,6 +91,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_08_120000) do
   end
 
   create_table "dart_setups", force: :cascade do |t|
+    t.bigint "admin_data_cleanup_id"
     t.datetime "created_at", null: false
     t.string "manufacturer", default: "winmau", null: false
     t.integer "point_length_mm", null: false
@@ -59,7 +100,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_08_120000) do
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.decimal "weight_g", precision: 4, scale: 1, null: false
-    t.index ["user_id"], name: "index_dart_setups_on_user_id", unique: true
+    t.index ["admin_data_cleanup_id"], name: "index_dart_setups_on_admin_data_cleanup_id"
+    t.index ["user_id"], name: "index_visible_dart_setups_on_user_id", unique: true, where: "(admin_data_cleanup_id IS NULL)"
   end
 
   create_table "leg_players", force: :cascade do |t|
@@ -129,6 +171,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_08_120000) do
   end
 
   create_table "players", force: :cascade do |t|
+    t.bigint "admin_data_cleanup_id"
     t.boolean "bot", default: false, null: false
     t.integer "bot_level", default: 10
     t.datetime "created_at", null: false
@@ -140,6 +183,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_08_120000) do
     t.string "public_id", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id"
+    t.index ["admin_data_cleanup_id"], name: "index_players_on_admin_data_cleanup_id"
     t.index ["dart_setup_id"], name: "index_players_on_dart_setup_id"
     t.index ["match_id"], name: "index_players_on_match_id"
     t.index ["public_id"], name: "index_players_on_public_id", unique: true
@@ -177,6 +221,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_08_120000) do
   end
 
   create_table "practice_plans", force: :cascade do |t|
+    t.bigint "admin_data_cleanup_id"
     t.datetime "completed_at"
     t.datetime "created_at", null: false
     t.text "description"
@@ -188,6 +233,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_08_120000) do
     t.string "title", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
+    t.index ["admin_data_cleanup_id"], name: "index_practice_plans_on_admin_data_cleanup_id"
     t.index ["plan_type"], name: "index_practice_plans_on_plan_type"
     t.index ["public_id"], name: "index_practice_plans_on_public_id", unique: true
     t.index ["user_id", "status"], name: "index_practice_plans_on_user_id_and_status"
@@ -214,6 +260,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_08_120000) do
 
   create_table "tournament_entries", force: :cascade do |t|
     t.string "access_token", null: false
+    t.bigint "admin_data_cleanup_id"
     t.decimal "buchholz", precision: 8, scale: 2, default: "0.0", null: false
     t.datetime "created_at", null: false
     t.integer "draws", default: 0, null: false
@@ -231,6 +278,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_08_120000) do
     t.bigint "user_id"
     t.integer "wins", default: 0, null: false
     t.index ["access_token"], name: "index_tournament_entries_on_access_token", unique: true
+    t.index ["admin_data_cleanup_id"], name: "index_tournament_entries_on_admin_data_cleanup_id"
     t.index ["public_id"], name: "index_tournament_entries_on_public_id", unique: true
     t.index ["tournament_id", "name"], name: "index_tournament_entries_on_tournament_id_and_name", unique: true
     t.index ["tournament_id"], name: "index_tournament_entries_on_tournament_id"
@@ -303,6 +351,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_08_120000) do
     t.integer "group_count"
     t.string "join_token", null: false
     t.boolean "manual_advance_allowed", default: true, null: false
+    t.bigint "owner_admin_data_cleanup_id"
     t.bigint "owner_user_id"
     t.integer "playoff_best_of_legs"
     t.integer "playoff_best_of_sets"
@@ -326,30 +375,77 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_08_120000) do
     t.string "visibility", default: "public_guest", null: false
     t.index ["admin_token"], name: "index_tournaments_on_admin_token", unique: true
     t.index ["join_token"], name: "index_tournaments_on_join_token", unique: true
+    t.index ["owner_admin_data_cleanup_id"], name: "index_tournaments_on_owner_admin_data_cleanup_id"
     t.index ["owner_user_id"], name: "index_tournaments_on_owner_user_id"
     t.index ["public_id"], name: "index_tournaments_on_public_id", unique: true
     t.index ["share_token"], name: "index_tournaments_on_share_token", unique: true
   end
 
+  create_table "training_attempts", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.integer "darts", null: false
+    t.integer "hits", default: 0, null: false
+    t.uuid "idempotency_key", null: false
+    t.string "public_id", null: false
+    t.jsonb "response", default: {}, null: false
+    t.jsonb "result", default: {}, null: false
+    t.integer "sequence", null: false
+    t.boolean "successful", default: false, null: false
+    t.string "target", null: false
+    t.bigint "training_session_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["public_id"], name: "index_training_attempts_on_public_id", unique: true
+    t.index ["training_session_id", "idempotency_key"], name: "idx_training_attempts_idempotency", unique: true
+    t.index ["training_session_id", "sequence"], name: "index_training_attempts_on_training_session_id_and_sequence", unique: true
+    t.index ["training_session_id"], name: "index_training_attempts_on_training_session_id"
+    t.check_constraint "darts >= 1 AND darts <= 99", name: "training_attempts_valid_darts"
+    t.check_constraint "hits >= 0 AND hits <= darts", name: "training_attempts_valid_hits"
+    t.check_constraint "jsonb_typeof(response) = 'object'::text", name: "training_attempts_response_object"
+    t.check_constraint "jsonb_typeof(result) = 'object'::text", name: "training_attempts_result_object"
+    t.check_constraint "sequence > 0", name: "training_attempts_positive_sequence"
+  end
+
+  create_table "training_drills", force: :cascade do |t|
+    t.bigint "admin_data_cleanup_id"
+    t.jsonb "configuration", default: {}, null: false
+    t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.string "public_id", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["admin_data_cleanup_id"], name: "index_training_drills_on_admin_data_cleanup_id"
+    t.index ["public_id"], name: "index_training_drills_on_public_id", unique: true
+    t.index ["user_id", "name"], name: "index_visible_training_drills_on_user_and_name", unique: true, where: "(admin_data_cleanup_id IS NULL)"
+    t.index ["user_id"], name: "index_training_drills_on_user_id"
+    t.check_constraint "jsonb_typeof(configuration) = 'object'::text", name: "training_drills_configuration_object"
+  end
+
   create_table "training_sessions", force: :cascade do |t|
     t.datetime "abandoned_at"
+    t.bigint "admin_data_cleanup_id"
     t.datetime "completed_at"
+    t.jsonb "configuration", default: {}, null: false
     t.datetime "created_at", null: false
     t.integer "current_target_index", default: 0, null: false
     t.integer "hits", default: 0, null: false
     t.integer "misses", default: 0, null: false
     t.string "mode", null: false
     t.string "public_id", null: false
+    t.integer "score"
     t.datetime "started_at", null: false
+    t.jsonb "state", default: {}, null: false
     t.string "status", default: "active", null: false
     t.jsonb "target_stats", default: [], null: false
     t.integer "total_darts", default: 0, null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
+    t.index ["admin_data_cleanup_id"], name: "index_training_sessions_on_admin_data_cleanup_id"
     t.index ["public_id"], name: "index_training_sessions_on_public_id", unique: true
     t.index ["user_id", "created_at"], name: "index_training_sessions_on_user_id_and_created_at"
     t.index ["user_id", "status"], name: "index_training_sessions_on_user_id_and_status"
     t.index ["user_id"], name: "index_training_sessions_on_user_id"
+    t.check_constraint "jsonb_typeof(configuration) = 'object'::text", name: "training_sessions_configuration_object"
+    t.check_constraint "jsonb_typeof(state) = 'object'::text", name: "training_sessions_state_object"
   end
 
   create_table "turns", force: :cascade do |t|
@@ -387,24 +483,32 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_08_120000) do
     t.check_constraint "manual_tier_override IS NULL OR (manual_tier_override::text = ANY (ARRAY['free'::character varying, 'premium'::character varying, 'pro'::character varying]::text[]))", name: "users_manual_tier_override_valid"
   end
 
+  add_foreign_key "admin_data_cleanup_events", "admin_data_cleanups"
+  add_foreign_key "admin_data_cleanup_events", "admin_users"
+  add_foreign_key "admin_data_cleanup_events", "users"
+  add_foreign_key "admin_data_cleanups", "users"
   add_foreign_key "admin_sessions", "admin_users"
   add_foreign_key "admin_tier_changes", "admin_users"
   add_foreign_key "admin_tier_changes", "users"
+  add_foreign_key "dart_setups", "admin_data_cleanups"
   add_foreign_key "dart_setups", "users"
   add_foreign_key "leg_players", "legs"
   add_foreign_key "leg_players", "players"
   add_foreign_key "legs", "match_sets"
   add_foreign_key "legs", "matches"
   add_foreign_key "match_sets", "matches"
+  add_foreign_key "players", "admin_data_cleanups"
   add_foreign_key "players", "dart_setups"
   add_foreign_key "players", "matches"
   add_foreign_key "players", "users"
   add_foreign_key "practice_plan_task_events", "practice_plan_tasks"
   add_foreign_key "practice_plan_task_events", "training_sessions"
   add_foreign_key "practice_plan_tasks", "practice_plans"
+  add_foreign_key "practice_plans", "admin_data_cleanups"
   add_foreign_key "practice_plans", "users"
   add_foreign_key "sessions", "users"
   add_foreign_key "throws", "turns"
+  add_foreign_key "tournament_entries", "admin_data_cleanups"
   add_foreign_key "tournament_entries", "tournaments"
   add_foreign_key "tournament_entries", "users"
   add_foreign_key "tournament_matches", "matches", column: "linked_match_id"
@@ -414,7 +518,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_08_120000) do
   add_foreign_key "tournament_matches", "tournament_rounds"
   add_foreign_key "tournament_matches", "tournaments"
   add_foreign_key "tournament_rounds", "tournaments"
+  add_foreign_key "tournaments", "admin_data_cleanups", column: "owner_admin_data_cleanup_id"
   add_foreign_key "tournaments", "users", column: "owner_user_id"
+  add_foreign_key "training_attempts", "training_sessions"
+  add_foreign_key "training_drills", "admin_data_cleanups"
+  add_foreign_key "training_drills", "users"
+  add_foreign_key "training_sessions", "admin_data_cleanups"
   add_foreign_key "training_sessions", "users"
   add_foreign_key "turns", "legs"
   add_foreign_key "turns", "players"

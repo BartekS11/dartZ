@@ -3,6 +3,7 @@ class AdminUser < ApplicationRecord
 
   has_many :admin_sessions, dependent: :destroy
   has_many :admin_tier_changes, dependent: :restrict_with_error
+  has_many :admin_data_cleanup_events, dependent: :restrict_with_error
 
   normalizes :email_address, with: ->(email) { email.to_s.strip.downcase }
 

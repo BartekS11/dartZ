@@ -3,6 +3,32 @@
 require "e2e_helper"
 
 class TrainingSessionsFlowTest < E2EIntegrationTest
+  test "premium user starts resumes and records every expanded training mode" do
+    user = premium_user("training-expanded")
+    login_as(user)
+    FeatureAccess.stubs(:enabled?).with(:expanded_training).returns(true)
+
+    cases = {
+      "bobs_27" => [ {}, { hits: 1 } ],
+      "doubles_practice" => [ { from: 20, to: 20 }, { hits: 1 } ],
+      "scoring_99" => [ {}, { score: 60, darts: 3 } ],
+      "checkout_121" => [ { rounds: 1 }, { result: "hit", darts: 3 } ],
+      "custom_targets" => [ { name: "E2E drill", targets: "IB" }, { hits: 1 } ]
+    }
+
+    cases.each do |mode, (configuration, result)|
+      post training_sessions_path, params: { training_session: configuration.merge(mode: mode) }
+      session = user.training_sessions.order(:created_at).last
+      assert_redirected_to training_session_path(session)
+
+      get training_session_path(session)
+      assert_response :success
+      patch record_training_session_path(session), params: result.merge(idempotency_key: SecureRandom.uuid)
+      assert_redirected_to training_session_path(session)
+      assert_equal 1, session.reload.training_attempts.count
+    end
+  end
+
   test "free user is redirected to billing when opening training center" do
     user = create_user(unique_email("training-free"))
     login_as(user)

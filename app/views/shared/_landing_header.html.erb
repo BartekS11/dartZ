@@ -1,0 +1,33 @@
+<nav class="simple-nav landing-nav" aria-label="<%= t('home.navigation') %>">
+  <%= link_to root_path, class: "brand-lockup" do %>
+    <span class="brand-mark" aria-hidden="true">◎</span>
+    <span class="brand-copy">
+      <span class="brand-wordmark"><%= theme_app_name.delete(theme_app_accent) %><span><%= theme_app_accent %></span></span>
+      <span class="brand-subline"><%= Current.user ? Current.user.display_name : "501" %></span>
+    </span>
+  <% end %>
+
+  <div class="nav-utilities <%= 'has-account' if Current.user %>">
+    <% if Current.user %>
+      <span class="landing-user-name mono"><%= Current.user.display_name %></span>
+      <%= link_to t("home.your_matches"), matches_path, class: "app-nav-auth-button mono" %>
+    <% else %>
+      <%= link_to t("nav.login"), new_session_path, class: "app-nav-link mono" %>
+      <%= link_to t("home.create_account"), new_registration_path, class: "app-nav-auth-button mono" %>
+    <% end %>
+
+    <%= form_with url: locale_path, method: :patch, class: "app-nav-locale-form", data: { turbo: false } do %>
+      <%= hidden_field_tag :return_to, request.fullpath %>
+      <%= select_tag :selected_locale,
+            options_for_select(available_locales.map { |locale| [locale_label(locale), locale] }, I18n.locale.to_s),
+            class: "app-nav-locale-select mono",
+            aria: { label: t("nav.language") },
+            onchange: "this.form.requestSubmit()" %>
+    <% end %>
+
+    <button type="button" class="app-nav-link app-nav-theme-toggle" data-action="theme-mode#toggle" data-theme-mode-target="button" aria-label="<%= t('nav.switch_theme') %>">
+      <span aria-hidden="true">◐</span>
+      <span data-theme-mode-target="label" class="visually-hidden"><%= t("nav.light_theme") %></span>
+    </button>
+  </div>
+</nav>

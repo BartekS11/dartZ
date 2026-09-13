@@ -23,17 +23,13 @@
       <div class="columns is-variable is-3 is-vcentered">
         <div class="column">
           <div class="player-card-shell">
-            <div class="is-flex is-justify-content-space-between is-align-items-center mb-2">
-              <label class="auth-label"><%= t("common.player_1") %></label>
-              <button type="button" data-lobby-target="savedButton1" data-action="click->lobby#toggleDropdown1" class="saved-btn mono"><%= t("matches.saved_names") %></button>
-            </div>
+            <label class="auth-label mb-2"><%= t("common.player_1") %></label>
             <%= f.text_field :player1_name,
                   placeholder: t("matches.enter_name"),
                   maxlength: 20,
                   autocomplete: "off",
                   data: { lobby_target: "player1", action: "input->lobby#save" },
                   class: "input theme-form-input mono has-text-centered" %>
-            <div data-lobby-target="dropdown1" class="saved-dropdown"></div>
           </div>
         </div>
 
@@ -43,17 +39,13 @@
 
         <div class="column">
           <div class="player-card-shell">
-            <div class="is-flex is-justify-content-space-between is-align-items-center mb-2">
-              <label class="auth-label"><%= t("common.player_2") %></label>
-              <button type="button" data-lobby-target="savedButton2" data-action="click->lobby#toggleDropdown2" class="saved-btn mono"><%= t("matches.saved_names") %></button>
-            </div>
+            <label class="auth-label mb-2"><%= t("common.player_2") %></label>
             <%= f.text_field :player2_name,
                   placeholder: t("matches.enter_name"),
                   maxlength: 20,
                   autocomplete: "off",
                   data: { lobby_target: "player2", action: "input->lobby#save" },
                   class: "input theme-form-input mono has-text-centered" %>
-            <div data-lobby-target="dropdown2" class="saved-dropdown"></div>
           </div>
         </div>
       </div>
@@ -65,98 +57,88 @@
         </div>
       </div>
 
-      <div class="columns is-variable is-3">
-        <div class="column">
-          <div class="theme-panel p-4">
-            <label class="auth-label"><%= t("common.starting_score") %></label>
-            <div class="buttons are-small mt-2">
-              <% Match::X01_STARTING_SCORES.each do |score| %>
-                <button type="button"
-                        class="button theme-btn-outline mono score-preset <%= 'is-selected' if score == 501 %>"
-                        onclick="document.getElementById('starting_score').value = <%= score %>; this.closest('.buttons').querySelectorAll('.score-preset').forEach(b => b.classList.remove('is-selected')); this.classList.add('is-selected')">
-                  <%= score %>
-                </button>
-              <% end %>
-            </div>
-            <%= hidden_field_tag :starting_score, 501, id: "starting_score" %>
-          </div>
-        </div>
-
-        <div class="column">
-          <div class="theme-panel p-4">
-            <label class="auth-label"><%= t("common.best_of_legs") %></label>
-            <div class="buttons are-small mt-2">
-              <% [[1, "1"], [3, "Bo3"], [5, "Bo5"]].each do |val, label| %>
-                <button type="button"
-                        class="button theme-btn-outline mono legs-preset <%= 'is-selected' if val == 1 %>"
-                        onclick="document.getElementById('best_of_legs').value = <%= val %>; this.closest('.buttons').querySelectorAll('.legs-preset').forEach(b => b.classList.remove('is-selected')); this.classList.add('is-selected')">
-                  <%= label %>
-                </button>
-              <% end %>
-            </div>
-            <%= number_field_tag :best_of_legs, 1, min: 1, max: 99, id: "best_of_legs", class: "input theme-form-input mono" %>
-          </div>
-        </div>
-
-        <div class="column">
-          <div class="theme-panel p-4">
-            <label class="auth-label"><%= t("common.best_of_sets") %></label>
-            <div class="buttons are-small mt-2">
-              <% [[1, "1"], [3, "Bo3"], [5, "Bo5"]].each do |val, label| %>
-                <button type="button"
-                        class="button theme-btn-outline mono sets-preset <%= 'is-selected' if val == 1 %>"
-                        onclick="document.getElementById('best_of_sets').value = <%= val %>; this.closest('.buttons').querySelectorAll('.sets-preset').forEach(b => b.classList.remove('is-selected')); this.classList.add('is-selected')">
-                  <%= label %>
-                </button>
-              <% end %>
-            </div>
-            <%= number_field_tag :best_of_sets, 1, min: 1, max: 99, id: "best_of_sets", class: "input theme-form-input mono" %>
-          </div>
-        </div>
-      </div>
-
-      <div class="columns is-variable is-3">
-        <div class="column"><label class="panel-choice"><%= hidden_field_tag :double_in, "0" %><%= check_box_tag :double_in, "1", false %> <%= t("common.double_in") %></label></div>
-        <div class="column"><label class="panel-choice"><%= hidden_field_tag :double_out, "0" %><%= check_box_tag :double_out, "1", true %> <%= t("common.double_out") %></label></div>
-      </div>
-
-      <div class="simple-step">
-        <div class="simple-step-number">3</div>
-        <div>
-          <div class="theme-section-label"><%= t("matches.play") %></div>
-        </div>
-      </div>
-
-      <div class="setup-submit-row pt-3">
-        <div class="help-theme">
-          <div id="greeting-wrapper" class="is-hidden">
-            <span class="auth-label"><%= t("matches.last_players") %></span>
-            <div data-lobby-target="greeting" class="mt-1"></div>
-          </div>
-        </div>
-        <div class="buttons setup-primary-actions">
-          <% if Current.user.present? %>
-            <%= button_tag t("matches.create_invite_match"),
-                  type: "submit",
-                  name: "invite_match",
-                  value: "1",
-                  class: "button theme-btn-outline is-medium" %>
+      <div class="theme-panel fast-score-panel p-4">
+        <label class="auth-label"><%= t("common.starting_score") %></label>
+        <div class="buttons are-small mt-2">
+          <% Match::X01_STARTING_SCORES.each do |score| %>
+            <button type="button"
+                    class="button theme-btn-outline mono score-preset <%= 'is-selected' if score == 501 %>"
+                    onclick="document.getElementById('starting_score').value = <%= score %>; this.closest('.buttons').querySelectorAll('.score-preset').forEach(b => b.classList.remove('is-selected')); this.classList.add('is-selected')">
+              <%= score %>
+            </button>
           <% end %>
-          <%= f.submit t("matches.start_game"), class: "button theme-btn-primary is-medium" %>
         </div>
+        <%= hidden_field_tag :starting_score, 501, id: "starting_score" %>
       </div>
 
-      <details class="setup-utility-actions">
-        <summary class="mono"><%= t("matches.reset_options") %></summary>
-        <div class="buttons are-small mt-3">
-          <button type="button" data-action="click->lobby#clearPlayers" class="button theme-btn-outline mono"><%= t("matches.clear_names") %></button>
-          <button type="button" data-action="click->lobby#clearMatches" class="button theme-btn-outline mono"><%= t("matches.clear_history") %></button>
+      <% if Current.user.present? %>
+        <div class="fast-invite-option fast-invite-featured">
+          <div><strong><%= t("matches.invite_title") %></strong><p class="help-theme"><%= t("matches.invite_copy") %></p></div>
+          <%= button_tag t("matches.create_invite_match"), type: "submit", name: "invite_match", value: "1", class: "button theme-btn-outline fast-invite-button" %>
+        </div>
+      <% end %>
+
+      <div class="fast-match-submit">
+        <div id="greeting-wrapper" class="hidden help-theme">
+          <span class="auth-label"><%= t("matches.last_players") %></span>
+          <div data-lobby-target="greeting" class="mt-1"></div>
+        </div>
+        <%= f.submit t("matches.start_game"), class: "button theme-btn-primary is-medium fast-start-button" %>
+      </div>
+
+      <details class="fast-match-options theme-panel">
+        <summary>
+          <span><strong><%= t("matches.more_options") %></strong><small><%= t("matches.more_options_copy") %></small></span>
+          <span class="fast-options-indicator" aria-hidden="true">+</span>
+        </summary>
+        <div class="fast-options-body stack-md">
+          <div class="columns is-variable is-3">
+            <div class="column">
+              <label class="auth-label"><%= t("common.best_of_legs") %></label>
+              <div class="buttons are-small mt-2">
+                <% [[1, "1"], [3, "Bo3"], [5, "Bo5"]].each do |val, label| %>
+                  <button type="button" class="button theme-btn-outline mono legs-preset <%= 'is-selected' if val == 1 %>" onclick="document.getElementById('best_of_legs').value = <%= val %>; this.closest('.buttons').querySelectorAll('.legs-preset').forEach(b => b.classList.remove('is-selected')); this.classList.add('is-selected')"><%= label %></button>
+                <% end %>
+              </div>
+              <%= number_field_tag :best_of_legs, 1, min: 1, max: 99, id: "best_of_legs", class: "input theme-form-input mono" %>
+            </div>
+            <div class="column">
+              <label class="auth-label"><%= t("common.best_of_sets") %></label>
+              <div class="buttons are-small mt-2">
+                <% [[1, "1"], [3, "Bo3"], [5, "Bo5"]].each do |val, label| %>
+                  <button type="button" class="button theme-btn-outline mono sets-preset <%= 'is-selected' if val == 1 %>" onclick="document.getElementById('best_of_sets').value = <%= val %>; this.closest('.buttons').querySelectorAll('.sets-preset').forEach(b => b.classList.remove('is-selected')); this.classList.add('is-selected')"><%= label %></button>
+                <% end %>
+              </div>
+              <%= number_field_tag :best_of_sets, 1, min: 1, max: 99, id: "best_of_sets", class: "input theme-form-input mono" %>
+            </div>
+          </div>
+
+          <div class="columns is-variable is-3">
+            <div class="column"><label class="panel-choice"><%= hidden_field_tag :double_in, "0" %><%= check_box_tag :double_in, "1", false %> <%= t("common.double_in") %></label></div>
+            <div class="column"><label class="panel-choice"><%= hidden_field_tag :double_out, "0" %><%= check_box_tag :double_out, "1", true %> <%= t("common.double_out") %></label></div>
+          </div>
+
+          <div class="fast-saved-names columns is-variable is-3">
+            <div class="column">
+              <button type="button" data-lobby-target="savedButton1" data-action="click->lobby#toggleDropdown1" class="saved-btn mono"><%= t("matches.saved_names_player", player: 1) %></button>
+              <div data-lobby-target="dropdown1" class="saved-dropdown"></div>
+            </div>
+            <div class="column">
+              <button type="button" data-lobby-target="savedButton2" data-action="click->lobby#toggleDropdown2" class="saved-btn mono"><%= t("matches.saved_names_player", player: 2) %></button>
+              <div data-lobby-target="dropdown2" class="saved-dropdown"></div>
+            </div>
+          </div>
+
+          <div class="buttons are-small">
+            <button type="button" data-action="click->lobby#clearPlayers" class="button theme-btn-outline mono"><%= t("matches.clear_names") %></button>
+            <button type="button" data-action="click->lobby#clearMatches" class="button theme-btn-outline mono"><%= t("matches.clear_history") %></button>
+          </div>
         </div>
       </details>
     <% end %>
   </section>
 
-  <section class="stack-md">
+  <section id="recent-matches" class="stack-md">
     <div class="level">
       <div class="level-left">
         <div>

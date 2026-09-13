@@ -1,0 +1,50 @@
+<div data-controller="admin-data-cleanup" data-admin-data-cleanup-email-value="<%= user.email_address %>">
+  <button type="button" class="button <%= purge ? 'is-danger' : 'theme-btn-outline' %> mono" data-action="admin-data-cleanup#open"><%= action_label %></button>
+
+  <dialog class="theme-card p-5" data-admin-data-cleanup-target="dialog">
+    <%= form_with url: form_url, method: form_method, data: { turbo: false }, class: "stack-md" do %>
+      <div data-admin-data-cleanup-target="firstStep" class="stack-md">
+        <h3 class="section-title"><%= action_label %></h3>
+        <p><%= warning %></p>
+
+        <% if categories %>
+          <fieldset class="stack-sm">
+            <legend class="auth-label">Data categories</legend>
+            <% AdminDataCleanup::CATEGORIES.each do |category| %>
+              <label class="checkbox is-block mono">
+                <%= check_box_tag "categories[]", category, false %>
+                <%= category.humanize %>
+              </label>
+            <% end %>
+            <label class="checkbox is-block mono"><%= check_box_tag "categories[]", "all", false %> Clear all eligible data</label>
+          </fieldset>
+          <p class="help-theme">Only finished matches, completed/abandoned training, completed/archived plans, and complete/archived tournaments are included. Clear all also includes drills and the current dart setup.</p>
+        <% end %>
+
+        <div>
+          <%= label_tag nil, "Reason (required)", class: "auth-label" %>
+          <%= text_area_tag :reason, nil, rows: 3, maxlength: 2000, required: true, class: "textarea theme-form-input mono", data: { admin_data_cleanup_target: "reason" } %>
+        </div>
+        <div>
+          <%= label_tag nil, "Type #{user.email_address} exactly", class: "auth-label" %>
+          <%= email_field_tag :confirmation_email, nil, required: true, autocomplete: "off", class: "input theme-form-input mono", data: { admin_data_cleanup_target: "email" } %>
+        </div>
+        <div class="buttons">
+          <button type="button" class="button theme-btn-primary mono" data-action="admin-data-cleanup#continue">Continue</button>
+          <button type="button" class="button theme-btn-outline mono" data-action="admin-data-cleanup#close">Cancel</button>
+        </div>
+      </div>
+
+      <div data-admin-data-cleanup-target="secondStep" class="stack-md" hidden>
+        <h3 class="section-title">Confirm <%= action_label.downcase %></h3>
+        <p><strong><%= second_warning %></strong></p>
+        <%= hidden_field_tag :confirmation_acknowledgement, "", data: { admin_data_cleanup_target: "acknowledgement" } %>
+        <div class="buttons">
+          <%= submit_tag final_label, class: "button #{purge ? 'is-danger' : 'theme-btn-primary'} mono" %>
+          <button type="button" class="button theme-btn-outline mono" data-action="admin-data-cleanup#back">Back</button>
+          <button type="button" class="button theme-btn-outline mono" data-action="admin-data-cleanup#close">Cancel</button>
+        </div>
+      </div>
+    <% end %>
+  </dialog>
+</div>

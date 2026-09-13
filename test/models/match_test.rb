@@ -130,7 +130,7 @@ class MatchTest < ActiveSupport::TestCase
     duplicate = Match.new(match_identifier: "DZ-UNIQUE")
 
     assert_not duplicate.valid?
-    assert_includes duplicate.errors[:match_identifier], "has already been taken"
+    assert duplicate.errors.of_kind?(:match_identifier, :taken)
   end
 
   test "starter alternates each leg in best of legs match" do

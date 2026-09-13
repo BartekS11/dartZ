@@ -6,8 +6,12 @@ class PracticePlan < ApplicationRecord
   STATUSES = %w[active completed archived].freeze
 
   belongs_to :user
+  belongs_to :admin_data_cleanup, optional: true
   has_many :practice_plan_tasks, -> { order(:position) }, dependent: :destroy
   alias_method :tasks, :practice_plan_tasks
+
+  scope :kept, -> { where(admin_data_cleanup_id: nil) }
+  scope :admin_cleared, -> { where.not(admin_data_cleanup_id: nil) }
 
   validates :title, :plan_type, :status, :started_at, presence: true
   validates :plan_type, inclusion: { in: PLAN_TYPES }

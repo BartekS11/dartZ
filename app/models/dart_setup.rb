@@ -22,7 +22,13 @@ class DartSetup < ApplicationRecord
   include DartSetupSnapshot
 
   belongs_to :user
+  belongs_to :admin_data_cleanup, optional: true
+  has_many :players, dependent: :nullify
 
+  scope :kept, -> { where(admin_data_cleanup_id: nil) }
+  scope :admin_cleared, -> { where.not(admin_data_cleanup_id: nil) }
+
+  validates :user_id, uniqueness: { conditions: -> { kept } }
   validates :manufacturer, presence: true, inclusion: { in: MANUFACTURERS }
   validates :weight_g, presence: true, numericality: { greater_than_or_equal_to: 10, less_than_or_equal_to: 60 }
   validates :shaft_type, presence: true, inclusion: { in: SHAFT_TYPES }

@@ -55,6 +55,13 @@ env:
     # When you start using multiple servers, you should split out job processing to a dedicated machine.
     SOLID_QUEUE_IN_PUMA: true
 
+    # Roadmap features are opt-in until each release phase is ready.
+    ADVANCED_STATS_ENABLED: <%= ENV.fetch("ADVANCED_STATS_ENABLED", "false") %>
+    EXPANDED_TRAINING_ENABLED: <%= ENV.fetch("EXPANDED_TRAINING_ENABLED", "false") %>
+    FRIENDS_ENABLED: <%= ENV.fetch("FRIENDS_ENABLED", "false") %>
+    WEB_PUSH_ENABLED: <%= ENV.fetch("WEB_PUSH_ENABLED", "false") %>
+    OFFLINE_SCORING_ENABLED: <%= ENV.fetch("OFFLINE_SCORING_ENABLED", "false") %>
+
     # Set number of processes dedicated to Solid Queue (default: 1)
     # JOB_CONCURRENCY: 3
 

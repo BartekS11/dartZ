@@ -18,14 +18,28 @@
       </div>
 
       <div class="training-mode-simple-list">
-        <% TrainingSession::MODES.each do |mode| %>
+        <% @available_modes.each do |mode| %>
           <div class="training-mode-simple-row">
             <div>
               <h3><%= t("training.modes.#{mode}.name") %></h3>
+              <p class="page-copy"><%= t("training.modes.#{mode}.description") %></p>
             </div>
-            <%= button_to t("training.start"), training_sessions_path,
-                  params: { training_session: { mode: mode } },
-                  class: "button theme-btn-primary mono" %>
+            <%= form_with url: training_sessions_path, method: :post, class: "training-mode-config" do %>
+              <%= hidden_field_tag "training_session[mode]", mode %>
+              <% case mode %>
+              <% when "bobs_27" %>
+                <%= number_field_tag "training_session[starting_score]", 27, min: 1, max: 999, aria: { label: t("training.starting_score") }, class: "input theme-form-input mono" %>
+              <% when "doubles_practice" %>
+                <%= number_field_tag "training_session[from]", 1, min: 1, max: 20, aria: { label: t("training.target_from") }, class: "input theme-form-input mono" %>
+                <%= number_field_tag "training_session[to]", 20, min: 1, max: 20, aria: { label: t("training.target_to") }, class: "input theme-form-input mono" %>
+              <% when "checkout_121" %>
+                <%= number_field_tag "training_session[rounds]", 10, min: 1, max: 100, aria: { label: t("training.rounds") }, class: "input theme-form-input mono" %>
+              <% when "custom_targets" %>
+                <%= text_field_tag "training_session[name]", nil, required: true, placeholder: t("training.drill_name"), aria: { label: t("training.drill_name") }, class: "input theme-form-input mono" %>
+                <%= text_field_tag "training_session[targets]", "S20,D16,IB", aria: { label: t("training.target_sequence") }, class: "input theme-form-input mono" %>
+              <% end %>
+              <%= submit_tag t("training.start"), class: "button theme-btn-primary mono" %>
+            <% end %>
           </div>
         <% end %>
       </div>
@@ -102,7 +116,7 @@
           <label>
             <span><%= t("training.mode") %></span>
             <%= select_tag :training_mode,
-                  options_for_select([[t("training.all_modes"), "all"]] + TrainingSession::MODES.map { |mode| [t("training.modes.#{mode}.name"), mode] }, @training_history_mode),
+                  options_for_select([[t("training.all_modes"), "all"]] + @available_modes.map { |mode| [t("training.modes.#{mode}.name"), mode] }, @training_history_mode),
                   class: "theme-form-input mono" %>
           </label>
           <label>
@@ -131,7 +145,7 @@
             <tbody>
               <% @training_sessions.each do |session| %>
                 <tr>
-                  <td><%= t("training.modes.#{session.mode}.name") %></td>
+                  <td><%= link_to t("training.modes.#{session.mode}.name"), training_session_path(session) %></td>
                   <td><span class="theme-chip mono <%= 'is-live' if session.completed? %>"><%= t("training.statuses.#{session.status}") %></span></td>
                   <td class="mono"><%= session.total_darts %></td>
                   <td class="mono"><%= session.misses %></td>

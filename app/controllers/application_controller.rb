@@ -10,6 +10,7 @@ class ApplicationController < ActionController::Base
   stale_when_importmap_changes
 
   helper_method :premium_access?
+  helper_method :roadmap_feature_available?
   helper_method :current_match_player
 
   private
@@ -28,6 +29,19 @@ class ApplicationController < ActionController::Base
     return if premium_access?
 
     redirect_to matches_path, alert: t("flashes.premium_required")
+  end
+
+  # Roadmap controllers should authenticate first, then call this from a
+  # before_action. Existing feature authorization remains unchanged.
+  def require_roadmap_feature!(feature)
+    return head :not_found unless FeatureAccess.enabled?(feature)
+    return if FeatureAccess.entitled?(feature, user: Current.user)
+
+    head :forbidden
+  end
+
+  def roadmap_feature_available?(feature)
+    FeatureAccess.available?(feature, user: Current.user)
   end
 
   def authorize_match!(match)
