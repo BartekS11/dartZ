@@ -1,12 +1,17 @@
-<% if player_display_swap_allowed?(match) %>
+<% if player_thrower_swap_visible?(match) %>
+  <% swap_enabled = player_thrower_swap_enabled?(match) %>
+  <% current_thrower = presenter.current_player %>
+  <% next_thrower = presenter.players.find { |player| player.id != current_thrower&.id } %>
+
   <div class="player-order-swap-control" data-controller="confirmation-modal">
-    <button type="button"
-            class="button is-small theme-btn-outline mono player-display-swap"
-            title="<%= t('live_match.swap_players') %>"
-            aria-label="<%= t('live_match.swap_players') %>"
-            data-action="confirmation-modal#open">
+    <%= button_tag type: "button",
+          class: "button is-small theme-btn-outline mono player-display-swap",
+          title: t("live_match.swap_players"),
+          aria: { label: t("live_match.swap_players") },
+          disabled: !swap_enabled,
+          data: { action: "confirmation-modal#open" } do %>
       <span aria-hidden="true">⇄</span>
-    </button>
+    <% end %>
 
     <dialog class="player-swap-modal"
             aria-labelledby="player-swap-title"
@@ -15,15 +20,15 @@
       <div class="player-swap-modal-card">
         <div class="player-swap-modal-icon" aria-hidden="true">⇄</div>
         <div>
-          <div class="theme-section-label"><%= t("live_match.display_order") %></div>
+          <div class="theme-section-label"><%= t("live_match.current_thrower") %></div>
           <h2 id="player-swap-title" class="player-swap-modal-title"><%= t("live_match.swap_players") %></h2>
           <p class="player-swap-modal-copy"><%= t("live_match.swap_players_confirm") %></p>
         </div>
 
         <div class="player-swap-preview" aria-hidden="true">
-          <span><%= presenter.players.first.display_name %></span>
-          <strong>⇄</strong>
-          <span><%= presenter.players.second.display_name %></span>
+          <span><%= current_thrower.display_name %></span>
+          <strong>→</strong>
+          <span><%= next_thrower.display_name %></span>
         </div>
 
         <div class="player-swap-modal-actions">

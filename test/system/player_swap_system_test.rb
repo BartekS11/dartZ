@@ -22,7 +22,7 @@ class PlayerSwapSystemTest < ApplicationSystemTestCase
     assert_equal [ "Swap Bob", "Swap Alice" ], match.players.order(:created_at).pluck(:name)
   end
 
-  test "live match display swap persists without changing turns scores or local history" do
+  test "live match thrower swap persists without changing player positions turns or scores" do
     visit matches_path
 
     fill_in "player1_name", with: "Live Alice"
@@ -42,19 +42,36 @@ class PlayerSwapSystemTest < ApplicationSystemTestCase
     end
     assert_text I18n.t("flashes.player_order_swapped")
 
-    assert_equal [ "LIVE BOB", "LIVE ALICE" ], all(".match-score-name").map(&:text)
+    assert_equal [ "LIVE ALICE", "LIVE BOB" ], all(".match-score-name").map(&:text)
     assert_equal original_turn_id, match.reload.current_leg.current_turn.id
     assert_equal original_scores, original_player_ids.to_h { |id| [ id, match.score_for(Player.find(id)) ] }
+    assert_equal "Live Bob", match.current_player.name
 
     refresh
 
-    assert_equal [ "LIVE BOB", "LIVE ALICE" ], all(".match-score-name").map(&:text)
+    assert_equal [ "LIVE ALICE", "LIVE BOB" ], all(".match-score-name").map(&:text)
+    assert_text I18n.t("live_match.throwing"), count: 1
     stored_match = page.evaluate_script("JSON.parse(localStorage.getItem('dartz_matches')).find(match => match.id === '#{match.public_id}')")
-    assert_equal "Live Bob", stored_match.fetch("player1")
-    assert_equal "Live Alice", stored_match.fetch("player2")
+    assert_equal "Live Alice", stored_match.fetch("player1")
+    assert_equal "Live Bob", stored_match.fetch("player2")
   end
 
-  test "only invite host can swap a live display while the invitee is throwing" do
+  test "live match thrower swap is greyed out from turn four" do
+    visit matches_path
+    fill_in "player1_name", with: "Limit Alice"
+    fill_in "player2_name", with: "Limit Bob"
+    click_button I18n.t("matches.start_game")
+
+    match = Match.order(:created_at).last
+    3.times do
+      ThrowSubmission.call(turn: match.reload.current_leg.current_turn, total: 0)
+    end
+    refresh
+
+    assert_button I18n.t("live_match.swap_players"), disabled: true
+  end
+
+  test "only invite host can swap the active thrower while the invitee is throwing" do
     visit new_registration_path
     fill_in "user_email_address", with: unique_email("live-swap-host")
     fill_in "user_nickname", with: "Live Swap Host"
@@ -92,11 +109,12 @@ class PlayerSwapSystemTest < ApplicationSystemTestCase
     end
     assert_text I18n.t("flashes.player_order_swapped")
 
-    assert_equal [ "INVITEE BOB", "HOST ALICE" ], all(".match-score-name").map(&:text)
-    assert_equal invitee, match.reload.current_player
+    assert_equal [ "HOST ALICE", "INVITEE BOB" ], all(".match-score-name").map(&:text)
+    assert_equal "Host Alice", match.reload.current_player.name
 
     using_session(:invitee) do
-      assert_equal [ "INVITEE BOB", "HOST ALICE" ], all(".match-score-name").map(&:text)
+      assert_equal [ "HOST ALICE", "INVITEE BOB" ], all(".match-score-name").map(&:text)
+      assert_no_button I18n.t("live_match.swap_players")
     end
   end
 

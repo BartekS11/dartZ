@@ -9,11 +9,13 @@ class MatchPlayerOrdersController < ApplicationController
 
     remember_guest_match!(match)
 
-    if !match.player_display_swappable?
+    if !match.player_thrower_swap_context?
       redirect_to match_path(match), alert: t("flashes.player_order_unavailable"), status: :see_other
     elsif match.invite_match? && !match.invite_host?(Current.user)
       redirect_to match_path(match), alert: t("flashes.player_order_host_only"), status: :see_other
-    elsif match.swap_player_display_order
+    elsif !match.player_thrower_swappable?
+      redirect_to match_path(match), alert: t("flashes.player_order_unavailable"), status: :see_other
+    elsif match.swap_current_thrower
       broadcast_player_order(match)
       redirect_to match_path(match), notice: t("flashes.player_order_swapped"), status: :see_other
     else
@@ -23,11 +25,24 @@ class MatchPlayerOrdersController < ApplicationController
 
   private
     def broadcast_player_order(match)
+      presenter = MatchStatePresenter.new(match.reload)
+
       Turbo::StreamsChannel.broadcast_replace_to(
         "match_#{match.id}",
         target: "score-cards-section",
         partial: "matches/score_cards",
-        locals: { match: match, presenter: MatchStatePresenter.new(match.reload) }
+        locals: { match: match, presenter: presenter }
+      )
+      Turbo::StreamsChannel.broadcast_update_to(
+        "match_#{match.id}",
+        target: "current-player",
+        partial: "matches/current_player",
+        locals: {
+          match: match,
+          presenter: presenter,
+          turn: presenter.current_turn,
+          show_player_order_control: false
+        }
       )
     end
 end

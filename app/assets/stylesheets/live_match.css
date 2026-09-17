@@ -223,6 +223,14 @@
   width: 2.75rem;
 }
 
+.match-input-actions > .player-order-swap-control > .player-display-swap:disabled {
+  background: var(--theme-surface-muted);
+  border-color: var(--theme-line);
+  color: var(--theme-muted);
+  cursor: not-allowed;
+  opacity: .5;
+}
+
 .player-swap-modal {
   background: transparent;
   border: 0;
