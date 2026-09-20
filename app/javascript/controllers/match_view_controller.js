@@ -125,6 +125,7 @@ export default class extends Controller {
       if (control.closest(".bot-turn-disabled")) return
       if (control.closest(".player-order-swap-control")) return
       if (control.classList.contains("turn-skip-button")) return
+      if (control.classList.contains("btn-undo")) return
       control.disabled = locked
     })
 

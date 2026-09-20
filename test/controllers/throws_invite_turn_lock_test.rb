@@ -66,4 +66,45 @@ class ThrowsInviteTurnLockTest < ActionDispatch::IntegrationTest
     assert_equal 441, @match.score_for(@player1)
     assert_equal 1, @turn.reload.throws.count
   end
+
+  test "invite player can undo own completed turn while opponent is active" do
+    post turn_throws_path(@turn),
+         params: { guest_token: @match.guest_token, actor_player_id: @player1.public_id, throw: { total: 60 } },
+         headers: { "Accept" => "text/vnd.turbo-stream.html" }
+    next_turn = @match.reload.current_leg.current_turn
+    assert_equal @player2, next_turn.player
+
+    delete undo_turn_throw_path(next_turn),
+           params: { guest_token: @match.guest_token },
+           headers: {
+             "Accept" => "text/vnd.turbo-stream.html",
+             "X-Actor-Player-Id" => @player1.public_id,
+             "X-Undo-Mode" => "total"
+           }
+
+    assert_response :success
+    @match.reload
+    assert_equal @player1, @match.current_leg.current_turn.player
+    assert_equal 501, @match.score_for(@player1)
+    assert_empty @turn.reload.throws
+  end
+
+  test "invite player cannot undo opponent's completed turn" do
+    post turn_throws_path(@turn),
+         params: { guest_token: @match.guest_token, actor_player_id: @player1.public_id, throw: { total: 60 } },
+         headers: { "Accept" => "text/vnd.turbo-stream.html" }
+    next_turn = @match.reload.current_leg.current_turn
+
+    delete undo_turn_throw_path(next_turn),
+           params: { guest_token: @match.guest_token },
+           headers: {
+             "Accept" => "text/vnd.turbo-stream.html",
+             "X-Actor-Player-Id" => @player2.public_id,
+             "X-Undo-Mode" => "total"
+           }
+
+    assert_response :conflict
+    assert_equal 441, @match.reload.score_for(@player1)
+    assert_equal @player2, @match.current_leg.current_turn.player
+  end
 end

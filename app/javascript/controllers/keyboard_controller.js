@@ -84,7 +84,7 @@ export default class extends Controller {
       : this.waitingPlaceholder(canSkip)
 
     const undo = this.element.querySelector(".btn-undo")
-    if (undo) undo.disabled = !myTurn
+    if (undo) undo.disabled = false
 
     if (this.hasSkipButtonTarget) {
       this.skipButtonTarget.classList.toggle("hidden", myTurn)
@@ -283,13 +283,18 @@ export default class extends Controller {
   }
 
   async undoLastThrow() {
-    if (this.inputTarget.disabled) return
+    const matchView = document.querySelector("[data-match-view-my-player-id-value]")
+    const remoteInvite = matchView?.dataset?.matchViewRemoteInviteValue === "true"
+    const myPlayerId = Number(matchView?.dataset?.matchViewMyPlayerIdValue || 0)
+    const previousTurn = remoteInvite && myPlayerId && myPlayerId !== this.currentPlayerIdValue
+
+    if (this.inputTarget.disabled && !previousTurn) return
+    if (previousTurn && !window.confirm(this.element.dataset.keyboardUndoTurnConfirmValue || "Go back to your previous turn?")) return
 
     const form = document.getElementById("keyboard-form")
     const turnId = form?.action.match(/turns\/([^/]+)/)?.[1]
     if (!turnId) return
 
-    const matchView = document.querySelector("[data-match-view-my-player-id-value]")
     const actorPlayerId = matchView?.dataset?.matchViewMyPlayerPublicIdValue
 
     const response = await fetch(`/turns/${turnId}/throws/last`, {

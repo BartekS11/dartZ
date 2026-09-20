@@ -30,8 +30,9 @@ class ThrowsController < ApplicationController
     authorize_match!(@match)
     return if performed?
 
-    last_throw_player = @match.throws.order(created_at: :desc).first&.turn&.player || @turn.player
-    return unless authorize_remote_turn!(@match, last_throw_player)
+    last_throw_player = @match.throws.order(created_at: :desc).first&.turn&.player
+    return head :unprocessable_entity unless last_throw_player
+    return unless authorize_remote_undo!(@match, last_throw_player)
 
     mode   = request.headers["X-Undo-Mode"] || "total"
 
@@ -69,6 +70,22 @@ class ThrowsController < ApplicationController
       format.turbo_stream { head :conflict }
       format.html { redirect_to match_path(match), alert: t("flashes.waiting_other_player") }
       format.json { render json: { error: "Not your turn" }, status: :conflict }
+    end
+
+    false
+  end
+
+  def authorize_remote_undo!(match, last_throw_player)
+    return true unless match.invite_match?
+
+    actor_player_id = params[:actor_player_id].presence || request.headers["X-Actor-Player-Id"].presence
+    actor_player = actor_player_id.present? ? find_actor_player(match, actor_player_id) : nil
+    return true if actor_player&.id == last_throw_player.id
+
+    respond_to do |format|
+      format.turbo_stream { head :conflict }
+      format.html { redirect_to match_path(match), alert: t("flashes.undo_own_turn_only") }
+      format.json { render json: { error: "You can only undo your own previous turn" }, status: :conflict }
     end
 
     false

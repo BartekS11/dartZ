@@ -11,7 +11,8 @@
   data-keyboard-player-id-value="<%= current_player.id %>"
   data-keyboard-current-player-id-value="<%= current_player.id %>"
   data-keyboard-turn-activity-at-value="<%= ([turn.updated_at, turn.throws.maximum(:created_at)].compact.max || turn.created_at).iso8601 %>"
-  data-keyboard-afk-timeout-seconds-value="120">
+  data-keyboard-afk-timeout-seconds-value="120"
+  data-keyboard-undo-turn-confirm-value="<%= t("live_match.undo_turn_confirm") %>">
 
   <div class="match-input-head">
     <div>
@@ -32,7 +33,7 @@
         type="button"
         class="button is-small btn-undo mono"
         data-action="click->keyboard#undoLastThrow">
-        ↩ Undo
+        ↩ <%= t("live_match.undo") %>
       </button>
     </div>
   </div>
