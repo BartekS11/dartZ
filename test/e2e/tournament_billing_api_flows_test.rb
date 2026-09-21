@@ -60,7 +60,7 @@ class TournamentBillingApiFlowsTest < E2EIntegrationTest
       )
     )
 
-    StripeBilling::Configuration.stubs(:webhook_secret).returns("whsec_e2e")
+    StripeBilling::Configuration.stubs(:webhook_secret).returns("webhook_secret_e2e")
     Stripe::Webhook.stubs(:construct_event).returns(event)
     Stripe::Subscription.stubs(:retrieve).returns(subscription)
 

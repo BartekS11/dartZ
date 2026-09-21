@@ -17,7 +17,7 @@ class StripeWebhooksControllerTest < ActionDispatch::IntegrationTest
       )
     )
 
-    StripeBilling::Configuration.stubs(:webhook_secret).returns("whsec_test")
+    StripeBilling::Configuration.stubs(:webhook_secret).returns("webhook_secret_test")
     Stripe::Webhook.stubs(:construct_event).returns(event)
     Stripe::Subscription.stubs(:retrieve).returns(subscription)
 
@@ -37,7 +37,7 @@ class StripeWebhooksControllerTest < ActionDispatch::IntegrationTest
     subscription = subscription_fixture(id: "sub_created", user_id: user.id)
     event = OpenStruct.new(type: "customer.subscription.created", data: OpenStruct.new(object: subscription))
 
-    StripeBilling::Configuration.stubs(:webhook_secret).returns("whsec_test")
+    StripeBilling::Configuration.stubs(:webhook_secret).returns("webhook_secret_test")
     Stripe::Webhook.stubs(:construct_event).returns(event)
 
     post_webhook
@@ -54,7 +54,7 @@ class StripeWebhooksControllerTest < ActionDispatch::IntegrationTest
     subscription = subscription_fixture(id: "sub_expired", status: "incomplete_expired", period_end: nil)
     event = OpenStruct.new(type: "customer.subscription.updated", data: OpenStruct.new(object: subscription))
 
-    StripeBilling::Configuration.stubs(:webhook_secret).returns("whsec_test")
+    StripeBilling::Configuration.stubs(:webhook_secret).returns("webhook_secret_test")
     Stripe::Webhook.stubs(:construct_event).returns(event)
 
     post_webhook

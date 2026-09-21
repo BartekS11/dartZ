@@ -6,7 +6,7 @@
     </div>
 
     <div class="theme-copy space-y-5 text-sm leading-7">
-      <% %w[overview data why cookies sharing rights contact].each do |section| %>
+      <% %w[overview data why cookies sharing rights friends push payments contact].each do |section| %>
         <section>
           <h2 class="mb-2 text-lg font-semibold"><%= t("legal.privacy.#{section}_title") %></h2>
           <p><%= t("legal.privacy.#{section}_text", app_name: theme_app_name) %></p>

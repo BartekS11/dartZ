@@ -72,7 +72,7 @@ class BillingControllerTest < ActionDispatch::IntegrationTest
     user = create_user("checkout@example.com")
     login_as(user)
     original_key = Stripe.api_key
-    Stripe.api_key = "sk_test_fake"
+    Stripe.api_key = "stripe_secret_key_fake"
 
     customer = OpenStruct.new(id: "cus_test")
     session = OpenStruct.new(url: "https://checkout.stripe.test/session")
@@ -94,7 +94,7 @@ class BillingControllerTest < ActionDispatch::IntegrationTest
     user.update!(stripe_customer_id: "cus_test")
     login_as(user)
     original_key = Stripe.api_key
-    Stripe.api_key = "sk_test_fake"
+    Stripe.api_key = "stripe_secret_key_fake"
 
     session = OpenStruct.new(url: "https://billing.stripe.test/session")
     Stripe::BillingPortal::Session.stubs(:create).returns(session)

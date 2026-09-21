@@ -50,6 +50,12 @@ env:
     - ADMIN_EMAIL
     - ADMIN_PASSWORD
     - ADMIN_PATH
+    - STRIPE_SECRET_KEY
+    - STRIPE_WEBHOOK_SECRET
+    - STRIPE_PREMIUM_USD_PRICE_ID
+    - STRIPE_PRO_USD_PRICE_ID
+    - STRIPE_PREMIUM_PLN_PRICE_ID
+    - STRIPE_PRO_PLN_PRICE_ID
   clear:
     # Run the Solid Queue Supervisor inside the web server's Puma process to do jobs.
     # When you start using multiple servers, you should split out job processing to a dedicated machine.
