@@ -6,6 +6,11 @@
           <div class="theme-section-label"><%= t("bot_matches.challenge") %></div>
           <h1 class="page-title"><%= t("bot_matches.practice") %></h1>
           <p class="page-copy mt-3"><%= t("bot_matches.intro") %></p>
+          <% if @bot_match_allowance&.unlimited? %>
+            <p class="theme-chip is-live mt-3"><%= t("bot_matches.unlimited") %></p>
+          <% else %>
+            <p class="theme-chip mt-3"><%= t("bot_matches.allowance", remaining: @bot_match_allowance.remaining, limit: @bot_match_allowance.limit) %></p>
+          <% end %>
         </div>
       </div>
       <div class="level-right"><%= link_to t("common.back"), matches_path, class: "button theme-btn-outline mono" %></div>
