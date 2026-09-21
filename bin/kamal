@@ -13,4 +13,16 @@ ENV["BUNDLE_GEMFILE"] ||= File.expand_path("../Gemfile", __dir__)
 require "rubygems"
 require "bundler/setup"
 
+# Kamal reads secrets from .kamal/secrets, but it does not load the app's
+# root dotenv files into ENV first. Load them here so .kamal/secrets entries
+# like POSTGRES_PASSWORD=$POSTGRES_PASSWORD and ERB in config/deploy.yml can
+# use local dotenv values without passing variables inline on every deploy.
+#
+# Use overload instead of load because an exported-but-empty/stale shell variable
+# would otherwise win over the value in .env.
+require "dotenv"
+Dotenv.overload(*[
+  File.expand_path("../.env", __dir__),
+].select { |path| File.file?(path) })
+
 load Gem.bin_path("kamal", "kamal")
