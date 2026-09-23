@@ -5,6 +5,53 @@ nl:
     pl: Polski
     nl: Nederlands
     es: Español
+  onboarding:
+    open: "Rondleiding door de app"
+    kicker: "DARTZ SNELLE RONDLEIDING"
+    back: "Vorige"
+    next: "Volgende"
+    finish: "Rondleiding afronden"
+    close: "Rondleiding sluiten"
+    dont_show: "Niet opnieuw tonen op dit apparaat/account"
+    steps:
+      start:
+        title: "Welkom bij DartZ"
+        body: "Speel darts, houd elke worp bij en verbeter op je eigen tempo. Deze korte rondleiding laat zien hoe je begint."
+        tip: "Dit is de huidige app-pagina. Je kunt de rondleiding sluiten en zelf op ontdekking gaan."
+        link: "Naar wedstrijden"
+      play:
+        title: "Stel je eerste wedstrijd in"
+        body: "Doorloop de wedstrijdinstellingen. Vul spelersnamen in, kies een beginscore en bekijk optionele regels zonder een wedstrijd te starten."
+        tip: "Kies Nu spelen om de instellingen te bekijken. De rondleiding verzendt het formulier niet."
+        link: "Nu spelen"
+      explore:
+        title: "Train en speel toernooien"
+        body: "Speel tegen bots, organiseer toernooien en gebruik—afhankelijk van je abonnement—gestructureerde training en oefenplannen."
+        tip: "Ontdek deze functies via de navigatie. Sommige vereisen een account of geschikt abonnement."
+        link: "Bottraining bekijken"
+      grow:
+        title: "Bewaar je voortgang"
+        body: "Met een gratis account kun je wedstrijdgeschiedenis bewaren en extra functies gebruiken. Premium en Pro bieden in aanmerking komende training- en statistiektools."
+        tip: "Bekijk de accountopties; upgraden is optioneel."
+        link: "Accountopties bekijken"
+    setup:
+      players:
+        title: "Voeg spelers toe"
+        body: "Vul de namen van beide spelers in. Als je alleen oefent, kun je je eigen naam en die van een oefentegenstander gebruiken."
+        tip: "Namen zijn tijdens deze demonstratie optioneel."
+      score:
+        title: "Kies een beginscore"
+        body: "501 is het standaardspel. Hier kun je een andere ondersteunde beginscore kiezen."
+        tip: "De score verandert alleen als je op een optie klikt; de rondleiding start geen wedstrijd."
+      options:
+        title: "Bekijk de wedstrijdregels"
+        body: "Open Meer opties voor legs, sets, double-in en double-out. Je kunt de standaardinstellingen behouden."
+        tip: "Deze extra regels zijn optioneel."
+      start:
+        title: "Klaar om te spelen"
+        body: "Start wedstrijd maakt een wedstrijd aan zodra je de instellingen hebt afgerond. We gaan nu terug naar de hoofdpagina om DartZ verder te ontdekken."
+        tip: "De rondleiding verzendt het formulier niet."
+      return_home: "Terug naar de hoofdpagina"
   meta:
     description: DartZ is een moderne dartsapp om 501-wedstrijden, oefenen tegen bots, toernooien, trainingssessies, worpen, gemiddelden en finishes bij te houden.
   nav:

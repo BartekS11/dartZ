@@ -1,0 +1,42 @@
+<div data-controller="onboarding-guide"
+     data-onboarding-guide-version-value="1"
+     data-onboarding-guide-account-value="<%= Current.user.present? %>"
+     data-onboarding-guide-audience-value="<%= Current.user&.id || 'guest' %>"
+     data-onboarding-guide-saved-version-value="<%= Current.user&.onboarding_guide_version || 0 %>"
+     data-onboarding-guide-save-url-value="<%= onboarding_guide_path %>"
+     data-onboarding-guide-open-label-value="<%= t('onboarding.open') %>"
+     data-onboarding-guide-next-label-value="<%= t('onboarding.next') %>"
+     data-onboarding-guide-finish-label-value="<%= t('onboarding.finish') %>"
+     data-onboarding-guide-home-url-value="<%= root_path %>"
+     data-onboarding-guide-setup-mode-value="<%= params[:onboarding] == 'setup' %>"
+     data-onboarding-guide-continue-mode-value="<%= params[:onboarding] == 'continue' %>"
+     data-onboarding-guide-return-mode-value="<%= params[:onboarding] == 'return' %>"
+     data-setup-steps="<%= [
+       { title: t('onboarding.setup.players.title'), body: t('onboarding.setup.players.body'), tip: t('onboarding.setup.players.tip'), selector: '#player1_name', next: t('onboarding.next'), finish: t('onboarding.setup.return_home') },
+       { title: t('onboarding.setup.score.title'), body: t('onboarding.setup.score.body'), tip: t('onboarding.setup.score.tip'), selector: '.score-preset', next: t('onboarding.next'), finish: t('onboarding.setup.return_home') },
+       { title: t('onboarding.setup.options.title'), body: t('onboarding.setup.options.body'), tip: t('onboarding.setup.options.tip'), selector: '.fast-match-options summary', next: t('onboarding.next'), finish: t('onboarding.setup.return_home') },
+       { title: t('onboarding.setup.start.title'), body: t('onboarding.setup.start.body'), tip: t('onboarding.setup.start.tip'), selector: '.fast-start-button', next: t('onboarding.next'), finish: t('onboarding.setup.return_home') }
+     ].to_json %>"
+     data-steps="<%= [
+       { title: t('onboarding.steps.start.title'), body: t('onboarding.steps.start.body'), tip: t('onboarding.steps.start.tip'), selector: 'main', href: matches_path, link: t('onboarding.steps.start.link'), next: t('onboarding.next'), finish: t('onboarding.finish') },
+       { title: t('onboarding.steps.play.title'), body: t('onboarding.steps.play.body'), tip: t('onboarding.steps.play.tip'), selector: '.landing-play-button', href: matches_path(onboarding: 'setup'), link: t('onboarding.steps.play.link'), next: t('onboarding.next'), finish: t('onboarding.finish') },
+       { title: t('onboarding.steps.explore.title'), body: t('onboarding.steps.explore.body'), tip: t('onboarding.steps.explore.tip'), selector: '.simple-nav-scroll', href: new_bot_match_path, link: t('onboarding.steps.explore.link'), new_tab: true, next: t('onboarding.next'), finish: t('onboarding.finish') },
+       { title: t('onboarding.steps.grow.title'), body: t('onboarding.steps.grow.body'), tip: t('onboarding.steps.grow.tip'), selector: '.nav-utilities', href: Current.user ? billing_path : new_registration_path, link: t('onboarding.steps.grow.link'), new_tab: true, next: t('onboarding.next'), finish: t('onboarding.finish') }
+     ].to_json %>">
+  <button type="button" class="onboarding-reopen" data-onboarding-guide-target="reopen" data-action="onboarding-guide#open"><%= t("onboarding.open") %></button>
+  <section class="onboarding-backdrop" data-onboarding-guide-target="dialog" role="dialog" aria-modal="true" aria-labelledby="onboarding-title" hidden>
+    <div class="onboarding-card" data-onboarding-guide-target="card" tabindex="-1">
+      <div class="onboarding-kicker"><%= t("onboarding.kicker") %> <span data-onboarding-guide-target="progress">1 / 4</span></div>
+      <h2 id="onboarding-title" data-onboarding-guide-target="title"><%= t("onboarding.steps.start.title") %></h2>
+      <p data-onboarding-guide-target="body"><%= t("onboarding.steps.start.body") %></p>
+      <div class="onboarding-highlight" data-onboarding-guide-target="highlight" hidden></div>
+      <a class="button theme-btn-outline" data-onboarding-guide-target="link" hidden></a>
+      <div class="onboarding-controls">
+        <button type="button" class="button theme-btn-outline" data-onboarding-guide-target="back" data-action="onboarding-guide#back"><%= t("onboarding.back") %></button>
+        <button type="button" class="button theme-btn-primary" data-onboarding-guide-target="next" data-action="onboarding-guide#next"><%= t("onboarding.next") %></button>
+      </div>
+      <label class="onboarding-dont-show"><input type="checkbox" data-onboarding-guide-target="dontShow"> <%= t("onboarding.dont_show") %></label>
+      <button type="button" class="onboarding-close" data-action="onboarding-guide#close" aria-label="<%= t('onboarding.close') %>">×</button>
+    </div>
+  </section>
+</div>

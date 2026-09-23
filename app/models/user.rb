@@ -41,6 +41,7 @@ class User < ApplicationRecord
   normalizes :locale, with: ->(locale) { locale.to_s.strip.downcase.presence || I18n.default_locale.to_s }
 
   validates :email_address, presence: true, uniqueness: { case_sensitive: false }
+  validates :onboarding_guide_version, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :nickname, length: { maximum: 20 }, allow_blank: true
   validates :account_tier, presence: true, inclusion: { in: ACCOUNT_TIERS }
   validates :manual_tier_override, inclusion: { in: ACCOUNT_TIERS }, allow_nil: true

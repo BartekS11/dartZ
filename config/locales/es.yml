@@ -5,6 +5,53 @@ es:
     pl: Polski
     nl: Nederlands
     es: Español
+  onboarding:
+    open: "Ver guía de la aplicación"
+    kicker: "GUÍA RÁPIDA DE DARTZ"
+    back: "Atrás"
+    next: "Siguiente"
+    finish: "Finalizar guía"
+    close: "Cerrar guía"
+    dont_show: "No volver a mostrar en este dispositivo/cuenta"
+    steps:
+      start:
+        title: "Te damos la bienvenida a DartZ"
+        body: "Juega a los dardos, registra cada lanzamiento y mejora a tu ritmo. Esta guía rápida te muestra cómo empezar."
+        tip: "Esta es la página actual. Puedes cerrar la guía y explorar cuando quieras."
+        link: "Ir a partidas"
+      play:
+        title: "Preparemos tu primera partida"
+        body: "Sigue la configuración de una partida: añade nombres, elige una puntuación inicial y revisa las reglas opcionales sin empezar a jugar."
+        tip: "Pulsa Jugar ahora para ver la configuración. La guía no enviará el formulario."
+        link: "Jugar ahora"
+      explore:
+        title: "Practica y compite"
+        body: "Juega contra bots, organiza torneos y, según tu plan, usa entrenamientos estructurados y planes de práctica."
+        tip: "Explora estas funciones desde la navegación. Algunas requieren una cuenta o un plan compatible."
+        link: "Practicar contra bots"
+      grow:
+        title: "Conserva tu progreso"
+        body: "Una cuenta gratuita puede guardar tu historial y ofrecer funciones adicionales. Los planes Premium y Pro incluyen herramientas de entrenamiento y estadísticas compatibles."
+        tip: "Consulta las opciones de cuenta; mejorar el plan es opcional."
+        link: "Ver opciones de cuenta"
+    setup:
+      players:
+        title: "Añade a los jugadores"
+        body: "Escribe los nombres de ambos jugadores. Si practicas solo, puedes usar tu nombre y el de un rival de práctica."
+        tip: "Los nombres son opcionales durante esta demostración."
+      score:
+        title: "Elige la puntuación inicial"
+        body: "501 es la partida estándar. Aquí puedes elegir otra puntuación inicial disponible."
+        tip: "La puntuación solo cambia si pulsas una opción; la guía no iniciará la partida."
+      options:
+        title: "Revisa las reglas"
+        body: "Abre Más opciones para ver legs, sets y las reglas de entrada y salida con doble. Puedes mantener los valores predeterminados."
+        tip: "Estas reglas adicionales son opcionales."
+      start:
+        title: "Listo para jugar"
+        body: "Cuando termines la configuración, Iniciar partida creará la partida. Por ahora volveremos a la página principal para explorar DartZ."
+        tip: "La guía no enviará el formulario."
+      return_home: "Volver a la página principal"
   meta:
     description: DartZ es una aplicación moderna de dardos para seguir partidas de 501, practicar contra bots, participar en torneos y registrar entrenamientos, lanzamientos, promedios y cierres.
   nav:

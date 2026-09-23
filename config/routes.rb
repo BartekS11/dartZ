@@ -19,6 +19,7 @@ Rails.application.routes.draw do
   resource :session
   resource :registration, only: %i[new create]
   resource :profile, only: [ :update ]
+  resource :onboarding_guide, only: :update, controller: "onboarding_guides"
   resource :locale, only: [ :update ]
   resource :dart_setup, only: %i[edit update] do
     patch :use_saved

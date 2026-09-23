@@ -21,7 +21,7 @@
   <%= stylesheet_link_tag "https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=Oswald:wght@400;500;600;700&display=swap", crossorigin: "anonymous" %>
   <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
   <%= stylesheet_link_tag "bulma_bridge", "data-turbo-track": "reload" %>
-  <%= stylesheet_link_tag "dartz_theme", "site_refresh", "live_match", "landing", "fast_match", "data-turbo-track": "reload" %>
+  <%= stylesheet_link_tag "dartz_theme", "site_refresh", "live_match", "landing", "fast_match", "onboarding_guide", "data-turbo-track": "reload" %>
   <meta name="turbo-cache-control" content="no-store">
 </head>
 
@@ -164,5 +164,6 @@
       </div>
     </footer>
   </div>
+  <%= render "shared/onboarding_guide" %>
 </body>
 </html>

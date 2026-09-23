@@ -4,6 +4,53 @@ pl:
     pl: "Polski"
     nl: "Nederlands"
     es: "Español"
+  onboarding:
+    open: "Przewodnik po aplikacji"
+    kicker: "SZYBKI PRZEWODNIK DARTZ"
+    back: "Wstecz"
+    next: "Dalej"
+    finish: "Zakończ przewodnik"
+    close: "Zamknij przewodnik"
+    dont_show: "Nie pokazuj ponownie na tym urządzeniu/koncie"
+    steps:
+      start:
+        title: "Witamy w DartZ"
+        body: "Graj w darta, zapisuj każdy rzut i rozwijaj się we własnym tempie. Ten krótki przewodnik pokazuje, jak zacząć."
+        tip: "To aktualna strona aplikacji. Możesz zamknąć przewodnik i swobodnie ją poznawać."
+        link: "Przejdź do meczów"
+      play:
+        title: "Przygotuj swój pierwszy mecz"
+        body: "Przejdź przez konfigurację meczu. Dodaj nazwy graczy, wybierz wynik początkowy i poznaj dodatkowe zasady — bez rozpoczynania meczu."
+        tip: "Wybierz Graj teraz, aby zobaczyć konfigurację. Przewodnik nie wyśle formularza."
+        link: "Graj teraz"
+      explore:
+        title: "Trenuj i rywalizuj"
+        body: "Graj z botami, organizuj turnieje, a zależnie od planu korzystaj z treningów i planów ćwiczeń."
+        tip: "Odkrywaj funkcje w nawigacji. Niektóre wymagają konta lub odpowiedniego planu."
+        link: "Poznaj grę z botem"
+      grow:
+        title: "Zachowaj swoje postępy"
+        body: "Darmowe konto może zapisywać historię meczów i udostępniać dodatkowe funkcje. Plany Premium i Pro obejmują dostępne narzędzia treningowe i statystyki."
+        tip: "Sprawdź opcje konta; zmiana planu jest opcjonalna."
+        link: "Poznaj opcje konta"
+    setup:
+      players:
+        title: "Dodaj graczy"
+        body: "Wpisz nazwy obu graczy. Jeśli ćwiczysz samodzielnie, możesz użyć swojego imienia i nazwy przeciwnika treningowego."
+        tip: "Podczas tej prezentacji nazwy graczy są opcjonalne."
+      score:
+        title: "Wybierz wynik początkowy"
+        body: "501 to standardowa gra. Możesz wybrać tutaj inny obsługiwany wynik początkowy."
+        tip: "Wynik zmieni się tylko po kliknięciu opcji; przewodnik nie rozpocznie meczu."
+      options:
+        title: "Poznaj zasady meczu"
+        body: "Otwórz Więcej opcji, aby zobaczyć liczbę legów i setów oraz zasady double-in i double-out. Możesz zostawić wartości domyślne."
+        tip: "Dodatkowe zasady są opcjonalne."
+      start:
+        title: "Gotowe do gry"
+        body: "Po konfiguracji przycisk Rozpocznij grę tworzy mecz. Teraz wrócimy na stronę główną, aby poznać resztę DartZ."
+        tip: "Przewodnik nie wyśle formularza konfiguracji."
+      return_home: "Wróć na stronę główną"
   meta:
     description: "DartZ to nowoczesna aplikacja do punktowania darta: mecze 501, gra z botem, turnieje, treningi, rzuty, średnie i checkouty."
   nav:

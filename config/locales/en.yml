@@ -4,6 +4,53 @@ en:
     pl: "Polski"
     nl: "Nederlands"
     es: "Español"
+  onboarding:
+    open: "Take the app tour"
+    kicker: "DARTZ QUICK TOUR"
+    back: "Back"
+    next: "Next"
+    finish: "Finish tour"
+    close: "Close tour"
+    dont_show: "Don't show this again on this device/account"
+    steps:
+      start:
+        title: "Welcome to DartZ"
+        body: "Play darts, track every throw, and improve at your own pace. This quick tour points out the main ways to get started."
+        tip: "This is your current app page. You can close the tour and explore freely at any time."
+        link: "Go to matches"
+      play:
+        title: "Let's set up your first match"
+        body: "Follow along with the match setup. You can enter player names, choose a starting score, and review optional rules without starting a match."
+        tip: "Choose Play now to see the match setup. Nothing will be submitted during the tour."
+        link: "Play now"
+      explore:
+        title: "Practice and compete"
+        body: "Play against bots, organize tournaments, and—when available on your plan—use structured training and practice plans."
+        tip: "Use the navigation to explore these features. Some require an account or an eligible plan."
+        link: "Explore bot practice"
+      grow:
+        title: "Keep your progress"
+        body: "A free account can save your match history and unlock account features. Premium and Pro plans add eligible training and statistics tools."
+        tip: "Plan details are available here; upgrading is optional."
+        link: "Explore account options"
+    setup:
+      players:
+        title: "Add the players"
+        body: "Enter names for both players. If you're practicing alone, you can use your own name and a practice opponent."
+        tip: "Player names are optional for this guided demo."
+      score:
+        title: "Choose a starting score"
+        body: "501 is the standard game. You can pick another supported starting score here."
+        tip: "The selected score only changes if you click a preset; this tour won't start the match."
+      options:
+        title: "Review match rules"
+        body: "Open More options to see legs, sets, double-in, and double-out settings. You can leave the defaults as they are."
+        tip: "These extra rules are optional."
+      start:
+        title: "Ready to play"
+        body: "When you finish setup, Start game creates the match. For now, we'll return to the main page so you can explore the rest of DartZ."
+        tip: "The guided tour will not submit the setup form."
+      return_home: "Return to main page"
   meta:
     description: "DartZ is a modern darts scoring app for tracking 501 matches, bot practice, tournaments, training sessions, throws, averages, and checkout finishes."
   nav:
