@@ -1,0 +1,916 @@
+---
+es:
+  locales:
+    en: English
+    pl: Polski
+    nl: Nederlands
+    es: Español
+  meta:
+    description: DartZ is a modern darts scoring app for tracking 501 matches, bot practice, tournaments, training sessions, throws, averages, and checkout finishes.
+  nav:
+    match: Match
+    bot: Bot
+    tournaments: Tournaments
+    stats: Stats
+    friends: Friends
+    notifications: Notifications
+    practice_plans: Practice plans
+    training: Training
+    dart_setup: Dart setup
+    upgrade: Upgrade
+    tiers: Plans
+    account: Account
+    logout: Logout
+    register: Register
+    login: Login
+    language: Language
+    switch_theme: Switch theme
+    light_theme: Light theme
+  home:
+    navigation: Welcome navigation
+    eyebrow: Darts scoring, ready when you are
+    title: Score darts with DartZ
+    lead: Start a fast local match in seconds. Sign in only when you want saved history, invites, and deeper stats.
+    play_now: Play now
+    create_account: Create free account
+    login: Login
+    your_matches: Your matches
+    play_bot: Play vs bot
+    tournaments: Explore tournaments
+    player_label: You
+    opponent_label: Opponent
+    ready: Ready to throw
+    promise_label: Why play with DartZ
+    promise_fast: Fast 501 scoring
+    promise_guest: Guest play included
+    promise_flexible: More options when needed
+  footer:
+    privacy: Privacy
+    terms: Terms
+    contact: Contact
+  profile:
+    signed_in_as: Signed in as
+    tier: 'Tier: %{tier}'
+    nickname: Nickname
+    nickname_placeholder: Set your nickname
+    save_nickname: Save nickname
+  common:
+    account: Account
+    cancel: Cancel
+    back: "← Back"
+    save: Save
+    delete: Delete
+    edit: Edit
+    create: Create
+    update: Update
+    current: Current
+    included: Included
+    player_1: Player 1
+    player_2: Player 2
+    player_3: Player 3
+    your_name: Your name
+    email_address: Email address
+    password: Password
+    confirm_password: Confirm password
+    nickname: Nickname
+    starting_score: Starting score
+    double_in: Double in
+    double_out: Double out
+    best_of_legs: Best of legs
+    best_of_sets: Best of sets
+    rules: Rules
+    names: Names
+    setup: Setup
+    pagination:
+      previous: Previous
+      next: Next
+      page: Page %{page} of %{total_pages}
+      results: "%{count} results"
+    states:
+      empty: Nothing to show yet.
+      feature_unavailable: This feature is currently unavailable.
+      offline: You are offline.
+      online: You are back online.
+      sync_pending: Changes are waiting to sync.
+    notifications:
+      permission_default: Notifications are not enabled.
+      permission_granted: Notifications are enabled.
+      permission_denied: Notifications are blocked in this browser.
+  flashes:
+    try_again_later: Try again later.
+    premium_required: Premium access is required for that feature.
+    forbidden_match: You don't have access to that match.
+    account_created: Account created.
+    fix_fields: Please fix the highlighted fields.
+    bad_login: Try another email address or password.
+    profile_updated: Profile updated
+    unauthorized: Unauthorized
+    invalid_join_link: Invalid join link.
+    tournament_joined: Joined tournament.
+    player_updated: Player updated.
+    player_removed: Player removed.
+    invite_sign_in: Sign in to create invite matches.
+    invite_cancelled: This invite was cancelled.
+    invite_expired: This invite has expired.
+    invite_full: This lobby is full.
+    invite_cancelled_notice: Invite match cancelled.
+    invite_not_found: Invite not found.
+    dart_setup_saved: Dart setup saved. New matches will track stats against this setup.
+    saved_setup_not_found: Saved setup not found.
+    saved_setup_selected: Saved setup selected for new matches.
+    reset_sent: Password reset instructions sent (if user with that email address exists).
+    password_reset: Password has been reset.
+    passwords_mismatch: Passwords did not match.
+    reset_invalid: Password reset link is invalid or has expired.
+    tournament_created: Tournament created. Set groups and seeds, then start it.
+    tournament_no_access: You don't have access to that tournament.
+    tournament_updated: Tournament updated.
+    tournament_deleted: Tournament deleted.
+    tournament_regenerated: Tournament regenerated.
+    tournament_started: Tournament started.
+    result_saved: Result saved.
+    invalid_match_result: Enter a decisive result for a match that is still in progress.
+    match_unavailable: This match is no longer available to launch.
+    match_not_found: Match not found
+    seeds_rebuilt: Seeds rebuilt.
+    next_swiss_created: Next swiss round created.
+    next_swiss_unavailable: Unable to generate the next swiss round yet.
+    playoff_advanced: Playoff bracket advanced.
+    playoff_advance_unavailable: Unable to advance the playoff bracket yet.
+    manual_advance_unavailable: Manual round advance is not available for this format.
+    waiting_other_player: Waiting for the other player.
+    undo_own_turn_only: You can only undo your own previous turn.
+    player_order_swapped: Active thrower swapped.
+    player_order_unavailable: The active thrower can only be swapped before a dart is entered during the first three turns of a live two-player leg.
+    player_order_host_only: Only the match host can swap the active thrower.
+  training:
+    premium_label: Premium training
+    title: Training Center
+    intro: Practice focused dart routines and keep every session in your account history.
+    new_session: New session
+    choose_mode: Choose mode
+    start: Start
+    active_sessions: Active sessions
+    resume: Resume
+    history: History
+    statistics: Statistics
+    your_progress: Your progress
+    completed_count: "%{count} completed"
+    best_darts: Best darts
+    recent_avg: Recent avg
+    trend: Trend
+    trends:
+      improved: improving
+      declined: needs work
+      neutral: more data needed
+    recent_sessions: Recent sessions
+    all_modes: All modes
+    show_latest: Show latest
+    apply: Apply
+    no_history: No finished training sessions yet.
+    mode: Mode
+    status: Status
+    darts: Darts
+    misses: Misses
+    hits: Hits
+    score: Score
+    visit_score: Visit score
+    record_attempt: Record attempt
+    checkout_hit: Checkout hit
+    hits_this_target: Hits on this target
+    starting_score: Starting score
+    target_from: First double
+    target_to: Last double
+    rounds: Rounds
+    target_sequence: Target sequence, comma separated
+    drill_name: Drill name
+    duration: Duration
+    checkout_score: Checkout
+    suggested_route: Suggested route
+    targets_count: "%{count} targets"
+    date: Date
+    progress: "%{current}/%{total} targets"
+    play_title: Practice run
+    current_target: Current target
+    space_hint: Type misses, then press Space to record a hit. The misses field stays focused for keyboard-only play.
+    progress_label: Progress
+    misses_input: Misses this turn / before hit
+    hit: Hit
+    no_hit: No hit
+    abandon: Abandon
+    finish_session: Finish session
+    confirm_abandon: Abandon this training session?
+    completed_title: Training completed
+    abandoned_title: Training abandoned
+    back_to_center: Back to Training Center
+    flashes:
+      started: Training session started.
+      invalid_mode: Choose a valid training mode.
+      abandoned: Training session abandoned.
+      completed: Training session completed.
+    modes:
+      around_the_clock:
+        name: Around the Clock
+        description: Hit 1 through 20, then Outer Bull and Inner Bull. Any segment on the number counts.
+      around_the_clock_doubles:
+        name: Around the Clock Doubles
+        description: Practice D1 through D20, then finish on Outer Bull and Inner Bull.
+      checkout_randomizer:
+        name: Checkout Randomizer
+        description: Get a random checkout, try the suggested route, then record hit or no hit for the next one.
+      bobs_27:
+        name: Bob's 27
+        description: Start on 27, throw three darts at each double, score hits and subtract a double's value when all three miss.
+      doubles_practice:
+        name: Doubles Practice
+        description: Choose a range of doubles and measure hits from each three-dart attempt.
+      scoring_99:
+        name: 99-dart Scoring
+        description: Record 33 three-dart visits with segment and overall averages.
+      checkout_121:
+        name: Checkout 121
+        description: Work up from 121; successful checkouts advance and repeated misses regress the target.
+      custom_targets:
+        name: Custom Target Drill
+        description: Practice a validated sequence of singles, doubles, trebles, and bulls.
+    statuses:
+      active: Active
+      completed: Completed
+      abandoned: Abandoned
+  friends:
+    label: Social play
+    title: Friends & challenges
+    intro: Find players safely, manage requests, and start remote X01 matches with friends.
+    find: Find a player
+    find_help: Enter an exact nickname (when the player allows it) or their private share code. Email addresses are never searchable.
+    search_label: Exact nickname or share code
+    search: Search
+    no_results: No available player matched that exact value.
+    page: Page %{page}
+    pagination: Social list pagination
+    player: DartZ player
+    your_share_code: Your share code
+    send_request: Send request
+    privacy: Privacy controls
+    discoverable: Allow discovery by my exact nickname
+    request_policy: Who may send friend requests
+    challenge_policy: Who may challenge me
+    request_policies:
+      anyone: Anyone who finds me
+      share_code_only: People with my share code
+      nobody: Nobody
+    challenge_policies:
+      friends: Friends
+      nobody: Nobody
+    requests: Friend requests
+    no_requests: No pending friend requests.
+    incoming: Incoming
+    outgoing: Sent
+    list: Friends
+    no_friends: Add a friend to start a challenge.
+    accept: Accept
+    decline: Decline
+    remove: Remove friend
+    block: Block
+    unblock: Unblock
+    blocked: Blocked users
+    no_blocks: You have not blocked anyone.
+    challenge: Challenge
+    challenges: Match challenges
+    no_challenges: No match challenges yet.
+    challenge_statuses:
+      pending: Pending
+      accepted: Accepted
+      declined: Declined
+      cancelled: Cancelled
+      expired: Expired
+    flashes:
+      request_sent: Friend request sent.
+      request_accepted: Friend request accepted.
+      request_declined: Friend request declined.
+      request_cancelled: Friend request cancelled.
+      friend_removed: Friend removed.
+      user_blocked: Player blocked. Existing requests and challenges were removed.
+      user_unblocked: Player unblocked.
+      challenge_sent: Match challenge sent.
+      challenge_accepted: Challenge accepted.
+      challenge_declined: Challenge declined.
+      challenge_cancelled: Challenge cancelled.
+      privacy_updated: Friend privacy settings updated.
+      invalid_settings: Choose valid privacy settings.
+      unavailable: That player or action is unavailable.
+      rate_limited: Too many requests. Try again later.
+  push:
+    eyebrow: Browser notifications
+    title: Push notifications
+    description: Opt in on each browser where you want timely social and tournament updates. You can remove a device or disable a category at any time.
+    back: Back
+    permission_title: This browser
+    enable: Enable notifications
+    send_test: Send test
+    preferences_title: Notification categories
+    save_preferences: Save preferences
+    devices_title: Registered devices
+    remove_device: Remove
+    no_devices: No browser is registered for notifications.
+    categories:
+      friend_requests: Friend requests
+      friendship_acceptance: Accepted friendships
+      match_challenges: Match challenges and invitations
+      tournament_round_ready: Tournament rounds ready to play
+    states:
+      default: Notifications have not been enabled in this browser.
+      granted: Permission granted. Finish enabling this browser.
+      enabled: Notifications are enabled in this browser.
+      denied: Notifications are blocked in your browser settings.
+      unsupported: This browser does not support Web Push.
+      failed: Notifications could not be configured. Try again.
+      test_queued: A test notification was queued.
+    flashes:
+      preferences_updated: Notification preferences updated.
+      device_removed: Browser notifications disabled for that device.
+      invalid_preferences: Choose valid notification preferences.
+      invalid_subscription: The browser subscription is invalid.
+      no_devices: Enable notifications on a browser first.
+      rate_limited: Too many test notifications. Try again later.
+    messages:
+      friend_request:
+        title: New friend request
+        body: "%{actor_name} sent you a friend request."
+      friendship_accepted:
+        title: Friend request accepted
+        body: "%{actor_name} accepted your friend request."
+      match_challenge:
+        title: New match challenge
+        body: "%{actor_name} challenged you to an X01 match."
+      tournament_round_ready:
+        title: Tournament match ready
+        body: Your next match in %{tournament_name} is ready.
+      test:
+        title: DartZ notifications are ready
+        body: This browser can receive notifications.
+  bot_matches:
+    challenge: Bot challenge
+    practice: Practice
+    intro: Pick a bot level from 1 to 10. Lower levels play messy practice darts; higher levels score harder and finish better under pressure.
+    beginner_rhythm: Level 1–3 · beginner rhythm
+    steady_scoring: Level 4–6 · steady scoring
+    strong_finishing: Level 7–8 · strong finishing
+    pro_pressure: Level 9–10 · near-pro pressure
+    new_bot_match: New bot match
+    bot_name: Bot name
+    bot_name_placeholder: Optional bot name
+    difficulty: Difficulty
+    bot_difficulty: Bot difficulty
+    level_help: 'Numeric levels are simpler now: 1 is easiest, 10 is strongest.'
+    levels:
+      1: Rookie · low scoring, many misses
+      2: Beginner · occasional steady visits
+      3: Casual · more singles than trebles
+      4: Improver · safer setup play
+      5: Club · balanced scoring and finishing
+      6: League · steady pressure near checkout
+      7: Advanced · regular trebles
+      8: Expert · stronger setup choices
+      9: Semi-pro · high scoring, reliable doubles
+      10: Pro · strongest pressure and checkout play
+    beginner: Beginner
+    learning_pace: Learning pace
+    intermediate: Intermediate
+    normal_practice: Normal practice
+    advanced: Advanced
+    high_scoring: High scoring
+    pro: Pro
+    maximum_pressure: Maximum pressure
+    start_practice: Start practice
+    allowance: "%{remaining} of %{limit} free bot-match credits remaining in the last 7 days"
+    unlimited: Unlimited bot matches
+    limit_exceeded: You do not have enough free bot-match credits remaining for that match. Upgrade for unlimited bot matches.
+  stats:
+    label: Match analytics
+    title: Stats
+    intro: Review your match performance. Training stats stay in the Training Center.
+    from: From
+    to: To
+    any: Any
+    opponent: Opponent
+    opponent_type: Opponent type
+    bot: Bot
+    human: Human
+    source: Source
+    casual: Casual
+    tournament: Tournament
+    empty: No matches yet. Play a match to build your stats.
+    matches_played: Matches played
+    wins: Wins
+    losses: Losses
+    legs_won: Legs won
+    sets_won: Sets won
+    three_dart_average: 3-dart average
+    first_9_average: First 9 average
+    highest_turn: Highest turn
+    checkout_rate: Checkout %
+    double_hit_share: Double hit %
+    bust_count: Busts
+    charts: Charts
+    average_over_time: Average over time
+    high_turns: High turns
+    win_loss: Wins / losses
+    advanced:
+      premium_label: Premium analytics
+      title: Advanced stats
+      intro: Explore scoring consistency, checkout performance, trends, recent legs, and head-to-head results.
+      open: Open advanced stats
+      basic_stats: Back to basic stats
+      summary: Advanced performance summary
+      enabled: Enabled
+      disabled: Disabled
+      consistency: Consistency (σ)
+      best_match_average: Best match average
+      average_darts_won_leg: Darts per won leg
+      scoring_distribution: Scoring distribution
+      distribution_table: Scoring visits by score band
+      score_band: Score band
+      visits: Visits
+      band_count: "%{band}: %{count} visits"
+      checkout_breakdown: Checkout performance
+      checkout_opportunities: Checkout opportunities
+      checkouts_completed: Checkouts completed
+      highest_checkout: Highest checkout
+      average_checkout_darts: Average checkout darts
+      doubles_accuracy: Doubles accuracy
+      unavailable_intent: Unavailable
+      checkout_routes: Successful routes
+      head_to_head: Head to head
+      recent_legs: Recent leg performance
+      recent_sets: Recent set performance
+      legs_lost: Legs lost
+      result: Result
+      in_progress: In progress
+      checkout: Checkout
+      true: 'Yes'
+      false: 'No'
+      data_coverage: Data coverage
+      coverage_description: "%{detailed}% detailed coverage (%{detailed_turns} of %{total} visits). Turn-total entries are included with an inferred three darts when individual darts are unavailable."
+      doubles_explanation: Doubles accuracy is not calculated from match history because DartZ does not record the intended target for misses. Recorded double hits are retained without presenting a misleading percentage.
+      training_performance: Expanded training performance
+  practice_plans:
+    label: Premium practice
+    title: Practice plans
+    intro: Start predefined, custom, or generated plans. Complete them at your own pace.
+    recommended: Recommended plan
+    generate: Generate from stats
+    active: Active plans
+    start: Start plan
+    custom_plan: Custom plan
+    custom_description: Your custom practice plan.
+    custom_title: Plan title
+    custom_task_description: Custom training task
+    create_custom: Create custom plan
+    completed: Completed
+    mark_done: Mark done
+    flashes:
+      started: Practice plan started.
+      invalid: Could not create practice plan.
+      task_completed: Task progress updated.
+    templates:
+      beginner_consistency:
+        title: Beginner consistency
+        description: Build rhythm with numbers and simple checkout practice.
+      doubles_improvement:
+        title: Doubles improvement
+        description: Focus on doubles until finishing feels more natural.
+      checkout_improvement:
+        title: Checkout improvement
+        description: Repeat checkout randomizer sessions to improve finishing.
+      scoring_power:
+        title: Scoring power
+        description: Improve board coverage and scoring consistency.
+      balanced:
+        title: Balanced plan
+        description: A mix of scoring, doubles, and checkout work.
+  matches:
+    new_game: New game
+    players: Players
+    saved_names: Saved names
+    saved_names_aria: "%{count} saved names. Tap to choose."
+    no_saved_names: No saved names
+    no_saved_players: No saved players
+    enter_name: Enter name
+    play: Play
+    last_players: Last players
+    create_invite_match: Create invite match
+    start_game: Start game
+    more_options: More options
+    more_options_copy: Match format, in/out rules, invites and saved names
+    invite_title: Play someone remotely
+    invite_copy: Create a private link and wait for the other player to join.
+    saved_names_player: Saved names · Player %{player}
+    reset_options: Reset options
+    clear_names: Clear names
+    clear_history: Clear history
+    recent_matches: Recent matches
+    keep_playing: Keep playing
+    play_vs_bot: Play vs bot
+    finished: Finished
+    live: Live
+    local_sessions: Local sessions
+    avg: avg
+  dart_setup:
+    premium: Premium
+    title: Dart setup
+    currently_saved: Currently saved
+    snapshot_copy: New matches will use this exact setup snapshot.
+    default_ready: Default setup ready
+    save_to_track: Save once to start tracking setup-based stats.
+    weight: Weight
+    shaft: Shaft
+    point: Point
+    manufacturer: Manufacturer
+    shaft_type: Shaft type
+    shaft_length: Shaft length
+    point_length: Point length
+    no_rewrite: Changing setup does not rewrite old match snapshots.
+    save_setup: Save setup
+    saved_setup: Saved setup
+    use_setup: Use setup
+    matches: Matches
+    average: Average
+    highest_turn: Highest turn
+    darts_thrown: Darts thrown
+    double_hits: Double hits
+    no_stats: No setup-linked match stats yet. Save a setup, start a match, and stats will appear here.
+  legal:
+    label: Legal
+    contact_title: Contact
+    support: Support
+    support_text: For app issues, account questions, invite-match problems, billing questions, or complaints, contact support@dartz.pl.
+    privacy_requests: Privacy and data requests
+    privacy_requests_text: For access, correction, deletion, restriction, objection, portability, or other privacy requests, email support@dartz.pl from the email address connected to your account when possible.
+    helpful_details: Helpful details
+    helpful_details_text: When reporting a bug, include what you were doing, whether you were signed in or playing as a guest, the match type, and your browser/device if relevant. Do not send passwords or payment card details.
+    privacy_title: Privacy policy
+    terms_title: Terms of service
+    privacy:
+      overview_title: 1. Controller and overview
+      overview_text: "%{app_name} is a darts scoring and match tracking app operated by the DartZ operator. For privacy matters, contact support@dartz.pl. This policy explains how data is used to run the service."
+      data_title: 2. Data we process
+      data_text: We process account details you provide, such as email address and nickname, password hashes, match data, player names, scores, statistics, session cookies, guest access tokens, app preferences, support messages, and technical/security information needed to keep the app working.
+      why_title: 3. Purposes and legal bases
+      why_text: Data is used to create accounts, authenticate users, provide scoring, save match history, show statistics, handle friends, challenges and tournaments, process support requests, prevent abuse, troubleshoot bugs, and maintain security. Depending on the context, the legal bases are contract performance, legal obligations, legitimate interests, or your consent for optional features.
+      cookies_title: 4. Cookies and local storage
+      cookies_text: We use essential cookies and similar storage for login sessions, guest match access, security, and app preferences such as theme or language. DartZ does not use advertising cookies in this setup. If analytics or marketing tools are added later, this policy will be updated and consent will be requested where required.
+      sharing_title: 5. Processors and sharing
+      sharing_text: Data is not sold. Data may be processed by service providers needed to operate DartZ, including hosting, email delivery, payment processing, and technical infrastructure providers. These providers process data only as needed to provide their services.
+      rights_title: 6. Retention and your rights
+      rights_text: 'Account and match data is kept while needed to provide DartZ or until deletion is requested, unless retention is required for security, fraud prevention, legal, tax, accounting, or dispute reasons. You may request access, correction, deletion, restriction, portability, objection, or withdrawal of consent. You may also complain to the Polish data protection authority: Prezes Urzędu Ochrony Danych Osobowych (UODO).'
+      friends_title: 7. Friends and challenges
+      friends_text: If enabled, we store your share code, discovery preferences, friend requests, friendships, blocks, and match challenges. Blocks are private and are shown only to the person who created them. Resolved requests and challenges may be retained for abuse prevention and support; you can remove friendships and blocks at any time.
+      push_title: 8. Browser push notifications
+      push_text: Push notifications are optional. When enabled, we store an encrypted browser endpoint and delivery keys, your device label, category preferences, and limited delivery status. We send only selected notification categories. Removing a device revokes future delivery; invalid subscriptions are revoked automatically.
+      payments_title: 9. Payments
+      payments_text: If you buy a paid plan, payment and subscription handling is provided by Stripe or another payment provider shown at checkout. DartZ stores payment-related identifiers and subscription status, but does not store full card numbers. Billing records may be retained where required by law.
+      contact_title: 10. Contact
+      contact_text: For privacy questions or data requests, contact support@dartz.pl.
+    terms:
+      service_title: 1. Service
+      service_text: "%{app_name} provides darts scoring, match history, statistics, guest play, registered accounts, and related tournament, training, friend, challenge, notification, and invite features."
+      accounts_title: 2. Accounts
+      accounts_text: You are responsible for keeping your login details safe and for information entered under your account. Guest matches may use local storage, cookies, or guest access tokens. You must provide accurate contact information if you create an account or paid subscription.
+      use_title: 3. Acceptable use
+      use_text: Do not misuse the app, attack or disrupt the service, attempt unauthorized access, submit malicious content, impersonate others, violate others' privacy, or use automated scraping in a way that harms DartZ or other users.
+      availability_title: 4. Availability
+      availability_text: DartZ is provided as-is and may change over time. Features may be updated, paused, limited, or removed to improve reliability, security, or usability. We try to keep the service available but do not guarantee uninterrupted access.
+      data_title: 5. User data
+      data_text: You keep ownership of names, scores, and match data you enter. You allow DartZ to store and process that data as needed to provide scoring, match history, invites, statistics, tournaments, friends, challenges, notifications, support, and security.
+      paid_title: 6. Paid features and subscriptions
+      paid_text: Paid plan details, prices, renewal periods, and billing terms are shown before purchase. Payments are processed by Stripe or the provider shown at checkout. You can manage or cancel subscriptions through the billing flow when available. Access to paid features may end if payment fails, a subscription is cancelled, or abuse is detected.
+      complaints_title: 7. Contact and complaints
+      complaints_text: For support, billing questions, privacy requests, or complaints, contact support@dartz.pl. Include the email address connected to your account and a short description of the issue so we can respond.
+      liability_title: 8. Liability
+      liability_text: DartZ is intended for scoring and convenience. To the extent allowed by law, it is provided without warranties and liability is limited to direct losses caused by the service. Nothing in these terms limits rights that cannot be limited under applicable consumer law.
+      changes_title: 9. Changes and law
+      changes_text: These terms may be updated when the service changes or legal requirements require it. Continued use of DartZ after an update means you accept the updated terms. For users in Poland, mandatory Polish and EU consumer protection rules apply where relevant.
+  invites:
+    lobby: Invite lobby
+    waiting_player_2: Waiting for Player 2
+    share_qr: Share this QR code or link. The match starts automatically when the second player joins.
+    starter: Who throws first?
+    starter_creator: You start
+    starter_invitee: Invited player starts
+    swap_starter: Swap first player
+    throws_first_badge: Throws first
+    first_to_throw: 'First to throw: %{player}'
+    invite_link: Invite link
+    copy_link: Copy link
+    cancel_invite: Cancel invite
+    cancel_confirm: Cancel this invite match?
+    expires: Expires %{time}.
+    match_settings: Match settings
+    invited_player: invited player
+    join_match: Join match
+    join_game: Join %{player}'s game
+    join_copy: Enter your player name and start scoring.
+    signed_in_join: You are joining with your signed-in account.
+    guest_join: You are joining as a guest.
+    join_button: Join match
+    cancelled_label: Invite cancelled
+    cancelled_title: This invite was cancelled
+    cancelled_copy: Ask the match creator for a new invite link.
+    expired_label: Invite expired
+    expired_title: This invite has expired
+    expired_copy: Invite links are valid for 24 hours.
+    full_label: Lobby full
+    full_title: This lobby is full
+    full_copy: A second player has already joined this match.
+    back_to_matches: Back to matches
+  tournaments:
+    title: Tournaments
+    new: New tournament
+    your_events: Your events
+    signed_in: Signed-in tournaments
+    public_events: Public events
+    guest: Guest tournaments
+    players: "%{count} players"
+    delete_title: Delete tournament
+    delete_aria: Delete %{title}
+    confirm_delete: Confirm delete
+    delete_question: Delete %{title}?
+    delete_warning: This removes the tournament, entries, rounds and tournament matches. This cannot be undone.
+    create: Create tournament
+    errors_prevented_create: "%{count} error prevented this tournament from being created:"
+    errors_prevented_create_plural: "%{count} errors prevented this tournament from being created:"
+    errors_min_players: Add at least two players to create a tournament.
+    setup: Tournament setup
+    setup_intro: Start with the essentials. Defaults are ready for a quick darts tournament, and advanced options can stay untouched.
+    required_note: Required fields
+    form_title: Title
+    format: Format
+    seeding: Seeding
+    playoff_mode: Playoff mode
+    match_settings: Match settings
+    advanced_options: Advanced options
+    group_count: Group count
+    swiss_rounds: Swiss rounds
+    playoff_qualifiers: Playoff qualifiers
+    qualifiers_per_group: Qualifiers per group
+    playoff_best_of_legs: Playoff best of legs
+    playoff_best_of_sets: Playoff best of sets
+    semifinal_best_of_legs: Semifinal best of legs
+    final_best_of_legs: Final best of legs
+    bronze_match: Bronze match option
+    auto_advance: Auto advance
+    manual_advance_allowed: Manual advance allowed
+    allow_wildcards: Allow wildcard playoff qualification
+    players_one_per_line: Players (one per line)
+    players_help: Add one player per line. You need at least two players. Seeds follow this order unless auto seeding changes them.
+    tournament_label: "%{tournament_format} tournament"
+    open_live_board: Open live board
+    rounds: "%{count} rounds"
+    tournament_screen: Tournament screen
+    go: Go →
+    screen_copy: Groups, fixtures, playoff ladder and live scores.
+    stats: Stats
+    player_stats: Player stats
+    open: Open →
+    stats_copy: Averages, highest turns, 100+, 140+ and 180s.
+    share_admin_links: Share / admin links
+    tap_expand: tap to expand ▾
+    admin_recovery: Admin recovery
+    live_board_link: Live board link
+    join_link: Join link
+    join_this: Join this tournament
+    your_tournament_name: Your tournament name
+    join: Join
+    admin: Admin
+    manage: Manage tournament
+    save_changes: Save changes
+    delete_confirm: Delete this tournament permanently?
+    live_board: Live tournament board
+    details: Tournament details
+    groups_bo: Groups Bo%{legs}
+    playoffs_bo: Playoffs Bo%{legs}
+    groups: Groups
+    standings: Standings
+    group: Group %{name}
+    top_qualify: Top %{count} qualify
+    player: Player
+    no_groups: No groups generated for this tournament.
+    averages: Tournament averages
+    all_linked_matches: All linked matches
+    stats_empty: Player stats will appear once tournament matches are played.
+    fixtures: Fixtures
+    group_matches: Group matches
+    fixtures_empty: Group fixtures will appear here once generated.
+    playoff: Playoff
+    ladder: Ladder
+    ladder_empty: Playoff ladder will appear automatically after qualifiers are known.
+    players_standings: Players / standings
+    start_tournament: Start tournament
+    auto_assign_groups: Auto assign groups
+    draft_help: 'Draft mode: edit names, seeds and group letters before starting. Fixtures are created only when you start the tournament.'
+    ready_to_start: Ready to start
+    ready_to_start_copy: Check groups and player order. Starting creates fixtures and locks in the current group assignments.
+    unassigned_group: Unassigned
+    group_name: Group
+    regenerate: Regenerate
+    reseed: Reseed
+    next_swiss_round: Next swiss round
+    advance_bracket: Advance bracket
+    leg_diff: Leg diff %{diff}
+    buchholz: Buchholz %{value}
+    player_name: Player name
+    seed: Seed
+    remove: Remove
+    bracket_matches: Bracket / matches
+    lower_bracket: Lower bracket
+    final: Final
+    bronze: Bronze
+    bracket_empty: Bracket rounds will appear here once generated.
+    tbd: TBD
+    vs: vs
+    bye: bye
+    play_match: Play match
+    open_live_match: Open live match
+    home: Home
+    away: Away
+    home_sets: Home sets
+    away_sets: Away sets
+    home_legs: Home legs
+    away_legs: Away legs
+    placeholder_title: Friday Night Open
+    placeholder_groups: For groups
+    placeholder_auto_blank: Auto if blank
+    placeholder_optional: Optional
+    placeholder_top_x: Top X
+  live_match:
+    match_complete: Match complete
+    nice_darts: Nice darts.
+    legs_sets_won: Legs / sets won
+    average: average
+    finished_at: Finished at
+    duration: Duration
+    back_to_tournament: Back to tournament
+    new_match: New match
+    input: Input
+    undo: Undo
+    undo_turn_confirm: Go back to your previous turn? This removes that turn's score and makes you the active thrower again.
+    swap_players: Swap thrower
+    current_thrower: Current thrower
+    confirm_swap: Swap thrower
+    swap_players_confirm: Let the other player throw now? Player positions and scores stay unchanged.
+    stats: Stats
+    throw_pad: Throw pad
+    bull: Bull
+    miss: Miss
+    match_stats: Match stats
+    avg: Avg
+    high: High
+    open: Open
+    scoring: Scoring
+    darts: Darts
+    turns: Turns
+    avg_turn: Avg / turn
+    first_9_avg: 1st 9 avg
+    best_leg_darts: Best leg darts
+    checkout: Checkout
+    chances: Chances
+    hits: Hits
+    checkout_percent: Checkout %
+    avg_darts: Avg darts
+    doubles_thrown: Doubles thrown
+    double_co: Double CO
+    split_positions: Split & positions
+    singles: Singles
+    triples: Triples
+    misses: Misses
+    dart_avg: Dart %{number} avg
+    best_leg: Best leg
+    recent_turns: Recent turns
+    throwing: Throwing
+    recent: Recent
+    older: Older
+    no_throws_yet: No throws yet
+    show_older: "▼ SHOW OLDER"
+    last_throw: Last throw
+    sets: Sets
+    legs: Legs
+    match_won: Match won
+    set_won: Set won
+    checkout_complete: Checkout complete
+    wins_match: wins the match
+    wins_set: wins the set
+    wins_leg: wins the leg
+    darts_needed_question: How many darts were needed to finish?
+    cannot_finish: "%{score} cannot be finished in %{count} dart"
+    cannot_finish_plural: "%{score} cannot be finished in %{count} darts"
+    checkout_needs: "%{score} checkout needs at least %{count} dart."
+    checkout_needs_plural: "%{score} checkout needs at least %{count} darts."
+    see_results: See results →
+    next_leg: Next leg →
+    continue: Continue →
+  auth:
+    create_account: Create account
+    register_title: Register
+    register_hero: Save your matches and invite players.
+    register_copy: Accounts start on the free tier. Upgrade later only if you need premium features.
+    email_placeholder: Enter your email address
+    nickname_placeholder: Optional display name
+    password_placeholder: Create a password
+    repeat_password_placeholder: Repeat your password
+    password_trimmed_notice: Your pasted password was trimmed to the %{count}-character maximum. The full password is too large.
+    create_account_button: Create account
+    already_have_account: Already have account?
+    play_as_guest: Play as guest
+    sign_in: Sign in
+    sign_in_title: Login
+    sign_in_hero: Pick up your match history.
+    sign_in_copy: Use an account for saved matches, premium setup tracking, and invite play.
+    remember_hint: Session stays signed in on this device.
+    login_button: Login
+    forgot_password: Forgot password?
+    no_account: No account yet?
+    forgot_password_title: Forgot password?
+    send_reset: Send reset instructions
+    reset_password: Reset password
+  tiers:
+    eyebrow: Account plans
+    title: Choose how far you want to take DartZ
+    lead: Create a free account to save matches now. Premium and Pro are ready when you want deeper practice, stats, and tournament tools.
+    cta_title: Start with Free
+    cta_copy: No payment needed to create an account. You can upgrade later from your account page.
+    start_free: Create free account
+    create_to_upgrade: Create account to upgrade
+    footer_note: Prices shown in %{currency}. Paid upgrades are available after creating an account.
+  billing:
+    title: Upgrade
+    current: 'Current: %{tier}'
+    current_plan: Current plan
+    upgrade_soon: Upgrade with Stripe soon
+    upgrade: Upgrade
+    manage_title: Subscription
+    manage_subscription: Manage subscription
+    no_subscription_help: Upgrade to Premium or Pro to manage a subscription here.
+    currency_note: Checkout will use %{currency} pricing for your current region/language when available.
+    access_until: 'Access until: %{date}'
+    invalid_tier: Choose a valid paid plan.
+    missing_stripe_config: Stripe billing is not configured yet.
+    stripe_error: Stripe could not start billing. Please try again.
+    no_subscription: No Stripe subscription is connected to this account yet.
+    active_subscription: Manage your active subscription in the Stripe customer portal.
+    checkout_success: Checkout completed. Your subscription will update after Stripe confirms payment.
+    checkout_cancelled: Checkout was cancelled. No changes were made.
+    stripe_hook: Stripe Checkout and Customer Portal are used for subscriptions and cancellations.
+    interval_month: month
+    interval_forever: forever
+    free_name: Free
+    premium_name: Premium
+    pro_name: Pro
+    free_desc: Fast guest scoring and account match history.
+    premium_desc: Setup tracking, richer stats, and tournament tools.
+    pro_desc: For clubs and frequent tournament organizers.
+    features:
+      x01: X01 scoreboard
+      bot: Bot matches
+      bot_limited: 40 bot matches/week, up to Bo5
+      bot_unlimited: Unlimited bot matches
+      tournament_browsing: Tournament browsing
+      local_history: Local match history
+      everything_free: Everything in Free
+      everything_premium: Everything in Premium
+      dart_details: Manufacturer, weight, shaft, and point details
+      premium_stats: Future premium stats and preferences
+      league_tools: Future league tools
+      guest_matches: Guest matches
+      saved_history: Saved match history
+      invite_matches: Invite matches
+      dart_setup: Dart setup tracking
+      advanced_stats: Advanced stats
+      tournaments: Tournament tools
+      priority: Priority features
+      club: Club-friendly workflows
+  mailers:
+    reset_subject: Reset your password
+    reset_html: You can reset your password within the next 15 minutes on
+    reset_link: this password reset page
+    reset_text: 'Reset your password within the next 15 minutes on this password reset page:'
+  activerecord:
+    attributes:
+      user:
+        email_address: Email address
+        nickname: Nickname
+        password: Password
+        password_confirmation: Password confirmation
+        locale: Language
+      tournament:
+        title: Title
+        format_type: Format
+        best_of_legs: Best of legs
+        best_of_sets: Best of sets
+        starting_score: Starting score
+      dart_setup:
+        manufacturer: Manufacturer
+        weight_g: Weight
+        shaft_type: Shaft type
+        shaft_length_mm: Shaft length
+        point_length_mm: Point length

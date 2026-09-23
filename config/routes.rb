@@ -23,6 +23,7 @@ Rails.application.routes.draw do
   resource :dart_setup, only: %i[edit update] do
     patch :use_saved
   end
+  get "tiers", to: "tiers#show", as: :tiers
   resource :billing, only: :show, controller: "billing" do
     post :checkout
     post :portal

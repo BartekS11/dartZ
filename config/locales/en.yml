@@ -1,7 +1,9 @@
 en:
   locales:
-    en: "EN"
-    pl: "PL"
+    en: "English"
+    pl: "Polski"
+    nl: "Nederlands"
+    es: "Español"
   meta:
     description: "DartZ is a modern darts scoring app for tracking 501 matches, bot practice, tournaments, training sessions, throws, averages, and checkout finishes."
   nav:
@@ -15,6 +17,7 @@ en:
     training: "Training"
     dart_setup: "Dart setup"
     upgrade: "Upgrade"
+    tiers: "Plans"
     account: "Account"
     logout: "Logout"
     register: "Register"
@@ -829,6 +832,15 @@ en:
     forgot_password_title: "Forgot password?"
     send_reset: "Send reset instructions"
     reset_password: "Reset password"
+  tiers:
+    eyebrow: "Account plans"
+    title: "Choose how far you want to take DartZ"
+    lead: "Create a free account to save matches now. Premium and Pro are ready when you want deeper practice, stats, and tournament tools."
+    cta_title: "Start with Free"
+    cta_copy: "No payment needed to create an account. You can upgrade later from your account page."
+    start_free: "Create free account"
+    create_to_upgrade: "Create account to upgrade"
+    footer_note: "Prices shown in %{currency}. Paid upgrades are available after creating an account."
   billing:
     title: "Upgrade"
     current: "Current: %{tier}"

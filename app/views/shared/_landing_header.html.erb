@@ -12,6 +12,7 @@
       <span class="landing-user-name mono"><%= Current.user.display_name %></span>
       <%= link_to t("home.your_matches"), matches_path, class: "app-nav-auth-button mono" %>
     <% else %>
+      <%= link_to t("nav.tiers"), tiers_path, class: "app-nav-link mono" %>
       <%= link_to t("nav.login"), new_session_path, class: "app-nav-link mono" %>
       <%= link_to t("home.create_account"), new_registration_path, class: "app-nav-auth-button mono" %>
     <% end %>

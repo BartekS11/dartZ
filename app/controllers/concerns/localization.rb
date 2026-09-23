@@ -4,7 +4,7 @@ module Localization
   included do
     # Authentication redirects need the locale before generating route URLs.
     prepend_before_action :set_locale
-    helper_method :available_locales, :available_locale?, :locale_label
+    helper_method :available_locales, :available_locale?, :locale_label, :locale_flag
   end
 
   def default_url_options
@@ -32,6 +32,10 @@ module Localization
     end
 
     def locale_label(locale)
-      I18n.t("locales.#{locale}", locale: locale, default: locale.to_s.upcase)
+      "#{locale_flag(locale)} #{I18n.t("locales.#{locale}", locale: locale, default: locale.to_s.upcase)}"
+    end
+
+    def locale_flag(locale)
+      { "en" => "🇬🇧", "pl" => "🇵🇱", "nl" => "🇳🇱", "es" => "🇪🇸" }.fetch(locale.to_s, "🌐")
     end
 end

@@ -1,0 +1,56 @@
+<div class="page-shell stack-md">
+  <section class="theme-hero p-5">
+    <div class="columns is-vcentered is-variable is-5">
+      <div class="column is-7">
+        <div class="theme-section-label"><%= t("tiers.eyebrow") %></div>
+        <h1 class="page-title"><%= t("tiers.title") %></h1>
+        <p class="page-copy mt-3"><%= t("tiers.lead") %></p>
+      </div>
+      <div class="column is-5">
+        <div class="theme-card p-4 stack-sm">
+          <h2 class="section-title"><%= t("tiers.cta_title") %></h2>
+          <p class="page-copy"><%= t("tiers.cta_copy") %></p>
+          <div class="buttons mt-3">
+            <%= link_to t("home.create_account"), new_registration_path, class: "button theme-btn-primary mono" %>
+            <%= link_to t("nav.login"), new_session_path, class: "button theme-btn-outline mono" %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="columns is-multiline is-variable is-3">
+    <% @tiers.each do |tier| %>
+      <div class="column is-12-tablet is-4-desktop">
+        <article class="theme-card p-5 h-full stack-md">
+          <div>
+            <h2 class="section-title"><%= tier[:name] %></h2>
+            <p class="page-copy mt-2"><%= tier[:description] %></p>
+          </div>
+
+          <div>
+            <span class="bebas text-5xl"><%= tier[:price] %></span>
+            <span class="help-theme">/ <%= tier[:interval] %></span>
+          </div>
+
+          <ul class="stack-sm" style="list-style:none; padding:0; margin:0; flex:1">
+            <% tier[:features].each do |feature| %>
+              <li class="mono text-sm">✓ <%= feature %></li>
+            <% end %>
+          </ul>
+
+          <% if tier[:key] == "free" %>
+            <%= link_to t("tiers.start_free"), new_registration_path, class: "button theme-btn-primary is-fullwidth mono" %>
+          <% else %>
+            <%= link_to t("tiers.create_to_upgrade"), new_registration_path, class: "button theme-btn-outline is-fullwidth mono" %>
+          <% end %>
+        </article>
+      </div>
+    <% end %>
+  </section>
+
+  <section class="theme-card p-5 is-flex is-flex-wrap-wrap is-justify-content-space-between is-align-items-center gap-3">
+    <p class="page-copy"><%= t("tiers.footer_note", currency: @billing_currency.upcase) %></p>
+    <%= link_to t("tiers.start_free"), new_registration_path, class: "button theme-btn-primary mono" %>
+  </section>
+</div>

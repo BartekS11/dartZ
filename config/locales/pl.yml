@@ -1,7 +1,9 @@
 pl:
   locales:
-    en: "EN"
-    pl: "PL"
+    en: "English"
+    pl: "Polski"
+    nl: "Nederlands"
+    es: "Español"
   meta:
     description: "DartZ to nowoczesna aplikacja do punktowania darta: mecze 501, gra z botem, turnieje, treningi, rzuty, średnie i checkouty."
   nav:
@@ -15,6 +17,7 @@ pl:
     training: "Trening"
     dart_setup: "Ustawienie lotek"
     upgrade: "Ulepsz"
+    tiers: "Plany"
     account: "Konto"
     logout: "Wyloguj"
     register: "Rejestracja"
@@ -815,6 +818,15 @@ pl:
     forgot_password_title: "Nie pamiętasz hasła?"
     send_reset: "Wyślij instrukcje resetu"
     reset_password: "Resetuj hasło"
+  tiers:
+    eyebrow: "Plany konta"
+    title: "Wybierz, jak daleko chcesz grać z DartZ"
+    lead: "Utwórz darmowe konto, aby zapisywać mecze. Premium i Pro czekają, gdy zechcesz głębszy trening, statystyki i narzędzia turniejowe."
+    cta_title: "Zacznij za darmo"
+    cta_copy: "Do utworzenia konta nie potrzeba płatności. Ulepszyć możesz później na stronie konta."
+    start_free: "Utwórz darmowe konto"
+    create_to_upgrade: "Utwórz konto, aby ulepszyć"
+    footer_note: "Ceny pokazane w %{currency}. Płatne ulepszenia są dostępne po utworzeniu konta."
   billing:
     title: "Ulepsz"
     current: "Aktualny: %{tier}"

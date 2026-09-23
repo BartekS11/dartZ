@@ -3,11 +3,12 @@ require "test_helper"
 class AdvancedStatsLocalizationTest < ActiveSupport::TestCase
   test "advanced statistics translations have matching non-empty keys" do
     english = flatten(I18n.t("stats.advanced", locale: :en))
-    polish = flatten(I18n.t("stats.advanced", locale: :pl))
 
-    assert_equal english.keys.sort, polish.keys.sort
-    assert english.values.all?(&:present?)
-    assert polish.values.all?(&:present?)
+    User::LOCALES.each do |locale|
+      translation = flatten(I18n.t("stats.advanced", locale: locale))
+      assert_equal english.keys.sort, translation.keys.sort, "Key mismatch for #{locale}"
+      assert translation.values.all?(&:present?), "Blank translation for #{locale}"
+    end
   end
 
   private

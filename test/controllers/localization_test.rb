@@ -36,6 +36,20 @@ class LocalizationTest < ActionDispatch::IntegrationTest
     assert_select "html[lang='pl']"
   end
 
+  test "Dutch and Spanish locales are selectable and persist for signed-in users" do
+    user = create_user("new-locale@example.com")
+    login_as(user)
+
+    %w[nl es].each do |locale|
+      get matches_path(locale: locale)
+
+      assert_response :success
+      assert_equal locale, cookies[:locale]
+      assert_equal locale, user.reload.locale
+      assert_select "html[lang='#{locale}']"
+    end
+  end
+
   test "unsupported locale falls back to the default" do
     cookies[:locale] = "pl"
 

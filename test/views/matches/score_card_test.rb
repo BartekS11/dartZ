@@ -1,7 +1,7 @@
 require "test_helper"
 
 class ScoreCardTest < ActionView::TestCase
-  [ :en, :pl ].each do |locale|
+  User::LOCALES.each do |locale|
     [ true, false ].each do |active|
       test "#{locale} #{active ? 'active' : 'inactive'} player has labeled stats below score" do
         I18n.with_locale(locale) do

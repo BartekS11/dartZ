@@ -41,7 +41,7 @@ class ScoreCardStatsSystemTest < ApplicationSystemTestCase
     assert_selector ".match-score-card", count: 2
     match = Match.order(:created_at).last
 
-    [ :en, :pl ].each do |locale|
+    User::LOCALES.each do |locale|
       visit match_path(match, guest_token: match.guest_token, locale: locale)
       assert_selector ".match-score-card", count: 2
 

@@ -78,6 +78,7 @@
                   form_class: "app-nav-auth-form",
                   form: { onsubmit: "localStorage.removeItem('dartz_player1');localStorage.removeItem('dartz_player2');localStorage.removeItem('dartz_players');localStorage.removeItem('dartz_matches');" } %>
           <% else %>
+            <%= link_to t("nav.tiers"), tiers_path, class: "app-nav-link app-nav-auth-inline mono #{'is-active' if current_page?(tiers_path)}" %>
             <%= link_to t("nav.register"), new_registration_path, class: "app-nav-auth-button app-nav-auth-inline mono #{'is-active' if current_page?(new_registration_path)}" %>
             <%= link_to t("nav.login"), new_session_path, class: "app-nav-auth-button is-danger mono #{'is-active' if current_page?(new_session_path)}" %>
           <% end %>
