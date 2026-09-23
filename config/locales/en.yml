@@ -47,6 +47,7 @@ en:
     privacy: "Privacy"
     terms: "Terms"
     contact: "Contact"
+    ai_translation_notice: "Dutch and Spanish translations were created with AI and may contain errors."
   profile:
     signed_in_as: "Signed in as"
     tier: "Tier: %{tier}"

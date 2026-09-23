@@ -50,6 +50,15 @@ class LocalizationTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "footer discloses AI-assisted Dutch and Spanish translations in every locale" do
+    User::LOCALES.each do |locale|
+      get root_path(locale: locale)
+
+      assert_response :success
+      assert_select ".footer-translation-note", text: I18n.t("footer.ai_translation_notice", locale: locale)
+    end
+  end
+
   test "unsupported locale falls back to the default" do
     cookies[:locale] = "pl"
 

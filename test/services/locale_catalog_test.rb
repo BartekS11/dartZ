@@ -14,6 +14,19 @@ class LocaleCatalogTest < ActiveSupport::TestCase
     end
   end
 
+  test "new locale translations preserve English interpolation variables" do
+    english = flatten(YAML.safe_load_file(Rails.root.join("config/locales/en.yml"), aliases: true).fetch("en"))
+
+    %w[nl es].each do |locale|
+      translated = flatten(YAML.safe_load_file(Rails.root.join("config/locales/#{locale}.yml"), aliases: true).fetch(locale))
+      english.each do |key, value|
+        next unless value.is_a?(String)
+
+        assert_equal placeholders(value), placeholders(translated.fetch(key)), "Interpolation mismatch at #{locale}.#{key}"
+      end
+    end
+  end
+
   test "language selector labels include all supported languages" do
     User::LOCALES.each do |locale|
       assert I18n.t("locales.#{locale}", locale: locale).present?
@@ -21,6 +34,10 @@ class LocaleCatalogTest < ActiveSupport::TestCase
   end
 
   private
+
+  def placeholders(value)
+    value.scan(/%\{[^}]+\}|%\w/).sort
+  end
 
   def flatten(value, prefix = nil, output = {})
     value.each do |key, child|

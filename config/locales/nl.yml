@@ -6,911 +6,914 @@ nl:
     nl: Nederlands
     es: Español
   meta:
-    description: DartZ is a modern darts scoring app for tracking 501 matches, bot practice, tournaments, training sessions, throws, averages, and checkout finishes.
+    description: DartZ is een moderne dartsapp om 501-wedstrijden, oefenen tegen bots, toernooien, trainingssessies, worpen, gemiddelden en finishes bij te houden.
   nav:
-    match: Match
-    bot: Bot
-    tournaments: Tournaments
-    stats: Stats
-    friends: Friends
-    notifications: Notifications
-    practice_plans: Practice plans
+    match: Wedstrijd
+    bot: Botwedstrijd
+    tournaments: Toernooien
+    stats: Statistieken
+    friends: Vrienden
+    notifications: Meldingen
+    practice_plans: Trainingsplannen
     training: Training
-    dart_setup: Dart setup
-    upgrade: Upgrade
-    tiers: Plans
+    dart_setup: Dartinstellingen
+    upgrade: Upgraden
+    tiers: Abonnementen
     account: Account
-    logout: Logout
-    register: Register
-    login: Login
-    language: Language
-    switch_theme: Switch theme
-    light_theme: Light theme
+    logout: Uitloggen
+    register: Registreren
+    login: Inloggen
+    language: Taal
+    switch_theme: Thema wijzigen
+    light_theme: Licht thema
   home:
-    navigation: Welcome navigation
-    eyebrow: Darts scoring, ready when you are
-    title: Score darts with DartZ
-    lead: Start a fast local match in seconds. Sign in only when you want saved history, invites, and deeper stats.
-    play_now: Play now
-    create_account: Create free account
-    login: Login
-    your_matches: Your matches
-    play_bot: Play vs bot
-    tournaments: Explore tournaments
-    player_label: You
-    opponent_label: Opponent
-    ready: Ready to throw
-    promise_label: Why play with DartZ
-    promise_fast: Fast 501 scoring
-    promise_guest: Guest play included
-    promise_flexible: More options when needed
+    navigation: Welkomstnavigatie
+    eyebrow: Dartscores, klaar wanneer jij dat bent
+    title: Dartscores bijhouden met DartZ
+    lead: Start binnen enkele seconden een snelle lokale wedstrijd. Log alleen in als je je geschiedenis wilt bewaren, uitnodigingen wilt versturen en meer statistieken wilt bekijken.
+    play_now: Nu spelen
+    create_account: Gratis account aanmaken
+    login: Inloggen
+    your_matches: Je wedstrijden
+    play_bot: Spelen tegen bot
+    tournaments: Toernooien bekijken
+    player_label: Jij
+    opponent_label: Tegenstander
+    ready: Klaar om te gooien
+    promise_label: Waarom spelen met DartZ
+    promise_fast: Snel 501 spelen
+    promise_guest: Spelen als gast inbegrepen
+    promise_flexible: Meer opties wanneer je ze nodig hebt
   footer:
-    privacy: Privacy
-    terms: Terms
+    privacy: Privacybeleid
+    terms: Voorwaarden
     contact: Contact
+    ai_translation_notice: De Nederlandse en Spaanse vertalingen zijn met AI gemaakt en kunnen fouten bevatten.
   profile:
-    signed_in_as: Signed in as
-    tier: 'Tier: %{tier}'
-    nickname: Nickname
-    nickname_placeholder: Set your nickname
-    save_nickname: Save nickname
+    signed_in_as: Ingelogd als
+    tier: 'Abonnement: %{tier}'
+    nickname: Bijnaam
+    nickname_placeholder: Kies je bijnaam
+    save_nickname: Bijnaam opslaan
   common:
     account: Account
-    cancel: Cancel
-    back: "← Back"
-    save: Save
-    delete: Delete
-    edit: Edit
-    create: Create
-    update: Update
-    current: Current
-    included: Included
-    player_1: Player 1
-    player_2: Player 2
-    player_3: Player 3
-    your_name: Your name
-    email_address: Email address
-    password: Password
-    confirm_password: Confirm password
-    nickname: Nickname
-    starting_score: Starting score
-    double_in: Double in
-    double_out: Double out
+    cancel: Annuleren
+    back: "← Terug"
+    save: Opslaan
+    delete: Verwijderen
+    edit: Bewerken
+    create: Aanmaken
+    update: Bijwerken
+    current: Huidig
+    included: Inbegrepen
+    player_1: Speler 1
+    player_2: Speler 2
+    player_3: Speler 3
+    your_name: Je naam
+    email_address: E-mailadres
+    password: Wachtwoord
+    confirm_password: Wachtwoord bevestigen
+    nickname: Bijnaam
+    starting_score: Beginscore
+    double_in: Starten met dubbel
+    double_out: Eindigen met dubbel
     best_of_legs: Best of legs
     best_of_sets: Best of sets
-    rules: Rules
-    names: Names
-    setup: Setup
+    rules: Spelregels
+    names: Namen
+    setup: Instellingen
     pagination:
-      previous: Previous
-      next: Next
-      page: Page %{page} of %{total_pages}
-      results: "%{count} results"
+      previous: Vorige
+      next: Volgende
+      page: Pagina %{page} van %{total_pages}
+      results: "%{count} resultaten"
     states:
-      empty: Nothing to show yet.
-      feature_unavailable: This feature is currently unavailable.
-      offline: You are offline.
-      online: You are back online.
-      sync_pending: Changes are waiting to sync.
+      empty: Er is nog niets om te tonen.
+      feature_unavailable: Deze functie is momenteel niet beschikbaar.
+      offline: Je bent offline.
+      online: Je bent weer online.
+      sync_pending: Wijzigingen wachten op synchronisatie.
     notifications:
-      permission_default: Notifications are not enabled.
-      permission_granted: Notifications are enabled.
-      permission_denied: Notifications are blocked in this browser.
+      permission_default: Meldingen zijn niet ingeschakeld.
+      permission_granted: Meldingen zijn ingeschakeld.
+      permission_denied: Meldingen zijn geblokkeerd in deze browser.
   flashes:
-    try_again_later: Try again later.
-    premium_required: Premium access is required for that feature.
-    forbidden_match: You don't have access to that match.
-    account_created: Account created.
-    fix_fields: Please fix the highlighted fields.
-    bad_login: Try another email address or password.
-    profile_updated: Profile updated
-    unauthorized: Unauthorized
-    invalid_join_link: Invalid join link.
-    tournament_joined: Joined tournament.
-    player_updated: Player updated.
-    player_removed: Player removed.
-    invite_sign_in: Sign in to create invite matches.
-    invite_cancelled: This invite was cancelled.
-    invite_expired: This invite has expired.
-    invite_full: This lobby is full.
-    invite_cancelled_notice: Invite match cancelled.
-    invite_not_found: Invite not found.
-    dart_setup_saved: Dart setup saved. New matches will track stats against this setup.
-    saved_setup_not_found: Saved setup not found.
-    saved_setup_selected: Saved setup selected for new matches.
-    reset_sent: Password reset instructions sent (if user with that email address exists).
-    password_reset: Password has been reset.
-    passwords_mismatch: Passwords did not match.
-    reset_invalid: Password reset link is invalid or has expired.
-    tournament_created: Tournament created. Set groups and seeds, then start it.
-    tournament_no_access: You don't have access to that tournament.
-    tournament_updated: Tournament updated.
-    tournament_deleted: Tournament deleted.
-    tournament_regenerated: Tournament regenerated.
-    tournament_started: Tournament started.
-    result_saved: Result saved.
-    invalid_match_result: Enter a decisive result for a match that is still in progress.
-    match_unavailable: This match is no longer available to launch.
-    match_not_found: Match not found
-    seeds_rebuilt: Seeds rebuilt.
-    next_swiss_created: Next swiss round created.
-    next_swiss_unavailable: Unable to generate the next swiss round yet.
-    playoff_advanced: Playoff bracket advanced.
-    playoff_advance_unavailable: Unable to advance the playoff bracket yet.
-    manual_advance_unavailable: Manual round advance is not available for this format.
-    waiting_other_player: Waiting for the other player.
-    undo_own_turn_only: You can only undo your own previous turn.
-    player_order_swapped: Active thrower swapped.
-    player_order_unavailable: The active thrower can only be swapped before a dart is entered during the first three turns of a live two-player leg.
-    player_order_host_only: Only the match host can swap the active thrower.
+    try_again_later: Probeer het later opnieuw.
+    premium_required: Voor deze functie heb je Premium nodig.
+    forbidden_match: Je hebt geen toegang tot deze wedstrijd.
+    account_created: Account aangemaakt.
+    fix_fields: Corrigeer de gemarkeerde velden.
+    bad_login: Probeer een ander e-mailadres of wachtwoord.
+    profile_updated: Profiel bijgewerkt.
+    unauthorized: Geen toegang.
+    invalid_join_link: Ongeldige deelnamelink.
+    tournament_joined: Je neemt deel aan het toernooi.
+    player_updated: Speler bijgewerkt.
+    player_removed: Speler verwijderd.
+    invite_sign_in: Log in om wedstrijd-uitnodigingen aan te maken.
+    invite_cancelled: Deze uitnodiging is geannuleerd.
+    invite_expired: Deze uitnodiging is verlopen.
+    invite_full: Deze lobby is vol.
+    invite_cancelled_notice: Wedstrijd-uitnodiging geannuleerd.
+    invite_not_found: Uitnodiging niet gevonden.
+    dart_setup_saved: Dartinstellingen opgeslagen. Nieuwe wedstrijden houden statistieken voor deze set bij.
+    saved_setup_not_found: Opgeslagen dartinstellingen niet gevonden.
+    saved_setup_selected: Opgeslagen dartinstellingen gekozen voor nieuwe wedstrijden.
+    reset_sent: Instructies voor wachtwoordherstel verstuurd (als er een gebruiker met dit e-mailadres bestaat).
+    password_reset: Wachtwoord opnieuw ingesteld.
+    passwords_mismatch: De wachtwoorden komen niet overeen.
+    reset_invalid: De link voor wachtwoordherstel is ongeldig of verlopen.
+    tournament_created: Toernooi aangemaakt. Stel groepen en plaatsingen in en start het toernooi.
+    tournament_no_access: Je hebt geen toegang tot dit toernooi.
+    tournament_updated: Toernooi bijgewerkt.
+    tournament_deleted: Toernooi verwijderd.
+    tournament_regenerated: Toernooi opnieuw gegenereerd.
+    tournament_started: Toernooi gestart.
+    result_saved: Resultaat opgeslagen.
+    invalid_match_result: Voer een beslissende uitslag in voor een wedstrijd die nog bezig is.
+    match_unavailable: Deze wedstrijd kan niet meer worden gestart.
+    match_not_found: Wedstrijd niet gevonden.
+    seeds_rebuilt: Plaatsingen opnieuw opgebouwd.
+    next_swiss_created: Volgende Zwitserse ronde aangemaakt.
+    next_swiss_unavailable: De volgende Zwitserse ronde kan nog niet worden aangemaakt.
+    playoff_advanced: Play-offschema bijgewerkt.
+    playoff_advance_unavailable: Het play-offschema kan nog niet worden bijgewerkt.
+    manual_advance_unavailable: Handmatig doorgaan naar de volgende ronde is niet beschikbaar voor deze opzet.
+    waiting_other_player: Wachten op de andere speler.
+    undo_own_turn_only: Je kunt alleen je eigen vorige beurt ongedaan maken.
+    player_order_swapped: Actieve werper gewisseld.
+    player_order_unavailable: De actieve werper kan alleen worden gewisseld voordat er een dart is ingevoerd, tijdens de eerste drie beurten van een live leg met twee spelers.
+    player_order_host_only: Alleen de wedstrijdhost kan de actieve werper wisselen.
   training:
-    premium_label: Premium training
-    title: Training Center
-    intro: Practice focused dart routines and keep every session in your account history.
-    new_session: New session
-    choose_mode: Choose mode
-    start: Start
-    active_sessions: Active sessions
-    resume: Resume
-    history: History
-    statistics: Statistics
-    your_progress: Your progress
-    completed_count: "%{count} completed"
-    best_darts: Best darts
-    recent_avg: Recent avg
+    premium_label: Premiumtraining
+    title: Trainingscentrum
+    intro: Oefen gerichte dartsoefeningen en bewaar elke sessie in je accountgeschiedenis.
+    new_session: Nieuwe sessie
+    choose_mode: Kies een modus
+    start: Starten
+    active_sessions: Actieve sessies
+    resume: Hervatten
+    history: Geschiedenis
+    statistics: Statistieken
+    your_progress: Je voortgang
+    completed_count: "%{count} voltooid"
+    best_darts: Minste darts
+    recent_avg: Recent gemiddelde
     trend: Trend
     trends:
-      improved: improving
-      declined: needs work
-      neutral: more data needed
-    recent_sessions: Recent sessions
-    all_modes: All modes
-    show_latest: Show latest
-    apply: Apply
-    no_history: No finished training sessions yet.
-    mode: Mode
+      improved: gaat vooruit
+      declined: heeft werk nodig
+      neutral: meer gegevens nodig
+    recent_sessions: Recente sessies
+    all_modes: Alle modi
+    show_latest: Nieuwste tonen
+    apply: Toepassen
+    no_history: Nog geen voltooide trainingssessies.
+    mode: Modus
     status: Status
     darts: Darts
-    misses: Misses
-    hits: Hits
+    misses: Missers
+    hits: Treffers
     score: Score
-    visit_score: Visit score
-    record_attempt: Record attempt
-    checkout_hit: Checkout hit
-    hits_this_target: Hits on this target
-    starting_score: Starting score
-    target_from: First double
-    target_to: Last double
-    rounds: Rounds
-    target_sequence: Target sequence, comma separated
-    drill_name: Drill name
-    duration: Duration
-    checkout_score: Checkout
-    suggested_route: Suggested route
-    targets_count: "%{count} targets"
-    date: Date
-    progress: "%{current}/%{total} targets"
-    play_title: Practice run
-    current_target: Current target
-    space_hint: Type misses, then press Space to record a hit. The misses field stays focused for keyboard-only play.
-    progress_label: Progress
-    misses_input: Misses this turn / before hit
-    hit: Hit
-    no_hit: No hit
-    abandon: Abandon
-    finish_session: Finish session
-    confirm_abandon: Abandon this training session?
-    completed_title: Training completed
-    abandoned_title: Training abandoned
-    back_to_center: Back to Training Center
+    visit_score: Beurtenscore
+    record_attempt: Poging registreren
+    checkout_hit: Finish geraakt
+    hits_this_target: Treffers op dit doel
+    starting_score: Beginscore
+    target_from: Eerste dubbel
+    target_to: Laatste dubbel
+    rounds: Rondes
+    target_sequence: Doelreeks, gescheiden door komma's
+    drill_name: Oefeningsnaam
+    duration: Duur
+    checkout_score: Finish
+    suggested_route: Aanbevolen route
+    targets_count: "%{count} doelen"
+    date: Datum
+    progress: "%{current}/%{total} doelen"
+    play_title: Oefensessie
+    current_target: Huidig doel
+    space_hint: Voer het aantal missers in en druk op Spatie om een treffer te registreren. Het veld voor missers blijft actief voor bediening met het toetsenbord.
+    progress_label: Voortgang
+    misses_input: Missers deze beurt / vóór treffer
+    hit: Geraakt
+    no_hit: Niet geraakt
+    abandon: Afbreken
+    finish_session: Sessie afronden
+    confirm_abandon: Deze trainingssessie afbreken?
+    completed_title: Training voltooid
+    abandoned_title: Training afgebroken
+    back_to_center: Terug naar het trainingscentrum
     flashes:
-      started: Training session started.
-      invalid_mode: Choose a valid training mode.
-      abandoned: Training session abandoned.
-      completed: Training session completed.
+      started: Trainingssessie gestart.
+      invalid_mode: Kies een geldige trainingsmodus.
+      abandoned: Trainingssessie afgebroken.
+      completed: Trainingssessie voltooid.
     modes:
       around_the_clock:
-        name: Around the Clock
-        description: Hit 1 through 20, then Outer Bull and Inner Bull. Any segment on the number counts.
+        name: Rond de klok
+        description: Raak 1 tot en met 20, daarna Outer Bull en Inner Bull. Elk segment van het getal telt.
       around_the_clock_doubles:
-        name: Around the Clock Doubles
-        description: Practice D1 through D20, then finish on Outer Bull and Inner Bull.
+        name: Rond de klok dubbels
+        description: Oefen D1 tot en met D20 en finish daarna op Outer Bull en Inner Bull.
       checkout_randomizer:
-        name: Checkout Randomizer
-        description: Get a random checkout, try the suggested route, then record hit or no hit for the next one.
+        name: Willekeurige finishes
+        description: Krijg een willekeurige finish, probeer de aanbevolen route en registreer daarna of je de volgende finish raakt.
       bobs_27:
         name: Bob's 27
-        description: Start on 27, throw three darts at each double, score hits and subtract a double's value when all three miss.
+        description: Begin op 27 en gooi drie darts op elke dubbel. Tel treffers op en trek de waarde van een dubbel af als je alle drie mist.
       doubles_practice:
-        name: Doubles Practice
-        description: Choose a range of doubles and measure hits from each three-dart attempt.
+        name: Dubbels oefenen
+        description: Kies een reeks dubbels en meet treffers per poging van drie darts.
       scoring_99:
-        name: 99-dart Scoring
-        description: Record 33 three-dart visits with segment and overall averages.
+        name: 99-dartscore
+        description: Registreer 33 beurten van drie darts met segment- en totaalgemiddelden.
       checkout_121:
-        name: Checkout 121
-        description: Work up from 121; successful checkouts advance and repeated misses regress the target.
+        name: Finish 121
+        description: Werk vanaf 121 omhoog. Een finish brengt je verder; herhaalde missers verlagen het doel.
       custom_targets:
-        name: Custom Target Drill
-        description: Practice a validated sequence of singles, doubles, trebles, and bulls.
+        name: Aangepaste doeloefening
+        description: Oefen een gecontroleerde reeks singles, dubbels, triples en bulls.
     statuses:
-      active: Active
-      completed: Completed
-      abandoned: Abandoned
+      active: Actief
+      completed: Voltooid
+      abandoned: Afgebroken
   friends:
-    label: Social play
-    title: Friends & challenges
-    intro: Find players safely, manage requests, and start remote X01 matches with friends.
-    find: Find a player
-    find_help: Enter an exact nickname (when the player allows it) or their private share code. Email addresses are never searchable.
-    search_label: Exact nickname or share code
-    search: Search
-    no_results: No available player matched that exact value.
-    page: Page %{page}
-    pagination: Social list pagination
-    player: DartZ player
-    your_share_code: Your share code
-    send_request: Send request
-    privacy: Privacy controls
-    discoverable: Allow discovery by my exact nickname
-    request_policy: Who may send friend requests
-    challenge_policy: Who may challenge me
+    label: Sociaal spelen
+    title: Vrienden en uitdagingen
+    intro: Vind veilig spelers, beheer verzoeken en start online X01-wedstrijden met vrienden.
+    find: Speler zoeken
+    find_help: Voer een exacte bijnaam in (als de speler dit toestaat) of de privé-deelcode. E-mailadressen zijn niet doorzoekbaar.
+    search_label: Exacte bijnaam of deelcode
+    search: Zoeken
+    no_results: Er is geen beschikbare speler met deze exacte gegevens gevonden.
+    page: Pagina %{page}
+    pagination: Paginering van sociale lijst
+    player: DartZ-speler
+    your_share_code: Je deelcode
+    send_request: Verzoek versturen
+    privacy: Privacyinstellingen
+    discoverable: Vindbaar zijn via mijn exacte bijnaam toestaan
+    request_policy: Wie vriendschapsverzoeken mag sturen
+    challenge_policy: Wie je mag uitdagen
     request_policies:
-      anyone: Anyone who finds me
-      share_code_only: People with my share code
-      nobody: Nobody
+      anyone: Iedereen die mij vindt
+      share_code_only: Mensen met mijn deelcode
+      nobody: Niemand
     challenge_policies:
-      friends: Friends
-      nobody: Nobody
-    requests: Friend requests
-    no_requests: No pending friend requests.
-    incoming: Incoming
-    outgoing: Sent
-    list: Friends
-    no_friends: Add a friend to start a challenge.
-    accept: Accept
-    decline: Decline
-    remove: Remove friend
-    block: Block
-    unblock: Unblock
-    blocked: Blocked users
-    no_blocks: You have not blocked anyone.
-    challenge: Challenge
-    challenges: Match challenges
-    no_challenges: No match challenges yet.
+      friends: Vrienden
+      nobody: Niemand
+    requests: Vriendschapsverzoeken
+    no_requests: Je hebt geen openstaande vriendschapsverzoeken.
+    incoming: Ontvangen
+    outgoing: Verstuurd
+    list: Vrienden
+    no_friends: Voeg een vriend toe om een uitdaging te starten.
+    accept: Accepteren
+    decline: Afwijzen
+    remove: Vriend verwijderen
+    block: Blokkeren
+    unblock: Deblokkeren
+    blocked: Geblokkeerde gebruikers
+    no_blocks: Je hebt niemand geblokkeerd.
+    challenge: Uitdagen
+    challenges: Wedstrijd-uitdagingen
+    no_challenges: Er zijn nog geen uitdagingen.
     challenge_statuses:
-      pending: Pending
-      accepted: Accepted
-      declined: Declined
-      cancelled: Cancelled
-      expired: Expired
+      pending: In afwachting
+      accepted: Geaccepteerd
+      declined: Afgewezen
+      cancelled: Geannuleerd
+      expired: Verlopen
     flashes:
-      request_sent: Friend request sent.
-      request_accepted: Friend request accepted.
-      request_declined: Friend request declined.
-      request_cancelled: Friend request cancelled.
-      friend_removed: Friend removed.
-      user_blocked: Player blocked. Existing requests and challenges were removed.
-      user_unblocked: Player unblocked.
-      challenge_sent: Match challenge sent.
-      challenge_accepted: Challenge accepted.
-      challenge_declined: Challenge declined.
-      challenge_cancelled: Challenge cancelled.
-      privacy_updated: Friend privacy settings updated.
-      invalid_settings: Choose valid privacy settings.
-      unavailable: That player or action is unavailable.
-      rate_limited: Too many requests. Try again later.
+      request_sent: Vriendschapsverzoek verstuurd.
+      request_accepted: Vriendschapsverzoek geaccepteerd.
+      request_declined: Vriendschapsverzoek afgewezen.
+      request_cancelled: Vriendschapsverzoek geannuleerd.
+      friend_removed: Vriend verwijderd.
+      user_blocked: Speler geblokkeerd. Bestaande verzoeken en uitdagingen zijn verwijderd.
+      user_unblocked: Speler gedeblokkeerd.
+      challenge_sent: Wedstrijd-uitdaging verstuurd.
+      challenge_accepted: Uitdaging geaccepteerd.
+      challenge_declined: Uitdaging afgewezen.
+      challenge_cancelled: Uitdaging geannuleerd.
+      privacy_updated: Privacyinstellingen voor vrienden bijgewerkt.
+      invalid_settings: Kies geldige privacyinstellingen.
+      unavailable: Deze speler of actie is niet beschikbaar.
+      rate_limited: Te veel verzoeken. Probeer het later opnieuw.
   push:
-    eyebrow: Browser notifications
-    title: Push notifications
-    description: Opt in on each browser where you want timely social and tournament updates. You can remove a device or disable a category at any time.
-    back: Back
-    permission_title: This browser
-    enable: Enable notifications
-    send_test: Send test
-    preferences_title: Notification categories
-    save_preferences: Save preferences
-    devices_title: Registered devices
-    remove_device: Remove
-    no_devices: No browser is registered for notifications.
+    eyebrow: Browsermeldingen
+    title: Pushmeldingen
+    description: Meld je aan in elke browser waar je tijdige updates over vrienden en toernooien wilt ontvangen. Je kunt een apparaat verwijderen of een categorie uitschakelen wanneer je wilt.
+    back: Terug
+    permission_title: Deze browser
+    enable: Meldingen inschakelen
+    send_test: Testmelding versturen
+    preferences_title: Meldingcategorieën
+    save_preferences: Voorkeuren opslaan
+    devices_title: Geregistreerde apparaten
+    remove_device: Verwijderen
+    no_devices: Er is geen browser geregistreerd voor meldingen.
     categories:
-      friend_requests: Friend requests
-      friendship_acceptance: Accepted friendships
-      match_challenges: Match challenges and invitations
-      tournament_round_ready: Tournament rounds ready to play
+      friend_requests: Vriendschapsverzoeken
+      friendship_acceptance: Geaccepteerde vriendschappen
+      match_challenges: Wedstrijd-uitdagingen en uitnodigingen
+      tournament_round_ready: Toernooirondes die klaar zijn om te spelen
     states:
-      default: Notifications have not been enabled in this browser.
-      granted: Permission granted. Finish enabling this browser.
-      enabled: Notifications are enabled in this browser.
-      denied: Notifications are blocked in your browser settings.
-      unsupported: This browser does not support Web Push.
-      failed: Notifications could not be configured. Try again.
-      test_queued: A test notification was queued.
+      default: Meldingen zijn niet ingeschakeld in deze browser.
+      granted: Toestemming verleend. Rond het inschakelen van deze browser af.
+      enabled: Meldingen zijn ingeschakeld in deze browser.
+      denied: Meldingen zijn geblokkeerd in je browserinstellingen.
+      unsupported: Deze browser ondersteunt Web Push niet.
+      failed: Meldingen konden niet worden ingesteld. Probeer het opnieuw.
+      test_queued: Er is een testmelding ingepland.
     flashes:
-      preferences_updated: Notification preferences updated.
-      device_removed: Browser notifications disabled for that device.
-      invalid_preferences: Choose valid notification preferences.
-      invalid_subscription: The browser subscription is invalid.
-      no_devices: Enable notifications on a browser first.
-      rate_limited: Too many test notifications. Try again later.
+      preferences_updated: Meldingvoorkeuren bijgewerkt.
+      device_removed: Browsermeldingen voor dit apparaat uitgeschakeld.
+      invalid_preferences: Kies geldige meldingvoorkeuren.
+      invalid_subscription: Het browserabonnement is ongeldig.
+      no_devices: Schakel eerst meldingen in een browser in.
+      rate_limited: Te veel testmeldingen. Probeer het later opnieuw.
     messages:
       friend_request:
-        title: New friend request
-        body: "%{actor_name} sent you a friend request."
+        title: Nieuw vriendschapsverzoek
+        body: "%{actor_name} heeft je een vriendschapsverzoek gestuurd."
       friendship_accepted:
-        title: Friend request accepted
-        body: "%{actor_name} accepted your friend request."
+        title: Vriendschapsverzoek geaccepteerd
+        body: "%{actor_name} heeft je vriendschapsverzoek geaccepteerd."
       match_challenge:
-        title: New match challenge
-        body: "%{actor_name} challenged you to an X01 match."
+        title: Nieuwe wedstrijd-uitdaging
+        body: "%{actor_name} heeft je uitgedaagd voor een X01-wedstrijd."
       tournament_round_ready:
-        title: Tournament match ready
-        body: Your next match in %{tournament_name} is ready.
+        title: Toernooiwedstrijd klaar
+        body: Je volgende wedstrijd in %{tournament_name} is klaar.
       test:
-        title: DartZ notifications are ready
-        body: This browser can receive notifications.
+        title: DartZ-meldingen zijn klaar
+        body: Deze browser kan meldingen ontvangen.
   bot_matches:
-    challenge: Bot challenge
-    practice: Practice
-    intro: Pick a bot level from 1 to 10. Lower levels play messy practice darts; higher levels score harder and finish better under pressure.
-    beginner_rhythm: Level 1–3 · beginner rhythm
-    steady_scoring: Level 4–6 · steady scoring
-    strong_finishing: Level 7–8 · strong finishing
-    pro_pressure: Level 9–10 · near-pro pressure
-    new_bot_match: New bot match
-    bot_name: Bot name
-    bot_name_placeholder: Optional bot name
-    difficulty: Difficulty
-    bot_difficulty: Bot difficulty
-    level_help: 'Numeric levels are simpler now: 1 is easiest, 10 is strongest.'
+    challenge: Botuitdaging
+    practice: Oefenen
+    intro: Kies een botniveau van 1 tot 10. Lagere niveaus gooien onregelmatig; hogere niveaus scoren beter en finishen sterker onder druk.
+    beginner_rhythm: Niveau 1–3 · beginnersritme
+    steady_scoring: Niveau 4–6 · constant scoren
+    strong_finishing: Niveau 7–8 · sterk finishen
+    pro_pressure: Niveau 9–10 · bijna-professionele druk
+    new_bot_match: Nieuwe wedstrijd tegen bot
+    bot_name: Naam van de bot
+    bot_name_placeholder: Optionele botnaam
+    difficulty: Moeilijkheid
+    bot_difficulty: Moeilijkheid van de bot
+    level_help: 'De niveaus zijn eenvoudig: 1 is het makkelijkst, 10 het sterkst.'
     levels:
-      1: Rookie · low scoring, many misses
-      2: Beginner · occasional steady visits
-      3: Casual · more singles than trebles
-      4: Improver · safer setup play
-      5: Club · balanced scoring and finishing
-      6: League · steady pressure near checkout
-      7: Advanced · regular trebles
-      8: Expert · stronger setup choices
-      9: Semi-pro · high scoring, reliable doubles
-      10: Pro · strongest pressure and checkout play
-    beginner: Beginner
-    learning_pace: Learning pace
-    intermediate: Intermediate
-    normal_practice: Normal practice
-    advanced: Advanced
-    high_scoring: High scoring
-    pro: Pro
-    maximum_pressure: Maximum pressure
-    start_practice: Start practice
-    allowance: "%{remaining} of %{limit} free bot-match credits remaining in the last 7 days"
-    unlimited: Unlimited bot matches
-    limit_exceeded: You do not have enough free bot-match credits remaining for that match. Upgrade for unlimited bot matches.
+      1: Nieuweling · lage scores, veel missers
+      2: Beginner · af en toe een constante beurt
+      3: Recreatief · meer singles dan triples
+      4: Opkomend · veiligere setup
+      5: Clubniveau · evenwichtig scoren en finishen
+      6: Competitieniveau · constante druk nabij de finish
+      7: Gevorderd · regelmatig triples
+      8: Expert · betere keuzes voor de volgende beurt
+      9: Semi-prof · hoge scores, betrouwbare dubbels
+      10: Professional · maximale druk en sterk finishen
+    beginner: Beginnende speler
+    learning_pace: Leertempo
+    intermediate: Gevorderde beginner
+    normal_practice: Normale oefening
+    advanced: Gevorderd
+    high_scoring: Hoge scores
+    pro: Professional
+    maximum_pressure: Maximale druk
+    start_practice: Oefening starten
+    allowance: Nog %{remaining} van %{limit} gratis botwedstrijdtegoed in de afgelopen 7 dagen
+    unlimited: Onbeperkt botwedstrijden
+    limit_exceeded: Je hebt niet genoeg gratis botwedstrijdtegoed voor deze wedstrijd. Upgrade voor onbeperkt spelen tegen bots.
   stats:
-    label: Match analytics
-    title: Stats
-    intro: Review your match performance. Training stats stay in the Training Center.
-    from: From
-    to: To
-    any: Any
-    opponent: Opponent
-    opponent_type: Opponent type
+    label: Wedstrijdanalyses
+    title: Statistieken
+    intro: Bekijk je prestaties in wedstrijden. Trainingsstatistieken vind je in het trainingscentrum.
+    from: Van
+    to: Tot
+    any: Alle
+    opponent: Tegenstander
+    opponent_type: Type tegenstander
     bot: Bot
-    human: Human
-    source: Source
-    casual: Casual
-    tournament: Tournament
-    empty: No matches yet. Play a match to build your stats.
-    matches_played: Matches played
-    wins: Wins
-    losses: Losses
-    legs_won: Legs won
-    sets_won: Sets won
-    three_dart_average: 3-dart average
-    first_9_average: First 9 average
-    highest_turn: Highest turn
-    checkout_rate: Checkout %
-    double_hit_share: Double hit %
-    bust_count: Busts
-    charts: Charts
-    average_over_time: Average over time
-    high_turns: High turns
-    win_loss: Wins / losses
+    human: Mens
+    source: Bron
+    casual: Vriendschappelijk
+    tournament: Toernooi
+    empty: Nog geen wedstrijden. Speel een wedstrijd om statistieken op te bouwen.
+    matches_played: Gespeelde wedstrijden
+    wins: Overwinningen
+    losses: Verliezen
+    legs_won: Gewonnen legs
+    sets_won: Gewonnen sets
+    three_dart_average: Gemiddelde van 3 darts
+    first_9_average: Gemiddelde eerste 9
+    highest_turn: Hoogste beurt
+    checkout_rate: Finishpercentage
+    double_hit_share: Percentage geraakte dubbels
+    bust_count: Busters
+    charts: Grafieken
+    average_over_time: Gemiddelde in de tijd
+    high_turns: Hoge beurten
+    win_loss: Gewonnen / verloren
     advanced:
-      premium_label: Premium analytics
-      title: Advanced stats
-      intro: Explore scoring consistency, checkout performance, trends, recent legs, and head-to-head results.
-      open: Open advanced stats
-      basic_stats: Back to basic stats
-      summary: Advanced performance summary
-      enabled: Enabled
-      disabled: Disabled
-      consistency: Consistency (σ)
-      best_match_average: Best match average
-      average_darts_won_leg: Darts per won leg
-      scoring_distribution: Scoring distribution
-      distribution_table: Scoring visits by score band
-      score_band: Score band
-      visits: Visits
-      band_count: "%{band}: %{count} visits"
-      checkout_breakdown: Checkout performance
-      checkout_opportunities: Checkout opportunities
-      checkouts_completed: Checkouts completed
-      highest_checkout: Highest checkout
-      average_checkout_darts: Average checkout darts
-      doubles_accuracy: Doubles accuracy
-      unavailable_intent: Unavailable
-      checkout_routes: Successful routes
-      head_to_head: Head to head
-      recent_legs: Recent leg performance
-      recent_sets: Recent set performance
-      legs_lost: Legs lost
-      result: Result
-      in_progress: In progress
-      checkout: Checkout
-      true: 'Yes'
-      false: 'No'
-      data_coverage: Data coverage
-      coverage_description: "%{detailed}% detailed coverage (%{detailed_turns} of %{total} visits). Turn-total entries are included with an inferred three darts when individual darts are unavailable."
-      doubles_explanation: Doubles accuracy is not calculated from match history because DartZ does not record the intended target for misses. Recorded double hits are retained without presenting a misleading percentage.
-      training_performance: Expanded training performance
+      premium_label: Premiumanalyses
+      title: Geavanceerde statistieken
+      intro: Bekijk scoreconsistentie, finishprestaties, trends, recente legs en onderlinge resultaten.
+      open: Geavanceerde statistieken openen
+      basic_stats: Terug naar basisstatistieken
+      summary: Samenvatting geavanceerde prestaties
+      enabled: Ingeschakeld
+      disabled: Uitgeschakeld
+      consistency: Consistentie (σ)
+      best_match_average: Beste wedstrijdgemiddelde
+      average_darts_won_leg: Darts per gewonnen leg
+      scoring_distribution: Scoreverdeling
+      distribution_table: Beurten per scorebereik
+      score_band: Scorereeks
+      visits: Beurten
+      band_count: "%{band}: %{count} beurten"
+      checkout_breakdown: Finishprestaties
+      checkout_opportunities: Finishkansen
+      checkouts_completed: Gehaalde finishes
+      highest_checkout: Hoogste finish
+      average_checkout_darts: Gemiddeld aantal darts per finish
+      doubles_accuracy: Dubbelnauwkeurigheid
+      unavailable_intent: Niet beschikbaar
+      checkout_routes: Gehaalde routes
+      head_to_head: Onderlinge resultaten
+      recent_legs: Recente legprestaties
+      recent_sets: Recente setprestaties
+      legs_lost: Verloren legs
+      result: Resultaat
+      in_progress: Bezig
+      checkout: Finish
+      true: 'Ja'
+      false: 'Nee'
+      data_coverage: Datadekking
+      coverage_description: "%{detailed}%% gedetailleerde dekking (%{detailed_turns} van %{total} beurten). Beurttotalen worden meegerekend met een geschat aantal van drie darts als afzonderlijke darts ontbreken."
+      doubles_explanation: De nauwkeurigheid van dubbels wordt niet berekend op basis van wedstrijdgeschiedenis, omdat DartZ het bedoelde doel bij missers niet registreert. Geregistreerde geraakte dubbels blijven behouden, zonder een misleidend percentage te tonen.
+      training_performance: Uitgebreide trainingsprestaties
+      'true': Ja
+      'false': Nee
   practice_plans:
-    label: Premium practice
-    title: Practice plans
-    intro: Start predefined, custom, or generated plans. Complete them at your own pace.
-    recommended: Recommended plan
-    generate: Generate from stats
-    active: Active plans
-    start: Start plan
-    custom_plan: Custom plan
-    custom_description: Your custom practice plan.
-    custom_title: Plan title
-    custom_task_description: Custom training task
-    create_custom: Create custom plan
-    completed: Completed
-    mark_done: Mark done
+    label: Premium oefenen
+    title: Oefenplannen
+    intro: Start vooraf ingestelde, aangepaste of gegenereerde plannen. Voltooi ze in je eigen tempo.
+    recommended: Aanbevolen plan
+    generate: Genereren op basis van statistieken
+    active: Actieve plannen
+    start: Plan starten
+    custom_plan: Aangepast plan
+    custom_description: Je eigen oefenplan.
+    custom_title: Plantitel
+    custom_task_description: Aangepaste trainingstaak
+    create_custom: Aangepast plan maken
+    completed: Voltooid
+    mark_done: Markeren als voltooid
     flashes:
-      started: Practice plan started.
-      invalid: Could not create practice plan.
-      task_completed: Task progress updated.
+      started: Oefenplan gestart.
+      invalid: Oefenplan kon niet worden aangemaakt.
+      task_completed: Taakvoortgang bijgewerkt.
     templates:
       beginner_consistency:
-        title: Beginner consistency
-        description: Build rhythm with numbers and simple checkout practice.
+        title: Consistentie voor beginners
+        description: Bouw ritme op met getallen en eenvoudige finish-oefeningen.
       doubles_improvement:
-        title: Doubles improvement
-        description: Focus on doubles until finishing feels more natural.
+        title: Dubbels verbeteren
+        description: Oefen dubbels tot finishen vanzelfsprekender voelt.
       checkout_improvement:
-        title: Checkout improvement
-        description: Repeat checkout randomizer sessions to improve finishing.
+        title: Finishen verbeteren
+        description: Herhaal willekeurige finish-oefeningen om beter uit te gooien.
       scoring_power:
-        title: Scoring power
-        description: Improve board coverage and scoring consistency.
+        title: Scorend vermogen
+        description: Verbeter je dekking van het bord en je scoreconsistentie.
       balanced:
-        title: Balanced plan
-        description: A mix of scoring, doubles, and checkout work.
+        title: Gebalanceerd plan
+        description: Een combinatie van scoren, dubbels en finishen.
   matches:
-    new_game: New game
-    players: Players
-    saved_names: Saved names
-    saved_names_aria: "%{count} saved names. Tap to choose."
-    no_saved_names: No saved names
-    no_saved_players: No saved players
-    enter_name: Enter name
-    play: Play
-    last_players: Last players
-    create_invite_match: Create invite match
-    start_game: Start game
-    more_options: More options
-    more_options_copy: Match format, in/out rules, invites and saved names
-    invite_title: Play someone remotely
-    invite_copy: Create a private link and wait for the other player to join.
-    saved_names_player: Saved names · Player %{player}
-    reset_options: Reset options
-    clear_names: Clear names
-    clear_history: Clear history
-    recent_matches: Recent matches
-    keep_playing: Keep playing
-    play_vs_bot: Play vs bot
-    finished: Finished
+    new_game: Nieuwe wedstrijd
+    players: Spelers
+    saved_names: Opgeslagen namen
+    saved_names_aria: "%{count} opgeslagen namen. Tik om te kiezen."
+    no_saved_names: Geen opgeslagen namen
+    no_saved_players: Geen opgeslagen spelers
+    enter_name: Naam invoeren
+    play: Spelen
+    last_players: Vorige spelers
+    create_invite_match: Uitnodigingswedstrijd maken
+    start_game: Wedstrijd starten
+    more_options: Meer opties
+    more_options_copy: Wedstrijdformaat, in-/uitgooiregels, uitnodigingen en opgeslagen namen
+    invite_title: Op afstand met iemand spelen
+    invite_copy: Maak een privékoppeling en wacht tot de andere speler deelneemt.
+    saved_names_player: Opgeslagen namen · Speler %{player}
+    reset_options: Opties herstellen
+    clear_names: Namen wissen
+    clear_history: Geschiedenis wissen
+    recent_matches: Recente wedstrijden
+    keep_playing: Verder spelen
+    play_vs_bot: Spelen tegen bot
+    finished: Afgelopen
     live: Live
-    local_sessions: Local sessions
-    avg: avg
+    local_sessions: Lokale sessies
+    avg: Gem.
   dart_setup:
     premium: Premium
-    title: Dart setup
-    currently_saved: Currently saved
-    snapshot_copy: New matches will use this exact setup snapshot.
-    default_ready: Default setup ready
-    save_to_track: Save once to start tracking setup-based stats.
-    weight: Weight
+    title: Dartinstellingen
+    currently_saved: Momenteel opgeslagen
+    snapshot_copy: Nieuwe wedstrijden gebruiken precies deze opgeslagen instellingen.
+    default_ready: Standaardinstellingen klaar
+    save_to_track: Sla de instellingen op om statistieken per dartset bij te houden.
+    weight: Gewicht
     shaft: Shaft
-    point: Point
-    manufacturer: Manufacturer
-    shaft_type: Shaft type
-    shaft_length: Shaft length
-    point_length: Point length
-    no_rewrite: Changing setup does not rewrite old match snapshots.
-    save_setup: Save setup
-    saved_setup: Saved setup
-    use_setup: Use setup
-    matches: Matches
-    average: Average
-    highest_turn: Highest turn
-    darts_thrown: Darts thrown
-    double_hits: Double hits
-    no_stats: No setup-linked match stats yet. Save a setup, start a match, and stats will appear here.
+    point: Punt
+    manufacturer: Fabrikant
+    shaft_type: Shafttype
+    shaft_length: Shaftlengte
+    point_length: Puntlengte
+    no_rewrite: Een wijziging overschrijft opgeslagen instellingen van oude wedstrijden niet.
+    save_setup: Instellingen opslaan
+    saved_setup: Opgeslagen instellingen
+    use_setup: Instellingen gebruiken
+    matches: Wedstrijden
+    average: Gemiddelde
+    highest_turn: Hoogste beurt
+    darts_thrown: Gegooide darts
+    double_hits: Geraakte dubbels
+    no_stats: Nog geen statistieken voor deze dartset. Sla instellingen op en start een wedstrijd om hier statistieken te zien.
   legal:
-    label: Legal
-    contact_title: Contact
-    support: Support
-    support_text: For app issues, account questions, invite-match problems, billing questions, or complaints, contact support@dartz.pl.
-    privacy_requests: Privacy and data requests
-    privacy_requests_text: For access, correction, deletion, restriction, objection, portability, or other privacy requests, email support@dartz.pl from the email address connected to your account when possible.
-    helpful_details: Helpful details
-    helpful_details_text: When reporting a bug, include what you were doing, whether you were signed in or playing as a guest, the match type, and your browser/device if relevant. Do not send passwords or payment card details.
-    privacy_title: Privacy policy
-    terms_title: Terms of service
+    label: Juridisch
+    contact_title: Contact opnemen
+    support: Ondersteuning
+    support_text: Neem bij problemen met de app, accountvragen, problemen met wedstrijd-uitnodigingen, vragen over betalingen of klachten contact op via support@dartz.pl.
+    privacy_requests: Privacy- en gegevensverzoeken
+    privacy_requests_text: Stuur verzoeken om inzage, correctie, verwijdering, beperking, bezwaar, overdraagbaarheid of andere privacyverzoeken waar mogelijk vanaf het e-mailadres dat aan je account is gekoppeld naar support@dartz.pl.
+    helpful_details: Handige informatie
+    helpful_details_text: Vermeld bij een bugmelding wat je deed, of je ingelogd was of als gast speelde, het wedstrijdtype en indien relevant je browser/apparaat. Verstuur geen wachtwoorden of betaalkaartgegevens.
+    privacy_title: Privacybeleid
+    terms_title: Servicevoorwaarden
     privacy:
-      overview_title: 1. Controller and overview
-      overview_text: "%{app_name} is a darts scoring and match tracking app operated by the DartZ operator. For privacy matters, contact support@dartz.pl. This policy explains how data is used to run the service."
-      data_title: 2. Data we process
-      data_text: We process account details you provide, such as email address and nickname, password hashes, match data, player names, scores, statistics, session cookies, guest access tokens, app preferences, support messages, and technical/security information needed to keep the app working.
-      why_title: 3. Purposes and legal bases
-      why_text: Data is used to create accounts, authenticate users, provide scoring, save match history, show statistics, handle friends, challenges and tournaments, process support requests, prevent abuse, troubleshoot bugs, and maintain security. Depending on the context, the legal bases are contract performance, legal obligations, legitimate interests, or your consent for optional features.
-      cookies_title: 4. Cookies and local storage
-      cookies_text: We use essential cookies and similar storage for login sessions, guest match access, security, and app preferences such as theme or language. DartZ does not use advertising cookies in this setup. If analytics or marketing tools are added later, this policy will be updated and consent will be requested where required.
-      sharing_title: 5. Processors and sharing
-      sharing_text: Data is not sold. Data may be processed by service providers needed to operate DartZ, including hosting, email delivery, payment processing, and technical infrastructure providers. These providers process data only as needed to provide their services.
-      rights_title: 6. Retention and your rights
-      rights_text: 'Account and match data is kept while needed to provide DartZ or until deletion is requested, unless retention is required for security, fraud prevention, legal, tax, accounting, or dispute reasons. You may request access, correction, deletion, restriction, portability, objection, or withdrawal of consent. You may also complain to the Polish data protection authority: Prezes Urzędu Ochrony Danych Osobowych (UODO).'
-      friends_title: 7. Friends and challenges
-      friends_text: If enabled, we store your share code, discovery preferences, friend requests, friendships, blocks, and match challenges. Blocks are private and are shown only to the person who created them. Resolved requests and challenges may be retained for abuse prevention and support; you can remove friendships and blocks at any time.
-      push_title: 8. Browser push notifications
-      push_text: Push notifications are optional. When enabled, we store an encrypted browser endpoint and delivery keys, your device label, category preferences, and limited delivery status. We send only selected notification categories. Removing a device revokes future delivery; invalid subscriptions are revoked automatically.
-      payments_title: 9. Payments
-      payments_text: If you buy a paid plan, payment and subscription handling is provided by Stripe or another payment provider shown at checkout. DartZ stores payment-related identifiers and subscription status, but does not store full card numbers. Billing records may be retained where required by law.
-      contact_title: 10. Contact
-      contact_text: For privacy questions or data requests, contact support@dartz.pl.
+      overview_title: 1. Verwerkingsverantwoordelijke en overzicht
+      overview_text: "%{app_name} is een app voor dartscores en wedstrijdregistratie, beheerd door de DartZ-exploitant. Neem voor privacyvragen contact op via support@dartz.pl. Dit beleid legt uit hoe gegevens worden gebruikt om de dienst te leveren."
+      data_title: 2. Gegevens die we verwerken
+      data_text: We verwerken accountgegevens die je verstrekt, zoals e-mailadres en bijnaam, wachtwoordhashes, wedstrijdgegevens, spelersnamen, scores, statistieken, sessiecookies, gasttoegangstokens, appvoorkeuren, supportberichten en technische/beveiligingsgegevens die nodig zijn om de app te laten werken.
+      why_title: 3. Doeleinden en rechtsgronden
+      why_text: Gegevens worden gebruikt om accounts aan te maken, gebruikers te verifiëren, scores bij te houden, wedstrijdgeschiedenis op te slaan, statistieken te tonen, vrienden, uitdagingen en toernooien te beheren, supportverzoeken af te handelen, misbruik te voorkomen, bugs op te lossen en de beveiliging te waarborgen. Afhankelijk van de situatie is de rechtsgrond uitvoering van een overeenkomst, een wettelijke verplichting, een gerechtvaardigd belang of je toestemming voor optionele functies.
+      cookies_title: 4. Cookies en lokale opslag
+      cookies_text: We gebruiken essentiële cookies en vergelijkbare opslag voor inlogsessies, toegang tot gastwedstrijden, beveiliging en appvoorkeuren zoals thema of taal. In deze opzet gebruikt DartZ geen advertentiecookies. Als later analyse- of marketingtools worden toegevoegd, wordt dit beleid bijgewerkt en wordt waar nodig toestemming gevraagd.
+      sharing_title: 5. Verwerkers en delen
+      sharing_text: Gegevens worden niet verkocht. Dienstverleners die nodig zijn voor DartZ, waaronder hosting-, e-mail-, betalings- en technische infrastructuurproviders, kunnen gegevens verwerken. Zij verwerken gegevens alleen voor zover nodig om hun diensten te leveren.
+      rights_title: 6. Bewaartermijn en je rechten
+      rights_text: 'Account- en wedstrijdgegevens worden bewaard zolang dat nodig is voor DartZ of totdat verwijdering wordt gevraagd, tenzij bewaring nodig is voor beveiliging, fraudepreventie, wettelijke, fiscale of boekhoudkundige verplichtingen of geschillen. Je kunt verzoeken om inzage, correctie, verwijdering, beperking, overdraagbaarheid, bezwaar of intrekking van toestemming. Je kunt ook een klacht indienen bij de Poolse gegevensbeschermingsautoriteit: Prezes Urzędu Ochrony Danych Osobowych (UODO).'
+      friends_title: 7. Vrienden en uitdagingen
+      friends_text: Als deze functies zijn ingeschakeld, bewaren we je deelcode, vindbaarheidsvoorkeuren, vriendschapsverzoeken, vriendschappen, blokkeringen en wedstrijd-uitdagingen. Blokkeringen zijn privé en alleen zichtbaar voor degene die ze heeft ingesteld. Afgehandelde verzoeken en uitdagingen kunnen worden bewaard om misbruik te voorkomen en support te bieden; vriendschappen en blokkeringen kun je op elk moment verwijderen.
+      push_title: 8. Pushmeldingen in de browser
+      push_text: Pushmeldingen zijn optioneel. Als je ze inschakelt, bewaren we een versleuteld browserendpoint en bezorgsleutels, het apparaatlabel, categorievoorkeuren en beperkte bezorgstatusgegevens. We versturen alleen de geselecteerde categorieën. Door een apparaat te verwijderen stop je toekomstige bezorging; ongeldige abonnementen worden automatisch ingetrokken.
+      payments_title: 9. Betalingen
+      payments_text: Bij aankoop van een betaald abonnement worden betalingen en abonnementen afgehandeld door Stripe of een andere betaalprovider die bij het afrekenen wordt vermeld. DartZ bewaart betalingsgerelateerde identificatiegegevens en de abonnementsstatus, maar geen volledige kaartnummers. Factuurgegevens kunnen wettelijk verplicht worden bewaard.
+      contact_title: 10. Contact opnemen
+      contact_text: Neem voor privacyvragen of gegevensverzoeken contact op via support@dartz.pl.
     terms:
-      service_title: 1. Service
-      service_text: "%{app_name} provides darts scoring, match history, statistics, guest play, registered accounts, and related tournament, training, friend, challenge, notification, and invite features."
-      accounts_title: 2. Accounts
-      accounts_text: You are responsible for keeping your login details safe and for information entered under your account. Guest matches may use local storage, cookies, or guest access tokens. You must provide accurate contact information if you create an account or paid subscription.
-      use_title: 3. Acceptable use
-      use_text: Do not misuse the app, attack or disrupt the service, attempt unauthorized access, submit malicious content, impersonate others, violate others' privacy, or use automated scraping in a way that harms DartZ or other users.
-      availability_title: 4. Availability
-      availability_text: DartZ is provided as-is and may change over time. Features may be updated, paused, limited, or removed to improve reliability, security, or usability. We try to keep the service available but do not guarantee uninterrupted access.
-      data_title: 5. User data
-      data_text: You keep ownership of names, scores, and match data you enter. You allow DartZ to store and process that data as needed to provide scoring, match history, invites, statistics, tournaments, friends, challenges, notifications, support, and security.
-      paid_title: 6. Paid features and subscriptions
-      paid_text: Paid plan details, prices, renewal periods, and billing terms are shown before purchase. Payments are processed by Stripe or the provider shown at checkout. You can manage or cancel subscriptions through the billing flow when available. Access to paid features may end if payment fails, a subscription is cancelled, or abuse is detected.
-      complaints_title: 7. Contact and complaints
-      complaints_text: For support, billing questions, privacy requests, or complaints, contact support@dartz.pl. Include the email address connected to your account and a short description of the issue so we can respond.
-      liability_title: 8. Liability
-      liability_text: DartZ is intended for scoring and convenience. To the extent allowed by law, it is provided without warranties and liability is limited to direct losses caused by the service. Nothing in these terms limits rights that cannot be limited under applicable consumer law.
-      changes_title: 9. Changes and law
-      changes_text: These terms may be updated when the service changes or legal requirements require it. Continued use of DartZ after an update means you accept the updated terms. For users in Poland, mandatory Polish and EU consumer protection rules apply where relevant.
+      service_title: 1. Dienst
+      service_text: "%{app_name} biedt dartscores, wedstrijdgeschiedenis, statistieken, gastspel, geregistreerde accounts en bijbehorende functies voor toernooien, training, vrienden, uitdagingen, meldingen en uitnodigingen."
+      accounts_title: 2. Gebruikersaccounts
+      accounts_text: Je bent verantwoordelijk voor het veilig bewaren van je inloggegevens en voor informatie die via je account wordt ingevoerd. Gastwedstrijden kunnen lokale opslag, cookies of gasttoegangstokens gebruiken. Verstrek juiste contactgegevens wanneer je een account of betaald abonnement aanmaakt.
+      use_title: 3. Aanvaardbaar gebruik
+      use_text: Misbruik de app niet, val de dienst niet aan en verstoor hem niet, probeer geen onbevoegde toegang te krijgen, verstuur geen schadelijke inhoud, doe je niet voor als iemand anders, schend de privacy van anderen niet en gebruik geen geautomatiseerde scraping die DartZ of andere gebruikers schaadt.
+      availability_title: 4. Beschikbaarheid
+      availability_text: DartZ wordt aangeboden zoals het is en kan veranderen. Functies kunnen worden bijgewerkt, gepauzeerd, beperkt of verwijderd om betrouwbaarheid, beveiliging of gebruiksgemak te verbeteren. We proberen de dienst beschikbaar te houden, maar garanderen geen ononderbroken toegang.
+      data_title: 5. Gebruikersgegevens
+      data_text: Je blijft eigenaar van de namen, scores en wedstrijdgegevens die je invoert. Je geeft DartZ toestemming deze gegevens op te slaan en te verwerken voor scores, wedstrijdgeschiedenis, uitnodigingen, statistieken, toernooien, vrienden, uitdagingen, meldingen, support en beveiliging.
+      paid_title: 6. Betaalde functies en abonnementen
+      paid_text: Details, prijzen, verlengingsperioden en betalingsvoorwaarden van betaalde abonnementen worden vóór aankoop getoond. Stripe of de betaalprovider bij het afrekenen verwerkt betalingen. Je kunt abonnementen beheren of opzeggen via de betalingspagina wanneer die beschikbaar is. Toegang tot betaalde functies kan eindigen als een betaling mislukt, een abonnement wordt opgezegd of misbruik wordt vastgesteld.
+      complaints_title: 7. Contact en klachten
+      complaints_text: Neem voor support, vragen over betalingen, privacyverzoeken of klachten contact op via support@dartz.pl. Vermeld het e-mailadres van je account en een korte beschrijving, zodat we kunnen reageren.
+      liability_title: 8. Aansprakelijkheid
+      liability_text: DartZ is bedoeld voor scores en gebruiksgemak. Voor zover wettelijk toegestaan wordt de dienst zonder garanties aangeboden en is aansprakelijkheid beperkt tot directe schade die door de dienst is veroorzaakt. Niets in deze voorwaarden beperkt rechten die volgens toepasselijk consumentenrecht niet mogen worden beperkt.
+      changes_title: 9. Wijzigingen en toepasselijk recht
+      changes_text: Deze voorwaarden kunnen worden bijgewerkt wanneer de dienst verandert of de wet dit vereist. Als je DartZ na een wijziging blijft gebruiken, aanvaard je de bijgewerkte voorwaarden. Voor gebruikers in Polen gelden waar relevant dwingende Poolse en Europese regels voor consumentenbescherming.
   invites:
-    lobby: Invite lobby
-    waiting_player_2: Waiting for Player 2
-    share_qr: Share this QR code or link. The match starts automatically when the second player joins.
-    starter: Who throws first?
-    starter_creator: You start
-    starter_invitee: Invited player starts
-    swap_starter: Swap first player
-    throws_first_badge: Throws first
-    first_to_throw: 'First to throw: %{player}'
-    invite_link: Invite link
-    copy_link: Copy link
-    cancel_invite: Cancel invite
-    cancel_confirm: Cancel this invite match?
-    expires: Expires %{time}.
-    match_settings: Match settings
-    invited_player: invited player
-    join_match: Join match
-    join_game: Join %{player}'s game
-    join_copy: Enter your player name and start scoring.
-    signed_in_join: You are joining with your signed-in account.
-    guest_join: You are joining as a guest.
-    join_button: Join match
-    cancelled_label: Invite cancelled
-    cancelled_title: This invite was cancelled
-    cancelled_copy: Ask the match creator for a new invite link.
-    expired_label: Invite expired
-    expired_title: This invite has expired
-    expired_copy: Invite links are valid for 24 hours.
-    full_label: Lobby full
-    full_title: This lobby is full
-    full_copy: A second player has already joined this match.
-    back_to_matches: Back to matches
+    lobby: Uitnodigingslobby
+    waiting_player_2: Wachten op speler 2
+    share_qr: Deel deze QR-code of link. De wedstrijd start automatisch zodra de tweede speler meedoet.
+    starter: Wie gooit er eerst?
+    starter_creator: Jij begint
+    starter_invitee: De uitgenodigde speler begint
+    swap_starter: Eerste speler wisselen
+    throws_first_badge: Gooi als eerste
+    first_to_throw: 'Gooi als eerste: %{player}'
+    invite_link: Uitnodigingslink
+    copy_link: Link kopiëren
+    cancel_invite: Uitnodiging annuleren
+    cancel_confirm: Deze wedstrijd uitnodiging annuleren?
+    expires: Verloopt op %{time}.
+    match_settings: Wedstrijdinstellingen
+    invited_player: uitgenodigde speler
+    join_match: Deelnemen aan wedstrijd
+    join_game: Deelnemen aan de wedstrijd van %{player}
+    join_copy: Vul je spelersnaam in en begin met scoren.
+    signed_in_join: Je doet mee met je ingelogde account.
+    guest_join: Je doet mee als gast.
+    join_button: Deelnemen aan wedstrijd
+    cancelled_label: Uitnodiging geannuleerd
+    cancelled_title: Deze uitnodiging is geannuleerd
+    cancelled_copy: Vraag de maker van de wedstrijd om een nieuwe uitnodigingslink.
+    expired_label: Uitnodiging verlopen
+    expired_title: Deze uitnodiging is verlopen
+    expired_copy: Uitnodigingslinks zijn 24 uur geldig.
+    full_label: Lobby vol
+    full_title: Deze lobby is vol
+    full_copy: Een tweede speler doet al mee aan deze wedstrijd.
+    back_to_matches: Terug naar wedstrijden
   tournaments:
-    title: Tournaments
-    new: New tournament
-    your_events: Your events
-    signed_in: Signed-in tournaments
-    public_events: Public events
-    guest: Guest tournaments
-    players: "%{count} players"
-    delete_title: Delete tournament
-    delete_aria: Delete %{title}
-    confirm_delete: Confirm delete
-    delete_question: Delete %{title}?
-    delete_warning: This removes the tournament, entries, rounds and tournament matches. This cannot be undone.
-    create: Create tournament
-    errors_prevented_create: "%{count} error prevented this tournament from being created:"
-    errors_prevented_create_plural: "%{count} errors prevented this tournament from being created:"
-    errors_min_players: Add at least two players to create a tournament.
-    setup: Tournament setup
-    setup_intro: Start with the essentials. Defaults are ready for a quick darts tournament, and advanced options can stay untouched.
-    required_note: Required fields
-    form_title: Title
-    format: Format
-    seeding: Seeding
-    playoff_mode: Playoff mode
-    match_settings: Match settings
-    advanced_options: Advanced options
-    group_count: Group count
-    swiss_rounds: Swiss rounds
-    playoff_qualifiers: Playoff qualifiers
-    qualifiers_per_group: Qualifiers per group
-    playoff_best_of_legs: Playoff best of legs
-    playoff_best_of_sets: Playoff best of sets
-    semifinal_best_of_legs: Semifinal best of legs
-    final_best_of_legs: Final best of legs
-    bronze_match: Bronze match option
-    auto_advance: Auto advance
-    manual_advance_allowed: Manual advance allowed
-    allow_wildcards: Allow wildcard playoff qualification
-    players_one_per_line: Players (one per line)
-    players_help: Add one player per line. You need at least two players. Seeds follow this order unless auto seeding changes them.
-    tournament_label: "%{tournament_format} tournament"
-    open_live_board: Open live board
-    rounds: "%{count} rounds"
-    tournament_screen: Tournament screen
-    go: Go →
-    screen_copy: Groups, fixtures, playoff ladder and live scores.
-    stats: Stats
-    player_stats: Player stats
-    open: Open →
-    stats_copy: Averages, highest turns, 100+, 140+ and 180s.
-    share_admin_links: Share / admin links
-    tap_expand: tap to expand ▾
-    admin_recovery: Admin recovery
-    live_board_link: Live board link
-    join_link: Join link
-    join_this: Join this tournament
-    your_tournament_name: Your tournament name
-    join: Join
-    admin: Admin
-    manage: Manage tournament
-    save_changes: Save changes
-    delete_confirm: Delete this tournament permanently?
-    live_board: Live tournament board
-    details: Tournament details
-    groups_bo: Groups Bo%{legs}
-    playoffs_bo: Playoffs Bo%{legs}
-    groups: Groups
-    standings: Standings
-    group: Group %{name}
-    top_qualify: Top %{count} qualify
-    player: Player
-    no_groups: No groups generated for this tournament.
-    averages: Tournament averages
-    all_linked_matches: All linked matches
-    stats_empty: Player stats will appear once tournament matches are played.
-    fixtures: Fixtures
-    group_matches: Group matches
-    fixtures_empty: Group fixtures will appear here once generated.
-    playoff: Playoff
-    ladder: Ladder
-    ladder_empty: Playoff ladder will appear automatically after qualifiers are known.
-    players_standings: Players / standings
-    start_tournament: Start tournament
-    auto_assign_groups: Auto assign groups
-    draft_help: 'Draft mode: edit names, seeds and group letters before starting. Fixtures are created only when you start the tournament.'
-    ready_to_start: Ready to start
-    ready_to_start_copy: Check groups and player order. Starting creates fixtures and locks in the current group assignments.
-    unassigned_group: Unassigned
-    group_name: Group
-    regenerate: Regenerate
-    reseed: Reseed
-    next_swiss_round: Next swiss round
-    advance_bracket: Advance bracket
-    leg_diff: Leg diff %{diff}
-    buchholz: Buchholz %{value}
-    player_name: Player name
-    seed: Seed
-    remove: Remove
-    bracket_matches: Bracket / matches
-    lower_bracket: Lower bracket
-    final: Final
-    bronze: Bronze
-    bracket_empty: Bracket rounds will appear here once generated.
-    tbd: TBD
-    vs: vs
-    bye: bye
-    play_match: Play match
-    open_live_match: Open live match
-    home: Home
-    away: Away
-    home_sets: Home sets
-    away_sets: Away sets
-    home_legs: Home legs
-    away_legs: Away legs
-    placeholder_title: Friday Night Open
-    placeholder_groups: For groups
-    placeholder_auto_blank: Auto if blank
-    placeholder_optional: Optional
-    placeholder_top_x: Top X
+    title: Toernooien
+    new: Nieuw toernooi
+    your_events: Je evenementen
+    signed_in: Toernooien voor ingelogde gebruikers
+    public_events: Openbare evenementen
+    guest: Gasttoernooien
+    players: "%{count} spelers"
+    delete_title: Toernooi verwijderen
+    delete_aria: "%{title} verwijderen"
+    confirm_delete: Verwijderen bevestigen
+    delete_question: "%{title} verwijderen?"
+    delete_warning: Dit verwijdert het toernooi, de inschrijvingen, rondes en toernooiwedstrijden. Dit kan niet ongedaan worden gemaakt.
+    create: Toernooi aanmaken
+    errors_prevented_create: "%{count} fout verhinderde het aanmaken van dit toernooi:"
+    errors_prevented_create_plural: "%{count} fouten verhinderden het aanmaken van dit toernooi:"
+    errors_min_players: Voeg minstens twee spelers toe om een toernooi aan te maken.
+    setup: Toernooi instellen
+    setup_intro: Begin met de basis. De standaardinstellingen zijn klaar voor een snel dartstoernooi; geavanceerde opties kun je ongewijzigd laten.
+    required_note: Verplichte velden
+    form_title: Titel
+    format: Opzet
+    seeding: Plaatsing
+    playoff_mode: Play-offmodus
+    match_settings: Wedstrijdinstellingen
+    advanced_options: Geavanceerde opties
+    group_count: Aantal groepen
+    swiss_rounds: Zwitserse rondes
+    playoff_qualifiers: Play-offkwalificatie
+    qualifiers_per_group: Gekwalificeerden per groep
+    playoff_best_of_legs: Play-off best of legs
+    playoff_best_of_sets: Play-off best of sets
+    semifinal_best_of_legs: Halve finale best of legs
+    final_best_of_legs: Finale best of legs
+    bronze_match: Wedstrijd om brons
+    auto_advance: Automatisch doorgaan
+    manual_advance_allowed: Handmatig doorgaan toegestaan
+    allow_wildcards: Wildcardplaatsing voor play-offs toestaan
+    players_one_per_line: Spelers (één per regel)
+    players_help: Voeg één speler per regel toe. Je hebt minstens twee spelers nodig. De plaatsing volgt deze volgorde, tenzij automatisch plaatsen is ingeschakeld.
+    tournament_label: "%{tournament_format}-toernooi"
+    open_live_board: Live scorebord openen
+    rounds: "%{count} rondes"
+    tournament_screen: Toernooischerm
+    go: Start →
+    screen_copy: Groepen, wedstrijden, play-offschema en live scores.
+    stats: Statistieken
+    player_stats: Spelerstatistieken
+    open: Openen →
+    stats_copy: Gemiddelden, hoogste beurten, 100+, 140+ en 180s.
+    share_admin_links: Deel-/beheerlinks
+    tap_expand: tik om uit te klappen ▾
+    admin_recovery: Beheer herstellen
+    live_board_link: Link naar live scorebord
+    join_link: Deelnamelink
+    join_this: Deelnemen aan dit toernooi
+    your_tournament_name: Naam van je toernooi
+    join: Deelnemen
+    admin: Beheer
+    manage: Toernooi beheren
+    save_changes: Wijzigingen opslaan
+    delete_confirm: Dit toernooi definitief verwijderen?
+    live_board: Live toernooibord
+    details: Toernooigegevens
+    groups_bo: Groepen Bo%{legs}
+    playoffs_bo: Play-offs Bo%{legs}
+    groups: Groepen
+    standings: Stand
+    group: Groep %{name}
+    top_qualify: De beste %{count} gaan door
+    player: Speler
+    no_groups: Er zijn geen groepen voor dit toernooi aangemaakt.
+    averages: Toernooigemiddelden
+    all_linked_matches: Alle gekoppelde wedstrijden
+    stats_empty: Spelerstatistieken verschijnen zodra er toernooiwedstrijden zijn gespeeld.
+    fixtures: Wedstrijdschema
+    group_matches: Groepswedstrijden
+    fixtures_empty: Groepswedstrijden verschijnen hier zodra het schema is aangemaakt.
+    playoff: Play-off
+    ladder: Schema
+    ladder_empty: Het play-offschema verschijnt zodra de gekwalificeerden bekend zijn.
+    players_standings: Spelers / stand
+    start_tournament: Toernooi starten
+    auto_assign_groups: Groepen automatisch indelen
+    draft_help: 'Concept: pas namen, plaatsingen en groepsletters aan voordat je start. Wedstrijden worden pas aangemaakt wanneer je het toernooi start.'
+    ready_to_start: Klaar om te starten
+    ready_to_start_copy: Controleer de groepen en spelersvolgorde. Bij de start worden wedstrijden aangemaakt en de huidige groepsindeling vastgelegd.
+    unassigned_group: Niet ingedeeld
+    group_name: Groep
+    regenerate: Opnieuw genereren
+    reseed: Opnieuw plaatsen
+    next_swiss_round: Volgende Zwitserse ronde
+    advance_bracket: Schema bijwerken
+    leg_diff: Legverschil %{diff}
+    buchholz: Buchholz %{value}-score
+    player_name: Spelernaam
+    seed: Plaatsing
+    remove: Verwijderen
+    bracket_matches: Schema / wedstrijden
+    lower_bracket: Verliezersschema
+    final: Finale
+    bronze: Brons
+    bracket_empty: Rondes van het schema verschijnen hier zodra ze zijn gegenereerd.
+    tbd: N.t.b.
+    vs: tegen
+    bye: vrij
+    play_match: Wedstrijd spelen
+    open_live_match: Live wedstrijd openen
+    home: Thuis
+    away: Uit
+    home_sets: Thuissets
+    away_sets: Uitsets
+    home_legs: Thuislegs
+    away_legs: Uitlegs
+    placeholder_title: Vrijdagavond Open
+    placeholder_groups: Voor groepen
+    placeholder_auto_blank: Automatisch indien leeg
+    placeholder_optional: Optioneel
+    placeholder_top_x: Beste X
   live_match:
-    match_complete: Match complete
-    nice_darts: Nice darts.
-    legs_sets_won: Legs / sets won
-    average: average
-    finished_at: Finished at
-    duration: Duration
-    back_to_tournament: Back to tournament
-    new_match: New match
-    input: Input
-    undo: Undo
-    undo_turn_confirm: Go back to your previous turn? This removes that turn's score and makes you the active thrower again.
-    swap_players: Swap thrower
-    current_thrower: Current thrower
-    confirm_swap: Swap thrower
-    swap_players_confirm: Let the other player throw now? Player positions and scores stay unchanged.
-    stats: Stats
-    throw_pad: Throw pad
+    match_complete: Wedstrijd afgelopen
+    nice_darts: Goed gegooid!
+    legs_sets_won: Gewonnen legs / sets
+    average: gemiddelde
+    finished_at: Afgelopen op
+    duration: Duur
+    back_to_tournament: Terug naar toernooi
+    new_match: Nieuwe wedstrijd
+    input: Invoer
+    undo: Ongedaan maken
+    undo_turn_confirm: Terug naar je vorige beurt? De score van die beurt wordt verwijderd en jij bent weer aan de beurt.
+    swap_players: Wissel van werper
+    current_thrower: Huidige werper
+    confirm_swap: Werper wisselen
+    swap_players_confirm: De andere speler nu laten gooien? Spelerposities en scores blijven hetzelfde.
+    stats: Statistieken
+    throw_pad: Invoerpaneel
     bull: Bull
-    miss: Miss
-    match_stats: Match stats
-    avg: Avg
-    high: High
+    miss: Mis
+    match_stats: Wedstrijdstatistieken
+    avg: Gem.
+    high: Hoog
     open: Open
-    scoring: Scoring
+    scoring: Score
     darts: Darts
-    turns: Turns
-    avg_turn: Avg / turn
-    first_9_avg: 1st 9 avg
-    best_leg_darts: Best leg darts
-    checkout: Checkout
-    chances: Chances
-    hits: Hits
-    checkout_percent: Checkout %
-    avg_darts: Avg darts
-    doubles_thrown: Doubles thrown
-    double_co: Double CO
-    split_positions: Split & positions
+    turns: Beurten
+    avg_turn: Gem. per beurt
+    first_9_avg: Gem. eerste 9
+    best_leg_darts: Beste leg in darts
+    checkout: Finish
+    chances: Kansen
+    hits: Treffers
+    checkout_percent: Finishpercentage
+    avg_darts: Gem. darts
+    doubles_thrown: Gegooide dubbels
+    double_co: Dubbel finish
+    split_positions: Singles en doubles
     singles: Singles
     triples: Triples
-    misses: Misses
-    dart_avg: Dart %{number} avg
-    best_leg: Best leg
-    recent_turns: Recent turns
-    throwing: Throwing
+    misses: Missers
+    dart_avg: Gem. dart %{number}
+    best_leg: Beste leg
+    recent_turns: Recente beurten
+    throwing: Aan de beurt
     recent: Recent
-    older: Older
-    no_throws_yet: No throws yet
-    show_older: "▼ SHOW OLDER"
-    last_throw: Last throw
+    older: Ouder
+    no_throws_yet: Nog geen worpen
+    show_older: "▼ OUDERE TONEN"
+    last_throw: Laatste worp
     sets: Sets
     legs: Legs
-    match_won: Match won
-    set_won: Set won
-    checkout_complete: Checkout complete
-    wins_match: wins the match
-    wins_set: wins the set
-    wins_leg: wins the leg
-    darts_needed_question: How many darts were needed to finish?
-    cannot_finish: "%{score} cannot be finished in %{count} dart"
-    cannot_finish_plural: "%{score} cannot be finished in %{count} darts"
-    checkout_needs: "%{score} checkout needs at least %{count} dart."
-    checkout_needs_plural: "%{score} checkout needs at least %{count} darts."
-    see_results: See results →
-    next_leg: Next leg →
-    continue: Continue →
+    match_won: Wedstrijd gewonnen
+    set_won: Set gewonnen
+    checkout_complete: Finish voltooid
+    wins_match: wint de wedstrijd
+    wins_set: wint de set
+    wins_leg: wint de leg
+    darts_needed_question: Hoeveel darts waren nodig om uit te gooien?
+    cannot_finish: "%{score} kan niet worden uitgegooid in %{count} dart"
+    cannot_finish_plural: "%{score} kan niet worden uitgegooid in %{count} darts"
+    checkout_needs: Voor finish %{score} zijn minstens %{count} dart nodig.
+    checkout_needs_plural: Voor finish %{score} zijn minstens %{count} darts nodig.
+    see_results: Resultaten bekijken →
+    next_leg: Volgende leg →
+    continue: Doorgaan →
   auth:
-    create_account: Create account
-    register_title: Register
-    register_hero: Save your matches and invite players.
-    register_copy: Accounts start on the free tier. Upgrade later only if you need premium features.
-    email_placeholder: Enter your email address
-    nickname_placeholder: Optional display name
-    password_placeholder: Create a password
-    repeat_password_placeholder: Repeat your password
-    password_trimmed_notice: Your pasted password was trimmed to the %{count}-character maximum. The full password is too large.
-    create_account_button: Create account
-    already_have_account: Already have account?
-    play_as_guest: Play as guest
-    sign_in: Sign in
-    sign_in_title: Login
-    sign_in_hero: Pick up your match history.
-    sign_in_copy: Use an account for saved matches, premium setup tracking, and invite play.
-    remember_hint: Session stays signed in on this device.
-    login_button: Login
-    forgot_password: Forgot password?
-    no_account: No account yet?
-    forgot_password_title: Forgot password?
-    send_reset: Send reset instructions
-    reset_password: Reset password
+    create_account: Account aanmaken
+    register_title: Registreren
+    register_hero: Bewaar je wedstrijden en nodig spelers uit.
+    register_copy: Accounts beginnen met het gratis abonnement. Upgrade later alleen als je premiumfuncties nodig hebt.
+    email_placeholder: Voer je e-mailadres in
+    nickname_placeholder: Optionele weergavenaam
+    password_placeholder: Maak een wachtwoord
+    repeat_password_placeholder: Herhaal je wachtwoord
+    password_trimmed_notice: Je geplakte wachtwoord is ingekort tot het maximum van %{count} tekens. Het volledige wachtwoord is te lang.
+    create_account_button: Account aanmaken
+    already_have_account: Heb je al een account?
+    play_as_guest: Als gast spelen
+    sign_in: Inloggen
+    sign_in_title: Inloggen
+    sign_in_hero: Bekijk je wedstrijdgeschiedenis.
+    sign_in_copy: Gebruik een account voor opgeslagen wedstrijden, premium dartinstellingen en spelen via uitnodigingen.
+    remember_hint: Je blijft op dit apparaat ingelogd.
+    login_button: Inloggen
+    forgot_password: Wachtwoord vergeten?
+    no_account: Nog geen account?
+    forgot_password_title: Wachtwoord vergeten?
+    send_reset: Instructies voor opnieuw instellen versturen
+    reset_password: Wachtwoord opnieuw instellen
   tiers:
-    eyebrow: Account plans
-    title: Choose how far you want to take DartZ
-    lead: Create a free account to save matches now. Premium and Pro are ready when you want deeper practice, stats, and tournament tools.
-    cta_title: Start with Free
-    cta_copy: No payment needed to create an account. You can upgrade later from your account page.
-    start_free: Create free account
-    create_to_upgrade: Create account to upgrade
-    footer_note: Prices shown in %{currency}. Paid upgrades are available after creating an account.
+    eyebrow: Accountabonnementen
+    title: Kies hoe ver je met DartZ wilt gaan
+    lead: Maak gratis een account aan en bewaar je wedstrijden. Premium en Pro zijn beschikbaar wanneer je meer training, statistieken en toernooifuncties wilt.
+    cta_title: Begin gratis
+    cta_copy: Een account aanmaken kost niets. Je kunt later upgraden via je accountpagina.
+    start_free: Gratis account aanmaken
+    create_to_upgrade: Maak een account aan om te upgraden
+    footer_note: Prijzen in %{currency}. Betaalde upgrades zijn beschikbaar nadat je een account hebt aangemaakt.
   billing:
-    title: Upgrade
-    current: 'Current: %{tier}'
-    current_plan: Current plan
-    upgrade_soon: Upgrade with Stripe soon
-    upgrade: Upgrade
-    manage_title: Subscription
-    manage_subscription: Manage subscription
-    no_subscription_help: Upgrade to Premium or Pro to manage a subscription here.
-    currency_note: Checkout will use %{currency} pricing for your current region/language when available.
-    access_until: 'Access until: %{date}'
-    invalid_tier: Choose a valid paid plan.
-    missing_stripe_config: Stripe billing is not configured yet.
-    stripe_error: Stripe could not start billing. Please try again.
-    no_subscription: No Stripe subscription is connected to this account yet.
-    active_subscription: Manage your active subscription in the Stripe customer portal.
-    checkout_success: Checkout completed. Your subscription will update after Stripe confirms payment.
-    checkout_cancelled: Checkout was cancelled. No changes were made.
-    stripe_hook: Stripe Checkout and Customer Portal are used for subscriptions and cancellations.
-    interval_month: month
-    interval_forever: forever
-    free_name: Free
+    title: Upgraden
+    current: 'Huidig: %{tier}'
+    current_plan: Huidig abonnement
+    upgrade_soon: Binnenkort upgraden met Stripe
+    upgrade: Upgraden
+    manage_title: Abonnement
+    manage_subscription: Abonnement beheren
+    no_subscription_help: Upgrade naar Premium of Pro om hier een abonnement te beheren.
+    currency_note: Afrekenen gebeurt waar mogelijk in %{currency}, op basis van je regio en taal.
+    access_until: 'Toegang tot: %{date}'
+    invalid_tier: Kies een geldig betaald abonnement.
+    missing_stripe_config: Stripe-betalingen zijn nog niet ingesteld.
+    stripe_error: Stripe kon de betaling niet starten. Probeer het opnieuw.
+    no_subscription: Er is nog geen Stripe-abonnement aan dit account gekoppeld.
+    active_subscription: Beheer je actieve abonnement in het Stripe-klantenportaal.
+    checkout_success: Betaling afgerond. Je abonnement wordt bijgewerkt zodra Stripe de betaling bevestigt.
+    checkout_cancelled: Betaling geannuleerd. Er zijn geen wijzigingen aangebracht.
+    stripe_hook: Stripe Checkout en Customer Portal worden gebruikt voor abonnementen en opzeggingen.
+    interval_month: maand
+    interval_forever: eenmalig
+    free_name: Gratis
     premium_name: Premium
     pro_name: Pro
-    free_desc: Fast guest scoring and account match history.
-    premium_desc: Setup tracking, richer stats, and tournament tools.
-    pro_desc: For clubs and frequent tournament organizers.
+    free_desc: Snel als gast darten en wedstrijdgeschiedenis bewaren in je account.
+    premium_desc: Dartinstellingen bijhouden, uitgebreidere statistieken en toernooifuncties.
+    pro_desc: Voor clubs en organisatoren van toernooien.
     features:
-      x01: X01 scoreboard
-      bot: Bot matches
-      bot_limited: 40 bot matches/week, up to Bo5
-      bot_unlimited: Unlimited bot matches
-      tournament_browsing: Tournament browsing
-      local_history: Local match history
-      everything_free: Everything in Free
-      everything_premium: Everything in Premium
-      dart_details: Manufacturer, weight, shaft, and point details
-      premium_stats: Future premium stats and preferences
-      league_tools: Future league tools
-      guest_matches: Guest matches
-      saved_history: Saved match history
-      invite_matches: Invite matches
-      dart_setup: Dart setup tracking
-      advanced_stats: Advanced stats
-      tournaments: Tournament tools
-      priority: Priority features
-      club: Club-friendly workflows
+      x01: X01-scorebord
+      bot: Wedstrijden tegen bots
+      bot_limited: 40 botwedstrijden per week, tot Bo5
+      bot_unlimited: Onbeperkt wedstrijden tegen bots
+      tournament_browsing: Toernooien bekijken
+      local_history: Lokale wedstrijdgeschiedenis
+      everything_free: Alles van Gratis
+      everything_premium: Alles van Premium
+      dart_details: Merk, gewicht, shaft en punt
+      premium_stats: Toekomstige premiumstatistieken en voorkeuren
+      league_tools: Toekomstige competitiesfuncties
+      guest_matches: Gastwedstrijden
+      saved_history: Opgeslagen wedstrijdgeschiedenis
+      invite_matches: Wedstrijden via uitnodiging
+      dart_setup: Dartinstellingen bijhouden
+      advanced_stats: Geavanceerde statistieken
+      tournaments: Toernooifuncties
+      priority: Functies met prioriteit
+      club: Handige workflows voor clubs
   mailers:
-    reset_subject: Reset your password
-    reset_html: You can reset your password within the next 15 minutes on
-    reset_link: this password reset page
-    reset_text: 'Reset your password within the next 15 minutes on this password reset page:'
+    reset_subject: Je wachtwoord opnieuw instellen
+    reset_html: Je kunt je wachtwoord binnen de komende 15 minuten opnieuw instellen op
+    reset_link: deze pagina voor wachtwoordherstel
+    reset_text: 'Stel je wachtwoord binnen de komende 15 minuten opnieuw in via deze pagina:'
   activerecord:
     attributes:
       user:
-        email_address: Email address
-        nickname: Nickname
-        password: Password
-        password_confirmation: Password confirmation
-        locale: Language
+        email_address: E-mailadres
+        nickname: Bijnaam
+        password: Wachtwoord
+        password_confirmation: Wachtwoord bevestigen
+        locale: Taal
       tournament:
-        title: Title
-        format_type: Format
+        title: Titel
+        format_type: Opzet
         best_of_legs: Best of legs
         best_of_sets: Best of sets
-        starting_score: Starting score
+        starting_score: Beginscore
       dart_setup:
-        manufacturer: Manufacturer
-        weight_g: Weight
-        shaft_type: Shaft type
-        shaft_length_mm: Shaft length
-        point_length_mm: Point length
+        manufacturer: Fabrikant
+        weight_g: Gewicht
+        shaft_type: Shafttype
+        shaft_length_mm: Shaftlengte
+        point_length_mm: Puntlengte

@@ -47,6 +47,7 @@ pl:
     privacy: "Prywatność"
     terms: "Regulamin"
     contact: "Kontakt"
+    ai_translation_notice: "Tłumaczenia na niderlandzki i hiszpański przygotowano przy użyciu AI i mogą zawierać błędy."
   profile:
     signed_in_as: "Zalogowano jako"
     tier: "Plan: %{tier}"

@@ -1967,6 +1967,12 @@ button.app-nav-link:hover {
   gap: .75rem;
 }
 
+.footer-translation-note {
+  flex-basis: 100%;
+  color: var(--theme-subtle);
+  font-size: .72rem;
+}
+
 .page-shell,
 .page-shell-narrow,
 .page-shell-compact {
