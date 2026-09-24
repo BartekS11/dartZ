@@ -908,6 +908,14 @@ es:
     stripe_error: Stripe no pudo iniciar el pago. Inténtalo de nuevo.
     no_subscription: Aún no hay ninguna suscripción de Stripe vinculada a esta cuenta.
     active_subscription: Gestiona tu suscripción activa en el portal de clientes de Stripe.
+    billing_interval: Periodo de facturación
+    interval_year: año
+    interval_year_option: 12 meses (25% de descuento)
+    invalid_interval: Elige un periodo de facturación válido.
+    switch_yearly: Cambiar al plan anual
+    yearly_change_scheduled: Tu suscripción cambiará a la facturación anual al final del periodo actual.
+    already_yearly: Tu suscripción ya se factura anualmente.
+    yearly_change_already_scheduled: Ya hay un cambio de facturación programado para tu suscripción.
     checkout_success: Pago completado. Tu suscripción se actualizará cuando Stripe confirme el pago.
     checkout_cancelled: Se canceló el pago. No se hicieron cambios.
     stripe_hook: Stripe Checkout y el portal de clientes se usan para las suscripciones y cancelaciones.

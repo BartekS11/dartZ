@@ -4,6 +4,7 @@ class ExpandedTrainingSessionsControllerTest < ActionDispatch::IntegrationTest
   setup do
     @user = create_user("expanded-html-#{SecureRandom.hex(4)}@example.com")
     @user.update!(account_tier: "premium")
+    FeatureAccess.stubs(:enabled?).returns(false)
     login_as(@user)
   end
 

@@ -908,6 +908,14 @@ nl:
     stripe_error: Stripe kon de betaling niet starten. Probeer het opnieuw.
     no_subscription: Er is nog geen Stripe-abonnement aan dit account gekoppeld.
     active_subscription: Beheer je actieve abonnement in het Stripe-klantenportaal.
+    billing_interval: Factureringsperiode
+    interval_year: jaar
+    interval_year_option: 12 maanden (25% korting)
+    invalid_interval: Kies een geldige factureringsperiode.
+    switch_yearly: Overschakelen naar jaarlijks
+    yearly_change_scheduled: Je abonnement wordt aan het einde van de huidige periode jaarlijks gefactureerd.
+    already_yearly: Je abonnement wordt al jaarlijks gefactureerd.
+    yearly_change_already_scheduled: Er staat al een wijziging voor je abonnement gepland.
     checkout_success: Betaling afgerond. Je abonnement wordt bijgewerkt zodra Stripe de betaling bevestigt.
     checkout_cancelled: Betaling geannuleerd. Er zijn geen wijzigingen aangebracht.
     stripe_hook: Stripe Checkout en Customer Portal worden gebruikt voor abonnementen en opzeggingen.

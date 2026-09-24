@@ -13,6 +13,11 @@
     </div>
   </section>
 
+  <%= form_with url: billing_path, method: :get, class: "theme-card p-4" do |form| %>
+    <label class="mono" for="billing_interval"><%= t("billing.billing_interval") %></label>
+    <%= form.select :billing_interval, [[t("billing.interval_month"), "month"], [t("billing.interval_year_option"), "year"]], { selected: @billing_interval }, { onchange: "this.form.requestSubmit()", class: "input" } %>
+  <% end %>
+
   <section class="columns is-multiline is-variable is-3">
     <% @tiers.each do |tier| %>
       <% current_tier = Current.user.effective_account_tier == tier[:key] %>
@@ -35,12 +40,12 @@
             <% tier[:features].each do |feature| %><li class="mono text-sm">✓ <%= feature %></li><% end %>
           </ul>
 
-          <% if current_tier %>
+          <% if current_tier && @billing_interval == "month" %>
             <button type="button" class="button theme-btn-outline is-fullwidth mono" disabled><%= t("billing.current_plan") %></button>
           <% elsif tier[:key] == "free" %>
             <button type="button" class="button theme-btn-outline is-fullwidth mono" disabled><%= t("common.included") %></button>
           <% else %>
-            <%= button_to t("billing.upgrade"), checkout_billing_path(tier: tier[:key]), method: :post, class: "button theme-btn-primary is-fullwidth mono" %>
+            <%= button_to(current_tier ? t("billing.switch_yearly") : t("billing.upgrade"), checkout_billing_path(tier: tier[:key], interval: @billing_interval), method: :post, class: "button theme-btn-primary is-fullwidth mono") %>
           <% end %>
         </article>
       </div>

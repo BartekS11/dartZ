@@ -1,6 +1,10 @@
 require "test_helper"
 
 class AdvancedStatsControllerTest < ActionDispatch::IntegrationTest
+  setup do
+    FeatureAccess.stubs(:enabled?).returns(false)
+  end
+
   test "requires authentication before disclosing feature state" do
     FeatureAccess.stubs(:enabled?).with(:advanced_stats).returns(false)
 

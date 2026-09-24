@@ -1,6 +1,7 @@
 class AccountTierCatalog
-  def initialize(prices:)
+  def initialize(prices:, interval: "month")
     @prices = prices
+    @interval = interval
   end
 
   def tiers
@@ -22,7 +23,7 @@ class AccountTierCatalog
         name: I18n.t("billing.premium_name"),
         key: "premium",
         price: prices[:premium],
-        interval: I18n.t("billing.interval_month"),
+        interval: interval_label,
         description: I18n.t("billing.premium_desc"),
         features: [
           I18n.t("billing.features.everything_free", default: "Everything in Free"),
@@ -36,7 +37,7 @@ class AccountTierCatalog
         name: I18n.t("billing.pro_name"),
         key: "pro",
         price: prices[:pro],
-        interval: I18n.t("billing.interval_month"),
+        interval: interval_label,
         description: I18n.t("billing.pro_desc"),
         features: [
           I18n.t("billing.features.everything_premium", default: "Everything in Premium"),
@@ -51,5 +52,9 @@ class AccountTierCatalog
 
   private
 
-  attr_reader :prices
+  attr_reader :prices, :interval
+
+  def interval_label
+    interval == "year" ? I18n.t("billing.interval_year") : I18n.t("billing.interval_month")
+  end
 end

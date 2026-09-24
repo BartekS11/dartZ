@@ -172,7 +172,7 @@ STRIPE_PREMIUM_PLN_PRICE_ID=<stripe-premium-pln-price-id>
 STRIPE_PRO_PLN_PRICE_ID=<stripe-pro-pln-price-id>
 ```
 
-Create matching monthly Premium and Pro prices in Stripe for USD and PLN, enable cancellation in the Customer Portal, and send configured Stripe webhooks to:
+Create matching monthly Premium and Pro prices in Stripe for USD and PLN, enable cancellation in the Customer Portal, and send configured Stripe webhooks to the endpoint below. Yearly prices are calculated from the configured monthly amounts at 25% off and created dynamically; no yearly Price IDs are required. A monthly subscriber switching to yearly is scheduled to change at the end of the current billing period.
 
 ```text
 POST /stripe/webhooks
