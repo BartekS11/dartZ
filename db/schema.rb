@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_14_113000) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_17_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -104,6 +104,38 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_14_113000) do
     t.index ["user_id"], name: "index_visible_dart_setups_on_user_id", unique: true, where: "(admin_data_cleanup_id IS NULL)"
   end
 
+  create_table "friend_requests", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "pair_key", null: false
+    t.string "public_id", null: false
+    t.bigint "recipient_id", null: false
+    t.bigint "requester_id", null: false
+    t.datetime "resolved_at"
+    t.string "status", default: "pending", null: false
+    t.datetime "updated_at", null: false
+    t.index ["pair_key"], name: "idx_friend_requests_one_pending_pair", unique: true, where: "((status)::text = 'pending'::text)"
+    t.index ["public_id"], name: "index_friend_requests_on_public_id", unique: true
+    t.index ["recipient_id", "status", "created_at"], name: "idx_on_recipient_id_status_created_at_1b323de6a3"
+    t.index ["recipient_id"], name: "index_friend_requests_on_recipient_id"
+    t.index ["requester_id", "status", "created_at"], name: "index_friend_requests_outgoing_status_created"
+    t.index ["requester_id"], name: "index_friend_requests_on_requester_id"
+    t.check_constraint "requester_id <> recipient_id", name: "friend_requests_distinct_users"
+    t.check_constraint "status::text = ANY (ARRAY['pending'::character varying, 'accepted'::character varying, 'declined'::character varying, 'cancelled'::character varying]::text[])", name: "friend_requests_status_valid"
+  end
+
+  create_table "friendships", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "public_id", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_high_id", null: false
+    t.bigint "user_low_id", null: false
+    t.index ["public_id"], name: "index_friendships_on_public_id", unique: true
+    t.index ["user_high_id"], name: "index_friendships_on_user_high_id"
+    t.index ["user_low_id", "user_high_id"], name: "index_friendships_on_user_low_id_and_user_high_id", unique: true
+    t.index ["user_low_id"], name: "index_friendships_on_user_low_id"
+    t.check_constraint "user_low_id < user_high_id", name: "friendships_canonical_user_order"
+  end
+
   create_table "leg_players", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.integer "current_score"
@@ -131,6 +163,29 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_14_113000) do
     t.index ["match_id"], name: "index_legs_on_match_id"
     t.index ["match_set_id"], name: "index_legs_on_match_set_id"
     t.index ["public_id"], name: "index_legs_on_public_id", unique: true
+  end
+
+  create_table "match_challenges", force: :cascade do |t|
+    t.bigint "challenged_id", null: false
+    t.bigint "challenger_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "expires_at", null: false
+    t.bigint "match_id", null: false
+    t.string "pair_key", null: false
+    t.string "public_id", null: false
+    t.datetime "resolved_at"
+    t.string "status", default: "pending", null: false
+    t.datetime "updated_at", null: false
+    t.index ["challenged_id", "status", "created_at"], name: "idx_on_challenged_id_status_created_at_d8579e6ae0"
+    t.index ["challenged_id"], name: "index_match_challenges_on_challenged_id"
+    t.index ["challenger_id", "status", "created_at"], name: "index_match_challenges_outgoing_status_created"
+    t.index ["challenger_id"], name: "index_match_challenges_on_challenger_id"
+    t.index ["expires_at"], name: "index_match_challenges_on_expires_at", where: "((status)::text = 'pending'::text)"
+    t.index ["match_id"], name: "index_match_challenges_on_match_id"
+    t.index ["pair_key"], name: "idx_match_challenges_one_pending_pair", unique: true, where: "((status)::text = 'pending'::text)"
+    t.index ["public_id"], name: "index_match_challenges_on_public_id", unique: true
+    t.check_constraint "challenger_id <> challenged_id", name: "match_challenges_distinct_users"
+    t.check_constraint "status::text = ANY (ARRAY['pending'::character varying, 'accepted'::character varying, 'declined'::character varying, 'cancelled'::character varying, 'expired'::character varying]::text[])", name: "match_challenges_status_valid"
   end
 
   create_table "match_sets", force: :cascade do |t|
@@ -168,6 +223,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_14_113000) do
     t.index ["invite_expires_at"], name: "index_matches_on_invite_expires_at"
     t.index ["invite_token"], name: "index_matches_on_invite_token", unique: true
     t.index ["public_id"], name: "index_matches_on_public_id", unique: true
+  end
+
+  create_table "notification_preferences", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.boolean "friend_requests", default: true, null: false
+    t.boolean "friendship_acceptance", default: true, null: false
+    t.boolean "match_challenges", default: true, null: false
+    t.boolean "tournament_round_ready", default: true, null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id"], name: "index_notification_preferences_on_user_id", unique: true
   end
 
   create_table "players", force: :cascade do |t|
@@ -238,6 +304,47 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_14_113000) do
     t.index ["public_id"], name: "index_practice_plans_on_public_id", unique: true
     t.index ["user_id", "status"], name: "index_practice_plans_on_user_id_and_status"
     t.index ["user_id"], name: "index_practice_plans_on_user_id"
+  end
+
+  create_table "push_deliveries", force: :cascade do |t|
+    t.integer "attempts", default: 0, null: false
+    t.string "category", null: false
+    t.datetime "created_at", null: false
+    t.string "deduplication_key", null: false
+    t.datetime "delivered_at"
+    t.string "last_error_code"
+    t.jsonb "payload", default: {}, null: false
+    t.bigint "push_subscription_id", null: false
+    t.string "status", default: "pending", null: false
+    t.datetime "updated_at", null: false
+    t.index ["push_subscription_id", "deduplication_key"], name: "idx_push_deliveries_subscription_dedup", unique: true
+    t.index ["push_subscription_id"], name: "index_push_deliveries_on_push_subscription_id"
+    t.index ["status", "created_at"], name: "index_push_deliveries_on_status_and_created_at"
+    t.check_constraint "attempts >= 0", name: "push_deliveries_attempts_nonnegative"
+    t.check_constraint "category::text = ANY (ARRAY['friend_requests'::character varying, 'friendship_acceptance'::character varying, 'match_challenges'::character varying, 'tournament_round_ready'::character varying, 'test'::character varying]::text[])", name: "push_deliveries_category_valid"
+    t.check_constraint "status::text = ANY (ARRAY['pending'::character varying, 'delivered'::character varying, 'failed'::character varying, 'cancelled'::character varying]::text[])", name: "push_deliveries_status_valid"
+  end
+
+  create_table "push_subscriptions", force: :cascade do |t|
+    t.text "auth", null: false
+    t.datetime "created_at", null: false
+    t.string "device_label", null: false
+    t.text "endpoint", null: false
+    t.string "endpoint_digest", null: false
+    t.integer "failure_count", default: 0, null: false
+    t.string "last_error_code"
+    t.datetime "last_failure_at"
+    t.datetime "last_success_at"
+    t.text "p256dh", null: false
+    t.string "public_id", null: false
+    t.datetime "revoked_at"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["endpoint_digest"], name: "index_push_subscriptions_on_endpoint_digest", unique: true
+    t.index ["public_id"], name: "index_push_subscriptions_on_public_id", unique: true
+    t.index ["user_id", "revoked_at", "created_at"], name: "idx_on_user_id_revoked_at_created_at_aaf5da6e2b"
+    t.index ["user_id"], name: "index_push_subscriptions_on_user_id"
+    t.check_constraint "failure_count >= 0", name: "push_subscriptions_failure_count_nonnegative"
   end
 
   create_table "sessions", force: :cascade do |t|
@@ -461,25 +568,50 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_14_113000) do
     t.index ["public_id"], name: "index_turns_on_public_id", unique: true
   end
 
+  create_table "user_blocks", force: :cascade do |t|
+    t.bigint "blocked_id", null: false
+    t.bigint "blocker_id", null: false
+    t.datetime "created_at", null: false
+    t.string "public_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["blocked_id"], name: "index_user_blocks_on_blocked_id"
+    t.index ["blocker_id", "blocked_id"], name: "index_user_blocks_on_blocker_id_and_blocked_id", unique: true
+    t.index ["blocker_id", "created_at"], name: "index_user_blocks_on_blocker_created"
+    t.index ["blocker_id"], name: "index_user_blocks_on_blocker_id"
+    t.index ["public_id"], name: "index_user_blocks_on_public_id", unique: true
+    t.check_constraint "blocker_id <> blocked_id", name: "user_blocks_distinct_users"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "account_tier", default: "free", null: false
+    t.string "challenge_policy", default: "friends", null: false
     t.datetime "created_at", null: false
+    t.boolean "discoverable_by_nickname", default: false, null: false
     t.string "email_address", null: false
+    t.string "friend_request_policy", default: "share_code_only", null: false
+    t.string "friend_share_code", null: false
     t.string "locale", default: "en", null: false
     t.string "manual_tier_override"
     t.string "nickname"
+    t.integer "onboarding_guide_version", default: 0, null: false
     t.string "password_digest", null: false
     t.datetime "premium_access_expires_at"
+    t.string "public_id", null: false
     t.string "stripe_customer_id"
     t.string "stripe_price_id"
     t.string "stripe_subscription_id"
     t.string "stripe_subscription_status"
     t.string "subscription_currency"
     t.datetime "updated_at", null: false
+    t.index "lower((nickname)::text)", name: "index_discoverable_users_on_lower_nickname", where: "(discoverable_by_nickname = true)"
     t.index ["account_tier"], name: "index_users_on_account_tier"
     t.index ["email_address"], name: "index_users_on_email_address", unique: true
+    t.index ["friend_share_code"], name: "index_users_on_friend_share_code", unique: true
+    t.index ["public_id"], name: "index_users_on_public_id", unique: true
     t.index ["stripe_customer_id"], name: "index_users_on_stripe_customer_id", unique: true
     t.index ["stripe_subscription_id"], name: "index_users_on_stripe_subscription_id", unique: true
+    t.check_constraint "challenge_policy::text = ANY (ARRAY['friends'::character varying, 'nobody'::character varying]::text[])", name: "users_challenge_policy_valid"
+    t.check_constraint "friend_request_policy::text = ANY (ARRAY['anyone'::character varying, 'share_code_only'::character varying, 'nobody'::character varying]::text[])", name: "users_friend_request_policy_valid"
     t.check_constraint "manual_tier_override IS NULL OR (manual_tier_override::text = ANY (ARRAY['free'::character varying, 'premium'::character varying, 'pro'::character varying]::text[]))", name: "users_manual_tier_override_valid"
   end
 
@@ -492,11 +624,19 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_14_113000) do
   add_foreign_key "admin_tier_changes", "users"
   add_foreign_key "dart_setups", "admin_data_cleanups"
   add_foreign_key "dart_setups", "users"
+  add_foreign_key "friend_requests", "users", column: "recipient_id"
+  add_foreign_key "friend_requests", "users", column: "requester_id"
+  add_foreign_key "friendships", "users", column: "user_high_id"
+  add_foreign_key "friendships", "users", column: "user_low_id"
   add_foreign_key "leg_players", "legs"
   add_foreign_key "leg_players", "players"
   add_foreign_key "legs", "match_sets"
   add_foreign_key "legs", "matches"
+  add_foreign_key "match_challenges", "matches"
+  add_foreign_key "match_challenges", "users", column: "challenged_id"
+  add_foreign_key "match_challenges", "users", column: "challenger_id"
   add_foreign_key "match_sets", "matches"
+  add_foreign_key "notification_preferences", "users"
   add_foreign_key "players", "admin_data_cleanups"
   add_foreign_key "players", "dart_setups"
   add_foreign_key "players", "matches"
@@ -506,6 +646,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_14_113000) do
   add_foreign_key "practice_plan_tasks", "practice_plans"
   add_foreign_key "practice_plans", "admin_data_cleanups"
   add_foreign_key "practice_plans", "users"
+  add_foreign_key "push_deliveries", "push_subscriptions"
+  add_foreign_key "push_subscriptions", "users"
   add_foreign_key "sessions", "users"
   add_foreign_key "throws", "turns"
   add_foreign_key "tournament_entries", "admin_data_cleanups"
@@ -527,4 +669,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_14_113000) do
   add_foreign_key "training_sessions", "users"
   add_foreign_key "turns", "legs"
   add_foreign_key "turns", "players"
+  add_foreign_key "user_blocks", "users", column: "blocked_id"
+  add_foreign_key "user_blocks", "users", column: "blocker_id"
 end

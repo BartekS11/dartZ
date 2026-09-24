@@ -1,0 +1,17 @@
+<% if pagination[:page] > 1 || pagination[:next] %>
+  <nav class="flex items-center justify-between gap-3 mt-3" aria-label="<%= t("friends.pagination") %>">
+    <% if pagination[:page] > 1 %>
+      <%= link_to t("common.pagination.previous"),
+            friends_path(request.query_parameters.merge(pagination[:parameter] => pagination[:page] - 1)),
+            class: "button theme-btn-outline mono" %>
+    <% else %>
+      <span></span>
+    <% end %>
+    <span class="mono"><%= t("friends.page", page: pagination[:page]) %></span>
+    <% if pagination[:next] %>
+      <%= link_to t("common.pagination.next"),
+            friends_path(request.query_parameters.merge(pagination[:parameter] => pagination[:page] + 1)),
+            class: "button theme-btn-outline mono" %>
+    <% end %>
+  </nav>
+<% end %>

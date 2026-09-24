@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
   root "home#show"
+  get "manifest", to: "rails/pwa#manifest", as: :pwa_manifest
+  get "service-worker", to: "rails/pwa#service_worker", as: :pwa_service_worker
 
   scope path: Rails.configuration.x.admin_path, module: :admin, as: :admin do
     get "login", to: "sessions#new", as: :login
@@ -41,6 +43,24 @@ Rails.application.routes.draw do
     patch :record, on: :member
     patch :complete, on: :member
     patch :abandon, on: :member
+  end
+
+  resource :friends, only: %i[show update], controller: "friends" do
+    get :search
+  end
+  resources :friend_requests, only: %i[create destroy] do
+    post :accept, on: :member
+    post :decline, on: :member
+  end
+  resources :friendships, only: :destroy
+  resources :blocks, controller: "user_blocks", only: %i[create destroy]
+  resources :challenges, controller: "match_challenges", only: %i[create destroy] do
+    post :accept, on: :member
+    post :decline, on: :member
+  end
+  resource :notifications, only: %i[show update]
+  resources :push_subscriptions, only: %i[create destroy] do
+    post :test, on: :collection
   end
 
   get "privacy", to: "legal_pages#privacy", as: :privacy_policy
@@ -114,6 +134,25 @@ Rails.application.routes.draw do
         post :abandon, on: :member
       end
     end
+
+    # Friends and match challenges
+    get "users/search", to: "users#search"
+    resources :friendships, only: %i[index destroy]
+    resources :friend_requests, only: %i[index create destroy] do
+      post :accept, on: :member
+      post :decline, on: :member
+    end
+    resources :blocks, controller: "user_blocks", only: %i[index create destroy]
+    resources :challenges, controller: "match_challenges", only: %i[index create destroy] do
+      post :accept, on: :member
+      post :decline, on: :member
+    end
+    resource :friend_settings, only: %i[show update]
+
+    # Web Push notifications
+    resources :push_subscriptions, path: "push/subscriptions", only: %i[index create destroy]
+    post "push/test", to: "push_subscriptions#test"
+    resource :notification_preferences, only: %i[show update]
 
     # Matches
     resources :matches, only: [ :index, :create, :show ] do

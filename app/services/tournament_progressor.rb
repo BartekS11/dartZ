@@ -10,6 +10,7 @@ class TournamentProgressor
     auto_generate_combined_playoffs! if @tournament.auto_advance?
     auto_advance_playoffs! if @tournament.auto_advance?
     update_round_statuses!
+    notify_ready_participants!
   end
 
   private
@@ -68,6 +69,19 @@ class TournamentProgressor
 
     PlayoffProgressor.new(@tournament).create_initial_round!(qualifiers.compact)
     update_round_statuses!
+  end
+
+  def notify_ready_participants!
+    return unless Rails.application.config.x.roadmap_features[:web_push]
+
+    @tournament.tournament_matches.where(status: "pending", bye: false)
+      .includes(:tournament, home_entry: :user, away_entry: :user).find_each do |tournament_match|
+      next unless tournament_match.launchable?
+
+      [ tournament_match.home_entry&.user, tournament_match.away_entry&.user ].compact.uniq.each do |user|
+        PushNotifications::Notifier.tournament_round_ready(tournament_match, user)
+      end
+    end
   end
 
   def first_round_group_pairing_order(group_qualifiers)

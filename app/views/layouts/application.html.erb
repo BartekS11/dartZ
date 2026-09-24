@@ -8,6 +8,7 @@
   <%= csp_meta_tag %>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="/icon.png" type="image/png">
+  <link rel="manifest" href="<%= pwa_manifest_path(format: :json) %>">
   <script>
     (function() {
       const theme = localStorage.getItem("dartz_theme_mode") || "dark"
@@ -52,6 +53,12 @@
           <%= link_to t("nav.tournaments"), tournaments_path, class: "app-nav-link #{'is-active' if request.path.start_with?(tournaments_path)}" %>
           <% if Current.user %>
             <%= link_to t("nav.stats"), stats_path, class: "app-nav-link #{'is-active' if current_page?(stats_path)}" %>
+          <% end %>
+          <% if roadmap_feature_available?(:friends) %>
+            <%= link_to t("nav.friends"), friends_path, class: "app-nav-link #{'is-active' if request.path.start_with?(friends_path)}" %>
+          <% end %>
+          <% if roadmap_feature_available?(:web_push) %>
+            <%= link_to t("nav.notifications"), notifications_path, class: "app-nav-link #{'is-active' if request.path.start_with?(notifications_path)}" %>
           <% end %>
           <% if premium_access? %>
             <%= link_to t("nav.training"), training_sessions_path, class: "app-nav-link #{'is-active' if request.path.start_with?(training_sessions_path)}" %>

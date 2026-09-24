@@ -17,6 +17,8 @@ The interface is mobile-friendly, available in English and Polish, and uses Hotw
 - Checkout suggestions, live score cards, averages, throw history, and undo
 - Player order switching and automatic turn progression
 - Shareable remote match invitations with QR codes, turn locking, and AFK recovery
+- Privacy-safe friend discovery, requests, blocks, and direct X01 match challenges
+- Opt-in Web Push for social, match-challenge, and tournament-round updates
 - Real-time UI updates with Turbo Streams and Action Cable
 
 ### Bots, tournaments, and training
@@ -49,7 +51,7 @@ The interface is mobile-friendly, available in English and Polish, and uses Hotw
 - Importmap and Propshaft (no Node.js toolchain required)
 - Custom responsive CSS with Bulma-compatible layout utilities
 - Solid Cache, Solid Queue, and Solid Cable
-- Stripe, JWT, QRCode, and Rack CORS
+- Stripe, JWT, QRCode, Web Push, and Rack CORS
 - Minitest, Capybara, Selenium, and Testcontainers
 - Docker and Kamal for deployment
 
@@ -147,7 +149,27 @@ GET    /api/v1/training/sessions/:id
 POST   /api/v1/training/sessions/:id/attempts
 POST   /api/v1/training/sessions/:id/complete
 POST   /api/v1/training/sessions/:id/abandon
+GET    /api/v1/users/search
+GET    /api/v1/friendships
+GET    /api/v1/friend_requests
+POST   /api/v1/friend_requests
+GET    /api/v1/blocks
+POST   /api/v1/blocks
+GET    /api/v1/challenges
+POST   /api/v1/challenges
+GET    /api/v1/friend_settings
+PATCH  /api/v1/friend_settings
+GET    /api/v1/push/subscriptions
+POST   /api/v1/push/subscriptions
+DELETE /api/v1/push/subscriptions/:id
+POST   /api/v1/push/test
+GET    /api/v1/notification_preferences
+PATCH  /api/v1/notification_preferences
 ```
+
+Friends endpoints require a registered user and `FRIENDS_ENABLED=true`. Discovery accepts only exact nicknames explicitly made discoverable or private share codes; API payloads never expose email addresses or block relationships. Friend requests and challenges have paginated lifecycle endpoints. See [`docs/friends-and-challenges.md`](docs/friends-and-challenges.md).
+
+Web Push endpoints require a registered user and `WEB_PUSH_ENABLED=true`. Browser endpoint/key material is encrypted and never returned by the API. See [`docs/web-push-notifications.md`](docs/web-push-notifications.md) for browser support, VAPID configuration, retries, and deployment.
 
 Expanded training endpoints require a registered Premium or Pro user and `EXPANDED_TRAINING_ENABLED=true`. Attempts use client UUID idempotency keys. See [`docs/training-modes.md`](docs/training-modes.md) for scoring rules and payloads.
 
@@ -186,6 +208,11 @@ The scoring domain is organized around matches, sets, legs, turns, and throws:
 erDiagram
     USER ||--o{ SESSION : has
     USER ||--o{ PLAYER : controls
+    USER ||--o{ FRIEND_REQUEST : sends_or_receives
+    USER ||--o{ FRIENDSHIP : belongs_to
+    USER ||--o{ USER_BLOCK : creates
+    USER ||--o{ MATCH_CHALLENGE : sends_or_receives
+    MATCH_CHALLENGE }o--|| MATCH : creates
     USER ||--o| DART_SETUP : saves
     USER ||--o{ TRAINING_SESSION : completes
     USER ||--o{ TRAINING_DRILL : defines

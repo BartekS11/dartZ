@@ -18,6 +18,7 @@ gem "turbo-rails"
 gem "stimulus-rails"
 gem "rqrcode"
 gem "stripe"
+gem "webpush", "~> 1.1"
 # Bulma is loaded from CDN in the application layout.
 
 # Support for JWT token based auth for client apps (mobile)

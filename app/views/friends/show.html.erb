@@ -1,0 +1,132 @@
+<div class="page-shell">
+  <div class="page-header mb-6">
+    <div class="theme-section-label mono"><%= t("friends.label") %></div>
+    <h1 class="section-title bebas"><%= t("friends.title") %></h1>
+    <p class="theme-copy"><%= t("friends.intro") %></p>
+  </div>
+
+  <div class="grid gap-5 lg:grid-cols-2">
+    <section class="theme-card p-4 md:p-6" aria-labelledby="find-friends-title">
+      <h2 id="find-friends-title" class="text-xl font-semibold mb-3"><%= t("friends.find") %></h2>
+      <p class="theme-copy text-sm mb-3"><%= t("friends.find_help") %></p>
+      <%= form_with url: search_friends_path, method: :get, class: "flex gap-2" do %>
+        <%= search_field_tag :q, params[:q], class: "theme-form-input mono grow", required: true, autocomplete: "off", aria: { label: t("friends.search_label") } %>
+        <%= submit_tag t("friends.search"), class: "button theme-btn-primary mono" %>
+      <% end %>
+      <% if defined?(@search_results) %>
+        <div class="stack-sm mt-4">
+          <% if @search_results.empty? %>
+            <p class="theme-copy"><%= t("friends.no_results") %></p>
+          <% end %>
+          <% @search_results.each do |user| %>
+            <div class="theme-panel flex items-center justify-between gap-3 p-3">
+              <strong><%= user.nickname.presence || t("friends.player") %></strong>
+              <%= button_to t("friends.send_request"), friend_requests_path,
+                    params: { recipient_id: user.public_id, share_code: params[:q] }, class: "button theme-btn-primary mono" %>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+      <div class="theme-panel p-3 mt-4">
+        <span class="theme-section-label mono"><%= t("friends.your_share_code") %></span>
+        <strong class="block mono text-lg"><%= Current.user.friend_share_code %></strong>
+      </div>
+    </section>
+
+    <section class="theme-card p-4 md:p-6" aria-labelledby="privacy-title">
+      <h2 id="privacy-title" class="text-xl font-semibold mb-3"><%= t("friends.privacy") %></h2>
+      <%= form_with model: Current.user, url: friends_path, method: :patch, class: "stack-sm" do |form| %>
+        <label class="flex items-center gap-2">
+          <%= form.check_box :discoverable_by_nickname %>
+          <span><%= t("friends.discoverable") %></span>
+        </label>
+        <%= form.label :friend_request_policy, t("friends.request_policy"), class: "auth-label" %>
+        <%= form.select :friend_request_policy,
+              User::FRIEND_REQUEST_POLICIES.map { |value| [t("friends.request_policies.#{value}"), value] }, {}, class: "theme-form-input" %>
+        <%= form.label :challenge_policy, t("friends.challenge_policy"), class: "auth-label" %>
+        <%= form.select :challenge_policy,
+              User::CHALLENGE_POLICIES.map { |value| [t("friends.challenge_policies.#{value}"), value] }, {}, class: "theme-form-input" %>
+        <%= form.submit t("common.save"), class: "button theme-btn-primary mono" %>
+      <% end %>
+    </section>
+
+    <section class="theme-card p-4 md:p-6" aria-labelledby="requests-title">
+      <h2 id="requests-title" class="text-xl font-semibold mb-3"><%= t("friends.requests") %></h2>
+      <% if @incoming_requests.empty? && @outgoing_requests.empty? %><p class="theme-copy"><%= t("friends.no_requests") %></p><% end %>
+      <% @incoming_requests.each do |friend_request| %>
+        <div class="theme-panel p-3 mb-2">
+          <strong><%= friend_request.requester.nickname.presence || t("friends.player") %></strong>
+          <span class="theme-chip"><%= t("friends.incoming") %></span>
+          <div class="flex flex-wrap gap-2 mt-2">
+            <%= button_to t("friends.accept"), accept_friend_request_path(friend_request), class: "button theme-btn-primary mono" %>
+            <%= button_to t("friends.decline"), decline_friend_request_path(friend_request), class: "button theme-btn-outline mono" %>
+            <%= button_to t("friends.block"), blocks_path, params: { user_id: friend_request.requester.public_id }, class: "button theme-btn-outline mono" %>
+          </div>
+        </div>
+      <% end %>
+      <%= render "friends/pagination", pagination: @social_pagination[:incoming_page] %>
+      <% @outgoing_requests.each do |friend_request| %>
+        <div class="theme-panel p-3 mb-2 flex items-center justify-between gap-3">
+          <span><strong><%= friend_request.recipient.nickname.presence || t("friends.player") %></strong> · <%= t("friends.outgoing") %></span>
+          <%= button_to t("common.cancel"), friend_request_path(friend_request), method: :delete, class: "button theme-btn-outline mono" %>
+        </div>
+      <% end %>
+      <%= render "friends/pagination", pagination: @social_pagination[:outgoing_page] %>
+    </section>
+
+    <section class="theme-card p-4 md:p-6" aria-labelledby="friends-list-title">
+      <h2 id="friends-list-title" class="text-xl font-semibold mb-3"><%= t("friends.list") %></h2>
+      <% if @friendships.empty? %><p class="theme-copy"><%= t("friends.no_friends") %></p><% end %>
+      <% @friendships.each do |friendship| %>
+        <% friend = friendship.other_user(Current.user) %>
+        <div class="theme-panel p-3 mb-3">
+          <strong><%= friend.nickname.presence || t("friends.player") %></strong>
+          <%= form_with url: challenges_path, class: "grid gap-2 mt-3 sm:grid-cols-3" do |form| %>
+            <%= hidden_field_tag :user_id, friend.public_id %>
+            <%= select_tag :starting_score, options_for_select(Match::X01_STARTING_SCORES, 501), class: "theme-form-input", aria: { label: t("common.starting_score") } %>
+            <%= number_field_tag :best_of_legs, 3, min: 1, max: 99, class: "theme-form-input", aria: { label: t("common.best_of_legs") } %>
+            <%= form.submit t("friends.challenge"), class: "button theme-btn-primary mono" %>
+          <% end %>
+          <div class="flex gap-2 mt-2">
+            <%= button_to t("friends.remove"), friendship_path(friendship), method: :delete, class: "button theme-btn-outline mono" %>
+            <%= button_to t("friends.block"), blocks_path, params: { user_id: friend.public_id }, class: "button theme-btn-outline mono" %>
+          </div>
+        </div>
+      <% end %>
+      <%= render "friends/pagination", pagination: @social_pagination[:friendships_page] %>
+    </section>
+
+    <section class="theme-card p-4 md:p-6 lg:col-span-2" aria-labelledby="challenges-title">
+      <h2 id="challenges-title" class="text-xl font-semibold mb-3"><%= t("friends.challenges") %></h2>
+      <% if @challenges.empty? %><p class="theme-copy"><%= t("friends.no_challenges") %></p><% end %>
+      <% @challenges.each do |challenge| %>
+        <% other = challenge.challenger_id == Current.user.id ? challenge.challenged : challenge.challenger %>
+        <% status = challenge.expired? ? "expired" : challenge.status %>
+        <div class="theme-panel p-3 mb-2 flex flex-wrap items-center justify-between gap-3">
+          <span><strong><%= other.nickname.presence || t("friends.player") %></strong> · <%= t("friends.challenge_statuses.#{status}") %> · <%= challenge.match.starting_score %></span>
+          <% if challenge.pending? && challenge.challenged_id == Current.user.id %>
+            <span class="flex gap-2">
+              <%= button_to t("friends.accept"), accept_challenge_path(challenge), class: "button theme-btn-primary mono" %>
+              <%= button_to t("friends.decline"), decline_challenge_path(challenge), class: "button theme-btn-outline mono" %>
+            </span>
+          <% elsif challenge.pending? && challenge.challenger_id == Current.user.id %>
+            <%= button_to t("common.cancel"), challenge_path(challenge), method: :delete, class: "button theme-btn-outline mono" %>
+          <% end %>
+        </div>
+      <% end %>
+      <%= render "friends/pagination", pagination: @social_pagination[:challenges_page] %>
+    </section>
+
+    <section class="theme-card p-4 md:p-6 lg:col-span-2" aria-labelledby="blocks-title">
+      <h2 id="blocks-title" class="text-xl font-semibold mb-3"><%= t("friends.blocked") %></h2>
+      <% if @blocks.empty? %><p class="theme-copy"><%= t("friends.no_blocks") %></p><% end %>
+      <% @blocks.each do |block| %>
+        <div class="theme-panel p-3 mb-2 flex items-center justify-between gap-3">
+          <strong><%= block.blocked.nickname.presence || t("friends.player") %></strong>
+          <%= button_to t("friends.unblock"), block_path(block), method: :delete, class: "button theme-btn-outline mono" %>
+        </div>
+      <% end %>
+      <%= render "friends/pagination", pagination: @social_pagination[:blocks_page] %>
+    </section>
+  </div>
+</div>

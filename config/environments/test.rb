@@ -21,6 +21,12 @@ Rails.application.configure do
   # Show full error reports.
   config.consider_all_requests_local = true
   config.cache_store = :null_store
+  config.active_job.queue_adapter = :test
+
+  # Deterministic test-only keys for encrypted Web Push subscription fields.
+  config.active_record.encryption.primary_key = "test-primary-key-for-push-records"
+  config.active_record.encryption.deterministic_key = "test-deterministic-key-for-push"
+  config.active_record.encryption.key_derivation_salt = "test-key-derivation-salt-for-push"
 
   # Render exception templates for rescuable exceptions and raise for other exceptions.
   config.action_dispatch.show_exceptions = :rescuable

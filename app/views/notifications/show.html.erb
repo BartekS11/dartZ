@@ -1,0 +1,62 @@
+<% content_for :nav_inline_action do %>
+  <%= link_to t("push.back"), root_path, class: "app-nav-link" %>
+<% end %>
+
+<section class="content-shell stack-lg" aria-labelledby="push-title">
+  <header class="theme-panel stack-sm">
+    <p class="eyebrow"><%= t("push.eyebrow") %></p>
+    <h1 id="push-title" class="title is-2"><%= t("push.title") %></h1>
+    <p><%= t("push.description") %></p>
+  </header>
+
+  <section class="theme-panel stack-md"
+           data-controller="push-notifications"
+           data-push-notifications-public-key-value="<%= @vapid_public_key %>"
+           data-push-notifications-subscribe-url-value="<%= push_subscriptions_path %>"
+           data-push-notifications-test-url-value="<%= test_push_subscriptions_path %>">
+    <h2 class="title is-4"><%= t("push.permission_title") %></h2>
+    <p data-push-notifications-target="status"
+       role="status"
+       aria-live="polite"
+       data-default="<%= t("push.states.default") %>"
+       data-granted="<%= t("push.states.granted") %>"
+       data-enabled="<%= t("push.states.enabled") %>"
+       data-denied="<%= t("push.states.denied") %>"
+       data-unsupported="<%= t("push.states.unsupported") %>"
+       data-failed="<%= t("push.states.failed") %>"
+       data-test-queued="<%= t("push.states.test_queued") %>"><%= t("push.states.default") %></p>
+    <div class="buttons">
+      <button type="button" class="button theme-btn-primary mono" data-push-notifications-target="enable" data-action="push-notifications#enable"><%= t("push.enable") %></button>
+      <button type="button" class="button theme-btn-outline mono" data-push-notifications-target="test" data-action="push-notifications#test"><%= t("push.send_test") %></button>
+    </div>
+  </section>
+
+  <section class="theme-panel stack-md" aria-labelledby="push-preferences-title">
+    <h2 id="push-preferences-title" class="title is-4"><%= t("push.preferences_title") %></h2>
+    <%= form_with model: @preference, url: notifications_path, method: :patch, class: "stack-sm" do |form| %>
+      <% NotificationPreference::CATEGORIES.each do |category| %>
+        <label class="checkbox">
+          <%= form.check_box category %>
+          <%= t("push.categories.#{category}") %>
+        </label>
+      <% end %>
+      <%= form.submit t("push.save_preferences"), class: "button theme-btn-primary mono" %>
+    <% end %>
+  </section>
+
+  <section class="theme-panel stack-md" aria-labelledby="push-devices-title">
+    <h2 id="push-devices-title" class="title is-4"><%= t("push.devices_title") %></h2>
+    <% if @subscriptions.any? %>
+      <ul class="stack-sm">
+        <% @subscriptions.each do |subscription| %>
+          <li class="cluster justify-between">
+            <span><strong><%= subscription.device_label %></strong><br><small><%= l(subscription.created_at, format: :short) %></small></span>
+            <%= button_to t("push.remove_device"), push_subscription_path(subscription), method: :delete, class: "button theme-btn-outline mono" %>
+          </li>
+        <% end %>
+      </ul>
+    <% else %>
+      <p><%= t("push.no_devices") %></p>
+    <% end %>
+  </section>
+</section>

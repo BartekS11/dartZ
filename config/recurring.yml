@@ -23,3 +23,8 @@ production:
     class: TournamentCleanupJob
     queue: default
     schedule: every day at 4:20am
+
+  expire_match_challenges:
+    class: MatchChallengeCleanupJob
+    queue: default
+    schedule: every hour at minute 32

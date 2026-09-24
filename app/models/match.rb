@@ -16,6 +16,7 @@ class Match < ApplicationRecord
   include HasUndoSupport
 
   has_many :players,  dependent: :destroy
+  has_one :match_challenge, dependent: :destroy
   has_many :match_sets, dependent: :destroy, class_name: "MatchSet"
   has_many :legs,     through: :match_sets
   has_many :all_legs, -> { order(:created_at, :id) }, class_name: "Leg", foreign_key: :match_id, inverse_of: :match
