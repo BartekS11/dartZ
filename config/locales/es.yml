@@ -910,7 +910,7 @@ es:
     active_subscription: Gestiona tu suscripción activa en el portal de clientes de Stripe.
     billing_interval: Periodo de facturación
     interval_year: año
-    interval_year_option: 12 meses (25% de descuento)
+    interval_year_option: 12 Meses (25% de Descuento)
     invalid_interval: Elige un periodo de facturación válido.
     switch_yearly: Cambiar al plan anual
     yearly_change_scheduled: Tu suscripción cambiará a la facturación anual al final del periodo actual.
@@ -919,7 +919,7 @@ es:
     checkout_success: Pago completado. Tu suscripción se actualizará cuando Stripe confirme el pago.
     checkout_cancelled: Se canceló el pago. No se hicieron cambios.
     stripe_hook: Stripe Checkout y el portal de clientes se usan para las suscripciones y cancelaciones.
-    interval_month: mes
+    interval_month: Mes
     interval_forever: para siempre
     free_name: Gratis
     premium_name: Premium

@@ -20,8 +20,8 @@ class BillingControllerTest < ActionDispatch::IntegrationTest
     assert_select "h2", "Premium"
     assert_select "h2", "Pro"
     assert_select "select[name='billing_interval']"
-    assert_select "form[action='#{checkout_billing_path(tier: "premium", interval: "month")}']"
-    assert_select "form[action='#{checkout_billing_path(tier: "pro", interval: "month")}']"
+    assert_select "form[action='#{checkout_billing_path(tier: "premium", interval: "month", currency: "usd")}']"
+    assert_select "form[action='#{checkout_billing_path(tier: "pro", interval: "month", currency: "usd")}']"
   end
 
   test "shows current account tier" do
@@ -34,6 +34,19 @@ class BillingControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select ".theme-chip", text: /Current: Premium/
     assert_select ".theme-chip", text: "Current", count: 1
+  end
+
+  test "english billing page offers usd and gbp pricing options" do
+    user = create_user("gbp-billing@example.com")
+    login_as(user)
+
+    get billing_path(currency: "gbp")
+
+    assert_response :success
+    assert_select "select[name='currency'] option[value='usd']"
+    assert_select "select[name='currency'] option[value='gbp']"
+    assert_includes response.body, "£3.99"
+    assert_includes response.body, "GBP"
   end
 
   test "polish locale displays pln pricing" do

@@ -910,7 +910,7 @@ nl:
     active_subscription: Beheer je actieve abonnement in het Stripe-klantenportaal.
     billing_interval: Factureringsperiode
     interval_year: jaar
-    interval_year_option: 12 maanden (25% korting)
+    interval_year_option: 12 Maanden (25% Korting)
     invalid_interval: Kies een geldige factureringsperiode.
     switch_yearly: Overschakelen naar jaarlijks
     yearly_change_scheduled: Je abonnement wordt aan het einde van de huidige periode jaarlijks gefactureerd.
@@ -919,7 +919,7 @@ nl:
     checkout_success: Betaling afgerond. Je abonnement wordt bijgewerkt zodra Stripe de betaling bevestigt.
     checkout_cancelled: Betaling geannuleerd. Er zijn geen wijzigingen aangebracht.
     stripe_hook: Stripe Checkout en Customer Portal worden gebruikt voor abonnementen en opzeggingen.
-    interval_month: maand
+    interval_month: Maand
     interval_forever: eenmalig
     free_name: Gratis
     premium_name: Premium

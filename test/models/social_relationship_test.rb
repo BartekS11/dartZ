@@ -30,12 +30,12 @@ class SocialRelationshipTest < ActiveSupport::TestCase
   test "database rejects self relationships and invalid states" do
     assert_raises(ActiveRecord::StatementInvalid) do
       ApplicationRecord.transaction(requires_new: true) do
-        UserBlock.insert_all!([{ blocker_id: @one.id, blocked_id: @one.id, public_id: "bl_1234567890ABCDEF", created_at: Time.current, updated_at: Time.current }])
+        UserBlock.insert_all!([ { blocker_id: @one.id, blocked_id: @one.id, public_id: "bl_1234567890ABCDEF", created_at: Time.current, updated_at: Time.current } ])
       end
     end
     assert_raises(ActiveRecord::StatementInvalid) do
       ApplicationRecord.transaction(requires_new: true) do
-        FriendRequest.insert_all!([{
+        FriendRequest.insert_all!([ {
           requester_id: @one.id,
           recipient_id: @two.id,
           pair_key: [ @one.id, @two.id ].sort.join(":"),
@@ -43,7 +43,7 @@ class SocialRelationshipTest < ActiveSupport::TestCase
           status: "invalid",
           created_at: Time.current,
           updated_at: Time.current
-        }])
+        } ])
       end
     end
   end

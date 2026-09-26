@@ -1,7 +1,7 @@
 module StripeBilling
   class Configuration
     TIERS = %w[premium pro].freeze
-    CURRENCIES = %w[usd pln].freeze
+    CURRENCIES = %w[usd gbp pln].freeze
 
     class << self
       def secret_key

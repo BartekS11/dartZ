@@ -1,6 +1,7 @@
 class AccountTierPricing
   MONTHLY_AMOUNTS = {
     "usd" => { premium: 499, pro: 999 },
+    "gbp" => { premium: 399, pro: 799 },
     "pln" => { premium: 1_999, pro: 3_999 }
   }.freeze
 
@@ -23,7 +24,8 @@ class AccountTierPricing
       whole, fractional = amount.divmod(100)
       "#{whole},#{format('%02d', fractional)} zł"
     else
-      "$#{format('%.2f', amount / 100.0)}"
+      symbol = currency == "gbp" ? "£" : "$"
+      "#{symbol}#{format('%.2f', amount / 100.0)}"
     end
   end
 
@@ -32,6 +34,6 @@ class AccountTierPricing
   attr_reader :currency
 
   def free_label
-    currency == "pln" ? "0 zł" : "$0"
+    currency == "pln" ? "0 zł" : (currency == "gbp" ? "£0" : "$0")
   end
 end

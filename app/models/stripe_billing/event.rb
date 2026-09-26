@@ -70,7 +70,7 @@ class StripeBilling::Event
     def tier_for_price(price_id)
       return if price_id.blank?
 
-      %w[usd pln].each do |currency|
+      %w[usd gbp pln].each do |currency|
         %w[premium pro].each do |tier|
           return tier if StripeBilling::Configuration.price_id_for(tier: tier, currency: currency) == price_id
         rescue ArgumentError

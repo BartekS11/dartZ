@@ -1,6 +1,7 @@
 class BillingController < ApplicationController
   SUPPORTED_PAID_TIERS = %w[premium pro].freeze
   SUPPORTED_INTERVALS = %w[month year].freeze
+  SUPPORTED_CURRENCIES = %w[usd gbp pln].freeze
 
   def show
     flash.now[:notice] = t("billing.checkout_success") if params[:stripe_checkout] == "success"
@@ -131,6 +132,9 @@ class BillingController < ApplicationController
   end
 
   def billing_currency
+    requested_currency = params[:currency].to_s.downcase
+    return requested_currency if SUPPORTED_CURRENCIES.include?(requested_currency)
+
     polish_country? ? "pln" : "usd"
   end
   helper_method :billing_currency
