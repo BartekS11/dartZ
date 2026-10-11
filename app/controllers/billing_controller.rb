@@ -23,7 +23,11 @@ class BillingController < ApplicationController
     return redirect_to billing_path, alert: t("billing.missing_stripe_config") if Stripe.api_key.blank?
 
     if Current.user.subscribed?
-      if interval == "year" && Current.user.account_tier == tier
+      if Current.user.account_tier != tier
+        switch_subscription_tier!(tier: tier, interval: interval)
+        return redirect_to billing_path, notice: t("billing.subscription_updated")
+      end
+      if interval == "year"
         result = schedule_yearly_change!(tier: tier)
         message = { scheduled: "yearly_change_scheduled", already_yearly: "already_yearly", already_scheduled: "yearly_change_already_scheduled" }.fetch(result)
         return redirect_to billing_path, notice: t("billing.#{message}")
@@ -82,6 +86,48 @@ class BillingController < ApplicationController
   end
 
   private
+
+  def switch_subscription_tier!(tier:, interval:)
+    subscription = Stripe::Subscription.retrieve(Current.user.stripe_subscription_id)
+    items = subscription.items.data
+    raise Stripe::StripeError, "Multiple subscription items are not supported" unless items.one?
+
+    item = items.first
+    currency = item.price.currency
+    price_id = if interval == "month"
+      StripeBilling::Configuration.price_id_for(tier: tier, currency: currency)
+    else
+      pricing = AccountTierPricing.new(currency: currency)
+      annual_price = Stripe::Price.create(
+        currency: currency,
+        unit_amount: pricing.amount_for(tier, interval: "year"),
+        recurring: { interval: "year" },
+        product: item.price.product
+      )
+      annual_price.id
+    end
+    raise Stripe::StripeError, "Price unavailable for subscription currency" if price_id.blank?
+
+    updated = Stripe::Subscription.update(
+      subscription.id,
+      items: [ { id: item.id, price: price_id } ],
+      proration_behavior: "create_prorations"
+    )
+    updated_item = updated.items.data.first
+    period_end = if updated.respond_to?(:current_period_end)
+      updated.current_period_end
+    else
+      updated_item&.current_period_end
+    end
+    Current.user.sync_subscription!(
+      tier: tier,
+      status: updated.status,
+      current_period_end: period_end.present? ? Time.zone.at(period_end) : Current.user.premium_access_expires_at,
+      subscription_id: updated.id,
+      price_id: price_id,
+      currency: currency
+    )
+  end
 
   def schedule_yearly_change!(tier:)
     return if Stripe.api_key.blank?

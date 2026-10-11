@@ -943,6 +943,7 @@ en:
     stripe_error: "Stripe could not start billing. Please try again."
     no_subscription: "No Stripe subscription is connected to this account yet."
     active_subscription: "Manage your active subscription in the Stripe customer portal."
+    subscription_updated: "Your subscription plan was updated."
     billing_interval: "Billing interval"
     interval_year: "year"
     interval_year_option: "12 Months (25% Off)"

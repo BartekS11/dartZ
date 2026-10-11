@@ -75,23 +75,6 @@ class BillingControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to billing_path
   end
 
-  test "checkout redirects subscribed users to the customer portal" do
-    user = create_user("subscribed-checkout@example.com")
-    user.update!(account_tier: "premium", stripe_subscription_id: "sub_test", stripe_subscription_status: "active")
-    login_as(user)
-
-    original_key = Stripe.api_key
-    Stripe.api_key = "stripe_secret_key_fake"
-    Stripe::Checkout::Session.expects(:create).never
-
-    post checkout_billing_path(tier: "pro", interval: "month")
-
-    assert_redirected_to billing_path
-    assert_equal "Manage your active subscription in the Stripe customer portal.", flash[:alert]
-  ensure
-    Stripe.api_key = original_key
-  end
-
   test "checkout creates stripe session" do
     user = create_user("checkout@example.com")
     login_as(user)
@@ -130,6 +113,33 @@ class BillingControllerTest < ActionDispatch::IntegrationTest
     post checkout_billing_path(tier: "premium", interval: "year")
 
     assert_redirected_to "https://checkout.stripe.test/annual"
+  ensure
+    Stripe.api_key = original_key
+  end
+
+  test "active subscriber can switch tiers using the configured monthly price" do
+    user = create_user("switch-tier@example.com")
+    user.update!(account_tier: "premium", stripe_subscription_id: "sub_existing", stripe_subscription_status: "active")
+    login_as(user)
+    original_key = Stripe.api_key
+    Stripe.api_key = "stripe_secret_key_fake"
+    item = OpenStruct.new(id: "si_existing", price: OpenStruct.new(currency: "usd"))
+    current = OpenStruct.new(id: "sub_existing", items: OpenStruct.new(data: [ item ]))
+    updated = OpenStruct.new(
+      id: "sub_existing", status: "active", current_period_end: 1.month.from_now.to_i,
+      items: OpenStruct.new(data: [ OpenStruct.new(price: OpenStruct.new(id: "price_pro_usd")) ])
+    )
+    Stripe::Subscription.expects(:retrieve).with("sub_existing").returns(current)
+    StripeBilling::Configuration.expects(:price_id_for).with(tier: "pro", currency: "usd").returns("price_pro_usd")
+    Stripe::Subscription.expects(:update).with(
+      "sub_existing", items: [ { id: "si_existing", price: "price_pro_usd" } ], proration_behavior: "create_prorations"
+    ).returns(updated)
+
+    post checkout_billing_path(tier: "pro", interval: "month")
+
+    assert_redirected_to billing_path
+    assert_equal "pro", user.reload.account_tier
+    assert_equal "price_pro_usd", user.stripe_price_id
   ensure
     Stripe.api_key = original_key
   end

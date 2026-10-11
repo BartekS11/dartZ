@@ -929,6 +929,7 @@ pl:
     stripe_error: "Stripe nie mógł rozpocząć płatności. Spróbuj ponownie."
     no_subscription: "Do tego konta nie jest jeszcze podpięta subskrypcja Stripe."
     active_subscription: "Zarządzaj aktywną subskrypcją w portalu klienta Stripe."
+    subscription_updated: "Plan subskrypcji został zaktualizowany."
     billing_interval: "Okres rozliczeniowy"
     interval_year: "rok"
     interval_year_option: "12 Miesięcy (25% Zniżki)"
