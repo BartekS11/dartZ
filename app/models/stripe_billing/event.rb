@@ -31,7 +31,12 @@ class StripeBilling::Event
     end
 
     def sync_invoice(invoice)
-      subscription_id = stripe_id(invoice.subscription)
+      subscription = if invoice.respond_to?(:subscription)
+        invoice.subscription
+      else
+        invoice.parent&.subscription_details&.subscription
+      end
+      subscription_id = stripe_id(subscription)
       return if subscription_id.blank?
 
       subscription = Stripe::Subscription.retrieve(subscription_id)
