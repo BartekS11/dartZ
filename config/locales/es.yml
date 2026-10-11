@@ -947,6 +947,9 @@ es:
     no_subscription: Aún no hay ninguna suscripción de Stripe vinculada a esta cuenta.
     active_subscription: Gestiona tu suscripción activa en el portal de clientes de Stripe.
     subscription_updated: Se ha actualizado tu plan de suscripción.
+    confirm_switch_title: Confirmar cambio de plan
+    confirm_switch_message: "Cambiarás ahora a %{tier}. Se mantendrá tu ciclo de facturación mensual o anual actual y las próximas renovaciones usarán el precio de %{tier}. Stripe puede añadir la diferencia prorrateada a tu próxima factura. ¿Continuar?"
+    confirm_switch_button: Confirmar mejora
     billing_interval: Periodo de facturación
     interval_year: año
     interval_year_option: 12 Meses (25% de Descuento)

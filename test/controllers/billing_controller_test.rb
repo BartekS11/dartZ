@@ -123,7 +123,7 @@ class BillingControllerTest < ActionDispatch::IntegrationTest
     login_as(user)
     original_key = Stripe.api_key
     Stripe.api_key = "stripe_secret_key_fake"
-    item = OpenStruct.new(id: "si_existing", price: OpenStruct.new(currency: "usd"))
+    item = OpenStruct.new(id: "si_existing", price: OpenStruct.new(currency: "usd", recurring: OpenStruct.new(interval: "month")))
     current = OpenStruct.new(id: "sub_existing", items: OpenStruct.new(data: [ item ]))
     updated = OpenStruct.new(
       id: "sub_existing", status: "active", current_period_end: 1.month.from_now.to_i,
@@ -140,6 +140,41 @@ class BillingControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to billing_path
     assert_equal "pro", user.reload.account_tier
     assert_equal "price_pro_usd", user.stripe_price_id
+  ensure
+    Stripe.api_key = original_key
+  end
+
+  test "yearly subscriber keeps yearly billing when switching tiers" do
+    user = create_user("switch-yearly-tier@example.com")
+    user.update!(account_tier: "premium", stripe_subscription_id: "sub_yearly", stripe_subscription_status: "active")
+    login_as(user)
+    original_key = Stripe.api_key
+    Stripe.api_key = "stripe_secret_key_fake"
+    item = OpenStruct.new(
+      id: "si_yearly",
+      price: OpenStruct.new(currency: "usd", product: "prod_premium", recurring: OpenStruct.new(interval: "year"))
+    )
+    current = OpenStruct.new(id: "sub_yearly", items: OpenStruct.new(data: [ item ]))
+    updated = OpenStruct.new(
+      id: "sub_yearly", status: "active", current_period_end: 1.year.from_now.to_i,
+      items: OpenStruct.new(data: [ OpenStruct.new(price: OpenStruct.new(id: "price_pro_year")) ])
+    )
+    Stripe::Subscription.expects(:retrieve).with("sub_yearly").returns(current)
+    StripeBilling::Configuration.expects(:price_id_for).with(tier: "pro", currency: "usd").returns("price_pro_month")
+    Stripe::Price.expects(:retrieve).with("price_pro_month").returns(OpenStruct.new(product: "prod_pro"))
+    Stripe::Price.expects(:create).with do |params|
+      params[:currency] == "usd" && params[:unit_amount] == 8_991 &&
+        params[:recurring] == { interval: "year" } && params[:product] == "prod_pro"
+    end.returns(OpenStruct.new(id: "price_pro_year"))
+    Stripe::Subscription.expects(:update).with(
+      "sub_yearly", items: [ { id: "si_yearly", price: "price_pro_year" } ], proration_behavior: "create_prorations"
+    ).returns(updated)
+
+    post checkout_billing_path(tier: "pro", interval: "month")
+
+    assert_redirected_to billing_path
+    assert_equal "pro", user.reload.account_tier
+    assert_equal "price_pro_year", user.stripe_price_id
   ensure
     Stripe.api_key = original_key
   end

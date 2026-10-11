@@ -94,15 +94,22 @@ class BillingController < ApplicationController
 
     item = items.first
     currency = item.price.currency
-    price_id = if interval == "month"
+    current_interval = item.price.recurring&.interval
+    raise Stripe::StripeError, "Unsupported subscription interval" unless %w[month year].include?(current_interval)
+
+    price_id = if current_interval == "month"
       StripeBilling::Configuration.price_id_for(tier: tier, currency: currency)
     else
+      monthly_price_id = StripeBilling::Configuration.price_id_for(tier: tier, currency: currency)
+      raise Stripe::StripeError, "Price unavailable for subscription currency" if monthly_price_id.blank?
+
+      monthly_price = Stripe::Price.retrieve(monthly_price_id)
       pricing = AccountTierPricing.new(currency: currency)
       annual_price = Stripe::Price.create(
         currency: currency,
         unit_amount: pricing.amount_for(tier, interval: "year"),
         recurring: { interval: "year" },
-        product: item.price.product
+        product: monthly_price.product
       )
       annual_price.id
     end

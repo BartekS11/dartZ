@@ -947,6 +947,9 @@ nl:
     no_subscription: Er is nog geen Stripe-abonnement aan dit account gekoppeld.
     active_subscription: Beheer je actieve abonnement in het Stripe-klantenportaal.
     subscription_updated: Je abonnementsplan is bijgewerkt.
+    confirm_switch_title: Bevestig abonnementswijziging
+    confirm_switch_message: Je stapt nu over naar %{tier}. Je huidige maandelijkse of jaarlijkse factureringsperiode blijft behouden en toekomstige verlengingen gebruiken de prijs van %{tier}. Een evenredig prijsverschil kan aan je volgende factuur worden toegevoegd. Doorgaan?
+    confirm_switch_button: Upgrade bevestigen
     billing_interval: Factureringsperiode
     interval_year: jaar
     interval_year_option: 12 Maanden (25% Korting)

@@ -53,7 +53,23 @@
           <% elsif tier[:key] == "free" %>
             <button type="button" class="button theme-btn-outline is-fullwidth mono" disabled><%= t("common.included") %></button>
           <% else %>
-            <%= button_to(current_tier ? t("billing.switch_yearly") : t("billing.upgrade"), checkout_billing_path(tier: tier[:key], interval: @billing_interval, currency: @billing_currency), method: :post, class: "button theme-btn-primary is-fullwidth mono", data: { turbo: false }) %>
+            <% if Current.user.subscribed? && !current_tier %>
+              <div data-controller="confirmation-modal">
+                <button type="button" class="button theme-btn-primary is-fullwidth mono" data-action="confirmation-modal#open"><%= t("billing.upgrade") %></button>
+                <dialog class="theme-card p-5" data-confirmation-modal-target="dialog">
+                  <div class="stack-md">
+                    <h2 class="section-title"><%= t("billing.confirm_switch_title") %></h2>
+                    <p class="page-copy"><%= t("billing.confirm_switch_message", tier: tier[:name]) %></p>
+                    <div class="buttons">
+                      <%= button_to t("billing.confirm_switch_button"), checkout_billing_path(tier: tier[:key], interval: @billing_interval, currency: @billing_currency), method: :post, class: "button theme-btn-primary mono", data: { turbo: false } %>
+                      <button type="button" class="button theme-btn-outline mono" data-action="confirmation-modal#close"><%= t("common.cancel") %></button>
+                    </div>
+                  </div>
+                </dialog>
+              </div>
+            <% else %>
+              <%= button_to(current_tier ? t("billing.switch_yearly") : t("billing.upgrade"), checkout_billing_path(tier: tier[:key], interval: @billing_interval, currency: @billing_currency), method: :post, class: "button theme-btn-primary is-fullwidth mono", data: { turbo: false }) %>
+            <% end %>
           <% end %>
         </article>
       </div>
