@@ -44,8 +44,8 @@
             <span class="help-theme">/ <%= tier[:interval] %></span>
           </div>
 
-          <ul class="stack-sm" style="list-style:none; padding:0; margin:0; flex:1">
-            <% tier[:features].each do |feature| %><li class="mono text-sm">✓ <%= feature %></li><% end %>
+          <ul class="billing-feature-list">
+            <% tier[:features].each do |feature| %><li><%= feature %></li><% end %>
           </ul>
 
           <% if current_tier && @billing_interval == "month" %>

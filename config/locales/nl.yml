@@ -970,9 +970,9 @@ nl:
     premium_desc: Verbeter je spel met gestructureerde training, oefenplannen en uitgebreide wedstrijdanalyses.
     pro_desc: Ontvang datagestuurde trainingsadviezen en diepere analyses per wedstrijd.
     features:
-      x01: X01-scorebord
+      x01: Speel 301, 501 en andere X01-spellen
       bot: Wedstrijden tegen bots
-      bot_limited: Maximaal 40 botwedstrijdcredits per week (Bo5 kost één credit)
+      bot_limited: Speel tot 40 wedstrijden per week tegen de bot
       bot_unlimited: Onbeperkt wedstrijden tegen bots
       everything_free: Alles van Gratis
       everything_premium: Alles van Premium

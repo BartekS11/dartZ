@@ -953,9 +953,9 @@ pl:
     premium_desc: "Poprawiaj regularność dzięki treningom, planom ćwiczeń i szczegółowej analizie meczów."
     pro_desc: "Otrzymuj wskazówki treningowe oparte na danych i pogłębioną analizę meczów."
     features:
-      x01: "Tablica X01"
+      x01: "Graj w 301, 501 i inne gry X01"
       bot: "Mecze z botem"
-      bot_limited: "Do 40 kredytów na mecze z botem tygodniowo (Bo5 zużywa jeden kredyt)"
+      bot_limited: "Graj z botem do 40 razy w tygodniu"
       bot_unlimited: "Nielimitowane mecze z botem"
       everything_free: "Wszystko z planu Darmowy"
       everything_premium: "Wszystko z planu Premium"

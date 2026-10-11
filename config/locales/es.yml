@@ -970,9 +970,9 @@ es:
     premium_desc: Mejora con entrenamiento estructurado, planes de práctica y análisis detallado de partidas.
     pro_desc: Recibe orientación de entrenamiento basada en datos y análisis más profundos por partida.
     features:
-      x01: Marcador X01
+      x01: Juega al 301, 501 y otros juegos X01
       bot: Partidas contra bots
-      bot_limited: Hasta 40 créditos semanales para partidas contra bots (Bo5 consume uno)
+      bot_limited: Juega hasta 40 partidas semanales contra el bot
       bot_unlimited: Partidas ilimitadas contra bots
       everything_free: Todo lo incluido en Gratis
       everything_premium: Todo lo incluido en Premium

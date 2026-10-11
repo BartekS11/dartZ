@@ -967,9 +967,9 @@ en:
     premium_desc: "Build consistency with structured training, practice plans, and detailed match reviews."
     pro_desc: "Get data-based training guidance and deeper per-match analysis."
     features:
-      x01: "X01 scoreboard"
+      x01: "Play 301, 501, and other X01 games"
       bot: "Bot matches"
-      bot_limited: "Up to 40 bot-match credits per week (Bo5 uses one credit)"
+      bot_limited: "Play up to 40 games against the bot each week"
       bot_unlimited: "Unlimited bot matches"
       everything_free: "Everything in Free"
       everything_premium: "Everything in Premium"

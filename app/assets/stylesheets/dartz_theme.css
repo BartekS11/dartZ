@@ -4155,6 +4155,19 @@ button.app-nav-link:hover {
   }
 }
 
+.billing-feature-list {
+  display: grid;
+  gap: .7rem;
+  flex: 1;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--theme-text);
+  font: 400 .96rem/1.5 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+.billing-feature-list li { padding-bottom: .65rem; border-bottom: 1px solid var(--theme-line); }
+.billing-feature-list li:last-child { padding-bottom: 0; border-bottom: 0; }
+
 .billing-switch-dialog {
   width: min(92vw, 30rem);
   max-width: 30rem;
