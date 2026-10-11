@@ -10,7 +10,7 @@ class AccountTierCatalogTest < ActiveSupport::TestCase
     FeatureAccess.stubs(:enabled?).returns(false)
     tiers = @catalog.call
 
-    assert_includes tiers.fetch("free")[:features], "Invite friends to remote matches"
+    assert_includes tiers.fetch("free")[:features], "Create invite matches and play remotely with friends (free account required)"
     assert_includes tiers.fetch("free")[:features], "Anonymous, revocable match-result links"
     assert_includes tiers.fetch("free")[:features], "Basic insights from saved training history"
     assert_includes tiers.fetch("premium")[:features], "Detailed leg-by-leg reviews and checkout performance"
