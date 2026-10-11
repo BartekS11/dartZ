@@ -53,7 +53,7 @@
           <% elsif tier[:key] == "free" %>
             <button type="button" class="button theme-btn-outline is-fullwidth mono" disabled><%= t("common.included") %></button>
           <% else %>
-            <%= button_to(current_tier ? t("billing.switch_yearly") : t("billing.upgrade"), checkout_billing_path(tier: tier[:key], interval: @billing_interval, currency: @billing_currency), method: :post, class: "button theme-btn-primary is-fullwidth mono") %>
+            <%= button_to(current_tier ? t("billing.switch_yearly") : t("billing.upgrade"), checkout_billing_path(tier: tier[:key], interval: @billing_interval, currency: @billing_currency), method: :post, class: "button theme-btn-primary is-fullwidth mono", data: { turbo: false }) %>
           <% end %>
         </article>
       </div>
