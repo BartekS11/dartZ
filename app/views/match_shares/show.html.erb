@@ -1,0 +1,25 @@
+<% winner = @result[:players].find { |player| player[:winner] } %>
+<div class="page-shell page-shell-narrow stack-md">
+  <section class="theme-hero p-5">
+    <div class="theme-section-label"><%= t("match_review.shared_result") %></div>
+    <h1 class="page-title"><%= t("live_match.match_complete") %></h1>
+    <p class="page-copy mt-2"><%= @result[:starting_score] %> · <%= @result[:game_mode_labels].join(" · ") %></p>
+  </section>
+
+  <section class="theme-card p-5 stack-md">
+    <% if winner %><h2 class="section-title"><%= t("match_review.winner", player: t("match_review.player_number", number: winner[:number])) %></h2><% end %>
+    <div class="columns is-variable is-3">
+      <% @result[:players].each do |player| %>
+        <article class="column">
+          <div class="theme-match-card p-4">
+            <strong><%= t("match_review.player_number", number: player[:number]) %></strong>
+            <p class="mono mt-2"><%= player[:legs_or_sets_won] %> · <%= t("live_match.legs_sets_won") %></p>
+            <p class="mono"><%= player[:average] %> · <%= t("live_match.average") %></p>
+          </div>
+        </article>
+      <% end %>
+    </div>
+    <p class="help-theme"><%= t("match_review.result_only_notice") %></p>
+  </section>
+  <%= link_to t("matches.new_game"), matches_path, class: "button theme-btn-primary mono" %>
+</div>

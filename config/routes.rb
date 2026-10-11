@@ -83,6 +83,9 @@ Rails.application.routes.draw do
 
   resources :matches, only: %i[index show create] do
     resource :player_order, only: :update, controller: "match_player_orders"
+    get :review, on: :member
+    post :share, on: :member
+    delete :share, on: :member
 
     collection do
       delete :clear
@@ -101,6 +104,7 @@ Rails.application.routes.draw do
     resources :throws, only: :create
   end
 
+  get "match-shares/:token", to: "match_shares#show", as: :match_share
   get "matches/:id/throws", to: "matches#throws", as: :matches_throws
   get "matches/:id/summary", to: "matches#summary", as: :match_summary
   get "matches/:id/checkout/:player_id", to: "matches#checkout", as: :match_checkout

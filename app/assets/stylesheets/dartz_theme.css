@@ -4154,3 +4154,54 @@ button.app-nav-link:hover {
     flex-direction: column;
   }
 }
+
+.billing-period-switch {
+  --switch-width: 15rem;
+  position: relative;
+  display: inline-grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  width: min(var(--switch-width), 100%);
+  min-height: 2.75rem;
+  padding: .2rem;
+  border: 1px solid var(--theme-border);
+  border-radius: 999px;
+  background: var(--theme-surface);
+  isolation: isolate;
+}
+.billing-period-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+.billing-period-label {
+  z-index: 1;
+  padding: .55rem .5rem;
+  color: var(--theme-text);
+  cursor: pointer;
+  font: 600 .85rem/1.2 monospace;
+  text-align: center;
+}
+.billing-period-thumb {
+  position: absolute;
+  z-index: 0;
+  inset: .2rem 50% .2rem .2rem;
+  border-radius: 999px;
+  background: var(--theme-cta, var(--theme-primary));
+  box-shadow: 0 1px 4px #0003;
+  transition: transform .2s ease;
+}
+#billing-period-month:checked ~ .billing-period-thumb { transform: translateX(0); }
+#billing-period-year:checked ~ .billing-period-thumb { transform: translateX(100%); }
+#billing-period-month:checked ~ label[for="billing-period-month"],
+#billing-period-year:checked ~ label[for="billing-period-year"] { color: #fff; }
+.billing-period-input:focus-visible ~ label { outline: 2px solid var(--theme-primary); outline-offset: 3px; }
+
+.tier-price-card { display: flex; flex-direction: column; }
+.tier-price-card > div:first-child { min-height: 7.5rem; }
+.tier-price-value { min-height: 5.5rem; }
+.tier-price-card > ul { flex: 1; }
+.tier-upgrade-button { min-height: 3rem !important; padding: .5rem .35rem !important; font-size: clamp(.62rem, .9vw, .78rem) !important; line-height: 1.1 !important; white-space: nowrap; letter-spacing: -.04em; }
+.tier-promo-price .bebas { color: #16a34a; }
+.tier-promo-label { display: inline-block; margin-left: .35rem; border-radius: 999px; padding: .15rem .45rem; background: #16a34a1a; color: #15803d; font-size: .72rem; font-weight: 700; }

@@ -195,6 +195,12 @@ es:
     premium_label: Entrenamiento prémium
     title: Centro de entrenamiento
     intro: Practica rutinas de dardos específicas y guarda cada sesión en el historial de tu cuenta.
+    free_insights_intro: Consulta el progreso básico de tu historial de entrenamiento guardado. Premium desbloquea sesiones de entrenamiento y planes de práctica.
+    recommendations:
+      title: Enfoque de entrenamiento Pro
+      insufficient: Completa más sesiones de un modo para desbloquear recomendaciones basadas en datos.
+      on_track: Tus datos recientes no muestran un área clara que necesite más atención. Sigue practicando.
+      reason: En %{count} sesiones, tu promedio reciente aumentó %{delta} dardos. Practica este modo en tu próxima sesión.
     new_session: Nueva sesión
     choose_mode: Elige un modo
     start: Empezar
@@ -285,6 +291,37 @@ es:
       active: Activa
       completed: Completada
       abandoned: Abandonada
+  match_review:
+    finished_only: Solo se pueden compartir o revisar partidas terminadas.
+    share_enabled: Se ha activado el enlace para compartir el resultado.
+    share_disabled: Se ha revocado el enlace para compartir el resultado.
+    share_title: Compartir resultado
+    result_only_notice: Este enlace solo comparte el resultado. Los nombres y los detalles de cada lanzamiento están ocultos.
+    open_share_link: Abrir enlace del resultado
+    revoke_share: Revocar enlace
+    create_share: Crear enlace anónimo del resultado
+    premium_label: Análisis de partida Premium
+    title: Revisión de partida
+    back_to_match: Volver al resultado
+    checkout_review: Rendimiento en cierres
+    checkout_opportunities: Oportunidades de cierre
+    checkout_hits: Cierres completados
+    no_checkout_opportunities: No se registraron oportunidades de cierre en esta partida.
+    leg_timeline: Puntuación por leg
+    leg_number: Leg %{number}
+    leg_winner: "%{player} ganó este leg."
+    player: Jugador
+    turn_score: Puntuación del turno
+    no_turns: No hay turnos registrados en este leg.
+    shared_result: Resultado compartido
+    winner: "%{player} ganó"
+    player_number: Jugador %{number}
+    review_match: Revisar partida
+    unlock_review: Desbloquear análisis detallado
+    pro_analysis: Análisis de partida Pro
+    first_nine_average: Promedio de los primeros nueve dardos
+    high_turns: Turnos de 100+
+    checkout_rate: Porcentaje de cierres
   friends:
     label: Juego social
     title: Amigos y desafíos
@@ -892,6 +929,7 @@ es:
     start_free: Crear cuenta gratis
     create_to_upgrade: Crea una cuenta para mejorar el plan
     footer_note: Precios en %{currency}. Los planes de pago están disponibles después de crear una cuenta.
+    promo_price: Precio promocional anual
   billing:
     title: Mejorar plan
     current: 'Actual: %{tier}'
@@ -924,29 +962,32 @@ es:
     free_name: Gratis
     premium_name: Premium
     pro_name: Pro
-    free_desc: Puntuación rápida como invitado e historial de partidas en tu cuenta.
-    premium_desc: Seguimiento de configuración, estadísticas más completas y herramientas para torneos.
-    pro_desc: Para clubes y organizadores habituales de torneos.
+    free_desc: Anota partidas, juega torneos y conserva tu historial.
+    premium_desc: Mejora con entrenamiento estructurado, planes de práctica y análisis detallado de partidas.
+    pro_desc: Recibe orientación de entrenamiento basada en datos y análisis más profundos por partida.
     features:
       x01: Marcador X01
       bot: Partidas contra bots
-      bot_limited: 40 partidas contra bots por semana, hasta Bo5
+      bot_limited: Hasta 40 créditos semanales para partidas contra bots (Bo5 consume uno)
       bot_unlimited: Partidas ilimitadas contra bots
-      tournament_browsing: Explorar torneos
-      local_history: Historial local de partidas
       everything_free: Todo lo incluido en Gratis
       everything_premium: Todo lo incluido en Premium
-      dart_details: Marca, peso, caña y punta
-      premium_stats: Próximas estadísticas y preferencias prémium
-      league_tools: Próximas herramientas de liga
-      guest_matches: Partidas como invitado
-      saved_history: Historial de partidas guardado
-      invite_matches: Partidas por invitación
-      dart_setup: Seguimiento de configuración de dardos
-      advanced_stats: Estadísticas avanzadas
-      tournaments: Herramientas para torneos
-      priority: Funciones prioritarias
-      club: Flujos de trabajo para clubes
+      dart_setup: Guarda y sigue tu configuración de dardos
+      tournaments: Crea, explora y juega torneos
+      remote_matches: Invita a tus amigos a partidas remotas
+      match_statistics: Estadísticas personales e historial de partidas
+      push_notifications: Avisos push de actividad social y torneos
+      training_progress: Progreso básico de tu historial de entrenamiento guardado
+      result_sharing: Enlaces anónimos y revocables a resultados
+      social_play: Amigos y desafíos de partidas
+      structured_training: Modos de entrenamiento estructurado
+      expanded_training: Modos de entrenamiento ampliados
+      practice_plans: Planes de práctica con plantillas, personalizados y basados en estadísticas
+      dart_setup_stats: Perfiles de configuración y estadísticas por configuración
+      match_review: Análisis detallado por leg y de cierres
+      advanced_stats: Estadísticas avanzadas y filtros de partidas
+      training_recommendations: Recomendaciones de entrenamiento basadas en datos
+      pro_match_analysis: Análisis Pro de puntuación y cierres por partida
   mailers:
     reset_subject: Restablece tu contraseña
     reset_html: Puedes restablecer tu contraseña durante los próximos 15 minutos en

@@ -1,0 +1,73 @@
+<div class="page-shell stack-lg">
+  <section class="theme-hero p-5">
+    <div class="theme-section-label"><%= t("match_review.premium_label") %></div>
+    <h1 class="page-title"><%= t("match_review.title") %></h1>
+    <p class="page-copy mt-3"><%= @match.game_mode_labels.join(" · ") %> · <%= l(@match.finished_at.to_date, format: :long) %></p>
+    <div class="buttons mt-4"><%= link_to t("match_review.back_to_match"), match_path(@match), class: "button theme-btn-outline mono" %></div>
+  </section>
+
+  <% if Current.user&.effective_account_tier == "pro" && premium_access? %>
+    <section class="theme-card p-5 stack-md">
+      <h2 class="section-title"><%= t("match_review.pro_analysis") %></h2>
+      <div class="columns is-multiline">
+        <% @presenter.players.each do |player| %>
+          <% stats = @presenter.stats_for(player) %>
+          <div class="column is-6">
+            <article class="theme-panel p-4">
+              <h3 class="section-title"><%= player.display_name %></h3>
+              <p class="page-copy mt-2"><%= t("match_review.first_nine_average") %>: <strong class="mono"><%= stats[:first_nine_avg] %></strong></p>
+              <p class="page-copy"><%= t("match_review.high_turns") %>: <strong class="mono"><%= stats[:ton_plus] %></strong></p>
+              <p class="page-copy"><%= t("match_review.checkout_rate") %>: <strong class="mono"><%= stats[:checkout][:rate] %>%</strong> (<%= stats[:checkout][:hits] %>/<%= stats[:checkout][:chances] %>)</p>
+            </article>
+          </div>
+        <% end %>
+      </div>
+    </section>
+  <% end %>
+
+  <section class="theme-card p-5 stack-md">
+    <h2 class="section-title"><%= t("match_review.checkout_review") %></h2>
+    <div class="columns is-multiline">
+      <% @presenter.players.each do |player| %>
+        <% checkout = @presenter.stats_for(player)[:checkout] %>
+        <div class="column is-6">
+          <article class="theme-panel p-4">
+            <h3 class="section-title"><%= player.display_name %></h3>
+            <% if checkout[:chances].positive? %>
+              <p class="page-copy mt-2"><%= t("match_review.checkout_opportunities") %>: <strong class="mono"><%= checkout[:chances] %></strong></p>
+              <p class="page-copy"><%= t("match_review.checkout_hits") %>: <strong class="mono"><%= checkout[:hits] %> · <%= checkout[:rate] %>%</strong></p>
+            <% else %>
+              <p class="page-copy mt-2"><%= t("match_review.no_checkout_opportunities") %></p>
+            <% end %>
+          </article>
+        </div>
+      <% end %>
+    </div>
+  </section>
+
+  <section class="theme-card p-5 stack-md">
+    <h2 class="section-title"><%= t("match_review.leg_timeline") %></h2>
+    <% @legs.each_with_index do |entry, index| %>
+      <article class="theme-panel p-4 stack-sm">
+        <h3 class="section-title"><%= t("match_review.leg_number", number: index + 1) %></h3>
+        <% if entry[:leg].winner %>
+          <p class="page-copy"><%= t("match_review.leg_winner", player: entry[:leg].winner.display_name) %></p>
+        <% end %>
+        <% if entry[:turns].any? %>
+          <div class="table-container">
+            <table class="theme-table">
+              <thead><tr><th scope="col"><%= t("match_review.player") %></th><th scope="col"><%= t("match_review.turn_score") %></th><th scope="col"><%= t("training.darts") %></th></tr></thead>
+              <tbody>
+                <% entry[:turns].each do |turn| %>
+                  <tr><td><%= turn[:player].display_name %></td><td class="mono"><%= turn[:score] %></td><td class="mono"><%= turn[:dart_count] %></td></tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        <% else %>
+          <p class="page-copy"><%= t("match_review.no_turns") %></p>
+        <% end %>
+      </article>
+    <% end %>
+  </section>
+</div>

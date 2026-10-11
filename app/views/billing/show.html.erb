@@ -19,12 +19,10 @@
         <label class="auth-label" for="billing_interval"><%= t("billing.billing_interval") %></label>
         <%= form.select :billing_interval, [[t("billing.interval_month"), "month"], [t("billing.interval_year_option"), "year"]], { selected: @billing_interval }, { onchange: "this.form.requestSubmit()", class: "select theme-form-input mono", aria: { label: t("billing.billing_interval") } } %>
       </div>
-      <% if I18n.locale.to_s == "en" %>
-        <div class="column is-12-mobile is-6-tablet is-4-desktop">
-          <label class="auth-label" for="billing_currency">Currency</label>
-          <%= form.select :currency, [["🇺🇸 United States · USD ($)", "usd"], ["🇬🇧 United Kingdom · GBP (£)", "gbp"]], { selected: @billing_currency }, { onchange: "this.form.requestSubmit()", class: "select theme-form-input mono", aria: { label: "Currency" } } %>
-        </div>
-      <% end %>
+      <div class="column is-12-mobile is-6-tablet is-4-desktop">
+        <label class="auth-label" for="billing_currency">Country / currency</label>
+        <%= form.select :currency, [["🇺🇸 United States · USD ($)", "usd"], ["🇬🇧 United Kingdom · GBP (£)", "gbp"], ["🇵🇱 Poland · PLN (zł)", "pln"]], { selected: @billing_currency }, { onchange: "this.form.requestSubmit()", class: "select theme-form-input mono", aria: { label: "Country / currency" } } %>
+      </div>
     </div>
   <% end %>
 

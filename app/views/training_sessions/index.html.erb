@@ -2,13 +2,18 @@
   <div class="theme-hero p-5">
     <div class="theme-section-label"><%= t("training.premium_label") %></div>
     <h1 class="page-title"><%= t("training.title") %></h1>
-    <p class="page-copy mt-3"><%= t("training.intro") %></p>
+    <p class="page-copy mt-3"><%= premium_access? ? t("training.intro") : t("training.free_insights_intro") %></p>
     <div class="buttons mt-4">
-      <%= link_to t("nav.practice_plans"), practice_plans_path, class: "button theme-btn-primary mono" %>
+      <% if premium_access? %>
+        <%= link_to t("nav.practice_plans"), practice_plans_path, class: "button theme-btn-primary mono" %>
+      <% else %>
+        <%= link_to t("nav.upgrade"), billing_path, class: "button theme-btn-outline mono" %>
+      <% end %>
     </div>
   </div>
 
   <div class="training-clean-layout">
+    <% if premium_access? %>
     <section class="training-clean-section">
       <div class="training-clean-header">
         <div>
@@ -44,6 +49,7 @@
         <% end %>
       </div>
     </section>
+    <% end %>
 
     <section class="training-clean-section">
       <div class="training-clean-header">
@@ -52,6 +58,21 @@
           <h2 class="section-title"><%= t("training.your_progress") %></h2>
         </div>
       </div>
+
+      <% if @training_recommendations %>
+        <div class="theme-card p-4 mb-5">
+          <h3 class="section-title"><%= t("training.recommendations.title") %></h3>
+          <% if @training_recommendations[:status] == :insufficient_data %>
+            <p class="page-copy mt-2"><%= t("training.recommendations.insufficient") %></p>
+          <% elsif @training_recommendations[:status] == :on_track %>
+            <p class="page-copy mt-2"><%= t("training.recommendations.on_track") %></p>
+          <% else %>
+            <% @training_recommendations[:recommendations].each do |recommendation| %>
+              <p class="page-copy mt-2"><strong><%= t("training.modes.#{recommendation[:mode]}.name") %></strong> — <%= t("training.recommendations.reason", count: recommendation[:sample_size], delta: recommendation[:delta]) %></p>
+            <% end %>
+          <% end %>
+        </div>
+      <% end %>
 
       <div class="training-stats-list mb-5">
         <% @training_stats.each do |stat| %>
@@ -65,25 +86,29 @@
               <strong class="mono"><%= stat[:best_darts] || "–" %></strong>
             </div>
             <div>
-              <span><%= t("training.recent_avg") %></span>
-              <strong class="mono"><%= stat[:recent_average] || "–" %></strong>
-            </div>
-            <div class="training-trend is-<%= stat[:trend] %>">
-              <% if stat[:delta] %>
-                <span><%= t("training.trend") %></span>
-                <strong class="mono"><%= stat[:delta].negative? ? "▼" : "▲" %> <%= stat[:delta].abs %></strong>
-                <small><%= t("training.trends.#{stat[:trend]}") %></small>
-              <% else %>
-                <span><%= t("training.trend") %></span>
-                <strong class="mono">–</strong>
-                <small><%= t("training.trends.neutral") %></small>
+              <% if premium_access? %>
+                <span><%= t("training.recent_avg") %></span>
+                <strong class="mono"><%= stat[:recent_average] || "–" %></strong>
               <% end %>
             </div>
+            <% if premium_access? %>
+              <div class="training-trend is-<%= stat[:trend] %>">
+                <% if stat[:delta] %>
+                  <span><%= t("training.trend") %></span>
+                  <strong class="mono"><%= stat[:delta].negative? ? "▼" : "▲" %> <%= stat[:delta].abs %></strong>
+                  <small><%= t("training.trends.#{stat[:trend]}") %></small>
+                <% else %>
+                  <span><%= t("training.trend") %></span>
+                  <strong class="mono">–</strong>
+                  <small><%= t("training.trends.neutral") %></small>
+                <% end %>
+              </div>
+            <% end %>
           </div>
         <% end %>
       </div>
 
-      <% if @active_sessions.any? %>
+      <% if premium_access? && @active_sessions.any? %>
         <div class="training-clean-header">
           <div class="theme-section-label"><%= t("training.active_sessions") %></div>
         </div>
@@ -145,7 +170,7 @@
             <tbody>
               <% @training_sessions.each do |session| %>
                 <tr>
-                  <td><%= link_to t("training.modes.#{session.mode}.name"), training_session_path(session) %></td>
+                  <td><% if premium_access? %><%= link_to t("training.modes.#{session.mode}.name"), training_session_path(session) %><% else %><%= t("training.modes.#{session.mode}.name") %><% end %></td>
                   <td><span class="theme-chip mono <%= 'is-live' if session.completed? %>"><%= t("training.statuses.#{session.status}") %></span></td>
                   <td class="mono"><%= session.total_darts %></td>
                   <td class="mono"><%= session.misses %></td>

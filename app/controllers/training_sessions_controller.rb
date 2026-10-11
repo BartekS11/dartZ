@@ -1,15 +1,16 @@
 class TrainingSessionsController < ApplicationController
-  before_action :require_training_access
+  before_action :require_training_access, except: :index
   before_action :set_training_session, only: %i[show record complete abandon]
 
   def index
-    TrainingSession.abandon_stale!
+    Current.user.training_sessions.active.where(started_at: ...TrainingSession::ABANDON_AFTER.ago).find_each(&:abandon!)
     @active_sessions = Current.user.training_sessions.active.recent_first
     @training_history_mode = params[:training_mode].presence_in(TrainingSession::MODES) || "all"
     @training_history_limit = params[:limit].to_i.presence_in([ 5, 10, 25, 50 ]) || 25
     @training_sessions = filtered_training_history.limit(@training_history_limit)
     @available_modes = TrainingSession::LEGACY_MODES + (FeatureAccess.enabled?(:expanded_training) ? TrainingSession::EXPANDED_MODES : [])
     @training_stats = TrainingStats.new(user: Current.user).summary.select { |stat| @available_modes.include?(stat[:mode]) }
+    @training_recommendations = TrainingRecommendations.new(user: Current.user, stats: @training_stats).call if Current.user.effective_account_tier == "pro" && Current.user.premium_access?
   end
 
   def create

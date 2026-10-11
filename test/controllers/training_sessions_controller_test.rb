@@ -7,14 +7,32 @@ class TrainingSessionsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to new_session_path
   end
 
-  test "free user redirects to billing" do
+  test "free user can see basic saved training insights but cannot start sessions" do
     user = create_user("free-training@example.com")
     login_as(user)
 
     get training_sessions_path
 
+    assert_response :success
+    assert_select "p", text: /basic progress from your saved training history/
+    assert_select "h2", text: "Choose mode", count: 0
+
+    assert_no_difference("TrainingSession.count") do
+      post training_sessions_path, params: { training_session: { mode: "around_the_clock" } }
+    end
     assert_redirected_to billing_path
-    assert_equal "Premium access is required for that feature.", flash[:alert]
+  end
+
+  test "free user can see retained session summaries" do
+    user = create_user("free-history@example.com")
+    user.training_sessions.create!(mode: "around_the_clock", status: "completed", total_darts: 60)
+    login_as(user)
+
+    get training_sessions_path
+
+    assert_response :success
+    assert_select "td", text: "Around the Clock"
+    assert_select "td a", count: 0
   end
 
   test "premium user can view training center" do
@@ -26,6 +44,38 @@ class TrainingSessionsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select "h1", "Training Center"
+    assert_select "h3", text: "Pro training focus", count: 0
+  end
+
+  test "pro user sees an insufficient data state until enough sessions exist" do
+    user = create_user("pro-recommendations@example.com")
+    user.update!(account_tier: "pro")
+    login_as(user)
+
+    get training_sessions_path
+
+    assert_response :success
+    assert_select "h3", text: "Pro training focus"
+    assert_select "p", text: /Complete more training sessions/
+  end
+
+  test "pro recommendations identify modes with declining recent averages" do
+    user = create_user("pro-training-focus@example.com")
+    user.update!(account_tier: "pro")
+    10.times do |index|
+      user.training_sessions.create!(
+        mode: "around_the_clock",
+        status: "completed",
+        total_darts: index < 5 ? 50 : 40,
+        created_at: index.days.ago
+      )
+    end
+    login_as(user)
+
+    get training_sessions_path
+
+    assert_response :success
+    assert_select "p", text: /Across 10 sessions, your recent average increased by 10.0 darts/
   end
 
   test "pro user can start around the clock" do

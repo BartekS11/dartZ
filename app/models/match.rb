@@ -31,6 +31,20 @@ class Match < ApplicationRecord
   validates :invite_token, uniqueness: true, allow_blank: true
   validates :starting_player_position, inclusion: { in: [ 1, 2 ] }
 
+  def enable_review_share!
+    raise ArgumentError, "Only finished matches can be shared" unless finished?
+
+    update!(review_share_token: SecureRandom.urlsafe_base64(32))
+  end
+
+  def disable_review_share!
+    update!(review_share_token: nil)
+  end
+
+  def review_shared?
+    review_share_token.present?
+  end
+
   private
 
   def destroy_direct_legs

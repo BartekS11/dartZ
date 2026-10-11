@@ -19,6 +19,11 @@ class BillingControllerTest < ActionDispatch::IntegrationTest
     assert_select "h2", "Free"
     assert_select "h2", "Premium"
     assert_select "h2", "Pro"
+    assert_includes response.body, "Anonymous, revocable match-result links"
+    assert_includes response.body, "Detailed leg-by-leg reviews and checkout performance"
+    assert_includes response.body, "Evidence-based training recommendations"
+    assert_not_includes response.body, "Future league tools"
+    assert_not_includes response.body, "Priority features"
     assert_select "select[name='billing_interval']"
     assert_select "form[action='#{checkout_billing_path(tier: "premium", interval: "month", currency: "usd")}']"
     assert_select "form[action='#{checkout_billing_path(tier: "pro", interval: "month", currency: "usd")}']"
@@ -45,6 +50,7 @@ class BillingControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "select[name='currency'] option[value='usd']"
     assert_select "select[name='currency'] option[value='gbp']"
+    assert_select "select[name='currency'] option[value='pln']"
     assert_includes response.body, "£3.99"
     assert_includes response.body, "GBP"
   end
@@ -56,7 +62,7 @@ class BillingControllerTest < ActionDispatch::IntegrationTest
     get billing_path(locale: "pl")
 
     assert_response :success
-    assert_includes response.body, "19,99 zł"
+    assert_includes response.body, "9,99 zł"
     assert_includes response.body, "PLN"
   end
 

@@ -12,12 +12,7 @@ class AccountTierCatalog
         price: prices[:free],
         interval: I18n.t("billing.interval_forever", default: "forever"),
         description: I18n.t("billing.free_desc"),
-        features: [
-          I18n.t("billing.features.x01", default: "X01 scoreboard"),
-          I18n.t("billing.features.bot_limited", default: "40 bot matches/week, up to Bo5"),
-          I18n.t("billing.features.tournament_browsing", default: "Tournament browsing"),
-          I18n.t("billing.features.local_history", default: "Local match history")
-        ]
+        features: free_features
       },
       {
         name: I18n.t("billing.premium_name"),
@@ -25,13 +20,7 @@ class AccountTierCatalog
         price: prices[:premium],
         interval: interval_label,
         description: I18n.t("billing.premium_desc"),
-        features: [
-          I18n.t("billing.features.everything_free", default: "Everything in Free"),
-          I18n.t("billing.features.bot_unlimited", default: "Unlimited bot matches"),
-          I18n.t("billing.features.dart_setup"),
-          I18n.t("billing.features.dart_details", default: "Manufacturer, weight, shaft, and point details"),
-          I18n.t("billing.features.premium_stats", default: "Future premium stats and preferences")
-        ]
+        features: premium_features
       },
       {
         name: I18n.t("billing.pro_name"),
@@ -39,13 +28,7 @@ class AccountTierCatalog
         price: prices[:pro],
         interval: interval_label,
         description: I18n.t("billing.pro_desc"),
-        features: [
-          I18n.t("billing.features.everything_premium", default: "Everything in Premium"),
-          I18n.t("billing.features.bot_unlimited", default: "Unlimited bot matches"),
-          I18n.t("billing.features.advanced_stats"),
-          I18n.t("billing.features.league_tools", default: "Future league tools"),
-          I18n.t("billing.features.priority")
-        ]
+        features: pro_features
       }
     ]
   end
@@ -53,6 +36,48 @@ class AccountTierCatalog
   private
 
   attr_reader :prices, :interval
+
+  def free_features
+    [
+      feature(:x01),
+      feature(:bot_limited),
+      feature(:tournaments),
+      feature(:remote_matches),
+      feature(:match_statistics),
+      feature(:training_progress),
+      feature(:result_sharing)
+    ].tap do |features|
+      features << feature(:social_play) if FeatureAccess.enabled?(:friends)
+      features << feature(:push_notifications) if FeatureAccess.enabled?(:web_push)
+    end
+  end
+
+  def premium_features
+    [
+      feature(:everything_free),
+      feature(:bot_unlimited),
+      feature(:structured_training),
+      feature(:practice_plans),
+      feature(:dart_setup),
+      feature(:dart_setup_stats),
+      feature(:match_review)
+    ].tap do |features|
+      features << feature(:expanded_training) if FeatureAccess.enabled?(:expanded_training)
+      features << feature(:advanced_stats) if FeatureAccess.enabled?(:advanced_stats)
+    end
+  end
+
+  def pro_features
+    [
+      feature(:everything_premium),
+      feature(:training_recommendations),
+      feature(:pro_match_analysis)
+    ]
+  end
+
+  def feature(key)
+    I18n.t("billing.features.#{key}")
+  end
 
   def interval_label
     interval == "year" ? I18n.t("billing.interval_year") : I18n.t("billing.interval_month")

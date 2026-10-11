@@ -1,6 +1,6 @@
 class MatchesController < ApplicationController
   allow_unauthenticated_access
-  before_action :resume_session_optional, only: %i[index show create summary checkout clear]
+  before_action :resume_session_optional, only: %i[index show create summary checkout clear review share]
   rescue_from ActiveRecord::RecordNotFound, with: :match_not_found
 
   def index
@@ -66,6 +66,34 @@ class MatchesController < ApplicationController
     return if performed?
 
     render json: MatchStatePresenter.new(match).summary_payload
+  end
+
+  def review
+    @match = Match.includes(players: :user, match_sets: [ { legs: [ { turns: :throws }, { leg_players: :player } ] } ]).find_by_public_id!(params[:id])
+    authorize_match!(@match)
+    return if performed?
+    return redirect_to match_path(@match), alert: t("match_review.finished_only") unless @match.finished?
+    return redirect_to billing_path, alert: t("flashes.premium_required") unless premium_access?
+
+    @presenter = MatchStatePresenter.new(@match)
+    @legs = MatchReviewTimeline.new(match: @match).legs
+  end
+
+  def share
+    match = Match.find_by_public_id!(params[:id])
+    authorize_match!(match)
+    return if performed?
+    return head :forbidden unless Current.user && match.players.exists?(user_id: Current.user.id)
+
+    if request.post?
+      match.enable_review_share!
+      redirect_to match_path(match), notice: t("match_review.share_enabled")
+    else
+      match.disable_review_share!
+      redirect_to match_path(match), notice: t("match_review.share_disabled")
+    end
+  rescue ArgumentError
+    redirect_to match_path(match), alert: t("match_review.finished_only")
   end
 
   def checkout

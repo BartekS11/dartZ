@@ -6,7 +6,10 @@ class TiersController < ApplicationController
     redirect_to billing_path and return if Current.user
 
     @billing_currency = billing_currency
-    @tiers = AccountTierCatalog.new(prices: AccountTierPricing.new(currency: @billing_currency).prices).tiers
+    @billing_interval = %w[month year].include?(params[:billing_interval]) ? params[:billing_interval] : "month"
+    pricing = AccountTierPricing.new(currency: @billing_currency)
+    @tiers = AccountTierCatalog.new(prices: pricing.prices(interval: @billing_interval), interval: @billing_interval).tiers
+    @regular_year_prices = %i[premium pro].index_with { |tier| pricing.undiscounted_year_price_label(tier) }
   end
 
   private

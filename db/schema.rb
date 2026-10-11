@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_17_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_26_172020) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -214,6 +214,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_17_120000) do
     t.string "match_identifier"
     t.boolean "player_display_reversed", default: false, null: false
     t.string "public_id", null: false
+    t.string "review_share_token"
     t.integer "starting_player_position", default: 1, null: false
     t.integer "starting_score", default: 501, null: false
     t.datetime "updated_at", null: false
@@ -223,6 +224,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_17_120000) do
     t.index ["invite_expires_at"], name: "index_matches_on_invite_expires_at"
     t.index ["invite_token"], name: "index_matches_on_invite_token", unique: true
     t.index ["public_id"], name: "index_matches_on_public_id", unique: true
+    t.index ["review_share_token"], name: "index_matches_on_review_share_token", unique: true, where: "(review_share_token IS NOT NULL)"
   end
 
   create_table "notification_preferences", force: :cascade do |t|

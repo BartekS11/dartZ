@@ -195,6 +195,12 @@ nl:
     premium_label: Premiumtraining
     title: Trainingscentrum
     intro: Oefen gerichte dartsoefeningen en bewaar elke sessie in je accountgeschiedenis.
+    free_insights_intro: Bekijk basisvoortgang op basis van je opgeslagen trainingsgeschiedenis. Premium ontgrendelt trainingssessies en oefenplannen.
+    recommendations:
+      title: Pro-trainingsfocus
+      insufficient: Voltooi meer sessies in een modus om aanbevelingen op basis van gegevens te ontgrendelen.
+      on_track: Je recente trainingsgegevens tonen geen duidelijk aandachtspunt. Blijf oefenen.
+      reason: Over %{count} sessies is je recente gemiddelde met %{delta} darts gestegen. Oefen deze modus opnieuw tijdens je volgende training.
     new_session: Nieuwe sessie
     choose_mode: Kies een modus
     start: Starten
@@ -285,6 +291,37 @@ nl:
       active: Actief
       completed: Voltooid
       abandoned: Afgebroken
+  match_review:
+    finished_only: Alleen voltooide wedstrijden kunnen worden gedeeld of bekeken.
+    share_enabled: Resultaten delen is ingeschakeld.
+    share_disabled: De deellink voor het resultaat is ingetrokken.
+    share_title: Resultaat delen
+    result_only_notice: Deze link deelt alleen het resultaat. Spelersnamen en details per worp zijn verborgen.
+    open_share_link: Resultaatlink openen
+    revoke_share: Link intrekken
+    create_share: Anonieme resultaatlink maken
+    premium_label: Premium wedstrijdanalyse
+    title: Wedstrijdanalyse
+    back_to_match: Terug naar wedstrijdresultaat
+    checkout_review: Checkoutprestaties
+    checkout_opportunities: Checkoutkansen
+    checkout_hits: Checkouts voltooid
+    no_checkout_opportunities: Er zijn geen checkoutkansen geregistreerd in deze wedstrijd.
+    leg_timeline: Scoreverloop per leg
+    leg_number: Leg %{number}
+    leg_winner: "%{player} heeft deze leg gewonnen."
+    player: Speler
+    turn_score: Beurt score
+    no_turns: Er zijn geen beurten voor deze leg geregistreerd.
+    shared_result: Gedeeld resultaat
+    winner: "%{player} heeft gewonnen"
+    player_number: Speler %{number}
+    review_match: Wedstrijd analyseren
+    unlock_review: Ontgrendel uitgebreide analyse
+    pro_analysis: Pro-wedstrijdanalyse
+    first_nine_average: Gemiddelde eerste negen darts
+    high_turns: Beurten van 100+
+    checkout_rate: Checkoutpercentage
   friends:
     label: Sociaal spelen
     title: Vrienden en uitdagingen
@@ -892,6 +929,7 @@ nl:
     start_free: Gratis account aanmaken
     create_to_upgrade: Maak een account aan om te upgraden
     footer_note: Prijzen in %{currency}. Betaalde upgrades zijn beschikbaar nadat je een account hebt aangemaakt.
+    promo_price: Jaarlijkse actieprijs
   billing:
     title: Upgraden
     current: 'Huidig: %{tier}'
@@ -924,29 +962,32 @@ nl:
     free_name: Gratis
     premium_name: Premium
     pro_name: Pro
-    free_desc: Snel als gast darten en wedstrijdgeschiedenis bewaren in je account.
-    premium_desc: Dartinstellingen bijhouden, uitgebreidere statistieken en toernooifuncties.
-    pro_desc: Voor clubs en organisatoren van toernooien.
+    free_desc: Wedstrijden scoren, toernooien spelen en je wedstrijdgeschiedenis bewaren.
+    premium_desc: Verbeter je spel met gestructureerde training, oefenplannen en uitgebreide wedstrijdanalyses.
+    pro_desc: Ontvang datagestuurde trainingsadviezen en diepere analyses per wedstrijd.
     features:
       x01: X01-scorebord
       bot: Wedstrijden tegen bots
-      bot_limited: 40 botwedstrijden per week, tot Bo5
+      bot_limited: Maximaal 40 botwedstrijdcredits per week (Bo5 kost één credit)
       bot_unlimited: Onbeperkt wedstrijden tegen bots
-      tournament_browsing: Toernooien bekijken
-      local_history: Lokale wedstrijdgeschiedenis
       everything_free: Alles van Gratis
       everything_premium: Alles van Premium
-      dart_details: Merk, gewicht, shaft en punt
-      premium_stats: Toekomstige premiumstatistieken en voorkeuren
-      league_tools: Toekomstige competitiesfuncties
-      guest_matches: Gastwedstrijden
-      saved_history: Opgeslagen wedstrijdgeschiedenis
-      invite_matches: Wedstrijden via uitnodiging
-      dart_setup: Dartinstellingen bijhouden
-      advanced_stats: Geavanceerde statistieken
-      tournaments: Toernooifuncties
-      priority: Functies met prioriteit
-      club: Handige workflows voor clubs
+      dart_setup: Je dartinstelling opslaan en bijhouden
+      tournaments: Toernooien maken, bekijken en spelen
+      remote_matches: Nodig vrienden uit voor wedstrijden op afstand
+      match_statistics: Persoonlijke wedstrijdstatistieken en opgeslagen geschiedenis
+      push_notifications: Pushmeldingen voor sociale en toernooiactiviteit
+      training_progress: Basisinzichten uit opgeslagen trainingsgeschiedenis
+      result_sharing: Anonieme, herroepbare links naar wedstrijdresultaten
+      social_play: Vrienden en wedstrijduitdagingen
+      structured_training: Gestructureerde trainingsmodi
+      expanded_training: Uitgebreide trainingsmodi
+      practice_plans: Oefenplannen op basis van sjablonen, eigen keuzes en statistieken
+      dart_setup_stats: Opgeslagen dartinstellingen en statistieken per instelling
+      match_review: Gedetailleerde analyse per leg en checkoutprestaties
+      advanced_stats: Geavanceerde wedstrijdstatistieken en filters
+      training_recommendations: Datagestuurde trainingsadviezen
+      pro_match_analysis: Pro-analyse van scores en checkouts per wedstrijd
   mailers:
     reset_subject: Je wachtwoord opnieuw instellen
     reset_html: Je kunt je wachtwoord binnen de komende 15 minuten opnieuw instellen op

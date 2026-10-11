@@ -2,7 +2,7 @@ class AccountTierPricing
   MONTHLY_AMOUNTS = {
     "usd" => { premium: 499, pro: 999 },
     "gbp" => { premium: 399, pro: 799 },
-    "pln" => { premium: 1_999, pro: 3_999 }
+    "pln" => { premium: 999, pro: 1_999 }
   }.freeze
 
   def initialize(currency:)
@@ -19,14 +19,11 @@ class AccountTierPricing
   end
 
   def price_label(tier, interval = "month")
-    amount = amount_for(tier, interval: interval)
-    if currency == "pln"
-      whole, fractional = amount.divmod(100)
-      "#{whole},#{format('%02d', fractional)} zł"
-    else
-      symbol = currency == "gbp" ? "£" : "$"
-      "#{symbol}#{format('%.2f', amount / 100.0)}"
-    end
+    format_amount(amount_for(tier, interval: interval))
+  end
+
+  def undiscounted_year_price_label(tier)
+    format_amount(amount_for(tier) * 12)
   end
 
   private
@@ -35,5 +32,15 @@ class AccountTierPricing
 
   def free_label
     currency == "pln" ? "0 zł" : (currency == "gbp" ? "£0" : "$0")
+  end
+
+  def format_amount(amount)
+    if currency == "pln"
+      whole, fractional = amount.divmod(100)
+      "#{whole},#{format('%02d', fractional)} zł"
+    else
+      symbol = currency == "gbp" ? "£" : "$"
+      "#{symbol}#{format('%.2f', amount / 100.0)}"
+    end
   end
 end

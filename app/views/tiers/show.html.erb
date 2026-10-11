@@ -19,16 +19,31 @@
     </div>
   </section>
 
-  <section class="columns is-multiline is-variable is-3">
-    <% @tiers.each do |tier| %>
-      <div class="column is-12-tablet is-4-desktop">
-        <article class="theme-card p-5 h-full stack-md">
+  <section class="theme-card p-4">
+    <%= form_with url: tiers_path, method: :get, class: "has-text-centered mb-5" do |form| %>
+      <span class="auth-label is-block"><%= t("billing.billing_interval") %></span>
+      <div class="billing-period-switch">
+        <%= form.radio_button :billing_interval, "month", checked: @billing_interval == "month", onchange: "this.form.requestSubmit()", class: "billing-period-input", id: "billing-period-month" %>
+        <%= form.radio_button :billing_interval, "year", checked: @billing_interval == "year", onchange: "this.form.requestSubmit()", class: "billing-period-input", id: "billing-period-year" %>
+        <label for="billing-period-month" class="billing-period-label"><%= t("billing.interval_month") %></label>
+        <label for="billing-period-year" class="billing-period-label"><%= t("billing.interval_year_option") %></label>
+        <span class="billing-period-thumb" aria-hidden="true"></span>
+      </div>
+    <% end %>
+
+    <div class="columns is-multiline is-variable is-0">
+      <% @tiers.each do |tier| %>
+        <div class="column is-12-tablet is-4-desktop">
+          <article class="tier-price-card p-5 h-full stack-md" style="<%= tier[:key] != 'pro' ? 'border-right:1px solid var(--theme-border);' : '' %>">
           <div>
             <h2 class="section-title"><%= tier[:name] %></h2>
             <p class="page-copy mt-2"><%= tier[:description] %></p>
           </div>
 
-          <div>
+          <div class="tier-price-value <%= 'tier-promo-price' if @billing_interval == 'year' && tier[:key] != 'free' %>">
+            <% if @billing_interval == "year" && tier[:key] != "free" %>
+              <div class="help-theme"><s><%= @regular_year_prices.fetch(tier[:key].to_sym) %></s> <span class="tier-promo-label"><%= t("tiers.promo_price") %></span></div>
+            <% end %>
             <span class="bebas text-5xl"><%= tier[:price] %></span>
             <span class="help-theme">/ <%= tier[:interval] %></span>
           </div>
@@ -42,11 +57,12 @@
           <% if tier[:key] == "free" %>
             <%= link_to t("tiers.start_free"), new_registration_path, class: "button theme-btn-primary is-fullwidth mono" %>
           <% else %>
-            <%= link_to t("tiers.create_to_upgrade"), new_registration_path, class: "button theme-btn-outline is-fullwidth mono" %>
+            <%= link_to t("tiers.create_to_upgrade"), new_registration_path, class: "button theme-btn-outline is-fullwidth mono tier-upgrade-button" %>
           <% end %>
         </article>
-      </div>
-    <% end %>
+        </div>
+      <% end %>
+    </div>
   </section>
 
   <section class="theme-card p-5 is-flex is-flex-wrap-wrap is-justify-content-space-between is-align-items-center gap-3">
