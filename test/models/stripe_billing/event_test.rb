@@ -14,6 +14,20 @@ class StripeBilling::EventTest < ActiveSupport::TestCase
     assert_equal "sub_event", user.stripe_subscription_id
   end
 
+  test "invoice reads subscription from the newer parent structure" do
+    user = create_user("invoice-parent-event@example.com")
+    user.update!(stripe_customer_id: "cus_event")
+    subscription = subscription_fixture(customer: OpenStruct.new(id: "cus_event"))
+    Stripe::Subscription.expects(:retrieve).with("sub_event").returns(subscription)
+
+    process("invoice.paid", OpenStruct.new(parent: OpenStruct.new(
+      subscription_details: OpenStruct.new(subscription: "sub_event")
+    )))
+
+    assert_equal "premium", user.reload.account_tier
+    assert_equal "sub_event", user.stripe_subscription_id
+  end
+
   test "invoice without a subscription does not call Stripe" do
     Stripe::Subscription.expects(:retrieve).never
 
