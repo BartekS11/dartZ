@@ -56,11 +56,11 @@
             <% if Current.user.subscribed? && !current_tier %>
               <div data-controller="confirmation-modal">
                 <button type="button" class="button theme-btn-primary is-fullwidth mono" data-action="confirmation-modal#open"><%= t("billing.upgrade") %></button>
-                <dialog class="theme-card p-5" data-confirmation-modal-target="dialog">
-                  <div class="stack-md">
+                <dialog class="billing-switch-dialog" data-confirmation-modal-target="dialog">
+                  <div class="billing-switch-dialog__content">
                     <h2 class="section-title"><%= t("billing.confirm_switch_title") %></h2>
                     <p class="page-copy"><%= t("billing.confirm_switch_message", tier: tier[:name]) %></p>
-                    <div class="buttons">
+                    <div class="billing-switch-dialog__actions">
                       <%= button_to t("billing.confirm_switch_button"), checkout_billing_path(tier: tier[:key], interval: @billing_interval, currency: @billing_currency), method: :post, class: "button theme-btn-primary mono", data: { turbo: false } %>
                       <button type="button" class="button theme-btn-outline mono" data-action="confirmation-modal#close"><%= t("common.cancel") %></button>
                     </div>

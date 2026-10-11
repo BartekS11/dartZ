@@ -948,7 +948,7 @@ es:
     active_subscription: Gestiona tu suscripción activa en el portal de clientes de Stripe.
     subscription_updated: Se ha actualizado tu plan de suscripción.
     confirm_switch_title: Confirmar cambio de plan
-    confirm_switch_message: "Cambiarás ahora a %{tier}. Se mantendrá tu ciclo de facturación mensual o anual actual y las próximas renovaciones usarán el precio de %{tier}. Stripe puede añadir la diferencia prorrateada a tu próxima factura. ¿Continuar?"
+    confirm_switch_message: "¿Cambiar a %{tier} ahora? Se mantiene tu ciclo mensual o anual. Las próximas renovaciones usarán el precio de %{tier}; la diferencia prorrateada puede aparecer en tu próxima factura."
     confirm_switch_button: Confirmar mejora
     billing_interval: Periodo de facturación
     interval_year: año

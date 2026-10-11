@@ -945,7 +945,7 @@ en:
     active_subscription: "Manage your active subscription in the Stripe customer portal."
     subscription_updated: "Your subscription plan was updated."
     confirm_switch_title: "Confirm plan upgrade"
-    confirm_switch_message: "You’re switching to %{tier} now. Your current monthly or yearly billing schedule stays the same, and future renewals will use the %{tier} price. Any prorated difference may be added to your next invoice. Continue?"
+    confirm_switch_message: "Switch to %{tier} now? Your monthly or yearly cycle stays the same. Future renewals use %{tier} pricing; any prorated difference may appear on your next invoice."
     confirm_switch_button: "Confirm upgrade"
     billing_interval: "Billing interval"
     interval_year: "year"

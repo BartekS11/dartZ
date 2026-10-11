@@ -4155,6 +4155,29 @@ button.app-nav-link:hover {
   }
 }
 
+.billing-switch-dialog {
+  width: min(92vw, 30rem);
+  max-width: 30rem;
+  max-height: min(85vh, 32rem);
+  padding: 1.5rem;
+  border: 1px solid var(--theme-line-strong);
+  border-radius: 1rem;
+  background: var(--theme-surface) !important;
+  color: var(--theme-text);
+  box-shadow: 0 24px 72px #0009;
+}
+.billing-switch-dialog::backdrop { background: rgb(0 0 0 / 72%); }
+.billing-switch-dialog__content { display: grid; gap: 1rem; }
+.billing-switch-dialog__content .section-title { margin: 0; }
+.billing-switch-dialog__content .page-copy { margin: 0; line-height: 1.55; }
+.billing-switch-dialog__actions { display: flex; flex-wrap: wrap; gap: .75rem; }
+.billing-switch-dialog__actions form { margin: 0; }
+@media (max-width: 480px) {
+  .billing-switch-dialog { padding: 1.1rem; }
+  .billing-switch-dialog__actions { flex-direction: column; }
+  .billing-switch-dialog__actions .button { width: 100%; }
+}
+
 .billing-period-switch {
   --switch-width: 15rem;
   position: relative;
