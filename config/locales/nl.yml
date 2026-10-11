@@ -950,6 +950,13 @@ nl:
     confirm_switch_title: Bevestig abonnementswijziging
     confirm_switch_message: Nu overschakelen naar %{tier}? Je maandelijkse of jaarlijkse cyclus blijft hetzelfde. Toekomstige verlengingen gebruiken de prijs van %{tier}; een prijsverschil naar rato kan op je volgende factuur verschijnen.
     confirm_switch_button: Upgrade bevestigen
+    cancel_subscription: Verlenging stopzetten
+    cancel_confirm_title: Abonnement stopzetten?
+    cancel_confirm_message: Je abonnement wordt niet verlengd, maar je behoudt betaalde toegang tot het einde van de huidige factureringsperiode. Daarna worden er geen kosten meer in rekening gebracht.
+    cancel_confirm_button: Abonnement stopzetten
+    cancel_scheduled: Je abonnement eindigt na de huidige betaalde periode. Tot die tijd behoud je toegang.
+    cancel_already_scheduled: Je abonnement staat al gepland om na de huidige betaalde periode te eindigen.
+    cancel_pending: Opzegging gepland. Je betaalde toegang blijft actief tot het einde van de huidige periode.
     billing_interval: Factureringsperiode
     interval_year: jaar
     interval_year_option: 12 Maanden (25% Korting)

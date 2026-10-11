@@ -70,6 +70,29 @@ class BillingController < ApplicationController
     redirect_to billing_path, alert: t("billing.stripe_error")
   end
 
+  def cancel_subscription
+    return redirect_to billing_path, alert: t("billing.no_subscription") unless Current.user.stripe_subscription_id.present?
+    return redirect_to billing_path, alert: t("billing.missing_stripe_config") if Stripe.api_key.blank?
+
+    subscription = Stripe::Subscription.retrieve(Current.user.stripe_subscription_id)
+    if subscription.cancel_at_period_end
+      Current.user.update!(stripe_cancel_at_period_end: true)
+      return redirect_to billing_path, notice: t("billing.cancel_already_scheduled")
+    end
+
+    if subscription.respond_to?(:schedule) && subscription.schedule.present?
+      schedule_id = subscription.schedule.respond_to?(:id) ? subscription.schedule.id : subscription.schedule
+      Stripe::SubscriptionSchedule.release(schedule_id)
+    end
+
+    updated = Stripe::Subscription.update(subscription.id, cancel_at_period_end: true)
+    Current.user.update!(stripe_cancel_at_period_end: updated.cancel_at_period_end)
+    redirect_to billing_path, notice: t("billing.cancel_scheduled")
+  rescue Stripe::StripeError => e
+    Rails.logger.warn("Stripe subscription cancellation failed for user #{Current.user.id}: #{e.class}: #{e.message}")
+    redirect_to billing_path, alert: t("billing.stripe_error")
+  end
+
   def portal
     return redirect_to billing_path, alert: t("billing.no_subscription") if Current.user.stripe_customer_id.blank?
     return redirect_to billing_path, alert: t("billing.missing_stripe_config") if Stripe.api_key.blank?

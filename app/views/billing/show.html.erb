@@ -84,7 +84,24 @@
     <% end %>
     <% if Current.user.stripe_customer_id.present? %>
       <%= button_to t("billing.manage_subscription"), portal_billing_path, method: :post, class: "button theme-btn-outline mono" %>
-    <% else %>
+    <% end %>
+    <% if Current.user.subscribed? && Current.user.stripe_cancel_at_period_end? %>
+      <p class="help-theme"><%= t("billing.cancel_pending") %></p>
+    <% elsif Current.user.subscribed? %>
+      <div data-controller="confirmation-modal">
+        <button type="button" class="button theme-btn-outline mono" data-action="confirmation-modal#open"><%= t("billing.cancel_subscription") %></button>
+        <dialog class="billing-switch-dialog" data-confirmation-modal-target="dialog">
+          <div class="billing-switch-dialog__content">
+            <h2 class="section-title"><%= t("billing.cancel_confirm_title") %></h2>
+            <p class="page-copy"><%= t("billing.cancel_confirm_message") %></p>
+            <div class="billing-switch-dialog__actions">
+              <%= button_to t("billing.cancel_confirm_button"), cancel_subscription_billing_path, method: :post, class: "button theme-btn-primary mono", data: { turbo: false } %>
+              <button type="button" class="button theme-btn-outline mono" data-action="confirmation-modal#close"><%= t("common.cancel") %></button>
+            </div>
+          </div>
+        </dialog>
+      </div>
+    <% elsif Current.user.stripe_customer_id.blank? %>
       <p class="help-theme"><%= t("billing.no_subscription_help") %></p>
     <% end %>
   </section>

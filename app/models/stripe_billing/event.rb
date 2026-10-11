@@ -73,7 +73,8 @@ class StripeBilling::Event
         current_period_end: period_end,
         subscription_id: stripe_id(subscription.id),
         price_id: price&.id,
-        currency: currency
+        currency: currency,
+        cancel_at_period_end: subscription.respond_to?(:cancel_at_period_end) && subscription.cancel_at_period_end
       )
     end
 

@@ -243,6 +243,64 @@ class BillingControllerTest < ActionDispatch::IntegrationTest
     assert_equal "Choose a valid billing interval.", flash[:alert]
   end
 
+  test "subscription cancellation keeps access through the paid period" do
+    user = create_user("cancel-subscription@example.com")
+    paid_until = 1.month.from_now
+    user.update!(account_tier: "premium", stripe_subscription_id: "sub_cancel", stripe_subscription_status: "active", premium_access_expires_at: paid_until)
+    login_as(user)
+    original_key = Stripe.api_key
+    Stripe.api_key = "stripe_secret_key_fake"
+    subscription = OpenStruct.new(id: "sub_cancel", cancel_at_period_end: false)
+    updated = OpenStruct.new(cancel_at_period_end: true)
+    Stripe::Subscription.expects(:retrieve).with("sub_cancel").returns(subscription)
+    Stripe::Subscription.expects(:update).with("sub_cancel", cancel_at_period_end: true).returns(updated)
+
+    post cancel_subscription_billing_path
+
+    assert_redirected_to billing_path
+    assert_equal "premium", user.reload.account_tier
+    assert user.stripe_cancel_at_period_end?
+    assert_equal paid_until.to_i, user.premium_access_expires_at.to_i
+    assert_equal "Your subscription is set to end after the current paid period. You’ll keep access until then.", flash[:notice]
+  ensure
+    Stripe.api_key = original_key
+  end
+
+  test "cancellation releases a pending billing schedule before ending at period end" do
+    user = create_user("scheduled-cancel-subscription@example.com")
+    user.update!(account_tier: "premium", stripe_subscription_id: "sub_cancel", stripe_subscription_status: "active")
+    login_as(user)
+    original_key = Stripe.api_key
+    Stripe.api_key = "stripe_secret_key_fake"
+    subscription = OpenStruct.new(id: "sub_cancel", cancel_at_period_end: false, schedule: OpenStruct.new(id: "sched_cancel"))
+    Stripe::Subscription.stubs(:retrieve).with("sub_cancel").returns(subscription)
+    Stripe::SubscriptionSchedule.expects(:release).with("sched_cancel")
+    Stripe::Subscription.expects(:update).with("sub_cancel", cancel_at_period_end: true).returns(OpenStruct.new(cancel_at_period_end: true))
+
+    post cancel_subscription_billing_path
+
+    assert user.reload.stripe_cancel_at_period_end?
+  ensure
+    Stripe.api_key = original_key
+  end
+
+  test "already scheduled cancellation is not submitted again" do
+    user = create_user("already-cancelled-subscription@example.com")
+    user.update!(account_tier: "premium", stripe_subscription_id: "sub_cancel", stripe_subscription_status: "active")
+    login_as(user)
+    original_key = Stripe.api_key
+    Stripe.api_key = "stripe_secret_key_fake"
+    Stripe::Subscription.stubs(:retrieve).with("sub_cancel").returns(OpenStruct.new(id: "sub_cancel", cancel_at_period_end: true))
+    Stripe::Subscription.expects(:update).never
+
+    post cancel_subscription_billing_path
+
+    assert user.reload.stripe_cancel_at_period_end?
+    assert_equal "Your subscription is already set to end after the current paid period.", flash[:notice]
+  ensure
+    Stripe.api_key = original_key
+  end
+
   test "portal creates stripe portal session" do
     user = create_user("portal@example.com")
     user.update!(stripe_customer_id: "cus_test")

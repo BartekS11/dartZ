@@ -950,6 +950,13 @@ es:
     confirm_switch_title: Confirmar cambio de plan
     confirm_switch_message: "¿Cambiar a %{tier} ahora? Se mantiene tu ciclo mensual o anual. Las próximas renovaciones usarán el precio de %{tier}; la diferencia prorrateada puede aparecer en tu próxima factura."
     confirm_switch_button: Confirmar mejora
+    cancel_subscription: Cancelar renovación
+    cancel_confirm_title: ¿Cancelar la suscripción?
+    cancel_confirm_message: La suscripción no se renovará, pero conservarás el acceso de pago hasta que termine el periodo actual. Después no se te volverá a cobrar.
+    cancel_confirm_button: Cancelar suscripción
+    cancel_scheduled: La suscripción finalizará al terminar el periodo pagado actual. Mantendrás el acceso hasta entonces.
+    cancel_already_scheduled: La suscripción ya está programada para finalizar al terminar el periodo pagado actual.
+    cancel_pending: Cancelación programada. Mantendrás el acceso de pago hasta que termine el periodo actual.
     billing_interval: Periodo de facturación
     interval_year: año
     interval_year_option: 12 Meses (25% de Descuento)

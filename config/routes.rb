@@ -30,6 +30,7 @@ Rails.application.routes.draw do
   resource :billing, only: :show, controller: "billing" do
     post :checkout
     post :portal
+    post :cancel_subscription
   end
   resources :passwords, param: :token
   resource :bot_match, only: [ :new, :create ]
