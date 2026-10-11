@@ -49,7 +49,12 @@ class StripeBilling::Event
     def sync_user_from_subscription(user, subscription, fallback_tier: nil, fallback_currency: nil)
       item = subscription.items&.data&.first
       price = item&.price
-      period_end = subscription.current_period_end.present? ? Time.zone.at(subscription.current_period_end) : nil
+      period_end_timestamp = if subscription.respond_to?(:current_period_end)
+        subscription.current_period_end
+      else
+        item&.current_period_end
+      end
+      period_end = period_end_timestamp.present? ? Time.zone.at(period_end_timestamp) : nil
       tier = subscription.metadata&.tier.presence || fallback_tier.presence || tier_for_price(price&.id) || user.account_tier
       currency = price&.currency.presence || subscription.metadata&.currency.presence || fallback_currency
 
