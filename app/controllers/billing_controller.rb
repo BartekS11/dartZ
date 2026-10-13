@@ -24,8 +24,10 @@ class BillingController < ApplicationController
 
     if Current.user.subscribed?
       if Current.user.account_tier != tier
+        was_canceling = Current.user.stripe_cancel_at_period_end?
         switch_subscription_tier!(tier: tier, interval: interval)
-        return redirect_to billing_path, notice: t("billing.subscription_updated")
+        message = was_canceling ? "subscription_resumed" : "subscription_updated"
+        return redirect_to billing_path, notice: t("billing.#{message}")
       end
       if interval == "year"
         result = schedule_yearly_change!(tier: tier)
@@ -141,7 +143,8 @@ class BillingController < ApplicationController
     updated = Stripe::Subscription.update(
       subscription.id,
       items: [ { id: item.id, price: price_id } ],
-      proration_behavior: "create_prorations"
+      proration_behavior: "create_prorations",
+      cancel_at_period_end: false
     )
     updated_item = updated.items.data.first
     period_end = if updated.respond_to?(:current_period_end)

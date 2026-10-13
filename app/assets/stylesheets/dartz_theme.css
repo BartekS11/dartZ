@@ -233,6 +233,9 @@ a.counter-tournament-card:hover { border-color: var(--theme-primary); color: var
 .theme-subtitle,
 .help-theme { color: var(--theme-muted); margin: 0; }
 .help-theme { font-size: 0.8rem; }
+.subscription-end-date { display: inline-flex; flex-direction: column; gap: 0.2rem; margin: 0.75rem 0; padding: 0.55rem 0.75rem; border: 1px solid color-mix(in srgb, var(--theme-success) 45%, var(--theme-line)); border-radius: 0.6rem; background: color-mix(in srgb, var(--theme-success) 9%, var(--theme-surface)); color: var(--theme-success); font-size: 0.85rem; font-weight: 600; }
+.subscription-end-date.is-cancelled { border-color: color-mix(in srgb, var(--theme-warning, #f59e0b) 55%, var(--theme-line)); background: color-mix(in srgb, var(--theme-warning, #f59e0b) 10%, var(--theme-surface)); color: var(--theme-warning, #b45309); }
+.subscription-end-date__status { font-size: 0.75rem; font-weight: 400; }
 
 .theme-chip,
 .tag.theme-chip {

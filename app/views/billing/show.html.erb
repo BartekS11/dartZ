@@ -80,7 +80,12 @@
     <h2 class="section-title"><%= t("billing.manage_title") %></h2>
     <p class="page-copy"><%= t("billing.currency_note", currency: @billing_currency.upcase) %></p>
     <% if Current.user.premium_access_expires_at.present? %>
-      <p class="mono text-sm"><%= t("billing.access_until", date: l(Current.user.premium_access_expires_at.to_date)) %></p>
+      <p class="subscription-end-date <%= 'is-cancelled' if Current.user.stripe_cancel_at_period_end? %>">
+        <%= t("billing.access_until", date: l(Current.user.premium_access_expires_at.to_date)) %>
+        <% if Current.user.stripe_cancel_at_period_end? %>
+          <span class="subscription-end-date__status"><%= t("billing.cancel_pending") %></span>
+        <% end %>
+      </p>
     <% end %>
     <% if Current.user.stripe_customer_id.present? %>
       <%= button_to t("billing.manage_subscription"), portal_billing_path, method: :post, class: "button theme-btn-outline mono" %>

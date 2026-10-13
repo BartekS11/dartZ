@@ -944,6 +944,7 @@ en:
     no_subscription: "No Stripe subscription is connected to this account yet."
     active_subscription: "Manage your active subscription in the Stripe customer portal."
     subscription_updated: "Your subscription plan was updated."
+    subscription_resumed: "Your subscription is active again and now on the new plan. Future renewals will continue as scheduled."
     confirm_switch_title: "Confirm plan upgrade"
     confirm_switch_message: "Switch to %{tier} now? Your monthly or yearly cycle stays the same. Future renewals use %{tier} pricing; any prorated difference may appear on your next invoice."
     confirm_switch_button: "Confirm upgrade"

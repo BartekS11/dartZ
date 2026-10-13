@@ -947,6 +947,7 @@ nl:
     no_subscription: Er is nog geen Stripe-abonnement aan dit account gekoppeld.
     active_subscription: Beheer je actieve abonnement in het Stripe-klantenportaal.
     subscription_updated: Je abonnementsplan is bijgewerkt.
+    subscription_resumed: Je abonnement is hervat met het nieuwe plan. Toekomstige verlengingen verlopen volgens het bestaande schema.
     confirm_switch_title: Bevestig abonnementswijziging
     confirm_switch_message: Nu overschakelen naar %{tier}? Je maandelijkse of jaarlijkse cyclus blijft hetzelfde. Toekomstige verlengingen gebruiken de prijs van %{tier}; een prijsverschil naar rato kan op je volgende factuur verschijnen.
     confirm_switch_button: Upgrade bevestigen

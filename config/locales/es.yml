@@ -947,6 +947,7 @@ es:
     no_subscription: Aún no hay ninguna suscripción de Stripe vinculada a esta cuenta.
     active_subscription: Gestiona tu suscripción activa en el portal de clientes de Stripe.
     subscription_updated: Se ha actualizado tu plan de suscripción.
+    subscription_resumed: Tu suscripción vuelve a estar activa con el nuevo plan. Las próximas renovaciones seguirán el calendario habitual.
     confirm_switch_title: Confirmar cambio de plan
     confirm_switch_message: "¿Cambiar a %{tier} ahora? Se mantiene tu ciclo mensual o anual. Las próximas renovaciones usarán el precio de %{tier}; la diferencia prorrateada puede aparecer en tu próxima factura."
     confirm_switch_button: Confirmar mejora

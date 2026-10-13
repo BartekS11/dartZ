@@ -117,9 +117,9 @@ class BillingControllerTest < ActionDispatch::IntegrationTest
     Stripe.api_key = original_key
   end
 
-  test "active subscriber can switch tiers using the configured monthly price" do
+  test "switching a cancelled subscriber tier resumes the existing subscription without a second checkout" do
     user = create_user("switch-tier@example.com")
-    user.update!(account_tier: "premium", stripe_subscription_id: "sub_existing", stripe_subscription_status: "active")
+    user.update!(account_tier: "premium", stripe_subscription_id: "sub_existing", stripe_subscription_status: "active", stripe_cancel_at_period_end: true)
     login_as(user)
     original_key = Stripe.api_key
     Stripe.api_key = "stripe_secret_key_fake"
@@ -132,7 +132,7 @@ class BillingControllerTest < ActionDispatch::IntegrationTest
     Stripe::Subscription.expects(:retrieve).with("sub_existing").returns(current)
     StripeBilling::Configuration.expects(:price_id_for).with(tier: "pro", currency: "usd").returns("price_pro_usd")
     Stripe::Subscription.expects(:update).with(
-      "sub_existing", items: [ { id: "si_existing", price: "price_pro_usd" } ], proration_behavior: "create_prorations"
+      "sub_existing", items: [ { id: "si_existing", price: "price_pro_usd" } ], proration_behavior: "create_prorations", cancel_at_period_end: false
     ).returns(updated)
 
     post checkout_billing_path(tier: "pro", interval: "month")
@@ -140,6 +140,8 @@ class BillingControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to billing_path
     assert_equal "pro", user.reload.account_tier
     assert_equal "price_pro_usd", user.stripe_price_id
+    assert_not user.stripe_cancel_at_period_end?
+    assert_equal "Your subscription is active again and now on the new plan. Future renewals will continue as scheduled.", flash[:notice]
   ensure
     Stripe.api_key = original_key
   end
@@ -167,7 +169,7 @@ class BillingControllerTest < ActionDispatch::IntegrationTest
         params[:recurring] == { interval: "year" } && params[:product] == "prod_pro"
     end.returns(OpenStruct.new(id: "price_pro_year"))
     Stripe::Subscription.expects(:update).with(
-      "sub_yearly", items: [ { id: "si_yearly", price: "price_pro_year" } ], proration_behavior: "create_prorations"
+      "sub_yearly", items: [ { id: "si_yearly", price: "price_pro_year" } ], proration_behavior: "create_prorations", cancel_at_period_end: false
     ).returns(updated)
 
     post checkout_billing_path(tier: "pro", interval: "month")

@@ -930,6 +930,7 @@ pl:
     no_subscription: "Do tego konta nie jest jeszcze podpięta subskrypcja Stripe."
     active_subscription: "Zarządzaj aktywną subskrypcją w portalu klienta Stripe."
     subscription_updated: "Plan subskrypcji został zaktualizowany."
+    subscription_resumed: "Subskrypcja została wznowiona i zmieniona na nowy plan. Kolejne odnowienia będą przebiegać zgodnie z harmonogramem."
     confirm_switch_title: "Potwierdź zmianę planu"
     confirm_switch_message: "Zmienić plan na %{tier}? Obecny cykl miesięczny lub roczny pozostanie bez zmian. Kolejne odnowienia będą rozliczane według ceny %{tier}; proporcjonalna różnica może pojawić się na następnej fakturze."
     confirm_switch_button: "Potwierdź zmianę"

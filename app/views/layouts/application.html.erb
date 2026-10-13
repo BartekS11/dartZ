@@ -124,6 +124,14 @@
               <div class="profile-name"><%= Current.user.display_name %></div>
               <div class="profile-email"><%= Current.user.email_address %></div>
               <span class="theme-chip <%= premium_access? ? 'is-live' : '' %>"><%= t("profile.tier", tier: Current.user.effective_account_tier.humanize) %></span>
+              <% if Current.user.premium_access_expires_at.present? %>
+                <p class="subscription-end-date <%= 'is-cancelled' if Current.user.stripe_cancel_at_period_end? %>">
+                  <%= t("billing.access_until", date: l(Current.user.premium_access_expires_at.to_date)) %>
+                  <% if Current.user.stripe_cancel_at_period_end? %>
+                    <span class="subscription-end-date__status"><%= t("billing.cancel_pending") %></span>
+                  <% end %>
+                </p>
+              <% end %>
             </div>
             <hr>
             <%= form_with model: Current.user, url: profile_path, method: :patch, class: "stack-sm" do |f| %>
