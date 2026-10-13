@@ -73,6 +73,18 @@
     <% end %>
   </div>
 
+  <section class="theme-card p-4" aria-labelledby="tournament-status-title">
+    <div class="theme-section-label mono"><%= t("tournaments.current_status") %></div>
+    <h2 id="tournament-status-title" class="section-title mt-1"><%= t("tournaments.status_#{@tournament.status}") %></h2>
+    <% if @next_tournament_match %>
+      <p class="page-copy mt-2"><%= t("tournaments.next_fixture", round: @next_tournament_match.tournament_round.name, match: @next_tournament_match.label, status: t("tournaments.match_status_#{@next_tournament_match.status}")) %></p>
+    <% elsif @tournament.status == "draft" %>
+      <p class="page-copy mt-2"><%= t("tournaments.status_draft_copy") %></p>
+    <% elsif @tournament.status == "complete" %>
+      <p class="page-copy mt-2"><%= t("tournaments.status_complete_copy") %></p>
+    <% end %>
+  </section>
+
   <% if @can_admin %>
     <div class="theme-card counter-admin-card p-5 md:p-6">
       <div class="counter-section-header mb-4">

@@ -719,6 +719,16 @@ nl:
     public_events: Openbare evenementen
     guest: Gasttoernooien
     players: "%{count} spelers"
+    current_status: Toernooistatus
+    status_draft: Concept
+    status_active: Bezig
+    status_complete: Voltooid
+    status_archived: Gearchiveerd
+    status_draft_copy: De organisator bereidt de wedstrijden voor. Kom terug zodra het toernooi begint.
+    status_complete_copy: Alle wedstrijden van het toernooi zijn afgelopen.
+    next_fixture: "%{round} · %{match} · %{status}"
+    match_status_pending: Hierna
+    match_status_live: Nu bezig
     delete_title: Toernooi verwijderen
     delete_aria: "%{title} verwijderen"
     confirm_delete: Verwijderen bevestigen

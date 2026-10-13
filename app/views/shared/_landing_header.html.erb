@@ -17,14 +17,7 @@
       <%= link_to t("home.create_account"), new_registration_path, class: "app-nav-auth-button mono" %>
     <% end %>
 
-    <%= form_with url: locale_path, method: :patch, class: "app-nav-locale-form", data: { turbo: false } do %>
-      <%= hidden_field_tag :return_to, request.fullpath %>
-      <%= select_tag :selected_locale,
-            options_for_select(available_locales.map { |locale| [locale_label(locale), locale] }, I18n.locale.to_s),
-            class: "app-nav-locale-select mono",
-            aria: { label: t("nav.language") },
-            onchange: "this.form.requestSubmit()" %>
-    <% end %>
+    <%= render "shared/locale_picker" %>
 
     <button type="button" class="app-nav-link app-nav-theme-toggle" data-action="theme-mode#toggle" data-theme-mode-target="button" aria-label="<%= t('nav.switch_theme') %>">
       <span aria-hidden="true">◐</span>

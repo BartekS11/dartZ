@@ -50,6 +50,19 @@ class LocalizationTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "language picker uses consistent flat flag icons with accessible labels" do
+    get root_path
+
+    assert_response :success
+    assert_select ".app-nav-locale-options[aria-label='Language']"
+    %w[en pl nl es].each do |locale|
+      assert_select "input[type=radio][name='selected_locale'][value='#{locale}'][aria-label]"
+    end
+    assert_select ".app-nav-locale-options > input[type=radio]", count: 2
+    assert_select ".app-nav-locale-menu-panel input[type=radio]", count: 2
+    assert_select "img.app-nav-locale-flag", count: 4
+  end
+
   test "footer discloses AI-assisted Dutch and Spanish translations in every locale" do
     User::LOCALES.each do |locale|
       get root_path(locale: locale)

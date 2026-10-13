@@ -719,6 +719,16 @@ es:
     public_events: Eventos públicos
     guest: Torneos como invitado
     players: "%{count} jugadores"
+    current_status: Estado del torneo
+    status_draft: Borrador
+    status_active: En curso
+    status_complete: Finalizado
+    status_archived: Archivado
+    status_draft_copy: El organizador está preparando los enfrentamientos. Vuelve cuando comience el torneo.
+    status_complete_copy: Todos los enfrentamientos del torneo han finalizado.
+    next_fixture: "%{round} · %{match} · %{status}"
+    match_status_pending: A continuación
+    match_status_live: En directo
     delete_title: Eliminar torneo
     delete_aria: Eliminar %{title}
     confirm_delete: Confirmar eliminación

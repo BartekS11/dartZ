@@ -61,9 +61,9 @@
         <p class="page-copy"><%= t("match_review.result_only_notice") %></p>
         <% if match.review_shared? %>
           <%= link_to t("match_review.open_share_link"), match_share_path(match.review_share_token), class: "button theme-btn-outline mono", rel: "nofollow" %>
-          <%= button_to t("match_review.revoke_share"), matches_share_path(match), method: :delete, class: "button theme-btn-outline mono" %>
+          <%= button_to t("match_review.revoke_share"), share_match_path(match), method: :delete, class: "button theme-btn-outline mono" %>
         <% else %>
-          <%= button_to t("match_review.create_share"), matches_share_path(match), method: :post, class: "button theme-btn-outline mono" %>
+          <%= button_to t("match_review.create_share"), share_match_path(match), method: :post, class: "button theme-btn-outline mono" %>
         <% end %>
       </div>
     <% end %>

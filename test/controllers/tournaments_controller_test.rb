@@ -100,6 +100,20 @@ class TournamentsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to tournaments_path
   end
 
+  test "tournament show summarizes current round and next fixture" do
+    tournament = Tournament.create!(title: "Status Cup", format_type: "swiss", best_of_legs: 3, best_of_sets: 1, status: "active")
+    round = tournament.rounds.create!(number: 1, name: "Swiss Round 1", stage_type: "swiss", status: "active")
+    home = tournament.entries.create!(name: "Alice")
+    away = tournament.entries.create!(name: "Bob")
+    round.tournament_matches.create!(tournament:, home_entry: home, away_entry: away, best_of_legs: 3, best_of_sets: 1, starting_score: 501, double_in: false, double_out: true)
+
+    get tournament_path(tournament)
+
+    assert_response :success
+    assert_select "#tournament-status-title", text: "In progress"
+    assert_select "section[aria-labelledby='tournament-status-title']", /Swiss Round 1 · Alice vs Bob · up next/
+  end
+
   test "admin can reseed tournament" do
     tournament = Tournament.create!(title: "Reseed Cup", format_type: "playoffs", best_of_legs: 3, best_of_sets: 1)
     tournament.entries.create!(name: "C", seed: 9)

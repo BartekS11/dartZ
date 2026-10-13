@@ -68,6 +68,8 @@ class TournamentsController < ApplicationController
 
     @can_admin = @tournament.can_administer?(user: Current.user, admin_token: params[:admin_token])
     @participant_token = params[:participant_token]
+    @next_tournament_match = @tournament.tournament_matches.includes(:tournament_round, :home_entry, :away_entry)
+      .where.not(status: "complete").order(Arel.sql("CASE status WHEN 'live' THEN 0 ELSE 1 END"), :created_at).first
   end
 
   def live

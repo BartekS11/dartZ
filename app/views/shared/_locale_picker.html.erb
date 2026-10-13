@@ -1,0 +1,28 @@
+<%= form_with url: locale_path, method: :patch, class: "app-nav-locale-form", data: { turbo: false } do %>
+  <%= hidden_field_tag :return_to, request.fullpath %>
+  <div class="app-nav-locale-options" role="group" aria-label="<%= t('nav.language') %>">
+    <% %w[en pl].each do |locale| %>
+      <% next unless available_locales.include?(locale) %>
+      <%= radio_button_tag :selected_locale, locale, I18n.locale.to_s == locale, id: "locale-picker-#{locale}", class: "app-nav-locale-input", aria: { label: t("locales.#{locale}", default: locale.upcase) }, onchange: "this.form.requestSubmit()" %>
+      <%= label_tag "locale-picker-#{locale}", class: "app-nav-locale-option", title: t("locales.#{locale}", default: locale.upcase) do %>
+        <%= image_tag "flags/#{locale}.svg", alt: "", class: "app-nav-locale-flag", aria: { hidden: true } %>
+      <% end %>
+    <% end %>
+
+    <% other_locales = available_locales - %w[en pl] %>
+    <% if other_locales.any? %>
+      <details class="app-nav-locale-menu">
+        <summary class="app-nav-locale-more" aria-label="<%= t('nav.language') %>"><%= other_locales.include?(I18n.locale.to_s) ? image_tag("flags/#{I18n.locale}.svg", alt: "", class: "app-nav-locale-flag", aria: { hidden: true }) : "•••" %></summary>
+        <div class="app-nav-locale-menu-panel">
+          <% other_locales.each do |locale| %>
+            <%= radio_button_tag :selected_locale, locale, I18n.locale.to_s == locale, id: "locale-picker-#{locale}", class: "app-nav-locale-input", aria: { label: t("locales.#{locale}", default: locale.upcase) }, onchange: "this.form.requestSubmit()" %>
+            <%= label_tag "locale-picker-#{locale}", class: "app-nav-locale-menu-option" do %>
+              <%= image_tag "flags/#{locale}.svg", alt: "", class: "app-nav-locale-flag", aria: { hidden: true } %>
+              <span><%= t("locales.#{locale}", default: locale.upcase) %></span>
+            <% end %>
+          <% end %>
+        </div>
+      </details>
+    <% end %>
+  </div>
+<% end %>
