@@ -53,6 +53,10 @@ class MatchSet < ApplicationRecord
     ordered_players = match.players.order(:created_at).to_a
     return nil if ordered_players.empty?
 
+    previous_leg = match.legs.order(:created_at).last
+    previous_starter = previous_leg&.turns&.order(:created_at)&.first&.player
+    return match.next_player_after(previous_starter) if previous_starter
+
     first_starter_index = (match.starting_player_position.to_i - 1).clamp(0, ordered_players.size - 1)
     ordered_players[(first_starter_index + match.legs.count) % ordered_players.size]
   end
