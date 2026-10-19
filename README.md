@@ -269,4 +269,4 @@ Run migrations and operational Rails commands through the `rails-app` devcontain
 
 ## Deployment
 
-The project includes a production `Dockerfile` and Kamal configuration. Production uses PostgreSQL plus database-backed Solid Queue, Solid Cache, and Solid Cable services. Export `ADMIN_EMAIL`, `ADMIN_PASSWORD`, and `ADMIN_PATH` before running Kamal; `.kamal/secrets` forwards them without storing their values in the repository. Run migrations and then `bin/rails db:seed` once to create the initial administrator.
+The project includes a production `Dockerfile` and Kamal configuration. Production uses PostgreSQL plus database-backed Solid Queue, Solid Cache, and Solid Cable services. Export `ADMIN_EMAIL`, `ADMIN_PASSWORD`, and `ADMIN_PATH` before running Kamal; `.kamal/secrets` forwards them without storing their values in the repository. Run migrations and then `bin/rails db:seed` once to create the initial administrator. Successful `bin/kamal deploy` runs a post-deploy hook that removes older `barteks11/dartz` image tags from the configured hosts, retaining the two newest distinct app images.

@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+image_repository="barteks11/dartz"
+
+IFS=',' read -r -a hosts <<< "${KAMAL_HOSTS:?KAMAL_HOSTS is required}"
+for host in "${hosts[@]}"; do
+  echo "Retaining the two newest ${image_repository} images on ${host}..."
+  ssh "$host" "bash -s -- '$image_repository'" <<'REMOTE'
+set -euo pipefail
+repository="$1"
+
+# CreatedAt starts with an ISO date, so lexical reverse sort orders images
+# newest-first. Keep the two newest distinct image IDs, and remove only tags
+# in this exact repository that point to older images.
+mapfile -t image_rows < <(
+  docker image ls "$repository" --format '{{.ID}}|{{.Repository}}:{{.Tag}}|{{.CreatedAt}}' |
+    sort -t '|' -k3,3r
+)
+
+retained_ids=()
+seen_ids=()
+for row in "${image_rows[@]}"; do
+  IFS='|' read -r image_id image_tag created_at <<< "$row"
+  [[ -n "$image_id" && "$image_tag" == "$repository:"* ]] || continue
+
+  if [[ ! " ${seen_ids[*]} " == *" $image_id "* ]]; then
+    seen_ids+=("$image_id")
+    if (( ${#retained_ids[@]} < 2 )); then
+      retained_ids+=("$image_id")
+    fi
+  fi
+done
+
+for row in "${image_rows[@]}"; do
+  IFS='|' read -r image_id image_tag created_at <<< "$row"
+  [[ -n "$image_id" && "$image_tag" == "$repository:"* ]] || continue
+  if [[ ! " ${retained_ids[*]} " == *" $image_id "* ]]; then
+    echo "Removing $image_tag ($image_id)"
+    docker image rm "$image_tag"
+  fi
+done
+REMOTE
+done
