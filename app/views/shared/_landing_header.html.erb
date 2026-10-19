@@ -7,6 +7,9 @@
     </span>
   <% end %>
 
+  <details class="landing-mobile-menu mobile-nav-menu" open>
+    <summary class="mobile-nav-toggle" aria-label="<%= t('home.navigation') %>"><span aria-hidden="true">☰</span><span class="mobile-nav-toggle-label"><%= t('nav.menu') %></span></summary>
+    <div class="mobile-nav-content">
   <div class="nav-utilities <%= 'has-account' if Current.user %>">
     <% if Current.user %>
       <span class="landing-user-name mono"><%= Current.user.display_name %></span>
@@ -24,4 +27,6 @@
       <span data-theme-mode-target="label" class="visually-hidden"><%= t("nav.light_theme") %></span>
     </button>
   </div>
+    </div>
+  </details>
 </nav>

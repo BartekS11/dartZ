@@ -70,6 +70,7 @@ en:
     register: "Register"
     login: "Login"
     language: "Language"
+    menu: "Menu"
     switch_theme: "Switch theme"
     light_theme: "Light theme"
   home:

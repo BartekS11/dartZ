@@ -70,6 +70,7 @@ pl:
     register: "Rejestracja"
     login: "Logowanie"
     language: "Język"
+    menu: "Menu"
     switch_theme: "Zmień motyw"
     light_theme: "Jasny motyw"
   home:

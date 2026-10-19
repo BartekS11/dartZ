@@ -47,6 +47,9 @@
           <% end %>
         </div>
 
+        <details class="mobile-nav-menu" open>
+          <summary class="mobile-nav-toggle" aria-label="<%= t('home.navigation') %>"><span aria-hidden="true">☰</span><span class="mobile-nav-toggle-label"><%= t('nav.menu') %></span></summary>
+          <div class="mobile-nav-content">
         <div class="simple-nav-scroll">
           <%= link_to t("nav.match"), matches_path, class: "app-nav-link #{'is-active' if current_page?(matches_path)}" %>
           <%= link_to t("nav.bot"), new_bot_match_path, class: "app-nav-link #{'is-active' if current_page?(new_bot_match_path)}" %>
@@ -109,6 +112,8 @@
             <span data-theme-mode-target="label" class="visually-hidden"><%= t("nav.light_theme") %></span>
           </button>
         </div>
+          </div>
+        </details>
 
         <% if Current.user %>
           <div id="profileMenu" data-profile-menu-target="menu" class="hidden profile-menu-panel">
@@ -173,5 +178,14 @@
     </footer>
   </div>
   <%= render "shared/onboarding_guide" %>
+  <script>
+    (() => {
+      const syncNavigation = () => document.querySelectorAll(".mobile-nav-menu").forEach(menu => {
+        menu.open = !window.matchMedia("(max-width: 760px)").matches;
+      });
+      syncNavigation();
+      window.addEventListener("resize", syncNavigation);
+    })();
+  </script>
 </body>
 </html>

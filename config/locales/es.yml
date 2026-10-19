@@ -71,6 +71,7 @@ es:
     register: Registrarse
     login: Iniciar sesión
     language: Idioma
+    menu: Menú
     switch_theme: Cambiar tema
     light_theme: Tema claro
   home:

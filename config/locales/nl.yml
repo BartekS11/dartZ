@@ -71,6 +71,7 @@ nl:
     register: Registreren
     login: Inloggen
     language: Taal
+    menu: Menu
     switch_theme: Thema wijzigen
     light_theme: Licht thema
   home:
