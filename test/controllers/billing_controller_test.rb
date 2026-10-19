@@ -24,7 +24,7 @@ class BillingControllerTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "Evidence-based training recommendations"
     assert_not_includes response.body, "Future league tools"
     assert_not_includes response.body, "Priority features"
-    assert_select "select[name='billing_interval']"
+    assert_select "input[name='billing_interval'][type='radio']"
     assert_select "form[action='#{checkout_billing_path(tier: "premium", interval: "month", currency: "usd")}']"
     assert_select "form[action='#{checkout_billing_path(tier: "pro", interval: "month", currency: "usd")}']"
   end
@@ -48,9 +48,9 @@ class BillingControllerTest < ActionDispatch::IntegrationTest
     get billing_path(currency: "gbp")
 
     assert_response :success
-    assert_select "select[name='currency'] option[value='usd']"
-    assert_select "select[name='currency'] option[value='gbp']"
-    assert_select "select[name='currency'] option[value='pln']"
+    assert_select "input[name='currency'][type='radio'][value='usd']"
+    assert_select "input[name='currency'][type='radio'][value='gbp']"
+    assert_select "input[name='currency'][type='radio'][value='pln']"
     assert_includes response.body, "£3.99"
     assert_includes response.body, "GBP"
   end
