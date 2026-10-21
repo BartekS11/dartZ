@@ -117,7 +117,7 @@ builder:
 # Use accessory services (secrets come from .kamal/secrets).
 accessories:
   db:
-    image: postgres:16.1
+    image: postgres:16.15
     host: 178.104.253.163
     # Change to 5432 to expose port to the world instead of just local network.
     port: "127.0.0.1:5432:5432"
@@ -132,8 +132,9 @@ accessories:
     files:
       # - config/mysql/production.cnf:/etc/mysql/my.cnf
       - db/production.sql:/docker-entrypoint-initdb.d/setup.sql
-    directories:
-      - data:/var/lib/postgres/data
+    # Reuse the existing production database volume; do not prune it.
+    volumes:
+      - c45b673cfa8f4ae5b210660f3b7f345325f0f52157154aa0d2b4073634496a31:/var/lib/postgresql/data
 #   redis:
 #     image: valkey/valkey:8
 #     host: 192.168.0.2

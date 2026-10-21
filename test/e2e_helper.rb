@@ -19,7 +19,7 @@ module E2EPostgres
     assert_docker_available!
 
     @container = Testcontainers::PostgresContainer.new(
-      "postgres:16-alpine",
+      "postgres:16.15-alpine",
       username: "test",
       password: "test",
       database: "test"
