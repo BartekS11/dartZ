@@ -4,6 +4,8 @@
       <% landing_title = t("home.title") %>
       <h1 class="landing-title"><%= landing_title.delete_suffix("Z") %><span class="landing-title-accent">Z</span></h1>
 
+      <p class="page-copy mt-3"><%= t("meta.description") %></p>
+
       <div class="landing-primary-actions">
         <%= link_to t("home.play_now"), matches_path, class: "button landing-play-button" %>
         <% if Current.user %>

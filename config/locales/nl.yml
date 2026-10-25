@@ -53,6 +53,7 @@ nl:
         tip: "De rondleiding verzendt het formulier niet."
       return_home: "Terug naar de hoofdpagina"
   meta:
+    title: "%{app_name} | Dartscore bijhouden, 501 en training"
     description: DartZ is een moderne dartsapp om 501-wedstrijden, oefenen tegen bots, toernooien, trainingssessies, worpen, gemiddelden en finishes bij te houden.
   nav:
     match: Wedstrijd

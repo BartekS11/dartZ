@@ -1,8 +1,23 @@
 <!DOCTYPE html>
 <html lang="<%= I18n.locale %>" data-theme="dark">
 <head>
-  <title><%= theme_app_name %></title>
+  <title><%= landing_page? ? t("meta.title", app_name: theme_app_name) : theme_app_name %></title>
   <meta name="description" content="<%= t("meta.description") %>">
+  <% if landing_page? %>
+    <link rel="canonical" href="<%= landing_canonical_url %>">
+    <% I18n.available_locales.each do |locale| %>
+      <link rel="alternate" hreflang="<%= locale %>" href="<%= landing_canonical_url(locale) %>">
+    <% end %>
+    <link rel="alternate" hreflang="x-default" href="<%= landing_canonical_url(I18n.default_locale) %>">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="<%= theme_app_name %>">
+    <meta property="og:title" content="<%= t("meta.title", app_name: theme_app_name) %>">
+    <meta property="og:description" content="<%= t("meta.description") %>">
+    <meta property="og:url" content="<%= landing_canonical_url %>">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="<%= t("meta.title", app_name: theme_app_name) %>">
+    <meta name="twitter:description" content="<%= t("meta.description") %>">
+  <% end %>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <%= csrf_meta_tags %>
   <%= csp_meta_tag %>

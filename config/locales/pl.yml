@@ -52,6 +52,7 @@ pl:
         tip: "Przewodnik nie wyśle formularza konfiguracji."
       return_home: "Wróć na stronę główną"
   meta:
+    title: "%{app_name} | Licznik punktów darta, mecze 501 i trening"
     description: "DartZ to nowoczesna aplikacja do punktowania darta: mecze 501, gra z botem, turnieje, treningi, rzuty, średnie i checkouty."
   nav:
     match: "Mecz"

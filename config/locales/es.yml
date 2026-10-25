@@ -53,6 +53,7 @@ es:
         tip: "La guía no enviará el formulario."
       return_home: "Volver a la página principal"
   meta:
+    title: "%{app_name} | Marcador de dardos, partidas 501 y entrenamiento"
     description: DartZ es una aplicación moderna de dardos para seguir partidas de 501, practicar contra bots, participar en torneos y registrar entrenamientos, lanzamientos, promedios y cierres.
   nav:
     match: Partida

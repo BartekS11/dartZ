@@ -52,6 +52,7 @@ en:
         tip: "The guided tour will not submit the setup form."
       return_home: "Return to main page"
   meta:
+    title: "%{app_name} | Darts Scoring, 501 Matches & Training"
     description: "DartZ is a modern darts scoring app for tracking 501 matches, bot practice, tournaments, training sessions, throws, averages, and checkout finishes."
   nav:
     match: "Match"
