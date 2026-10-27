@@ -31,6 +31,14 @@
       <dt><%= t("stats.three_dart_average") %></dt>
       <dd><%= avg %></dd>
     </div>
+    <div class="match-score-stat match-score-leg-darts">
+      <dt><%= t("live_match.darts_leg") %></dt>
+      <dd><%= presenter.leg_darts_thrown_for(player) %></dd>
+    </div>
+    <div class="match-score-stat match-score-match-darts">
+      <dt><%= t("live_match.darts_match") %></dt>
+      <dd><%= presenter.darts_thrown_for(player) %></dd>
+    </div>
   </dl>
 
   <div class="match-score-meta <%= 'has-leg-set-score' if multi_set || multi_leg %>">

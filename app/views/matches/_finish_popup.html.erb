@@ -1,3 +1,4 @@
+<% if player.present? && leg.present? %>
 <% match      = leg.match %>
 <% multi_set  = match.best_of_sets > 1 %>
 <% multi_leg  = match.best_of_legs > 1 %>
@@ -79,3 +80,4 @@
     <% end %>
   </div>
 </div>
+<% end %>

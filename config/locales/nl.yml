@@ -892,6 +892,8 @@ nl:
     no_throws_yet: Nog geen worpen
     show_older: "▼ OUDERE TONEN"
     last_throw: Laatste worp
+    darts_leg: "Darts (leg)"
+    darts_match: "Darts (wedstrijd)"
     sets: Sets
     legs: Legs
     match_won: Wedstrijd gewonnen

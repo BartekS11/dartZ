@@ -6,6 +6,13 @@ module ScoringRules
   end
 
   def apply_throw!(throw, broadcast: true, skip_checkout_rule: false)
+      match = leg.match
+      return if match.finished? || completed?
+      if match.enforce_dart_limit!(player)
+        broadcast_turn_change! if broadcast
+        return
+      end
+
       lp             = leg_player
       starting_score = lp.score
       throw_count    = throws.respond_to?(:size) ? throws.size : throws.count

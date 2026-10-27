@@ -5,6 +5,11 @@ class PlayoffProgressor
 
   def call
     return unless @tournament.playoff_enabled?
+    # A completed match without a winner must not turn its opponent into a bye
+    # or silently crown a different participant in either elimination format.
+    return if @tournament.tournament_matches.joins(:tournament_round)
+      .where(tournament_rounds: { stage_type: "playoffs" }, status: "complete", bye: false, winner_entry_id: nil)
+      .where.not(home_entry_id: nil).where.not(away_entry_id: nil).exists?
 
     if @tournament.playoff_mode == "single_elimination"
       progress_single_elimination

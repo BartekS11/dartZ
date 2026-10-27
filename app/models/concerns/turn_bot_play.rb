@@ -2,7 +2,7 @@ module TurnBotPlay
   extend ActiveSupport::Concern
 
   def play_bot_now
-    return if completed?
+    return if completed? || leg.match.finished?
     return unless player.bot?
 
     match = leg.match
@@ -30,7 +30,11 @@ module TurnBotPlay
 
       match.with_lock do
         reload
-        next if completed?
+        next if completed? || match.reload.finished?
+        if match.enforce_dart_limit!(player)
+          broadcast_turn_change!
+          next
+        end
 
         throw_record = self.throws.create!(segment: attrs[:segment], multiplier: attrs[:multiplier])
         apply_throw!(throw_record, broadcast: true)

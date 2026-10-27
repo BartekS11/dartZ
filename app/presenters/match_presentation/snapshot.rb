@@ -36,6 +36,26 @@ module MatchPresentation
       @all_throws[player_id]
     end
 
+    # Total-entry turns can have fewer synthetic throw records than darts used.
+    # Only completed total entries imply a full visit; reopened turns after undo
+    # count their remaining records instead.
+    def darts_thrown_for(player_id, leg: nil)
+      (leg ? [ leg ] : ordered_legs).sum do |candidate_leg|
+        turns = ordered_turns_for(candidate_leg).select { |turn| turn.player_id == player_id }
+        turns.sum do |turn|
+          recorded = ordered_throws_for(turn).size
+          checkout = candidate_leg.winner_id == player_id && turn == turns.last
+          if checkout
+            candidate_leg.checkout_throws.presence || recorded
+          elsif turn.completed_at.present? && !turn.total_score.nil?
+            3
+          else
+            recorded
+          end
+        end
+      end
+    end
+
     def current_leg_throws_for(player_id)
       @current_leg_throws[player_id]
     end

@@ -13,6 +13,7 @@
       <h1 class="game-over-title bebas"><%= t("live_match.nice_darts") %></h1>
     </div>
 
+    <% if presenter.winner.present? %>
     <div class="counter-summary-tile mb-6 px-5 py-5" style="border-color:color-mix(in srgb, var(--theme-primary) 18%, transparent); background:color-mix(in srgb, var(--theme-primary) 8%, transparent)">
       <div class="mono mb-2 text-xs uppercase tracking-[0.18em]" style="color:var(--theme-primary-soft)">
         <% if multi_set %>
@@ -25,6 +26,7 @@
       </div>
       <div class="bebas text-5xl leading-none"><%= presenter.winner.display_name %></div>
     </div>
+    <% end %>
 
     <div class="mb-6 grid gap-3 md:grid-cols-2">
       <% presenter.players.each do |player| %>

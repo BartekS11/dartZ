@@ -230,9 +230,7 @@ export default class extends Controller {
     if (this.inputTarget.disabled) return
 
     const raw = this.inputTarget.value.trim()
-    if (!raw) return
-
-    this.submitTotal(raw)
+    this.submitTotal(raw || "0")
   }
 
   submitTotal(raw) {

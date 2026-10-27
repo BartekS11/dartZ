@@ -15,6 +15,9 @@ class ThrowSubmission
   def call
     @match.with_lock do
       @turn.reload
+      return @match if @match.finished? || @turn.completed? || @match.current_leg&.current_turn&.id != @turn.id
+      return @match if @match.enforce_dart_limit!(@turn.player)
+
       total_submission? ? apply_total! : apply_single_throw!
       @match.reload
     end
@@ -36,6 +39,7 @@ class ThrowSubmission
     max_possible = darts_remaining * 60
 
     @turn.update!(total_score: total)
+    return if @match.enforce_dart_limit!(@turn.player, pending_total_turn: @turn)
 
     if total > max_possible || total > @match.score_for(@turn.player)
       @turn.complete_turn!(broadcast: false)
@@ -45,6 +49,7 @@ class ThrowSubmission
   end
 
   def apply_single_throw!
+    @turn.update!(total_score: nil) unless @turn.total_score.nil?
     throw = @turn.throws.create!(@throw_attributes)
     @turn.apply_throw!(throw, broadcast: false)
   end

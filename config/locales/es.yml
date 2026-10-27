@@ -892,6 +892,8 @@ es:
     no_throws_yet: Aún no hay lanzamientos
     show_older: "▼ MOSTRAR ANTERIORES"
     last_throw: Último lanzamiento
+    darts_leg: "Dardos (leg)"
+    darts_match: "Dardos (partida)"
     sets: Sets
     legs: Legs
     match_won: Partida ganada

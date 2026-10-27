@@ -14,6 +14,14 @@ class ScoreCardTest < ActionView::TestCase
             assert_select "dd", text: "60"
             assert_select "dt", text: I18n.t("stats.three_dart_average")
             assert_select ".match-score-average dd", text: "48.3"
+            assert_select ".match-score-leg-darts" do
+              assert_select "dt", text: I18n.t("live_match.darts_leg")
+              assert_select "dd", text: "12"
+            end
+            assert_select ".match-score-match-darts" do
+              assert_select "dt", text: I18n.t("live_match.darts_match")
+              assert_select "dd", text: "36"
+            end
           end
           assert_select ".match-score-quick-stats + .match-score-meta"
         end
@@ -43,6 +51,8 @@ class ScoreCardTest < ActionView::TestCase
         legs_won_by: 0,
         last_turn_total_for: last_total,
         three_dart_average: 48.3,
+        leg_darts_thrown_for: 12,
+        darts_thrown_for: 36,
         needs_double_in?: false
       )
 

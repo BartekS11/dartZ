@@ -39,6 +39,16 @@ class MatchStatePresenter
     player_state(player)[:score]
   end
 
+  def darts_thrown_for(player)
+    @snapshot.darts_thrown_for(ensure_player!(player))
+  end
+
+  def leg_darts_thrown_for(player)
+    player_id = ensure_player!(player)
+    leg = current_leg || @snapshot.ordered_legs.last
+    leg ? @snapshot.darts_thrown_for(player_id, leg: leg) : 0
+  end
+
   def three_dart_average(player)
     player_state(player)[:avg]
   end

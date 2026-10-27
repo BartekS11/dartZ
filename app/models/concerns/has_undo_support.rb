@@ -9,6 +9,8 @@ module HasUndoSupport
   end
 
   def undo_last_throw!(mode: "single")
+    return false if finished?
+
     target_turn = last_turn_with_throws
     return false unless target_turn
 

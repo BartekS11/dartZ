@@ -8,6 +8,7 @@ class Match < ApplicationRecord
 
   include X01GameSettings
   include MatchLifecycle
+  include MatchDartLimit
   include MatchInvitable
   include MatchIdentifiable
   include MatchLegManagement

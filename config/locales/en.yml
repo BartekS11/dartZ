@@ -889,6 +889,8 @@ en:
     no_throws_yet: "No throws yet"
     show_older: "▼ SHOW OLDER"
     last_throw: "Last throw"
+    darts_leg: "Darts (leg)"
+    darts_match: "Darts (match)"
     sets: "Sets"
     legs: "Legs"
     match_won: "Match won"

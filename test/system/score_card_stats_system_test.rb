@@ -12,16 +12,28 @@ class ScoreCardStatsSystemTest < ApplicationSystemTestCase
     match = Match.order(:created_at).last
     player = match.players.first
     score_selector = "#player-#{player.id}-score"
+    leg_darts_selector = "#score-card-#{player.id} .match-score-leg-darts dd"
+    match_darts_selector = "#score-card-#{player.id} .match-score-match-darts dd"
+    assert_selector leg_darts_selector, exact_text: "0"
+    assert_selector match_darts_selector, exact_text: "0"
 
     click_button "T20", exact: true
     assert_selector score_selector, text: "441"
+    assert_selector leg_darts_selector, exact_text: "1"
+    assert_selector match_darts_selector, exact_text: "1"
     click_button "Undo"
     assert_selector score_selector, text: "501"
+    assert_selector leg_darts_selector, exact_text: "0"
+    assert_selector match_darts_selector, exact_text: "0"
 
     fill_in "match-score-input", with: "60"
     click_button I18n.t("common.submit", locale: :en, default: "Submit")
     assert_selector score_selector, text: "441"
     assert_selector "#score-card-#{match.players.second.id}.is-active"
+    assert_selector leg_darts_selector, exact_text: "3"
+    assert_selector match_darts_selector, exact_text: "3"
+    assert_selector "#score-card-#{match.players.second.id} .match-score-leg-darts dd", exact_text: "0"
+    assert_selector "#score-card-#{match.players.second.id} .match-score-match-darts dd", exact_text: "0"
 
     find(".match-stats-toggle summary").click
     assert_selector ".match-stats-toggle[open]"
@@ -67,6 +79,8 @@ class ScoreCardStatsSystemTest < ApplicationSystemTestCase
           within card do
             assert_selector ".match-score-quick-stats dt", text: I18n.t("live_match.last_throw", locale: locale)
             assert_selector ".match-score-quick-stats dt", text: I18n.t("stats.three_dart_average", locale: locale)
+            assert_selector ".match-score-leg-darts dt", text: I18n.t("live_match.darts_leg", locale: locale)
+            assert_selector ".match-score-match-darts dt", text: I18n.t("live_match.darts_match", locale: locale)
           end
         end
 

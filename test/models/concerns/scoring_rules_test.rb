@@ -31,6 +31,8 @@ module Stubs
     match = Object.new
     match.define_singleton_method(:double_out?) { double_out }
     match.define_singleton_method(:double_in?) { false }
+    match.define_singleton_method(:finished?) { false }
+    match.define_singleton_method(:enforce_dart_limit!) { |_player| false }
 
     obj = Object.new
     obj.define_singleton_method(:match) { match }
@@ -50,6 +52,7 @@ module Stubs
     # MAX_THROWS is defined in `included` which doesn't run on extend
     obj.define_singleton_method(:max_throws) { 3 }
 
+    obj.define_singleton_method(:player)        { nil }
     obj.define_singleton_method(:leg_player)    { lp }
     obj.define_singleton_method(:leg)           { leg_obj }
     obj.define_singleton_method(:throws) do

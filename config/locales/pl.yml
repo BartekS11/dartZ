@@ -875,6 +875,8 @@ pl:
     no_throws_yet: "Brak rzutów"
     show_older: "▼ POKAŻ STARSZE"
     last_throw: "Ostatni rzut"
+    darts_leg: "Lotki (leg)"
+    darts_match: "Lotki (mecz)"
     sets: "Sety"
     legs: "Legi"
     match_won: "Mecz wygrany"
