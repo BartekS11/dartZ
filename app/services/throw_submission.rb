@@ -15,6 +15,7 @@ class ThrowSubmission
   def call
     @match.with_lock do
       @turn.reload
+      return @match if @turn.player.bot?
       return @match if @match.finished? || @turn.completed? || @match.current_leg&.current_turn&.id != @turn.id
       return @match if @match.enforce_dart_limit!(@turn.player)
 

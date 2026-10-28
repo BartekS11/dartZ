@@ -5,10 +5,14 @@ import vm from "node:vm"
 
 // Exercise the production controller without needing a browser or Stimulus runtime.
 const source = readFileSync(new URL("../../app/javascript/controllers/keyboard_controller.js", import.meta.url), "utf8")
-const KeyboardController = vm.runInNewContext(
-  source.replace('import { Controller } from "@hotwired/stimulus"', "class Controller {}")
-    .replace("export default class", "class KeyboardController") + "\nKeyboardController"
-)
+function loadController(globals = {}) {
+  return vm.runInNewContext(
+    source.replace('import { Controller } from "@hotwired/stimulus"', "class Controller {}")
+      .replace("export default class", "class KeyboardController") + "\nKeyboardController",
+    globals
+  )
+}
+const KeyboardController = loadController()
 
 function setup(value = "", disabled = false) {
   const controller = new KeyboardController()
@@ -51,6 +55,37 @@ for (const value of ["", "60"]) {
     controller.submitInput()
     controller.handle({ key: "Enter", preventDefault() { assert.fail("disabled Enter") } })
     assert.deepEqual(submitted, [])
+  })
+}
+
+for (const botTurn of [true, false]) {
+  test(`undo with disabled score input during bot turn=${botTurn}`, async () => {
+    const requests = []
+    const streams = []
+    const Controller = loadController({
+      document: {
+        querySelector: (selector) => selector.startsWith("meta") ? { content: "csrf" } : null,
+        getElementById: () => ({ action: "/turns/tu_bot/throws" })
+      },
+      fetch: async (url, options) => {
+        requests.push({ url, options })
+        return { ok: true, text: async () => "updated human turn" }
+      },
+      Turbo: { renderStreamMessage: (html) => streams.push(html) }
+    })
+    const controller = new Controller()
+    controller.inputTarget = { disabled: true }
+    controller.botTurnValue = botTurn
+
+    await controller.undoLastThrow()
+
+    assert.equal(requests.length, botTurn ? 1 : 0)
+    if (botTurn) {
+      assert.equal(requests[0].url, "/turns/tu_bot/throws/last")
+      assert.equal(requests[0].options.method, "DELETE")
+      assert.equal(requests[0].options.headers["X-Undo-Mode"], "total")
+      assert.deepEqual(streams, ["updated human turn"])
+    }
   })
 }
 

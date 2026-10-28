@@ -1663,6 +1663,7 @@ button.app-nav-link [data-theme-mode-target="icon"] {
 .match-input-panel.bot-turn-disabled::after,
 .match-dart-pad.bot-turn-disabled::after {
   content: "Bot turn";
+  pointer-events: none;
   position: absolute;
   right: .9rem;
   top: .75rem;
@@ -1679,7 +1680,7 @@ button.app-nav-link [data-theme-mode-target="icon"] {
 }
 
 .bot-turn-disabled input,
-.bot-turn-disabled button,
+.bot-turn-disabled button:not(.btn-undo),
 .dart-btn:disabled {
   cursor: not-allowed !important;
 }

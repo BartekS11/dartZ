@@ -9,9 +9,14 @@ module HasUndoSupport
   end
 
   def undo_last_throw!(mode: "single")
+    with_lock { perform_undo_last_throw!(mode: mode) }
+  end
+
+  def perform_undo_last_throw!(mode:)
     return false if finished?
 
-    target_turn = last_turn_with_throws
+    bot_match = players.exists?(bot: true)
+    target_turn = bot_match ? rewind_bot_reply! : last_turn_with_throws
     return false unless target_turn
 
     current = current_leg.current_turn
@@ -38,11 +43,49 @@ module HasUndoSupport
       current.destroy! if current && current != target_turn && current.throws.empty?
       target_turn.update!(completed_at: nil)
     end
+    target_turn.update!(total_score: nil) unless target_turn.total_score.nil?
+    restore_player_state_for_undo!(target_turn.leg, target_turn.player_id) if bot_match
 
     true
   end
+  private :perform_undo_last_throw!
 
   private
+
+  def rewind_bot_reply!
+    leg = current_leg
+    return unless leg
+
+    target = leg.turns.joins(:player, :throws).where(players: { bot: false }).order(id: :desc).first
+    return unless target
+
+    replies = leg.turns.where("turns.id > ?", target.id)
+    bot_players = replies.joins(:player).where(players: { bot: true }).distinct.pluck(:player_id)
+    replies.destroy_all
+
+    bot_players.each { |player_id| restore_player_state_for_undo!(leg, player_id) }
+    target
+  end
+
+  def restore_player_state_for_undo!(leg, player_id)
+    # Replay retained darts with the same per-dart bust handling as ScoringRules.
+    # Missed double-ins and busting darts did not reduce the stored score.
+    lp = leg.leg_players.find_by!(player_id: player_id)
+    score = lp.starting_score
+    doubled_in = !double_in?
+    leg.turns.where(player_id: player_id).order(:id).includes(:throws).each do |turn|
+      turn.throws.sort_by(&:id).each do |dart|
+        next unless doubled_in || dart.double?
+
+        doubled_in = true
+        remaining = score - dart.points
+        break if remaining < 0 || remaining == 1 || (remaining.zero? && double_out? && !dart.double?)
+
+        score = remaining
+      end
+    end
+    lp.update!(score: score, has_doubled_in: doubled_in)
+  end
 
   def scoring_points_for_undo(leg_player, turn, removed_throws)
     return removed_throws.sum(&:points) unless leg_player.leg.match.double_in?

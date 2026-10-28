@@ -41,9 +41,9 @@ class BotServiceTest < ActiveSupport::TestCase
     srand 1234
     rookie_average = average_turn_total(level: 1)
     srand 1234
-    pro_average = average_turn_total(level: 10)
+    strong_club_average = average_turn_total(level: 10)
 
-    assert_operator pro_average, :>, rookie_average + 15
+    assert_operator strong_club_average, :>, rookie_average + 15
   end
 
   private

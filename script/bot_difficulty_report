@@ -1,0 +1,46 @@
+#!/usr/bin/env ruby
+# Repeatable calibration without Rails or a database:
+#   ruby script/bot_difficulty_report [seed] [samples]
+require_relative "../lib/darts/core"
+
+bot = Darts::Core::Bot
+seed = Integer(ARGV.fetch(0, "1234"))
+samples = Integer(ARGV.fetch(1, "10000"))
+abort "samples must be positive" unless samples.positive?
+puts "Seed #{seed}; #{samples} samples per level (501 legs: #{[samples / 10, 100].max})"
+puts "Level  Scoring/3  D20 hit%  Finish40%  501 avg/3  Completed%"
+(1..10).each do |level|
+  srand(seed)
+  scoring = samples.times.sum do
+    bot.play_turn(score: 501, level: level).fetch("throws").sum { |name| bot::THROW_VALUES.fetch(name) }
+  end / samples.to_f
+  doubles = samples.times.count { bot.send(:resolve_throw, "D20", level, pressure: true) == "D20" }
+  finishes = samples.times.count { bot.play_turn(score: 40, level: level).fetch("remaining").zero? }
+
+  # Replay each visit to apply the existing whole-visit bust rule. The bot's
+  # remaining field is not the authoritative scorer on a busted visit.
+  legs = [samples / 10, 100].max
+  total_points = total_darts = completed = 0
+  legs.times do
+    score = 501
+    200.times do
+      start = score
+      result = bot.play_turn(score: score, level: level)
+      total_darts += result.fetch("throws").size
+      result.fetch("throws").each do |name|
+        points = bot::THROW_VALUES.fetch(name)
+        if bot.send(:bust?, score, points, name)
+          score = start
+          break
+        end
+        score -= points
+      end
+      break if score.zero?
+    end
+    total_points += 501 - score
+    completed += 1 if score.zero?
+  end
+  printf "%5d %10.1f %9.1f %10.1f %10.1f %11.1f\n", level, scoring,
+    doubles * 100.0 / samples, finishes * 100.0 / samples,
+    total_points * 3.0 / total_darts, completed * 100.0 / legs
+end

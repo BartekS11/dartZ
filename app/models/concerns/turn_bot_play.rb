@@ -31,6 +31,7 @@ module TurnBotPlay
       match.with_lock do
         reload
         next if completed? || match.reload.finished?
+        next unless match.current_leg&.current_turn&.id == id
         if match.enforce_dart_limit!(player)
           broadcast_turn_change!
           next
@@ -42,6 +43,9 @@ module TurnBotPlay
 
       sleep bot_throw_delay unless index == throws.size - 1
     end
+  rescue ActiveRecord::RecordNotFound
+    # Undo can delete this reply while the job is sleeping between darts.
+    nil
   end
 
   private

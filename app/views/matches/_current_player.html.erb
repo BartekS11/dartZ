@@ -3,8 +3,9 @@
 <% bot_turn = current_player&.bot? %>
 
 <div
-  class="match-input-panel"
+  class="match-input-panel <%= 'is-disabled bot-turn-disabled' if bot_turn %>"
   data-controller="keyboard"
+  data-keyboard-bot-turn-value="<%= bot_turn %>"
   data-keyboard-url-value="<%= turn_throws_path(turn) %>"
   data-keyboard-score-value="<%= presenter.score_for(current_player) %>"
   data-keyboard-double-out-value="<%= match.double_out? %>"
@@ -48,11 +49,13 @@
       data-keyboard-target="input"
       data-action="input->keyboard#preview keydown->keyboard#handle"
       class="input throw-input match-score-input mono has-text-centered"
-      autocomplete="off">
+      autocomplete="off"
+      <%= 'disabled' if bot_turn %>>
 
     <button
       type="button"
       class="button theme-btn-primary match-score-submit mono"
+      <%= 'disabled' if bot_turn %>
       data-action="click->keyboard#submitInput">
       <%= t("common.submit", default: "Submit") %>
     </button>

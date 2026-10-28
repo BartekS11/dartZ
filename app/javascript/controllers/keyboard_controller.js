@@ -6,6 +6,7 @@ export default class extends Controller {
     url: String,
     score: Number,
     doubleOut: Boolean,
+    botTurn: Boolean,
     playerId: Number,
     currentPlayerId: Number,
     turnActivityAt: String,
@@ -58,6 +59,16 @@ export default class extends Controller {
   updateTurnLock() {
     const matchView = document.getElementById("match-live")
     if (!matchView || !this.hasInputTarget) return
+
+    if (this.botTurnValue) {
+      this.element.classList.add("is-disabled", "bot-turn-disabled")
+      this.inputTarget.disabled = true
+      this.inputTarget.placeholder = "Bot is throwing…"
+      const submit = this.element.querySelector(".match-score-submit")
+      if (submit) submit.disabled = true
+      if (this.hasSkipButtonTarget) this.skipButtonTarget.classList.add("hidden")
+      return
+    }
 
     const remoteInvite = matchView.dataset.matchViewRemoteInviteValue === "true"
     if (!remoteInvite) {
@@ -286,7 +297,9 @@ export default class extends Controller {
     const myPlayerId = Number(matchView?.dataset?.matchViewMyPlayerIdValue || 0)
     const previousTurn = remoteInvite && myPlayerId && myPlayerId !== this.currentPlayerIdValue
 
-    if (this.inputTarget.disabled && !previousTurn) return
+    // Scoring stays locked during bot play, but undo must still be available
+    // to rewind the human visit and cancel the bot's reply.
+    if (this.inputTarget.disabled && !previousTurn && !this.botTurnValue) return
     if (previousTurn && !window.confirm(this.element.dataset.keyboardUndoTurnConfirmValue || "Go back to your previous turn?")) return
 
     const form = document.getElementById("keyboard-form")

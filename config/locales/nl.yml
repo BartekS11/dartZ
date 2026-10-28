@@ -443,7 +443,7 @@ nl:
     beginner_rhythm: Niveau 1–3 · beginnersritme
     steady_scoring: Niveau 4–6 · constant scoren
     strong_finishing: Niveau 7–8 · sterk finishen
-    pro_pressure: Niveau 9–10 · bijna-professionele druk
+    pro_pressure: Niveau 9–10 · sterk clubspel
     new_bot_match: Nieuwe wedstrijd tegen bot
     bot_name: Naam van de bot
     bot_name_placeholder: Optionele botnaam
@@ -455,19 +455,19 @@ nl:
       2: Beginner · af en toe een constante beurt
       3: Recreatief · meer singles dan triples
       4: Opkomend · veiligere setup
-      5: Clubniveau · evenwichtig scoren en finishen
-      6: Competitieniveau · constante druk nabij de finish
-      7: Gevorderd · regelmatig triples
-      8: Expert · betere keuzes voor de volgende beurt
-      9: Semi-prof · hoge scores, betrouwbare dubbels
-      10: Professional · maximale druk en sterk finishen
+      5: Regelmatige speler · beter scoren en finishen
+      6: Clubniveau · constantere scores en dubbels
+      7: Competitieniveau · betere triples en setup
+      8: Gevorderde clubspeler · doordachte finishes
+      9: Ervaren clubspeler · sterke scores en dubbels
+      10: Sterke clubspeler · het beste amateurspel
     beginner: Beginnende speler
     learning_pace: Leertempo
     intermediate: Gevorderde beginner
     normal_practice: Normale oefening
     advanced: Gevorderd
     high_scoring: Hoge scores
-    pro: Professional
+    pro: Sterke clubspeler
     maximum_pressure: Maximale druk
     start_practice: Oefening starten
     allowance: Nog %{remaining} van %{limit} gratis botwedstrijdtegoed in de afgelopen 7 dagen

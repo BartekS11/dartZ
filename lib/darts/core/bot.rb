@@ -23,17 +23,36 @@ module Darts
         11 => [ 8, 14 ], 14 => [ 11, 9 ], 9 => [ 14, 12 ], 12 => [ 9, 5 ], 5 => [ 12, 20 ]
       }.freeze
 
+      # Probabilities are per dart, not per visit. Level 10 targets strong club
+      # scoring (roughly 90 before doubles), rather than professional accuracy.
+      # Explicit profiles keep every step meaningful and easy to recalibrate.
+      SKILL_PROFILES = [
+        # single triple double bull  wild miss  decision
+        [ 0.30, 0.01, 0.02, 0.01, 0.65, 0.08 ],
+        [ 0.37, 0.03, 0.04, 0.02, 0.59, 0.17 ],
+        [ 0.44, 0.06, 0.07, 0.04, 0.53, 0.26 ],
+        [ 0.51, 0.09, 0.10, 0.06, 0.47, 0.35 ],
+        [ 0.58, 0.13, 0.13, 0.08, 0.41, 0.44 ],
+        [ 0.65, 0.17, 0.16, 0.10, 0.35, 0.53 ],
+        [ 0.71, 0.21, 0.20, 0.12, 0.29, 0.63 ],
+        [ 0.77, 0.25, 0.24, 0.15, 0.23, 0.73 ],
+        [ 0.82, 0.29, 0.28, 0.18, 0.17, 0.83 ],
+        [ 0.87, 0.33, 0.32, 0.21, 0.11, 0.93 ]
+      ].map do |values|
+        %i[single triple double bull wild_miss decision].zip(values).to_h.freeze
+      end.freeze
+
       LEVEL_LABELS = {
         1 => "Rookie",
         2 => "Beginner",
         3 => "Casual",
         4 => "Improver",
-        5 => "Club",
-        6 => "League",
-        7 => "Advanced",
-        8 => "Expert",
-        9 => "Semi-pro",
-        10 => "Pro"
+        5 => "Regular",
+        6 => "Club",
+        7 => "League",
+        8 => "Advanced club",
+        9 => "Experienced club",
+        10 => "Strong club"
       }.freeze
 
       class << self
@@ -85,30 +104,46 @@ module Darts
         def select_target(score, level, darts_left, double_out: true)
           checkout = double_out ? CheckoutCalculator.suggest(score, darts_remaining: darts_left) : nil
           return checkout.first if checkout && !checkout.empty? && attempt_checkout_route?(level, score)
-          return straight_out_target(score) unless double_out
+          return score > 60 ? high_scoring_target(score, level) : straight_out_target(score) unless double_out
 
           if score > 170
             high_scoring_target(score, level)
           elsif score > 60
-            setup_target(score, level)
+            smart_decision?(level) ? setup_target(score, level) : casual_setup_target(score)
           else
-            finish_builder_target(score)
+            smart_decision?(level) ? finish_builder_target(score) : casual_setup_target(score)
           end
         end
 
         def attempt_checkout_route?(level, score)
-          return true if score <= 60
+          # Even beginners recognize a direct double; multi-dart routes and
+          # odd-score setup shots increasingly depend on decision quality.
+          return true if score == 50 || (score <= 40 && score.even?)
 
-          rand < (0.35 + level * 0.06).clamp(0.35, 0.95)
+          smart_decision?(level)
         end
 
         def high_scoring_target(score, level)
           return "T19" if score == 181
           return "T18" if score == 182
           return "T17" if score == 183
-          return "T20" if level >= 5
+          return "T20" if smart_decision?(level)
 
-          [ "T20", "S20", "T19", "S19", "T18" ].sample
+          [ "S20", "S19", "S18", "T19", "T18" ].sample
+        end
+
+        def skill_profile(level)
+          SKILL_PROFILES.fetch(normalize_level(level) - 1)
+        end
+
+        def smart_decision?(level)
+          rand < skill_profile(level).fetch(:decision)
+        end
+
+        def casual_setup_target(score)
+          # A legal but less deliberate single, instead of always finding the
+          # best double leave. Never deliberately overshoot the remaining score.
+          "S#{rand(1..[20, score - 2].min)}"
         end
 
         def setup_target(score, level)
@@ -159,27 +194,20 @@ module Darts
         end
 
         def hit_probability(ring, level, pressure: false)
-          base = case ring
-          when :triple then 0.16 + (level * 0.045)
-          when :double then 0.10 + (level * 0.04)
-          when :single then 0.48 + (level * 0.04)
-          else 0.18 + (level * 0.035)
-          end
-
-          if pressure && %i[triple double].include?(ring)
-            base += (level - DEFAULT_LEVEL) * 0.018
-          end
-
-          [ [ base, 0.88 ].min, 0.05 ].max
+          base = skill_profile(level).fetch(ring, 0.0)
+          # Beginners lose more composure near a finish; club players still
+          # experience pressure, rather than becoming more accurate under it.
+          base *= 0.72 + normalize_level(level) * 0.025 if pressure && %i[triple double bull].include?(ring)
+          base
         end
 
         def secondary_probability(ring, level)
           case ring
-          when :triple then 0.33 - (level * 0.012)
-          when :double then 0.28 - (level * 0.01)
-          when :single then 0.24 - (level * 0.008)
+          when :triple then 0.20 + (level * 0.025)
+          when :double then 0.18 + (level * 0.02)
+          when :single then 0.14 - (level * 0.005)
           else 0.10
-          end.clamp(0.06, 0.30)
+          end.clamp(0.06, 0.48)
         end
 
         def ring_falloff(ring, number, level)
@@ -196,7 +224,7 @@ module Darts
         end
 
         def wild_miss(number, level)
-          return "MISS" if rand < (0.48 - level * 0.025).clamp(0.10, 0.48)
+          return "MISS" if rand < skill_profile(level).fetch(:wild_miss)
           return "S#{number}" if rand < 0.65
 
           neighbor = NEIGHBORS[number].sample
@@ -205,10 +233,9 @@ module Darts
 
         def miss_or_single_bull(level, pressure: false)
           roll = rand
-          bull_chance = (0.06 + level * 0.035).clamp(0.06, 0.42)
-          bull_chance += 0.04 if pressure && level >= 8
+          bull_chance = hit_probability(:bull, level, pressure: pressure)
           return "Bull" if roll < bull_chance
-          return "25" if roll < 0.78
+          return "25" if roll < bull_chance + 0.20 + level * 0.025
 
           "MISS"
         end

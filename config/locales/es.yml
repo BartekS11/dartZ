@@ -443,7 +443,7 @@ es:
     beginner_rhythm: Nivel 1–3 · ritmo principiante
     steady_scoring: Nivel 4–6 · puntuación constante
     strong_finishing: Nivel 7–8 · buenos cierres
-    pro_pressure: Nivel 9–10 · presión casi profesional
+    pro_pressure: Nivel 9–10 · juego de club fuerte
     new_bot_match: Nueva partida contra el bot
     bot_name: Nombre del bot
     bot_name_placeholder: Nombre opcional del bot
@@ -455,19 +455,19 @@ es:
       2: Principiante · alguna visita constante
       3: Aficionado · más sencillos que triples
       4: En progreso · juego de preparación más seguro
-      5: Club · puntuación y cierres equilibrados
-      6: Liga · presión constante cerca del cierre
-      7: Avanzado · triples frecuentes
-      8: Experto · mejores decisiones de preparación
-      9: Semiprofesional · puntuación alta y dobles fiables
-      10: Profesional · máxima presión y buenos cierres
+      5: Habitual · mejores puntuaciones y cierres
+      6: Club · puntuaciones y dobles más estables
+      7: Liga · mejores triples y preparación
+      8: Club avanzado · cierres bien planteados
+      9: Club experimentado · puntuación y dobles fuertes
+      10: Club fuerte · el mejor juego aficionado
     beginner: Principiante
     learning_pace: Ritmo de aprendizaje
     intermediate: Intermedio
     normal_practice: Práctica normal
     advanced: Avanzado
     high_scoring: Puntuación alta
-    pro: Profesional
+    pro: Club fuerte
     maximum_pressure: Presión máxima
     start_practice: Empezar a practicar
     allowance: Quedan %{remaining} de %{limit} partidas gratis contra el bot en los últimos 7 días
