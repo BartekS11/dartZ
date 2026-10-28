@@ -29,8 +29,9 @@ module TurnFlow
   end
 
   def enqueue_bot_turn_if_needed
-    return if leg.finished?
-    next_turn = leg.current_turn
+    match = leg.match.reload
+    return if match.finished?
+    next_turn = match.current_leg&.current_turn
     return unless next_turn&.player&.bot?
     BotTurnJob.perform_later(next_turn.id)
   end

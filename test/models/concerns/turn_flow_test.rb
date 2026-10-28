@@ -69,6 +69,34 @@ class TurnFlowTest < ActiveJob::TestCase
     end
   end
 
+  test "checkout schedules bot starting next leg or set but not a finished match" do
+    [ [ 3, 1 ], [ 1, 3 ], [ 1, 1 ] ].each do |legs, sets|
+      match = Match.create!(best_of_legs: legs, best_of_sets: sets)
+      human = match.players.create!(name: "Human")
+      bot = match.players.create!(name: "Bot", bot: true, bot_level: 10)
+      match.start_first_set!
+      turn = match.current_leg.current_turn
+      turn.leg_player.update!(score: 40)
+
+      if legs == 1 && sets == 1
+        assert_no_enqueued_jobs(only: BotTurnJob) do
+          ThrowSubmission.call(turn: turn, total: 40)
+        end
+        assert match.reload.finished?
+      else
+        assert_enqueued_jobs 1, only: BotTurnJob do
+          ThrowSubmission.call(turn: turn, total: 40)
+        end
+        next_turn = match.reload.current_leg.current_turn
+        assert_equal bot, next_turn.player
+        assert_enqueued_with(job: BotTurnJob, args: [ next_turn.id ])
+        refute_equal turn.leg_id, next_turn.leg_id
+        assert_equal human, turn.player
+      end
+      clear_enqueued_jobs
+    end
+  end
+
   private
 
   def create_turn_context
