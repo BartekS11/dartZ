@@ -1,0 +1,38 @@
+<% players = presenter.players %>
+<% stats = players.map { |player| presenter.stats_for(player) } %>
+<% rows = [
+  [t(match.best_of_sets > 1 ? "live_match.sets" : "live_match.legs"), players.map { |player| match.best_of_sets > 1 ? presenter.sets_won_by(player) : presenter.legs_won_by(player) }],
+  [t("stats.three_dart_average"), players.map { |player| presenter.three_dart_average(player) }],
+  [t("live_match.first_9_avg"), stats.map { |stat| stat[:first_nine_avg] }],
+  [t("live_match.darts"), stats.map { |stat| stat[:darts_thrown] }],
+  [t("stats.highest_turn"), stats.map { |stat| stat[:highest_turn] }],
+  ["100+", stats.map { |stat| stat[:ton_plus] }],
+  ["140+", stats.map { |stat| stat[:one_forty_plus] }],
+  ["180s", stats.map { |stat| stat[:one_eighty] }],
+  [t("live_match.checkout_percent"), stats.map { |stat| "#{stat[:checkout][:rate]}%" }],
+  [t("live_match.chances"), stats.map { |stat| stat[:checkout][:chances] }],
+  [t("live_match.hits"), stats.map { |stat| stat[:checkout][:hits] }],
+  [t("live_match.avg_darts"), stats.map { |stat| stat[:checkout][:average_darts] }],
+  [t("live_match.best_leg_darts"), stats.map { |stat| stat[:best_leg_darts] || "—" }]
+] %>
+
+<table class="results-comparison">
+  <caption class="theme-section-label"><%= t("live_match.match_stats") %></caption>
+  <colgroup><col class="results-player-column"><col class="results-label-column"><col class="results-player-column"></colgroup>
+  <thead>
+    <tr>
+      <th scope="col" class="results-player <%= 'is-winner' if presenter.winner == players.first %>"><%= players.first.display_name %></th>
+      <th scope="col" class="results-label"><%= t("live_match.match_complete") %></th>
+      <th scope="col" class="results-player <%= 'is-winner' if presenter.winner == players.second %>"><%= players.second.display_name %></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% rows.each_with_index do |(label, values), index| %>
+      <tr class="<%= 'results-final-score' if index.zero? %><%= ' results-average' if index == 1 %>">
+        <td class="results-value"><%= values.first %></td>
+        <th scope="row" class="results-label"><%= label %></th>
+        <td class="results-value"><%= values.second %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

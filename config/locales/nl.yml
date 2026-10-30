@@ -873,13 +873,13 @@ nl:
     darts: Darts
     turns: Beurten
     avg_turn: Gem. per beurt
-    first_9_avg: Gem. eerste 9
+    first_9_avg: Gemiddelde eerste 9 pijlen
     best_leg_darts: Beste leg in darts
     checkout: Finish
     chances: Kansen
-    hits: Treffers
+    hits: Succesvolle checkouts
     checkout_percent: Finishpercentage
-    avg_darts: Gem. darts
+    avg_darts: Gemiddelde pijlen per checkout
     doubles_thrown: Gegooide dubbels
     double_co: Dubbel finish
     split_positions: Singles en doubles

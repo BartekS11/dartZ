@@ -873,13 +873,13 @@ es:
     darts: Dardos
     turns: Turnos
     avg_turn: Prom. por turno
-    first_9_avg: Prom. primeros 9
+    first_9_avg: Promedio de los primeros 9 dardos
     best_leg_darts: Mejor leg en dardos
     checkout: Cierre
     chances: Oportunidades
-    hits: Aciertos
+    hits: Cierres exitosos
     checkout_percent: "% de cierres"
-    avg_darts: Prom. de dardos
+    avg_darts: Promedio de dardos por cierre
     doubles_thrown: Dobles lanzados
     double_co: Cierre con doble
     split_positions: Sencillos y dobles
