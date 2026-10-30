@@ -590,6 +590,9 @@ es:
     last_players: Últimos jugadores
     create_invite_match: Crear partida por invitación
     start_game: Empezar partida
+    legs_per_set: Legs por set
+    sets_per_match: Sets por partida
+    best_of_count: "Al mejor de %{count}"
     more_options: Más opciones
     more_options_copy: Formato, reglas de entrada y salida, invitaciones y nombres guardados
     invite_title: Juega con alguien a distancia

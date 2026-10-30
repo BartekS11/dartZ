@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["player1", "player2", "greeting", "matchList", "dropdown1", "dropdown2", "savedButton1", "savedButton2"]
+  static targets = ["player1", "player2", "greeting", "matchList", "dropdown1", "dropdown2", "savedButton1", "savedButton2", "submitRow"]
   static values = {
     signedIn: Boolean,
     currentUserName: String,
@@ -27,6 +27,12 @@ export default class extends Controller {
     this.updateSavedButtons()
     this.updateGreeting()
     this.renderMatchList()
+  }
+
+  positionSubmit({ currentTarget: options }) {
+    if (!this.hasSubmitRowTarget) return
+
+    options.insertAdjacentElement(options.open ? "afterend" : "beforebegin", this.submitRowTarget)
   }
 
   // ── Player storage ──────────────────────────────────────────────────────────

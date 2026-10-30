@@ -590,6 +590,9 @@ nl:
     last_players: Vorige spelers
     create_invite_match: Uitnodigingswedstrijd maken
     start_game: Wedstrijd starten
+    legs_per_set: Legs per set
+    sets_per_match: Sets per wedstrijd
+    best_of_count: "Best of %{count}"
     more_options: Meer opties
     more_options_copy: Wedstrijdformaat, in-/uitgooiregels, uitnodigingen en opgeslagen namen
     invite_title: Op afstand met iemand spelen
