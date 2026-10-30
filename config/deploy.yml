@@ -50,6 +50,8 @@ env:
     - ADMIN_EMAIL
     - ADMIN_PASSWORD
     - ADMIN_PATH
+    - SMTP_USERNAME
+    - SMTP_PASSWORD
     - STRIPE_SECRET_KEY
     - STRIPE_WEBHOOK_SECRET
     - STRIPE_PREMIUM_USD_PRICE_ID
@@ -62,6 +64,13 @@ env:
     # Run the Solid Queue Supervisor inside the web server's Puma process to do jobs.
     # When you start using multiple servers, you should split out job processing to a dedicated machine.
     SOLID_QUEUE_IN_PUMA: true
+
+    MAILER_FROM: <%= ENV.fetch("MAILER_FROM", "DartZ <noreply@dartz.pl>").to_json %>
+    MAILER_HOST: <%= ENV.fetch("MAILER_HOST", "dartz.pl").to_json %>
+    SMTP_ADDRESS: <%= ENV.fetch("SMTP_ADDRESS", "").to_json %>
+    SMTP_PORT: <%= ENV.fetch("SMTP_PORT", "587").to_json %>
+    SMTP_AUTHENTICATION: <%= ENV.fetch("SMTP_AUTHENTICATION", "plain").to_json %>
+    SMTP_DOMAIN: <%= ENV.fetch("SMTP_DOMAIN", "dartz.pl").to_json %>
 
     # Roadmap features are opt-in until each release phase is ready.
     ADVANCED_STATS_ENABLED: <%= ENV.fetch("ADVANCED_STATS_ENABLED", "false") %>

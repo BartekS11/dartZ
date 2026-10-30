@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_27_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_28_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -596,6 +596,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_27_120000) do
     t.string "manual_tier_override"
     t.string "nickname"
     t.integer "onboarding_guide_version", default: 0, null: false
+    t.boolean "password_change_required", default: false, null: false
     t.string "password_digest", null: false
     t.datetime "premium_access_expires_at"
     t.string "public_id", null: false

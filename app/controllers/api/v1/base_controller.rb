@@ -24,6 +24,9 @@ module Api
         decoded   = JsonWebToken.decode(token)
         @api_user = decoded[:guest] ? nil : User.find(decoded[:user_id])
         @guest_id = decoded[:guest_id] if decoded[:guest]
+        if @api_user&.password_change_required?
+          render json: { error: "Change your temporary password on the website before continuing" }, status: :forbidden
+        end
       rescue ActiveRecord::RecordNotFound
         raise ExceptionHandler::InvalidToken, "Invalid token"
       end

@@ -7,6 +7,26 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
     post admin_login_path, params: { email_address: @admin.email_address, password: "a-secure-password-123" }
   end
 
+  test "generates a temporary password visible only in the response" do
+    old_session = @user.sessions.create!
+    post temporary_password_admin_user_path(@user)
+    assert_response :success
+    assert_includes response.headers["Cache-Control"], "no-store"
+    password = css_select("#temporary-password").first.text
+    assert @user.reload.authenticate(password)
+    assert @user.password_change_required?
+    assert_not Session.exists?(old_session.id)
+    get admin_user_path(@user)
+    assert_not_includes response.body, password
+  end
+
+  test "temporary passwords require administrator authentication" do
+    delete admin_logout_path
+    post temporary_password_admin_user_path(@user)
+    assert_response :not_found
+    assert_not @user.reload.password_change_required?
+  end
+
   test "lists and searches users" do
     get admin_users_path, params: { query: "player@" }
 
@@ -29,6 +49,11 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "dd", text: "cus_test"
     assert_select "h2", text: "Tier control"
+    # The one-time plaintext response is rendered directly, not redirected.
+    # Turbo rejects a successful POST without a redirect, so use a native form.
+    assert_select "form[action='#{temporary_password_admin_user_path(@user)}'][method='post'][data-turbo='false']" do
+      assert_select "button", text: "Yes, generate password"
+    end
   end
 
   test "applies audited override" do

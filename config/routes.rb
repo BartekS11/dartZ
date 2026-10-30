@@ -11,6 +11,7 @@ Rails.application.routes.draw do
     resources :users, only: %i[index show] do
       get :matches, on: :member
       patch :tier, on: :member
+      post :temporary_password, on: :member
       resources :data_cleanups, only: :create, controller: "data_cleanups" do
         patch :restore, on: :member
         delete :purge, on: :member
@@ -19,6 +20,7 @@ Rails.application.routes.draw do
   end
 
   resource :session
+  resource :password_change, only: %i[edit update]
   resource :registration, only: %i[new create]
   resource :profile, only: [ :update ]
   resource :onboarding_guide, only: :update, controller: "onboarding_guides"

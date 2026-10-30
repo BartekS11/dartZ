@@ -192,9 +192,11 @@ STRIPE_PREMIUM_USD_PRICE_ID=<stripe-premium-usd-price-id>
 STRIPE_PRO_USD_PRICE_ID=<stripe-pro-usd-price-id>
 STRIPE_PREMIUM_PLN_PRICE_ID=<stripe-premium-pln-price-id>
 STRIPE_PRO_PLN_PRICE_ID=<stripe-pro-pln-price-id>
+STRIPE_PREMIUM_GBP_PRICE_ID=<stripe-premium-gbp-price-id>
+STRIPE_PRO_GBP_PRICE_ID=<stripe-pro-gbp-price-id>
 ```
 
-Create matching monthly Premium and Pro prices in Stripe for USD and PLN, enable cancellation in the Customer Portal, and send configured Stripe webhooks to the endpoint below. Yearly prices are calculated from the configured monthly amounts at 25% off and created dynamically; no yearly Price IDs are required. A monthly subscriber switching to yearly is scheduled to change at the end of the current billing period.
+Create matching monthly Premium and Pro prices in Stripe for USD, GBP, and PLN, enable cancellation in the Customer Portal, and send configured Stripe webhooks to the endpoint below. Yearly prices are calculated from the configured monthly amounts at 25% off and created dynamically; no yearly Price IDs are required. A monthly subscriber switching to yearly is scheduled to change at the end of the current billing period.
 
 ```text
 POST /stripe/webhooks
@@ -268,5 +270,44 @@ The user detail screen also has admin-only account data management. A cleanup se
 Run migrations and operational Rails commands through the `rails-app` devcontainer, not a host Ruby or PostgreSQL installation. Permanent purge is irreversible even though its audit batch and events remain.
 
 ## Deployment
+
+### Temporary passwords (no email required)
+
+In the administrator console, open **Users → user → Account recovery → Generate
+temporary password**. Copy the password shown in the response and share it
+securely. This revokes existing browser sessions and requires the user to choose
+a different password (at least 12 characters) on the website before continuing.
+The temporary password stops working once replaced; it does not expire on a timer.
+API access is blocked while a password change is required.
+
+Alternatively, run `bin/kamal console` and then:
+
+```ruby
+user = User.find_by!(email_address: "user@example.com")
+puts user.issue_temporary_password!
+```
+
+Deploy the database migration (`bin/rails db:migrate`) before using this feature.
+
+### Password reset email
+
+The **Forgot password?** link sends a time-limited password reset email. Configure
+`SMTP_ADDRESS`, `SMTP_PORT` (default `587`, STARTTLS), `SMTP_USERNAME`, and
+`SMTP_PASSWORD` using your mail provider's credentials. Set `MAILER_FROM` to a
+sender verified with that provider and `MAILER_HOST` to your public hostname
+(default `dartz.pl`; production reset links use HTTPS). Optional settings are
+`SMTP_AUTHENTICATION` (default `plain`) and `SMTP_DOMAIN` (default `dartz.pl`).
+See `.env.example` for local configuration. For manual Kamal deployment, export
+these values before deploying. For GitHub release deployments, add
+`SMTP_USERNAME` and `SMTP_PASSWORD` as production environment **secrets**, and
+`SMTP_ADDRESS`, `SMTP_PORT`, `SMTP_AUTHENTICATION`, `SMTP_DOMAIN`, `MAILER_FROM`,
+and `MAILER_HOST` as production environment **variables** (defaults apply to all
+except `SMTP_ADDRESS`). Redeploy after changing configuration.
+
+Emails are delivered by Solid Queue in production; keep `SOLID_QUEUE_IN_PUMA`
+enabled or run `bin/jobs` separately. Check worker logs/failed jobs if messages
+are not arriving, and configure your provider's SPF/DKIM DNS records. Without an
+SMTP provider configured, external email delivery will not work. Never commit
+SMTP credentials.
 
 The project includes a production `Dockerfile` and Kamal configuration. Production uses PostgreSQL plus database-backed Solid Queue, Solid Cache, and Solid Cable services. Export `ADMIN_EMAIL`, `ADMIN_PASSWORD`, and `ADMIN_PATH` before running Kamal; `.kamal/secrets` forwards them without storing their values in the repository. Run migrations and then `bin/rails db:seed` once to create the initial administrator. Successful `bin/kamal deploy` runs a post-deploy hook that removes older `barteks11/dartz` image tags from the configured hosts, retaining the two newest distinct app images.

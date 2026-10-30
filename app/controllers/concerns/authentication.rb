@@ -3,6 +3,7 @@ module Authentication
 
   included do
     before_action :require_authentication
+    before_action :require_password_change
     helper_method :authenticated?
   end
 
@@ -38,7 +39,19 @@ module Authentication
       redirect_to new_session_path
     end
 
+    def require_password_change
+      resume_session
+      return unless Current.user&.password_change_required?
+      return if controller_name == "password_changes"
+      return if controller_name == "sessions" && action_name == "destroy"
+      return if controller_name == "passwords"
+
+      redirect_to edit_password_change_path
+    end
+
     def after_authentication_url
+      return edit_password_change_path if Current.user&.password_change_required?
+
       session.delete(:return_to_after_authenticating) || root_url
     end
 

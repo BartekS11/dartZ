@@ -51,6 +51,16 @@ class User < ApplicationRecord
   validates :challenge_policy, inclusion: { in: CHALLENGE_POLICIES }
   validates :discoverable_by_nickname, inclusion: { in: [ true, false ] }
 
+  # Returns the plaintext only to the caller; only its bcrypt digest is persisted.
+  def issue_temporary_password!
+    temporary_password = SecureRandom.alphanumeric(24)
+    with_lock do
+      update!(password: temporary_password, password_confirmation: temporary_password, password_change_required: true)
+      sessions.destroy_all
+    end
+    temporary_password
+  end
+
   def display_name
     nickname.presence || email_address
   end

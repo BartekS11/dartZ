@@ -9,6 +9,24 @@
     </div>
   </section>
 
+  <section class="theme-card p-5 stack-md">
+    <h2 class="section-title">Account recovery</h2>
+    <p class="help-theme">Generate a temporary password without email. This signs the user out everywhere and requires a new password at their next login.</p>
+    <div data-controller="confirmation-modal">
+      <button type="button" class="button theme-btn-outline" data-action="confirmation-modal#open">Generate temporary password</button>
+      <dialog class="billing-switch-dialog" data-confirmation-modal-target="dialog">
+        <div class="billing-switch-dialog__content">
+          <h3 class="section-title">Generate temporary password?</h3>
+          <p>Replace this user's password and revoke all browser sessions?</p>
+          <div class="billing-switch-dialog__actions">
+            <%= button_to "Yes, generate password", temporary_password_admin_user_path(@user), method: :post, class: "button theme-btn-primary", form: { data: { turbo: false } } %>
+            <button type="button" class="button theme-btn-outline" data-action="confirmation-modal#close">Cancel</button>
+          </div>
+        </div>
+      </dialog>
+    </div>
+  </section>
+
   <section class="columns is-multiline is-variable is-3">
     <% { "Matches" => @metrics[:matches], "Completed" => @metrics[:completed], "In progress" => @metrics[:in_progress], "Wins / losses" => "#{@metrics[:wins]} / #{@metrics[:losses]}", "Bot" => @metrics[:bots], "Invited" => @metrics[:invitations], "Tournament" => @metrics[:tournaments], "Last match" => (@metrics[:last_match_at]&.to_date || "—") }.each do |label, value| %>
       <div class="column is-6-tablet is-3-desktop"><div class="theme-card p-4"><div class="auth-label"><%= label %></div><div class="section-title"><%= value %></div></div></div>

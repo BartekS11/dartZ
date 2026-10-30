@@ -1,6 +1,19 @@
 require "test_helper"
 
 class Api::V1::AuthenticationContractTest < ActionDispatch::IntegrationTest
+  test "temporary passwords cannot bypass the required website password change" do
+    user = create_user("temporary-api@example.com")
+    token = JsonWebToken.encode(user_id: user.id)
+    temporary_password = user.issue_temporary_password!
+
+    get "/api/v1/matches", headers: { "Authorization" => "Bearer #{token}" }
+    assert_response :forbidden
+
+    post "/api/v1/auth/login", params: { email: user.email_address, password: temporary_password }
+    assert_response :forbidden
+    assert_not response.parsed_body.key?("token")
+  end
+
   test "missing bearer token preserves the legacy unauthorized envelope" do
     get "/api/v1/matches"
 

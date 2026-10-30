@@ -3,7 +3,7 @@ module Admin
     PER_PAGE = 25
     MATCHES_PER_PAGE = 25
 
-    before_action :set_user, only: %i[show matches tier]
+    before_action :set_user, only: %i[show matches tier temporary_password]
 
     def index
       scope = User.order(created_at: :desc)
@@ -37,6 +37,12 @@ module Admin
         .offset((@page - 1) * MATCHES_PER_PAGE).limit(MATCHES_PER_PAGE)
       @tournaments_by_match_id = TournamentMatch.includes(:tournament)
         .where(linked_match_id: @matches.map(&:id)).index_by(&:linked_match_id)
+    end
+
+    def temporary_password
+      @temporary_password = @user.issue_temporary_password!
+      response.headers["Cache-Control"] = "no-store, private"
+      render :temporary_password
     end
 
     def tier

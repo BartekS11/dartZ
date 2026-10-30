@@ -11,6 +11,7 @@ module ApplicationCable
       else
         connect_via_session
       end
+      reject_unauthorized_connection if current_user&.password_change_required?
     end
 
     private

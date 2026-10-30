@@ -1,0 +1,18 @@
+<div class="page-shell stack-lg">
+  <section class="theme-card p-5 stack-md">
+    <h1 class="page-title"><%= t("password_change.title") %></h1>
+    <p class="help-theme"><%= t("password_change.hint") %></p>
+    <%= form_with url: password_change_path, method: :patch, class: "stack-md" do |form| %>
+      <div>
+        <%= form.label :password, t("password_change.password"), class: "auth-label" %>
+        <%= form.password_field :password, required: true, minlength: 12, maxlength: 72, autocomplete: "new-password", class: "input theme-form-input" %>
+      </div>
+      <div>
+        <%= form.label :password_confirmation, t("password_change.confirmation"), class: "auth-label" %>
+        <%= form.password_field :password_confirmation, required: true, minlength: 12, maxlength: 72, autocomplete: "new-password", class: "input theme-form-input" %>
+      </div>
+      <%= form.submit t("password_change.submit"), class: "button theme-btn-primary" %>
+    <% end %>
+    <%= button_to t("password_change.sign_out"), session_path, method: :delete, class: "button theme-btn-outline" %>
+  </section>
+</div>

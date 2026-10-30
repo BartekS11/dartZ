@@ -18,7 +18,8 @@ class PasswordsController < ApplicationController
   end
 
   def update
-    if @user.update(params.permit(:password, :password_confirmation))
+    if params[:password].present? && params[:password_confirmation].present? &&
+        @user.update(params.permit(:password, :password_confirmation).merge(password_change_required: false))
       @user.sessions.destroy_all
       redirect_to new_session_path, notice: t("flashes.password_reset")
     else

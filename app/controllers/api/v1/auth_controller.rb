@@ -30,6 +30,10 @@ module Api
         user = User.find_by(email_address: params[:email])
 
         if user&.authenticate(params[:password])
+          if user.password_change_required?
+            render json: { error: "Change your temporary password on the website before continuing" }, status: :forbidden
+            return
+          end
           token = JsonWebToken.encode(user_id: user.id)
           render json: {
             token: token,
